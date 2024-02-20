@@ -1,0 +1,357 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Products | Add Product</title>
+  <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/admin/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link href="/admin/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="/admin/css1/main.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="#" class="brand-wrap">
+                <img src="/admin/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Products</span>
+                    </a>
+                   
+                </li>
+                
+                
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-orders-1.html">Order list 1</a>
+                        <a href="page-orders-2.html">Order list 2</a>
+                        <a href="page-orders-detail.html">Order detail</a>
+                        <a href="page-orders-tracking.html">Order tracking</a>
+                        <a href="page-invoice.html">Invoice</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
+                        <span class="text">User Details</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-account-login.html">User login</a>
+                        <a href="page-account-register.html">User registration</a>
+                        <a href="page-error-404.html">Error 404</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="categories"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Categories</span>
+                    </a>
+                   
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Sales</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-sellers-cards.html">Sellers cards</a>
+                        <a href="page-sellers-list.html">Sellers list</a>
+                        <a href="page-seller-detail.html">Seller profile</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Coupons</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-sellers-cards.html">Sellers cards</a>
+                        <a href="page-sellers-list.html">Sellers list</a>
+                        <a href="page-seller-detail.html">Seller profile</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Banners</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-form-product-1.html">Add product 1</a>
+                        <a href="page-form-product-2.html">Add product 2</a>
+                        <a href="page-form-product-3.html">Add product 3</a>
+                        <a href="page-form-product-4.html">Add product 4</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Add product</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-form-product-1.html">Add product 1</a>
+                        <a href="page-form-product-2.html">Add product 2</a>
+                        <a href="page-form-product-3.html">Add product 3</a>
+                        <a href="page-form-product-4.html">Add product 4</a>
+                    </div>
+                </li>
+            </ul>
+            <hr>
+            <ul class="menu-aside">
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="adminLogin"> <i class="icon material-icons md-settings"></i>
+                        <span class="text">Logout</span>
+                    </a>
+                   
+                </li>
+            </ul>
+            <br>
+            <br>
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+                        <option value="Products">
+                        <option value="New orders">
+                        <option value="Apple iphone">
+                        <option value="Ahmed Hassan">
+                    </datalist>
+                </form>
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+                    
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Product</h2>
+                        <div>
+                            <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                            <button class="btn btn-md rounded font-sm hover-up"  >Add Product</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">Product title</label>
+                                <input type="text" placeholder="Type here" class="form-control" id="product_title">
+                            </div>
+                            <div class="  mb-4">
+                                <label for="product_sku" class="form-label">SKU</label>
+                                <input type="text" placeholder="Type here" class="form-control" id="product_sku">
+                            </div>
+                            <!-- <div class="row gx-3">
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_sku" class="form-label">SKU</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_sku">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_color" class="form-label">Color</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_color">
+                                </div>
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_size" class="form-label">Size</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_size">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_brand" class="form-label">Brand</label>
+                                <input type="text" placeholder="Type here" class="form-control" id="product_brand">
+                            </div> -->
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Images</label>
+                                <input class="form-control" type="file" id="imageInput" multiple>
+                            </div>
+                            <div id="imagePreview" ></div>
+
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" class="form-control" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="form-label">Price</label>
+                                <input type="text" placeholder="Type here" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Status</label>
+                                <select class="form-select">
+                                    <option>Published</option>
+                                    <option>Draft</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Tags</label>
+                                <input type="text" placeholder="Type here" class="form-control">
+                            </div>
+                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Tech</a>
+                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Mobile</a>
+                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Apple</a>
+                            <hr>
+                            <h5 class="mb-3">Categories</h5>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="product-cat">
+                                <label class="form-check-label" for="product-cat"> Shirt </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="product-cat-1">
+                                <label class="form-check-label" for="product-cat-1"> T-Shirt </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="product-cat-2">
+                                <label class="form-check-label" for="product-cat-2"> Sneakers </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="product-cat-3">
+                                <label class="form-check-label" for="product-cat-3"> Joggers </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="product-cat-4">
+                                <label class="form-check-label" for="product-cat-4"> Vests </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="product-cat-5">
+                                <label class="form-check-label" for="product-cat-5"> Knitwear </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="product-cat-8">
+                                <label class="form-check-label" for="product-cat-8"> Shorts </label>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+            </div>
+        </section>
+        <script>
+            document.getElementById('imageInput').addEventListener('change', function(event) {
+                const previewContainer = document.getElementById('imagePreview');
+                previewContainer.innerHTML = ''; // Clear previous previews
+        
+                const files = event.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+        
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('preview-image');
+                        img.classList.add('img-thumbnail'); // Add Bootstrap class for thumbnail styling
+                        img.style.maxWidth = '100%'; // Set maximum width to 100%
+                        img.style.maxHeight = '100%'; // Set maximum height to 100%
+
+        
+                        const removeButton = document.createElement('button');
+                        removeButton.textContent = 'Remove';
+                        removeButton.classList.add('btn', 'btn-danger', 'mt-2');
+                        removeButton.addEventListener('click', function() {
+                            previewContainer.removeChild(previewContainer.childNodes[i]);
+                            event.target.value = ''; // Clear the file input value
+                        });
+        
+                        const div = document.createElement('div');
+                        div.appendChild(img);
+                        div.style.maxWidth = '100px'; // Set maximum width to 100%
+                        div.style.maxHeight = '100px';
+
+                        const div2= document.createElement('div');
+
+                        div2.appendChild(removeButton);
+        
+                        previewContainer.appendChild(div);
+                        previewContainer.appendChild(div2);
+
+                    };
+        
+                    reader.readAsDataURL(file);
+                }
+            });
+        </script>
+        
+       <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                document.write(new Date().getFullYear())
+                </script> ©, Evara - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">
+                    All rights reserved
+                </div>
+            </div>
+        </div>
+      </footer>
+      </main>
+      
+      <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
+      <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
+      <script src="/admin/js/vendors/select2.min.js"></script>
+      <script src="/admin/js/vendors/perfect-scrollbar.js"></script>
+      <script src="/admin/js/vendors/jquery.fullscreen.min.js"></script>
+      <script src="/admin/js/vendors/chart.js"></script>
+      <!-- Main Script -->
+      <script src="/admin/js/main.js" type="text/javascript"></script>
+      <script src="/admin/js/custom-chart.js" type="text/javascript"></script>
+      
+      <script src="/admin/js1/vendors/jquery-3.6.0.min.js"></script>
+      <script src="/admin/js1/vendors/bootstrap.bundle.min.js"></script>
+      <script src="/admin/js1/vendors/select2.min.js"></script>
+      <script src="/admin/js1/vendors/perfect-scrollbar.js"></script>
+      <script src="/admin/js1/vendors/jquery.fullscreen.min.js"></script>
+      <script src="/admin/js1/vendors/chart.js"></script>
+      <!-- Main Script -->
+      <script src="/admin/js1/main.js" type="text/javascript"></script>
+      <script src="/admin/js1/custom-chart.js" type="text/javascript"></script>
+      
+      
+      </body>
+      
+      </html>

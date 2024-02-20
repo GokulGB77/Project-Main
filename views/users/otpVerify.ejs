@@ -1,0 +1,109 @@
+<%- include('../layouts/header.ejs') %>
+
+  
+   
+    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+
+    <div class="login-register-area pb-100 pt-95">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-12 offset-lg-2">
+            <div class="login-register-wrapper">
+              <div class="login-register-tab-list nav">
+                <h4> Verify OTP </h4>
+              </div>
+              <div class="tab-content">
+                <div id="lg1" class="tab-pane active">
+                  <div class="login-form-container">
+                    <div class="login-register-form">
+                        <form action="/verify-otp" method="post" id="otp-form">
+                            <input type="text" name="otp" id="otp" placeholder="Enter OTP">
+    
+                            <div class="button-box btn-hover text-center">
+                              <button type="submit" >Submit OTP</button>
+                            </div>
+                            <br>
+
+                            <div class=" btn-hover text-center">
+                              <a href="/resend-otp" class="btn btn-outline-secondary "  id="resendOTP"  >Resend OTP</a>
+                              <br>
+                              <br>
+                              <span id="resendTimer"></span> <!-- Timer display -->
+                          </div>
+                         
+                          
+                            <% if (errorMessage) { %>
+                                <p class="error-message">
+                                    <%= errorMessage %>
+                                </p>
+                            <% } %>
+                        </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      let canResend = true;
+      let resendTimeout;
+      document.getElementById('resendOTP').disabled = true;
+  
+      const updateResendTimer = () => {
+
+          const resendButton = document.getElementById('resendOTP');
+          const resendTimer = document.getElementById('resendTimer');
+  
+          // Get the remaining time
+          const remainingTime = Math.max((resendTimeout - Date.now()) / 1000, 0);
+  
+          if (remainingTime > 0) {
+              // Format remaining time as minutes and seconds
+              const minutes = Math.floor(remainingTime / 60);
+              const seconds = Math.floor(remainingTime % 60);
+              resendTimer.textContent = `Resend OTP in ${minutes} minutes ${seconds} seconds`;
+          } else {
+              // Enable the resend button
+              resendButton.disabled = false;
+              resendTimer.textContent = ''; // Clear the timer display
+          }
+      };
+  
+      // Start the countdown timer
+      const startResendTimer = () => {
+          resendTimeout = Date.now() + 10000; // 10 seconds
+          updateResendTimer();
+  
+          // Update the timer every second
+          setInterval(updateResendTimer, 1000);
+      };
+  
+      startResendTimer();
+  
+      // Attach a submit event listener to the form
+      document.getElementById('otp-form').addEventListener('submit', function (event) {
+          // Clear the timeout if the form is submitted
+          clearTimeout(resendTimeout);
+      });
+  </script>
+
+  <!-- <script>
+    let currentOtp =req.session.tempUserDetails.otp
+    const otpNull=()=>{
+    setInterval(()=>{
+      currentOtp = null;
+      console.log("Send otp again",req.session.tempUserDetails.otp);
+    },5000)
+  }
+  otpNull()
+  </script> -->
+<%- include('../layouts/footer.ejs') %>

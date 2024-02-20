@@ -1,0 +1,311 @@
+<!DOCTYPE ejs
+>
+<ejs
+ lang="zxx">
+
+
+<head>
+    <meta charset="utf-8">
+    <title>CouchCart. | Register User</title>
+    <meta name="description" content="CouchCart. Ecommerce Website">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <!-- Add site Favicon -->
+    <link rel="icon" href="/user/images/favicon/cropped-favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" href="/user/images/favicon/cropped-favicon-192x192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/user/images/favicon/cropped-favicon-180x180.png" />
+    <meta name="msapplication-TileImage" content="/user/images/favicon/cropped-favicon-270x270.png" />
+
+    <!-- All CSS is here
+	============================================ -->
+    <link rel="stylesheet" href="/user/css/vendor/bootstrap.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/vendor/pe-icon-7-stroke.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/vendor/themify-icons.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/vendor/font-awesome.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/plugins/animate.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/plugins/aos.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/plugins/magnific-popup.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/plugins/swiper.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/plugins/jquery-ui.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/plugins/nice-select.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/plugins/select2.min.css" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="/user/css/plugins/easyzoom.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/plugins/slinky.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/user/css/style.css" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="/user/css/style.css" crossorigin="anonymous" />
+</head>
+
+
+
+
+<body>
+    <div class="main-wrapper main-wrapper-2">
+        <header class="header-area header-responsive-padding header-height-1">
+            <div class="header-top d-none d-lg-block bg-gray">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 col-6">
+                            <div class="welcome-text">
+                                <p> Welcome Msg! </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-6">
+                            <div class="language-currency-wrap">
+                                <div class="currency-wrap border-style">
+                                    <a class="currency-active" href="#"> Rupee (INR) <i class=" ti-angle-down "></i></a>
+                                    <div class="currency-dropdown">
+                                        <ul>
+                                            <li><a href="#">Dollar (US) </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="language-wrap">
+                                    <a class="language-active" href="#"><img src="/user/images/icon-img/flag.png"
+                                            alt=""> English <i class=" ti-angle-down "></i></a>
+                                    <div class="language-dropdown">
+                                        <ul>
+                                            <li><a href="#"><img src="/user/images/icon-img/flag.png" alt="">English
+                                                </a></li>
+                                            <li><a href="#"><img src="/user/images/icon-img/spanish.png"
+                                                        alt="">Spanish</a></li>
+                                            <li><a href="#"><img src="/user/images/icon-img/arabic.png" alt="">Arabic
+                                                </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-bottom sticky-bar">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <div class="logo">
+                                <a href="/"><img src="/user/images/logo/logo.png" alt="logo"></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 d-none d-lg-block">
+                            <div class="main-menu text-center">
+                                <nav>
+                                    <ul>
+                                        <li><a href="/">HOME</a></li>
+                                        <li><a href="shop">SHOP</a></li>
+                                        <li><a href="about-us">ABOUT</a></li>
+                                        <li><a href="contact-us">CONTACT US</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <div class="header-action-wrap">
+                                <div class="header-action-style header-search-1">
+                                    <a class="search-toggle" href="#">
+                                        <i class="pe-7s-search s-open"></i>
+                                        <i class="pe-7s-close s-close"></i>
+                                    </a>
+                                    <div class="search-wrap-1">
+                                        <form action="#">
+                                            <input placeholder="Search products…" type="text">
+                                            <button class="button-search"><i class="pe-7s-search"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="header-action-style">
+                                    <a title="Register" href="register"><i class="pe-7s-user"></i></a>
+                                </div>
+                                <div class="header-action-style">
+                                    <a title="Wishlist" href="wishlist"><i class="pe-7s-like"></i></a>
+                                </div>
+                                <div class="header-action-style header-action-cart">
+                                    <a class="cart-active" href="#"><i class="pe-7s-shopbag"></i>
+                                        <span class="product-count bg-black">01</span>
+                                    </a>
+                                </div>
+                                <div class="header-action-style d-block d-lg-none">
+                                    <a class="mobile-menu-active-button" href="#"><i class="pe-7s-menu"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- mini cart start -->
+        <div class="sidebar-cart-active">
+            <div class="sidebar-cart-all">
+                <a class="cart-close" href="#"><i class="pe-7s-close"></i></a>
+                <div class="cart-content">
+                    <h3>Shopping Cart</h3>
+                    <ul>
+                        <li>
+                            <div class="cart-img">
+                                <a href="#"><img src="/user/images/cart/cart-1.jpg" alt=""></a>
+                            </div>
+                            <div class="cart-title">
+                                <h4><a href="#">Stylish Swing Chair</a></h4>
+                                <span> 1 × $49.00 </span>
+                            </div>
+                            <div class="cart-delete">
+                                <a href="#">×</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="cart-img">
+                                <a href="#"><img src="/user/images/cart/cart-2.jpg" alt=""></a>
+                            </div>
+                            <div class="cart-title">
+                                <h4><a href="#">Modern Chairs</a></h4>
+                                <span> 1 × $49.00 </span>
+                            </div>
+                            <div class="cart-delete">
+                                <a href="#">×</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="cart-total">
+                        <h4>Subtotal: <span>$170.00</span></h4>
+                    </div>
+                    <div class="cart-btn btn-hover">
+                        <a class="theme-color" href="cart
+                        ">view cart</a>
+                    </div>
+                    <div class="checkout-btn btn-hover">
+                        <a class="theme-color" href="checkout
+                        ">checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1">
+            <div class="container">
+                <div class="breadcrumb-content text-center">
+                    <h2>Register</h2>
+                    <ul>
+                        <li><a href="index
+                            ">Home</a></li>
+                        <li><i class="ti-angle-right"></i></li>
+                        <li>Register </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="breadcrumb-img-1">
+                <img src="/user/images/banner/breadcrumb-1.png" alt="">
+            </div>
+            <div class="breadcrumb-img-2">
+                <img src="/user/images/banner/breadcrumb-2.png" alt="">
+            </div>
+        </div>
+        <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+        <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+        <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+        <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+        <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
+        <div class="login-register-area pb-100 pt-95">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-md-12 offset-lg-2">
+                        <div class="login-register-wrapper">
+                            <div class="login-register-tab-list nav">
+                                    <h4> Register </h4>                                
+                            </div>
+
+                            <div id="lg2" class="tab-pane tab-content">
+                                <div class="login-form-container">
+                                    <div class="login-register-form">
+                                        <div id="error-message"></div>
+                                        <form action="/register" method="post" id="registration-form" onsubmit="return validateForm()">
+                                            <div class="mb-3">
+                                                <label for="name" class="form-label">Name</label>
+                                                <input type="text" class="form-control" id="name" name="name"  required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="email" name="email"  required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="mobile" class="form-label">Mobile</label>
+                                                <input type="tel" class="form-control" id="mobile" name="mobile"  required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="password" class="form-label">Password</label>
+                                                <input type="password" class="form-control" id="password" name="password" onblur="validatePassword()" required >
+                                                <span id="passwordErrorMessage" style="color: red;"></span>
+
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="password" class="form-label">Confirm Password</label>
+                                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"  required oninput="confirmPassword()">
+                                                <span id="confirmPasswordErrorMessage" style="color: red;"></span>
+                                            </div>
+
+
+                                            <div class="button-box btn-hover text-center">
+                                                <button type="submit">GENERATE OTP</button>
+                                            </div>
+                                    
+                                        </form>
+                                        <% if (typeof message !=='undefined' ) { %>
+                                            <p>
+                                                <%= message %>
+                                            </p>
+                                        <% }; %>
+                                            <hr class="my-4">
+                                            <p>Already have an account? <a href="/login">Login</a></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            //For Passwrod Validation
+            // function validatePassword() {
+            //     const password = document.getElementById('password').value;
+            //     const confirmPassword = document.getElementById('confirmPassword').value;
+            //     const passwordErrorMessage = document.getElementById('passwordErrorMessage');
+            //     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    
+            //     if (password.length < 8) {
+            //         passwordErrorMessage.textContent = 'Password must be at least 8 characters long';
+            //     } else if (/\s/.test(password)) {
+            //         passwordErrorMessage.textContent = 'Password should not contain spaces';
+            //     } else if (!passwordRegex.test(password)) {
+            //         passwordErrorMessage.textContent = 'Password should contain at least one lowercase letter, one uppercase letter, one number, and one special character from !@#$%^&*';
+            //     } else {
+            //         passwordErrorMessage.textContent = '';
+            //         passwordErrorMessage.textContent = '';
+            //         setTimeout(() => {
+            //             passwordErrorMessage.textContent = '';
+            //         }, 2000); // Hide after 2 seconds
+            //     }
+            // }
+    
+            // document.getElementById('password').addEventListener('input', validatePassword);
+    
+            // document.getElementById('password').addEventListener('focus', function () {
+            //     document.getElementById('passwordErrorMessage').textContent = '';
+            // });
+    
+    
+            function confirmPassword() {
+                if (password !== confirmPassword) {
+                    confirmPasswordErrorMessage.textContent = 'Password does not match';
+                }
+            }
+    
+    
+        </script>
+
+
+
+<%- include('../layouts/footer.ejs') %>
