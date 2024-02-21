@@ -189,183 +189,200 @@
                 </ul>
             </div>
         </header>
-        <section class="content-main">
-            <div class="row">
-                <div class="col-9">
-                    <div class="content-header">
-                        <h2 class="content-title">Add New Product</h2>
-                        <div>
-                            <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
-                            <button class="btn btn-md rounded font-sm hover-up"  >Add Product</button>
+        <form action="/admin/products/add-product" method="post" enctype="multipart/form-data" id="productForm">
+            <section class="content-main">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Add New Product</h2>
+                            <div>
+                                <button class="btn btn-md rounded font-sm hover-up"  onclick="submitForm()">Add Product</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <label for="product_title" class="form-label">Product title</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="product_title">
-                            </div>
-                            <div class="  mb-4">
-                                <label for="product_sku" class="form-label">SKU</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="product_sku">
-                            </div>
-                            <!-- <div class="row gx-3">
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_sku" class="form-label">SKU</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_sku">
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="productName" class="form-label">Product Name</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="productName" name="productName" maxlength="100" required>
+                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
+
                                 </div>
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_color" class="form-label">Color</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_color">
-                                </div>
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_size" class="form-label">Size</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_size">
+                                <div class="row gx-3">
+                                    <div class="col-md-6  mb-3">
+                                        <label for="productSku" class="form-label">SKU</label>
+                                        <input type="text" placeholder="Type here" class="form-control" maxlength="20"id="productSku" name="productSku" required>
+                                        <p id="productPriceError" class="error-message" style="color: red;"></p>
+
+                                    </div>
+                                    <div class="col-md-6  mb-3">
+                                        <label for="productQty" class="form-label">Quantity</label>
+                                        <input type="number" placeholder="Type here" class="form-control" maxlength="4" id="productQty" name="productQty" required>
+                                        <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mb-4">
-                                <label for="product_brand" class="form-label">Brand</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="product_brand">
-                            </div> -->
-                        </div>
-                    </div> <!-- card end// -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div>
-                                <label class="form-label">Images</label>
-                                <input class="form-control" type="file" id="imageUpload" multiple>
+                        </div> <!-- card end// -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Images</label>
+                                    <input class="form-control" type="file" id="imageUpload" name="productImage" multiple required>
+                                </div>
+                                <p id="productPriceError" class="error-message" style="color: red;"></p>
+
+                                <div id="imagePreview"></div>
                             </div>
-                            <div id="imagePreview"></div>
-                        </div>
-                    </div> <!-- card end// -->
-                    
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div>
-                                <label class="form-label">Description</label>
-                                <textarea placeholder="Type here" class="form-control" rows="4"></textarea>
+                        </div> <!-- card end// -->
+                        
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" class="form-control" id="productDetails"  name="productDetails" required rows="4"></textarea>
+                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                </div>
                             </div>
-                        </div>
-                    </div> <!-- card end// -->
+                        </div> <!-- card end// -->
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label class="form-label">Price</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" name="productPrice" required>
+                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label" >Status</label>
+                                    <select class="form-select" name="status" id="status" required>
+                                        <option value="1">Published</option>
+                                        <option value="0">Draft</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Tags</label>
+                                    <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags" class="form-control" required>
+                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
+
+                                </div>
+                                <hr>
+                                <h5 class="mb-3">Categories</h5>
+                                <div class="mb-4">
+                                    <select class="form-select" name="productCategory" id="productCategory" required>
+                                        <option value="0">Living Room Furniture</option>
+                                        <option value="1">Bedroom Furniture</option>
+                                        <option value="2">Dining Room Furniture</option>
+                                        <option value="3">Home Office Furniture</option>
+                                        
+                                    </select>
+                                </div>
+                                <!-- <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="product-cat">
+                                    <label class="form-check-label" for="product-cat"> Shirt </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-1">
+                                    <label class="form-check-label" for="product-cat-1"> T-Shirt </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-2">
+                                    <label class="form-check-label" for="product-cat-2"> Sneakers </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-3">
+                                    <label class="form-check-label" for="product-cat-3"> Joggers </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-4">
+                                    <label class="form-check-label" for="product-cat-4"> Vests </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-5">
+                                    <label class="form-check-label" for="product-cat-5"> Knitwear </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-8">
+                                    <label class="form-check-label" for="product-cat-8"> Shorts </label>
+                                </div> -->
+                            </div>
+                        </div> <!-- card end// -->
+                    </div>
                 </div>
-                <div class="col-lg-3">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <label class="form-label">Price</label>
-                                <input type="text" placeholder="Type here" class="form-control">
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Status</label>
-                                <select class="form-select">
-                                    <option>Published</option>
-                                    <option>Draft</option>
-                                </select>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Tags</label>
-                                <input type="text" placeholder="Type here" class="form-control">
-                            </div>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Tech</a>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Mobile</a>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Apple</a>
-                            <hr>
-                            <h5 class="mb-3">Categories</h5>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat">
-                                <label class="form-check-label" for="product-cat"> Shirt </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-1">
-                                <label class="form-check-label" for="product-cat-1"> T-Shirt </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-2">
-                                <label class="form-check-label" for="product-cat-2"> Sneakers </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-3">
-                                <label class="form-check-label" for="product-cat-3"> Joggers </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-4">
-                                <label class="form-check-label" for="product-cat-4"> Vests </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-5">
-                                <label class="form-check-label" for="product-cat-5"> Knitwear </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-8">
-                                <label class="form-check-label" for="product-cat-8"> Shorts </label>
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
-                </div>
-            </div>
-        </section>
+            </section>
+        </form>
+
+
         <script>
-        document.addEventListener("DOMContentLoaded", function () {
-    const imageUpload = document.getElementById("imageUpload");
-    const imagePreview = document.getElementById("imagePreview");
+            document.addEventListener("DOMContentLoaded", function () {
+                const imageUpload = document.getElementById("imageUpload");
+                const imagePreview = document.getElementById("imagePreview");
 
-    imageUpload.addEventListener("change", function () {
-        // Clear previous previews
-        imagePreview.innerHTML = "";
+                imageUpload.addEventListener("change", function () {
+                    // Clear previous previews
+                    imagePreview.innerHTML = "";
 
-        // Loop through selected files
-        for (let i = 0; i < this.files.length; i++) {
-            const file = this.files[i];
-            const reader = new FileReader();
+                    // Loop through selected files
+                    for (let i = 0; i < this.files.length; i++) {
+                        const file = this.files[i];
+                        const reader = new FileReader();
 
-            reader.onload = function (e) {
-                // Create image element
-                const image = document.createElement("img");
-                image.src = e.target.result;
-                image.classList.add("preview-image");
+                        reader.onload = function (e) {
+                            // Create image element
+                            const image = document.createElement("img");
+                            image.src = e.target.result;
+                            image.classList.add("preview-image");
 
-                // Create close button
-                const closeButton = document.createElement("button");
-                closeButton.textContent = "X";
-                closeButton.classList.add("close-button");
-                closeButton.addEventListener("click", function () {
-                    // Remove image preview on close button click
-                    imagePreview.removeChild(imageContainer);
+                            // Create close button
+                            const closeButton = document.createElement("button");
+                            closeButton.textContent = "X";
+                            closeButton.classList.add("close-button");
+                            closeButton.addEventListener("click", function () {
+                                // Remove image preview on close button click
+                                imagePreview.removeChild(imageContainer);
+                            });
+
+                            // Create container for image and close button
+                            const imageContainer = document.createElement("div");
+                            imageContainer.classList.add("image-container");
+                            imageContainer.appendChild(image);
+                            imageContainer.appendChild(closeButton);
+
+                            // Append container to preview area
+                            imagePreview.appendChild(imageContainer);
+                        };
+
+                        // Read image file as data URL
+                        reader.readAsDataURL(file);
+                    }
                 });
+            });
+        </script>
 
-                // Create container for image and close button
-                const imageContainer = document.createElement("div");
-                imageContainer.classList.add("image-container");
-                imageContainer.appendChild(image);
-                imageContainer.appendChild(closeButton);
+        <script>
+            function submitForm() {
+            const stockInputs = ['size_xs', 'size_s', 'size_m', 'size_l', 'size_xl', 'size_xxl'];
+            let isValid = true;
 
-                // Append container to preview area
-                imagePreview.appendChild(imageContainer);
-            };
+            stockInputs.forEach(function (id) {
+                isValid = isValid && validateStock(id);
+            });
 
-            // Read image file as data URL
-            reader.readAsDataURL(file);
+            if (validateInput('productName', null, 'productTitleError', 'Product title') &&
+                validateInput('productBrand', /^[A-Za-z\s]+$/, 'productBrandError', 'Brand') &&
+                validateInput('productDetails', null, 'productDescriptionError', 'Description') &&
+                validateInput('productPrice', /^(0*[1-9]\d*)$/, 'productPriceError', 'Price') &&
+                isValid) {
+                document.getElementById('productForm').submit();
+            } else {
+                document.getElementById('main-error').innerText = 'CANNOT SUBMIT';
+            }
         }
-    });
-});
-
         </script>
         
-       <footer class="main-footer font-xs">
-        <div class="row pb-30 pt-15">
-            <div class="col-sm-6">
-                <script>
-                document.write(new Date().getFullYear())
-                </script> ©, Evara - HTML Ecommerce Template .
-            </div>
-            <div class="col-sm-6">
-                <div class="text-sm-end">
-                    All rights reserved
-                </div>
-            </div>
-        </div>
+       <footer >
+     
       </footer>
       </main>
       
