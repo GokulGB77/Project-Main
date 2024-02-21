@@ -5,6 +5,7 @@ const { v4:uuidv4 } = require('uuid');
 const adminController = require('../controllers/adminController');
 const dashboardController = require('../controllers/dashboardController');
 const productsController = require('../controllers/productsController');
+const categoriesController = require('../controllers/categoriesController');
 const multer = require("multer")
 
 
@@ -46,8 +47,8 @@ adminRoute.post("/products/add-product",upload.array("productImage", 4),products
 adminRoute.get("/products/edit-product",productsController.editProduct)
 adminRoute.post("/products/edit-product",productsController.updateProduct)
 
-
-// adminRoute.get("/products/edit-product",productsController.editProduct)
+adminRoute.get("/categories",categoriesController.loadAdmincategories)
+adminRoute.get("/categories/add-category",categoriesController.addCategory)
 
 
 adminRoute.get("/logout", adminController.adminLogout);
