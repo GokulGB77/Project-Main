@@ -11,6 +11,43 @@
     <link href="/admin/css/main.css" rel="stylesheet" type="text/css" />
     <link href="/admin/css1/main.css" rel="stylesheet" type="text/css" />
 
+    <style>
+        .preview-image {
+            width: 100px;
+            height: auto;
+            margin-right: 10px;
+        }
+    
+        .close-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: transparent;
+            border: none;
+            color: rgb(0, 0, 0);
+            font-size: 20px;
+            cursor: pointer;
+        }
+    
+        .image-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+    
+        .close-button {
+            border: 1px solid black;
+            /* Border style */
+            /* padding: 3px; */
+            /* Padding for spacing */
+            background-color: rgb(255, 254, 254);
+            /* Background color */
+            cursor: pointer;
+            /* Change cursor to pointer on hover */
+            border-radius: 50%;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -198,12 +235,12 @@
                         <div class="card-body">
                             <div>
                                 <label class="form-label">Images</label>
-                                <input class="form-control" type="file" id="imageInput" multiple>
+                                <input class="form-control" type="file" id="imageUpload" multiple>
                             </div>
-                            <div id="imagePreview" ></div>
-
+                            <div id="imagePreview"></div>
                         </div>
                     </div> <!-- card end// -->
+                    
                     <div class="card mb-4">
                         <div class="card-body">
                             <div>
@@ -270,49 +307,50 @@
             </div>
         </section>
         <script>
-            document.getElementById('imageInput').addEventListener('change', function(event) {
-                const previewContainer = document.getElementById('imagePreview');
-                previewContainer.innerHTML = ''; // Clear previous previews
-        
-                const files = event.target.files;
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const reader = new FileReader();
-        
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.classList.add('preview-image');
-                        img.classList.add('img-thumbnail'); // Add Bootstrap class for thumbnail styling
-                        img.style.maxWidth = '100%'; // Set maximum width to 100%
-                        img.style.maxHeight = '100%'; // Set maximum height to 100%
+        document.addEventListener("DOMContentLoaded", function () {
+    const imageUpload = document.getElementById("imageUpload");
+    const imagePreview = document.getElementById("imagePreview");
 
-        
-                        const removeButton = document.createElement('button');
-                        removeButton.textContent = 'Remove';
-                        removeButton.classList.add('btn', 'btn-danger', 'mt-2');
-                        removeButton.addEventListener('click', function() {
-                            previewContainer.removeChild(previewContainer.childNodes[i]);
-                            event.target.value = ''; // Clear the file input value
-                        });
-        
-                        const div = document.createElement('div');
-                        div.appendChild(img);
-                        div.style.maxWidth = '100px'; // Set maximum width to 100%
-                        div.style.maxHeight = '100px';
+    imageUpload.addEventListener("change", function () {
+        // Clear previous previews
+        imagePreview.innerHTML = "";
 
-                        const div2= document.createElement('div');
+        // Loop through selected files
+        for (let i = 0; i < this.files.length; i++) {
+            const file = this.files[i];
+            const reader = new FileReader();
 
-                        div2.appendChild(removeButton);
-        
-                        previewContainer.appendChild(div);
-                        previewContainer.appendChild(div2);
+            reader.onload = function (e) {
+                // Create image element
+                const image = document.createElement("img");
+                image.src = e.target.result;
+                image.classList.add("preview-image");
 
-                    };
-        
-                    reader.readAsDataURL(file);
-                }
-            });
+                // Create close button
+                const closeButton = document.createElement("button");
+                closeButton.textContent = "X";
+                closeButton.classList.add("close-button");
+                closeButton.addEventListener("click", function () {
+                    // Remove image preview on close button click
+                    imagePreview.removeChild(imageContainer);
+                });
+
+                // Create container for image and close button
+                const imageContainer = document.createElement("div");
+                imageContainer.classList.add("image-container");
+                imageContainer.appendChild(image);
+                imageContainer.appendChild(closeButton);
+
+                // Append container to preview area
+                imagePreview.appendChild(imageContainer);
+            };
+
+            // Read image file as data URL
+            reader.readAsDataURL(file);
+        }
+    });
+});
+
         </script>
         
        <footer class="main-footer font-xs">
