@@ -189,14 +189,14 @@
                 </ul>
             </div>
         </header>
-        <form action="/admin/products/edit-product?id=<%= product._id %>" method="post" enctype="multipart/form-data" id="productForm">
+        <form action="/admin/products/edit-product?id=<%=product.id%>" method="post" enctype="multipart/form-data" id="productForm">
             <section class="content-main">
                 <div class="row">
                     <div class="col-9">
                         <div class="content-header">
-                            <h2 class="content-title">Add New Product</h2>
+                            <h2 class="content-title">Update Product</h2>
                             <div>
-                                <button class="btn btn-md rounded font-sm hover-up"  onclick="submitForm()">Add Product</button>
+                                <button class="btn btn-md rounded font-sm hover-up"  onclick="submitForm()">Update Product</button>
                             </div>
                         </div>
                     </div>
@@ -205,22 +205,31 @@
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="productName" class="form-label">Product Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" value="<%=product.productName%>" name="productName" maxlength="100" required>
+                                    <input type="text" placeholder="Type here" class="form-control" value="<%=product.productName%>" name="productName" maxlength="100" >
                                     <p id="productPriceError" class="error-message" style="color: red;"></p>
 
                                 </div>
                                 <div class="row gx-3">
                                     <div class="col-md-6  mb-3">
                                         <label for="productSku" class="form-label">SKU</label>
-                                        <input type="text" placeholder="Type here" class="form-control" value="<%=product.productSku%>" maxlength="20"id="productSku" name="productSku" required>
+                                        <input type="text" placeholder="Type here" class="form-control" value="<%=product.productSku%>" maxlength="20"id="productSku" name="productSku" >
                                         <p id="productPriceError" class="error-message" style="color: red;"></p>
 
                                     </div>
                                     <div class="col-md-6  mb-3">
                                         <label for="productQty" class="form-label">Quantity</label>
-                                        <input type="number" placeholder="Type here" class="form-control" maxlength="4" value="<%=product.productQty%>" id="productQty" name="productQty" required>
+                                        <input type="number" placeholder="Type here" class="form-control" maxlength="4" value="<%=product.productQty%>" id="productQty" name="productQty" >
                                         <p id="productPriceError" class="error-message" style="color: red;"></p>
                                     </div>
+                                </div>
+                            </div>
+                        </div> <!-- card end// -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" class="form-control" id="productDetails"   name="productDetails"  rows="8"><%=product.productDetails%></textarea>
+                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
                                 </div>
                             </div>
                         </div> <!-- card end// -->
@@ -228,16 +237,16 @@
                             <div class="card-body">
                                 <div>
                                     <label class="form-label">Images</label>
-                                    <input class="form-control" type="file" id="imageUpload" name="productImage" multiple required>
-                                    <% product.images.forEach(image=> { %>
-                                        <div>
+                                    <input class="form-control" type="file" id="imageUpload" name="productImage" multiple >
+                                    <% product.images.forEach(image => { %>
+                                        <div style="position: relative;">
                                             <img src="/productAssets/<%= image %>" alt="<%= image %>">
-                                            <label>Current Image: <%= image %></label>
-                                            <!-- Add a checkbox to mark images for removal -->
-                                            <input type="checkbox" name="removeImage" value="<%= image %>">
-                                            <label>Remove</label>
+                                            
+                                            <button type="button" class="close-button" onclick="removeImage('<%= image %>')">X</button>
+                                            
+                                            
                                         </div>
-                                        <% }); %>
+                                    <% }); %>
                                 </div>
                                 <p id="productPriceError" class="error-message" style="color: red;"></p>
 
@@ -245,41 +254,33 @@
                             </div>
                         </div> <!-- card end// -->
                         
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <div>
-                                    <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" id="productDetails"  name="productDetails" required rows="4"></textarea>
-                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
-                                </div>
-                            </div>
-                        </div> <!-- card end// -->
+                        
                     </div>
                     <div class="col-lg-3">
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div class="mb-4">
-                                    <label class="form-label">Price</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" name="productPrice" required>
+                                    <label class="form-label">Price ( &#8377 )</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" value="<%=product.productPrice%>" name="productPrice" >
                                     <p id="productPriceError" class="error-message" style="color: red;"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label" >Status</label>
-                                    <select class="form-select" name="status" id="status" required>
+                                    <select class="form-select" name="status" id="status" >
                                         <option value="1">Published</option>
                                         <option value="0">Draft</option>
                                     </select>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Tags</label>
-                                    <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags" class="form-control" required>
+                                    <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags"  value="<%=product.productTags%>"class="form-control" >
                                     <p id="productPriceError" class="error-message" style="color: red;"></p>
 
                                 </div>
                                 <hr>
                                 <h5 class="mb-3">Categories</h5>
                                 <div class="mb-4">
-                                    <select class="form-select" name="productCategory" id="productCategory" required>
+                                    <select class="form-select" name="productCategory" id="productCategory" >
                                         <option value="0">Living Room Furniture</option>
                                         <option value="1">Bedroom Furniture</option>
                                         <option value="2">Dining Room Furniture</option>
@@ -287,34 +288,7 @@
                                         
                                     </select>
                                 </div>
-                                <!-- <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat">
-                                    <label class="form-check-label" for="product-cat"> Shirt </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-1">
-                                    <label class="form-check-label" for="product-cat-1"> T-Shirt </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-2">
-                                    <label class="form-check-label" for="product-cat-2"> Sneakers </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-3">
-                                    <label class="form-check-label" for="product-cat-3"> Joggers </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-4">
-                                    <label class="form-check-label" for="product-cat-4"> Vests </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-5">
-                                    <label class="form-check-label" for="product-cat-5"> Knitwear </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-8">
-                                    <label class="form-check-label" for="product-cat-8"> Shorts </label>
-                                </div> -->
+                               
                             </div>
                         </div> <!-- card end// -->
                     </div>
@@ -329,40 +303,32 @@
                 const imagePreview = document.getElementById("imagePreview");
 
                 imageUpload.addEventListener("change", function () {
-                    // Clear previous previews
                     imagePreview.innerHTML = "";
 
-                    // Loop through selected files
                     for (let i = 0; i < this.files.length; i++) {
                         const file = this.files[i];
                         const reader = new FileReader();
 
                         reader.onload = function (e) {
-                            // Create image element
                             const image = document.createElement("img");
                             image.src = e.target.result;
                             image.classList.add("preview-image");
 
-                            // Create close button
                             const closeButton = document.createElement("button");
                             closeButton.textContent = "X";
                             closeButton.classList.add("close-button");
                             closeButton.addEventListener("click", function () {
-                                // Remove image preview on close button click
                                 imagePreview.removeChild(imageContainer);
                             });
 
-                            // Create container for image and close button
                             const imageContainer = document.createElement("div");
                             imageContainer.classList.add("image-container");
                             imageContainer.appendChild(image);
                             imageContainer.appendChild(closeButton);
 
-                            // Append container to preview area
                             imagePreview.appendChild(imageContainer);
                         };
 
-                        // Read image file as data URL
                         reader.readAsDataURL(file);
                     }
                 });
@@ -371,7 +337,6 @@
 
         <script>
             function submitForm() {
-            const stockInputs = ['size_xs', 'size_s', 'size_m', 'size_l', 'size_xl', 'size_xxl'];
             let isValid = true;
 
             stockInputs.forEach(function (id) {
@@ -379,7 +344,7 @@
             });
 
             if (validateInput('productName', null, 'productTitleError', 'Product title') &&
-                validateInput('productBrand', /^[A-Za-z\s]+$/, 'productBrandError', 'Brand') &&
+                validateInput('productCategory', /^[A-Za-z\s]+$/, 'productBrandError', 'Category') &&
                 validateInput('productDetails', null, 'productDescriptionError', 'Description') &&
                 validateInput('productPrice', /^(0*[1-9]\d*)$/, 'productPriceError', 'Price') &&
                 isValid) {
@@ -390,6 +355,13 @@
         }
         </script>
         
+        <script>
+            function removeImage(imageUrl) {
+                const imageContainer = document.querySelector(`img[src="/productAssets/${imageUrl}"]`).parentElement;
+                imageContainer.remove();
+            }
+
+        </script>
        <footer >
      
       </footer>

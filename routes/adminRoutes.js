@@ -44,6 +44,10 @@ adminRoute.get("/products",productsController.loadAdminProducts);
 adminRoute.get("/products/add-product",productsController.loadAddProduct)
 adminRoute.post("/products/add-product",upload.array("productImage", 4),productsController.addProduct)
 adminRoute.get("/products/edit-product",productsController.editProduct)
+adminRoute.post("/products/edit-product",productsController.updateProduct)
+
+
+// adminRoute.get("/products/edit-product",productsController.editProduct)
 
 
 adminRoute.get("/logout", adminController.adminLogout);

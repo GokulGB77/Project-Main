@@ -278,34 +278,6 @@
                                         
                                     </select>
                                 </div>
-                                <!-- <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat">
-                                    <label class="form-check-label" for="product-cat"> Shirt </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-1">
-                                    <label class="form-check-label" for="product-cat-1"> T-Shirt </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-2">
-                                    <label class="form-check-label" for="product-cat-2"> Sneakers </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-3">
-                                    <label class="form-check-label" for="product-cat-3"> Joggers </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-4">
-                                    <label class="form-check-label" for="product-cat-4"> Vests </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-5">
-                                    <label class="form-check-label" for="product-cat-5"> Knitwear </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="product-cat-8">
-                                    <label class="form-check-label" for="product-cat-8"> Shorts </label>
-                                </div> -->
                             </div>
                         </div> <!-- card end// -->
                     </div>
@@ -320,16 +292,13 @@
                 const imagePreview = document.getElementById("imagePreview");
 
                 imageUpload.addEventListener("change", function () {
-                    // Clear previous previews
                     imagePreview.innerHTML = "";
 
-                    // Loop through selected files
                     for (let i = 0; i < this.files.length; i++) {
                         const file = this.files[i];
                         const reader = new FileReader();
 
                         reader.onload = function (e) {
-                            // Create image element
                             const image = document.createElement("img");
                             image.src = e.target.result;
                             image.classList.add("preview-image");
@@ -339,26 +308,23 @@
                             closeButton.textContent = "X";
                             closeButton.classList.add("close-button");
                             closeButton.addEventListener("click", function () {
-                                // Remove image preview on close button click
                                 imagePreview.removeChild(imageContainer);
                             });
 
-                            // Create container for image and close button
                             const imageContainer = document.createElement("div");
                             imageContainer.classList.add("image-container");
                             imageContainer.appendChild(image);
                             imageContainer.appendChild(closeButton);
 
-                            // Append container to preview area
                             imagePreview.appendChild(imageContainer);
                         };
 
-                        // Read image file as data URL
                         reader.readAsDataURL(file);
                     }
                 });
             });
         </script>
+        
 
         <script>
             function submitForm() {

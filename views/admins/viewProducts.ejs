@@ -211,7 +211,7 @@
                                 <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
                                     <a class="itemside" href="#">
                                         <div class="left">
-                                            <img src="/productAssets/<%= products[i].images[0] %>"
+                                            <img src="/productAssets/<%=products[i].images[0] %>"
                                                 class="img-sm img-thumbnail" alt="Item">
                                         </div>
                                         <div class="info">
@@ -228,7 +228,7 @@
                                 </div>
                                 <div class="col-lg-2 col-sm-2 col-4 col-status">
                                     <span
-                                        class="badge rounded-pill alert-<%= products[i].status === 1 ? 'success' : 'danger' %>">
+                                        class="badge rounded-pill alert-<%=products[i].status === 1 ? 'success' : 'danger' %>">
                                         <%= products[i].status===1 ? 'Active' : 'Disabled' %>
                                     </span>
                                 </div>
@@ -238,10 +238,10 @@
                                     </span>
                                 </div>
                                 <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="/admins/products/edit-product?productId=<%= products[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                    <a href="/admin/products/edit-product?id=<%=products[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
                                         <i class="material-icons md-edit"></i> Edit
                                     </a>
-                                    <a href="/admins/products/archive-product?productId=<%= products[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                    <a href="/admins/products/archive-product?id=<%=products[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
                                         <i class="material-icons md-delete_forever"></i> Archive
                                     </a>
                                 </div>
