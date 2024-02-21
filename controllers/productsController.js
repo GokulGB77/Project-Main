@@ -22,16 +22,12 @@ const loadAddProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    // Get all uploaded file names
     const uploadedImages = req.files.map((file) => file.filename);
 
-    // Get removed file names (if any)
     const removedImages = req.body.removeImage || [];
 
-    // Filter out removed files from uploaded images
     const imagesToKeep = uploadedImages.filter((image) => !removedImages.includes(image));
 
-    // Remaining logic remains the same
     let productTags;
     if (req.body.productTags) {
       productTags = req.body.productTags.split(" ").map((tag) => tag.trim());
@@ -84,36 +80,43 @@ const editProduct = async (req,res)=>{
   }
 }
 
-const updateProduct = async (req,res) =>{
+const updateProduct = async (req, res) => {
   try {
-    const images = req.files.map((file) => file.filename);
-    let productTags;
-    if (req.body.productTags) {
-      productTags = req.body.productTags.split(" ").map(tag => tag.trim());
-    } else {
-      productTags = [];
-    }
-    const newProduct =  Productsdb.findOneAndUpdate({
+    const id = req.query.id;
+    const exstingData = await Productsdb.findById(id)
+    // console.log("Existing dattaa.............",exstingData);
+    const updatedProductDetails = {
       productName: req.body.productName,
       productSku: req.body.productSku,
       productQty: req.body.productQty,
-      images: images,
       productDetails: req.body.productDetails,
       productPrice: req.body.productPrice,
       status: req.body.status,
-      productTags: productTags,
       category: req.body.productCategory,
+    };
+    // console.log("Product details updated:",updatedProductDetails);
 
-    });
+    if (req.body.productTags) {
+      updatedProductDetails.productTags = req.body.productTags.split(",").map(tag => tag.trim());
+    } else {
+      updatedProductDetails.productTags = [];
+    }
 
-    await newProduct.save();
-    console.log("New Product Added..........");
+    if (req.files && req.files.length > 0) {
+      const uploadedImages = req.files.map((file) => file.filename);
+      updatedProductDetails.images = uploadedImages;
+    }
+
+    const UpdatedDetails = await Productsdb.findByIdAndUpdate(id, updatedProductDetails);
+    // console.log(UpdatedDetails);
+    console.log("Product details updated..........");
     res.redirect("/admin/products");
   } catch (error) {
-    console.log(error)
-    res.status(500).send("Update Product Details Failed.......")
+    console.log(error);
+    res.status(500).send("Update Product Details Failed.......");
   }
-}
+};
+
 
 module.exports = {
   loadAdminProducts,

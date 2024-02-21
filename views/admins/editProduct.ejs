@@ -189,7 +189,7 @@
                 </ul>
             </div>
         </header>
-        <form action="/admin/products/edit-product?id=<%=product.id%>" method="post" enctype="multipart/form-data" id="productForm">
+        <form action="/admin/products/edit-product?id=<%=product.id%>" method="post"  id="productForm">
             <section class="content-main">
                 <div class="row">
                     <div class="col-9">
@@ -265,12 +265,13 @@
                                     <p id="productPriceError" class="error-message" style="color: red;"></p>
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label" >Status</label>
-                                    <select class="form-select" name="status" id="status" >
-                                        <option value="1">Published</option>
-                                        <option value="0">Draft</option>
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" name="status" id="status">
+                                        <option value="1" <% if (product.status === 1) { %> selected <% } %>>Published</option>
+                                        <option value="0" <% if (product.status === 0) { %> selected <% } %>>Draft</option>
                                     </select>
                                 </div>
+                                
                                 <div class="mb-4">
                                     <label class="form-label">Tags</label>
                                     <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags"  value="<%=product.productTags%>"class="form-control" >
