@@ -53,7 +53,25 @@ const addProduct = async (req, res) => {
   }
 };
 
-editProduct
+const editProduct = async (req,res)=>{
+  try {
+    console.log("Edit Product Page Loaded");
+    const id =req.query.productId
+    const product = await Productsdb.findById(id)
+
+    if(!product){
+      return res.status(404).send("Product Not Found");
+    }
+
+    //const categories = await getCategories();
+    res.render("editProduct",{product })   //    res.render("editProduct",{product , categories})
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("Internal Server Error");
+
+  }
+}
 
 module.exports = {
   loadAdminProducts,

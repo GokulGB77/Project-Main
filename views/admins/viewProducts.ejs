@@ -238,11 +238,11 @@
                                     </span>
                                 </div>
                                 <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="/admins/products/edit-product" class="btn btn-sm font-sm rounded btn-brand">
+                                    <a href="/admins/products/edit-product?productId=<%= products[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
                                         <i class="material-icons md-edit"></i> Edit
                                     </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded">
-                                        <i class="material-icons md-delete_forever"></i> Delete
+                                    <a href="/admins/products/archive-product?productId=<%= products[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                        <i class="material-icons md-delete_forever"></i> Archive
                                     </a>
                                 </div>
                             </div> <!-- row .// -->
