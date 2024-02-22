@@ -55,7 +55,7 @@
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
             <a href="#" class="brand-wrap">
-                <img src="/admin/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+                <img src="/admin/imgs/theme/logo.svg" class="logo" alt="Admin Dashboard">
             </a>
             <div>
                 <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
@@ -68,13 +68,29 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item active">
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
+                        <span class="text">User Details</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-account-login.html">User login</a>
+                        <a href="page-account-register.html">User registration</a>
+                        <a href="page-error-404.html">Error 404</a>
+                    </div>
+                </li>
+                <li class="menu-item active ">
                     <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
                    
                 </li>
                 
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Categories</span>
+                    </a>
+                   
+                </li>
                 
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
@@ -88,22 +104,7 @@
                         <a href="page-invoice.html">Invoice</a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
-                        <span class="text">User Details</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-account-login.html">User login</a>
-                        <a href="page-account-register.html">User registration</a>
-                        <a href="page-error-404.html">Error 404</a>
-                    </div>
-                </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="categories"> <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Categories</span>
-                    </a>
-                   
-                </li>
+                
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
                         <span class="text">Sales</span>
@@ -135,25 +136,13 @@
                         <a href="page-form-product-4.html">Add product 4</a>
                     </div>
                 </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Add product</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-form-product-1.html">Add product 1</a>
-                        <a href="page-form-product-2.html">Add product 2</a>
-                        <a href="page-form-product-3.html">Add product 3</a>
-                        <a href="page-form-product-4.html">Add product 4</a>
-                    </div>
-                </li>
             </ul>
             <hr>
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="adminLogin"> <i class="icon material-icons md-settings"></i>
+            <ul class="menu-aside">     
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/logout"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Logout</span>
                     </a>
-                   
                 </li>
             </ul>
             <br>
@@ -179,12 +168,26 @@
             <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
                 <ul class="nav">
-                    
                     <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                            aria-expanded="false"> <img class="img-xs rounded-circle"
+                                src="/admin/imgs/people/avatar2.jpg" alt="User"></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
+                                Settings</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i
+                                    class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
                     </li>
                 </ul>
             </div>

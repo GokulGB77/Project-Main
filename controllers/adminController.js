@@ -1,4 +1,5 @@
 const Admindb = require("../models/userModel")
+
 const argon2 = require('argon2');
 
 
@@ -59,12 +60,60 @@ const verifyAdminLogin = async (req, res) => {
   }
 };
 
-const adminLogout= async(req,res)=>{
+const adminLogout = async (req, res) => {
   try {
-    console.log("Admin logged out");
-    res.redirect("/")
+    req.session.destroy(() => {
+      console.log("Admin logged out");
+    });
+    res.redirect("/admin");
   } catch (error) {
     console.log(error.message);
+    res.status(500).send("Logout failed");
+  }
+};
+
+
+const userDetails = async (req,res) => {
+  try {
+    const users = await Admindb.find({})
+
+    res.render("userDetails",{users})
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("User Details failed to fetch");
+  }
+}
+
+const blockUser = async (req,res) => {
+  try {
+    const id = req.query.id;
+    const user = await Admindb.findByIdAndUpdate(id,{
+      status:1
+    })
+    const users = await Admindb.find({});
+    console.log(`Blocked User:${user.name} `);
+
+    res.render("userDetails",{users});
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("User Blocking Failed");
+  }
+}
+
+const unblockUser = async (req,res) => {
+  try {
+    const id = req.query.id;
+    const user = await Admindb.findByIdAndUpdate(id,{
+      status:0
+    })
+    const users = await Admindb.find({});
+    console.log(`Unblocked User:${user.name} `);
+
+    res.render("userDetails",{users});
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("User Blocking Failed");
   }
 }
 
@@ -72,6 +121,10 @@ const adminLogout= async(req,res)=>{
 
 module.exports = {
   loadAdminLogin,
+  userDetails,
   verifyAdminLogin,
-  adminLogout
+  adminLogout,
+  blockUser,
+  unblockUser,
+  
 }

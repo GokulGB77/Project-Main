@@ -52,6 +52,7 @@ const intialRegisterUser = async (req, res) => {
       password: spassword,
       is_admin: 0,
       is_verified: 0,
+      status:0,
       otp: OTP,
       // Adding expiration time
       // otpExpiration:  otpExpiration
@@ -102,8 +103,59 @@ const resendOtp = async (req, res) => {
 
 
 // Inserting  new user into the database
+// const registerUser = async (req, res) => {
+//   try { 
+//     // Check if OTP is expired
+//     // if (req.session.tempUserDetails && req.session.tempUserDetails.otpExpiration && Date.now() > req.session.tempUserDetails.otpExpiration) {
+//       // OTP expired
+//     //   return res.render("otpVerify", { errorMessage: "OTP expired. Please resend OTP." });
+//     // }
+
+//     if (req.body.otp === req.session.tempUserDetails.otp) {
+//       //OTP is valid
+
+//       //Create a new User instance in the database with the provided data
+//       const user = new Userdb({
+//         name: req.session.tempUserDetails.name,
+//         email: req.session.tempUserDetails.email,
+//         mobile: req.session.tempUserDetails.mobile,
+//         password: req.session.tempUserDetails.password,
+//         is_admin: 0,
+//         is_verified: 1,
+//       });
+
+//       // Save the user data to the database
+//       const userData = await user.save()
+//       // const userID = userData._id;
+//       // const token = authRoutes.createToken(userID);
+//       // res.cookie("jwt", token,{httpOnly:true,maxAge:authRoutes.maxAge*1000});
+//       // console.log(token);
+//       res.redirect("/");
+//     } else {
+//       res.render("otpVerify", { errorMessage: "Not valid OTP" });
+//     }
+
+//     // Authentication successful
+//     req.session.userId = user._id; // Store user ID in session
+//     req.session.save()
+//     console.log("userId is :",user._id);
+//     // res.redirect('/'); // Redirect to Home
+//     // Check if user is already logged in
+//     if (req.session.userId) {
+//       // User is logged in, redirect to profile settings page
+//       res.redirect('/');
+//     } else {
+//       // User is not logged in, redirect to home page
+//       res.redirect('/login');
+//     }
+//   } catch (error) {
+//     console.log(error.message);
+//     res.status(500).send("Internal Server Error");
+
+//   }
+// }
 const registerUser = async (req, res) => {
-  try { 
+  try {
     // Check if OTP is expired
     // if (req.session.tempUserDetails && req.session.tempUserDetails.otpExpiration && Date.now() > req.session.tempUserDetails.otpExpiration) {
       // OTP expired
@@ -111,48 +163,33 @@ const registerUser = async (req, res) => {
     // }
 
     if (req.body.otp === req.session.tempUserDetails.otp) {
-      //OTP is valid
-
-      //Create a new User instance in the database with the provided data
-      const user = new Userdb({
+  
+        const user = new Userdb({
         name: req.session.tempUserDetails.name,
         email: req.session.tempUserDetails.email,
         mobile: req.session.tempUserDetails.mobile,
         password: req.session.tempUserDetails.password,
         is_admin: 0,
-        is_verified: 1
+        is_verified: 1,
       });
 
       // Save the user data to the database
-      const userData = await user.save()
-      // const userID = userData._id;
-      // const token = authRoutes.createToken(userID);
-      // res.cookie("jwt", token,{httpOnly:true,maxAge:authRoutes.maxAge*1000});
-      // console.log(token);
-      res.redirect("/");
+      const userData = await user.save();
+
+      // Authentication successful
+      req.session.userId = userData._id; // Store user ID in session
+      await req.session.save(); // Save the session
+
+      console.log("userId is :", userData._id);
+      res.redirect('/'); // Redirect to Home
     } else {
       res.render("otpVerify", { errorMessage: "Not valid OTP" });
-    }
-
-    // Authentication successful
-    req.session.userId = user._id; // Store user ID in session
-    req.session.save()
-    console.log("userId is :",user._id);
-    // res.redirect('/'); // Redirect to Home
-    // Check if user is already logged in
-    if (req.session.userId) {
-      // User is logged in, redirect to profile settings page
-      res.redirect('/');
-    } else {
-      // User is not logged in, redirect to home page
-      res.redirect('/login');
     }
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
-
   }
-}
+};
 
 
 
@@ -210,14 +247,6 @@ const loginUser = async (req,res) => {
 
 
 
-//Homepage
-// const loadHomePage = async (req, res) => {
-//   try {
-//     res.render('homepage');
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
 
 const loadHomePage = async (req, res) => {
   try {

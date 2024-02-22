@@ -3,14 +3,12 @@
 
 <head>
     <meta charset="utf-8">
+    <title>User Details</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Products</title>
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/admin/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/admin/css/main.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/css1/main.css" rel="stylesheet" type="text/css" />
-
 </head>
 
 <body>
@@ -18,10 +16,11 @@
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
             <a href="#" class="brand-wrap">
-                <img src="/admin/imgs/theme/logo.svg" class="logo" alt="Admin Dashboard">
+                <img src="/admin/imgs/theme/logo.png" class="logo" alt="Admin Dashboard">
             </a>
             <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
             </div>
         </div>
         <nav>
@@ -31,30 +30,25 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
+                <li class="menu-item active">
+                    <a class="menu-link" href="/admin/user-details"> <i class="icon material-icons md-person"></i>
                         <span class="text">User Details</span>
                     </a>
-                    <div class="submenu">
-                        <a href="page-account-login.html">User login</a>
-                        <a href="page-account-register.html">User registration</a>
-                        <a href="page-error-404.html">Error 404</a>
-                    </div>
                 </li>
-                <li class="menu-item active ">
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Categories</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
@@ -67,7 +61,7 @@
                         <a href="page-invoice.html">Invoice</a>
                     </div>
                 </li>
-                
+
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
                         <span class="text">Sales</span>
@@ -99,10 +93,10 @@
                         <a href="page-form-product-4.html">Add product 4</a>
                     </div>
                 </li>
-               
+
             </ul>
             <hr>
-            <ul class="menu-aside">     
+            <ul class="menu-aside">
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/logout"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Logout</span>
@@ -134,7 +128,6 @@
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
                         class="material-icons md-apps"></i> </button>
                 <ul class="nav">
-
                     <li class="nav-item">
                         <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
                         </a>
@@ -159,116 +152,76 @@
                 </ul>
             </div>
         </header>
-
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Products List</h2>
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
-                <div>
-                    <a href="#" class="btn btn-light rounded font-md">Export</a>
-                    <a href="#" class="btn btn-light rounded  font-md">Import</a>
-                    <a href="/admin/products/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
+                    <h2 class="content-title card-title">User Details </h2>
+                    <p>View Details or Block  User </p>
                 </div>
             </div>
-            <div class="card mb-4">
-                <header class="card-header">
-                    <div class="row align-items-center">
-                        <div class="col col-check flex-grow-0">
-                            <div class="form-check ms-2">
-                                <input class="form-check-input" type="checkbox" value="">
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                            <select class="form-select">
-                                <option selected>All category</option>
-                                <option>Electronics</option>
-                                <option>Clothes</option>
-                                <option>Automobile</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 col-6">
-                            <input type="date" value="02.05.2022" class="form-control">
-                        </div>
-                        <div class="col-md-2 col-6">
-                            <select class="form-select">
-                                <option selected>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
-                            </select>
-                        </div>
-                    </div>
-                </header> <!-- card-header end// -->
+            <div class="card">
                 <div class="card-body">
-                    <% for (let i=0; i < products.length; i++) { %>
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="/productAssets/<%=products[i].images[0] %>"
-                                                class="img-sm img-thumbnail" alt="Item">
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">
-                                                <%= products[i].productName %>
-                                            </h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price">
-                                    <span>
-                                        &#8377 <%= products[i].productPrice %>
-                                    </span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span
-                                        class="badge rounded-pill alert-<%=products[i].status === 1 ? 'success' : 'danger' %>">
-                                        <%= products[i].status===1 ? 'Active' : 'Disabled' %>
-                                    </span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>
-                                        <%= products[i].createdAt %>
-                                    </span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="/admin/products/edit-product?id=<%=products[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
-                                        <i class="material-icons md-edit"></i> Edit
-                                    </a>
-                                    <a href="/admins/products/archive-product?id=<%=products[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
-                                        <i class="material-icons md-delete_forever"></i> Archive
-                                    </a>
-                                </div>
-                            </div> <!-- row .// -->
-                        </article> <!-- itemlist .// -->
-                        <% } %>
-                </div> <!-- card-body end// -->
+                    <div class="row " >
+                        <div class="col-md-12 ">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            
+                                            <th class="text-center" style="width: 10%;" >Sl No.</th>
+                                            <th style="width: 20%;" >Name</th>
+                                            <th style="width: 20%;">Email</th>
+                                            <th style="width: 15%;">Mobile</th>
 
-            </div> <!-- card end// -->
-            <div class="pagination-area mt-30 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i
-                                    class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
-            </div>
+                                            <th style="width: 10%;" class="text-center" >Status</th>
+                                            <th style="width: 25%;" class="text-center" >Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% users.forEach((item, index)=> { %>
+                                            <tr>
+                                               
+                                                <td class="text-center" >
+                                                    <%= index + 1 %>
+                                                </td> 
+                                                <td ><b>
+                                                        <%= item.name %>
+                                                    </b></td>
+                                                <td >
+                                                    <%= item.email %>
+                                                </td>
+                                                <td >
+                                                    <%= item.mobile %>
+                                                </td>
+                                                <td  class="text-center">
+                                                    <span
+                                                        class="badge  rounded-pill alert-<%= item.status === 1 ? 'success' : 'danger' %>">
+                                                        <%= item.status===0 ? 'Blocked' : 'Active' %>
+                                                    </span>
+                                                </td>
+                                                <td style="width: 10%" class="text-center">
+                                                    <div class="">
+                                                        <% if (item.status ===0 ) { %>
+                                                            <button class="btn  btn-outline-success " type="button"
+                                                                onclick="location.href='/admin/user-details/block?id=<%= item._id %>'">Unblock</button>
+                                                        <% } else { %>
+                                                            <button class="btn  btn-outline-danger" type="button"
+                                                                onclick="location.href='/admin/user-details/unblock?id=<%= item._id %>'">Block</button>
+                                                        <% } %>
+                                                    </div>
+                                                    
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
         </section> <!-- content-main end// -->
-
-
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
@@ -284,28 +237,13 @@
             </div>
         </footer>
     </main>
-
     <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/admin/js/vendors/select2.min.js"></script>
     <script src="/admin/js/vendors/perfect-scrollbar.js"></script>
     <script src="/admin/js/vendors/jquery.fullscreen.min.js"></script>
-    <script src="/admin/js/vendors/chart.js"></script>
     <!-- Main Script -->
     <script src="/admin/js/main.js" type="text/javascript"></script>
-    <script src="/admin/js/custom-chart.js" type="text/javascript"></script>
-
-    <script src="/admin/js1/vendors/jquery-3.6.0.min.js"></script>
-    <script src="/admin/js1/vendors/bootstrap.bundle.min.js"></script>
-    <script src="/admin/js1/vendors/select2.min.js"></script>
-    <script src="/admin/js1/vendors/perfect-scrollbar.js"></script>
-    <script src="/admin/js1/vendors/jquery.fullscreen.min.js"></script>
-    <script src="/admin/js1/vendors/chart.js"></script>
-    <!-- Main Script -->
-    <script src="/admin/js1/main.js" type="text/javascript"></script>
-    <script src="/admin/js1/custom-chart.js" type="text/javascript"></script>
-
-
 </body>
 
 </html>

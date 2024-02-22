@@ -117,11 +117,28 @@ const updateProduct = async (req, res) => {
   }
 };
 
+const archiveProduct = async(req,res) => {
+  try {
+    const id= req.query.id;
+    const product = await Productsdb.findByIdAndUpdate(id,{
+      status:1
+    })
+    const products = await Productsdb.find({});
+    console.log(`Prduct Archived: ${product}`);
+    res.render("viewProducts",{products})
+   } catch (error) {
+    console.log(error);
+    res.status(500).send("Archive Product Failed")
+  }
+}
+
 
 module.exports = {
   loadAdminProducts,
   loadAddProduct,
   addProduct,
   editProduct,
-  updateProduct
+  updateProduct,
+  archiveProduct,
+  
 }
