@@ -48,7 +48,9 @@ adminRoute.get("/products/edit-product",productsController.editProduct)
 adminRoute.post("/products/edit-product",productsController.updateProduct)
 
 adminRoute.get("/categories",categoriesController.loadAdmincategories)
-adminRoute.get("/categories/add-category",categoriesController.addCategory)
+adminRoute.post("/categories/add-category",categoriesController.addCategory)
+adminRoute.get("/categories/edit-category",categoriesController.editCategory)
+adminRoute.post("/categories/edit-category/update",categoriesController.updateCategory)
 
 
 adminRoute.get("/logout", adminController.adminLogout);

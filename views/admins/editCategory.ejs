@@ -206,28 +206,29 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form action="/admin/categories/add-category" method="post">
+                            <form action="/admin/categories/edit-category/update?id=<%= categoryClicked._id%>" method="post">
                                 <div class="mb-4">
-                                    <h4 class="content-title card-title text-center">Add a category </h4>
+                                    <h4 class="content-title card-title text-center">Edit Category </h4>
                                     
                                 </div>
                                 <div class="mb-4">
                                     <label for="categoryName" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" name="categoryName" id="categoryName" required/>
+                                    <input type="text" placeholder="Type here" class="form-control" value="<%= categoryClicked.categoryName%>" name="categoryName" id="categoryName" required/>
                                 </div>
+                        
                                 <div class="mb-4">
-                                    <label for="categoryStatus" class="form-label" >Status</label>
-                                    <select class="form-select" name="categoryStatus" id="categoryStatus" required>
-                                        <option value="1">Active</option>
-                                        <option value="0">Inactive</option>
+                                    <label for="categoryStatus" class="form-label">Status</label>
+                                    <select class="form-select" name="categoryStatus" id="categoryStatus">
+                                        <option value="1" <% if (categoryClicked.categoryStatus === 1) { %> selected <% } %> >Active</option>
+                                        <option value="0" <% if (categoryClicked.categoryStatus === 0) { %> selected <% } %> >Inactive</option>
                                     </select>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" name="categoryDetails" required></textarea>
+                                    <textarea placeholder="Type here" class="form-control" name="categoryDetails"  required><%= categoryClicked.categoryDetails%></textarea>
                                 </div>
                                 <div class="d-grid">
-                                    <button class="btn btn-primary">Create Category</button>
+                                    <button class="btn btn-primary">Update Category</button>
                                 </div>
                             </form>
                         </div>
@@ -241,11 +242,11 @@
                                                     <input class="form-check-input" type="checkbox" value="" />
                                                 </div>
                                             </th> -->
-                                            <th class="text-center" style="width: 6%">Sl No.</th>
-                                            <th style="width: 20%">Name</th>
-                                            <th style="width: 54%">Description</th>
-                                            <th class="text-center" style="width: 10%">Status</th>
-                                            <th class="text-center" style="width: 10%">Action</th>
+                                            <th class="text-center">Sl No.</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -256,20 +257,20 @@
                                                     <input class="form-check-input" type="checkbox" value="" />
                                                 </div>
                                             </td> -->
-                                            <td class="text-center" style="width: 6%"><%= index + 1 %></td> <!-- Use index + 1 for order numbers -->
-                                            <td style="width: 20%"><b><%= item.categoryName %></b></td>
-                                            <td style="width: 54%"><%= item.categoryDetails %></td>
-                                            <td style="width: 10%" class="text-center">
+                                            <td class="text-center"><%= index + 1 %></td> <!-- Use index + 1 for order numbers -->
+                                            <td><b><%= item.categoryName %></b></td>
+                                            <td><%= item.categoryDetails %></td>
+                                            <td class="text-center">
                                                 <span class="badge  rounded-pill alert-<%= item.categoryStatus === 1 ? 'success' : 'danger' %>">
                                                   <%= item.categoryStatus === 1 ? 'Active' : 'Inactive' %>
                                                 </span>
                                               </td>
-                                            <td style="width: 10%" class="text-center">
+                                            <td class="text-center">
                                                 <div class="dropdown">
                                                     <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item" href="/admin/categories/edit-category?id=<%= item._id %>">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="/admin/categories/disable-item?id=<%= category._id %>" href="#">Delete</a>
+                                                        <a class="dropdown-item text-danger" href="/admin/categories/disable-category?id=<%= item._id %>" href="#">Delete</a>
                                                     </div>
                                                 </div> <!-- dropdown //end -->
                                             </td>

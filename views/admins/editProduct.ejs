@@ -205,20 +205,20 @@
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="productName" class="form-label">Product Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" value="<%=product.productName%>" name="productName" maxlength="100" >
+                                    <input type="text" placeholder="Type here" class="form-control" value="<%=product.productName%>" required name="productName" maxlength="100" >
                                     <p id="productPriceError" class="error-message" style="color: red;"></p>
 
                                 </div>
                                 <div class="row gx-3">
                                     <div class="col-md-6  mb-3">
                                         <label for="productSku" class="form-label">SKU</label>
-                                        <input type="text" placeholder="Type here" class="form-control" value="<%=product.productSku%>" maxlength="20"id="productSku" name="productSku" >
+                                        <input type="text" placeholder="Type here" class="form-control" value="<%=product.productSku%>" maxlength="20" id="productSku" required name="productSku" >
                                         <p id="productPriceError" class="error-message" style="color: red;"></p>
 
                                     </div>
                                     <div class="col-md-6  mb-3">
                                         <label for="productQty" class="form-label">Quantity</label>
-                                        <input type="number" placeholder="Type here" class="form-control" maxlength="4" value="<%=product.productQty%>" id="productQty" name="productQty" >
+                                        <input type="number" placeholder="Type here" class="form-control" maxlength="4" value="<%=product.productQty%>" id="productQty" required name="productQty" >
                                         <p id="productPriceError" class="error-message" style="color: red;"></p>
                                     </div>
                                 </div>
@@ -228,7 +228,7 @@
                             <div class="card-body">
                                 <div>
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" id="productDetails"   name="productDetails"  rows="8"><%=product.productDetails%></textarea>
+                                    <textarea placeholder="Type here" class="form-control" id="productDetails"   name="productDetails" maxlength="200" rows="8" required><%=product.productDetails%></textarea>
                                     <p id="productPriceError" class="error-message" style="color: red;"></p>
                                 </div>
                             </div>
@@ -261,12 +261,12 @@
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label class="form-label">Price ( &#8377 )</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" value="<%=product.productPrice%>" name="productPrice" >
+                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" value="<%=product.productPrice%>" name="productPrice" required>
                                     <p id="productPriceError" class="error-message" style="color: red;"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Status</label>
-                                    <select class="form-select" name="status" id="status">
+                                    <select class="form-select" name="status" id="status" required>
                                         <option value="1" <% if (product.status === 1) { %> selected <% } %>>Published</option>
                                         <option value="0" <% if (product.status === 0) { %> selected <% } %>>Draft</option>
                                     </select>
@@ -274,14 +274,14 @@
                                 
                                 <div class="mb-4">
                                     <label class="form-label">Tags</label>
-                                    <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags"  value="<%=product.productTags%>"class="form-control" >
+                                    <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags"  value="<%=product.productTags%>"class="form-control" required>
                                     <p id="productPriceError" class="error-message" style="color: red;"></p>
 
                                 </div>
                                 <hr>
                                 <h5 class="mb-3">Categories</h5>
                                 <div class="mb-4">
-                                    <select class="form-select" name="productCategory" id="productCategory" >
+                                    <select class="form-select" name="productCategory" id="productCategory" required>
                                         <option value="0">Living Room Furniture</option>
                                         <option value="1">Bedroom Furniture</option>
                                         <option value="2">Dining Room Furniture</option>

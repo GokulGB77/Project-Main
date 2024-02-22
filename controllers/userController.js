@@ -81,7 +81,7 @@ const resendOtp = async (req, res) => {
     // Update the OTP in the session data
     req.session.tempUserDetails.otp = OTP;
     // req.session.otpExpiration = newOtpExpiration
-    req.session.save();
+    req.session.save()
     console.log("This is the tempUserDetails:", req.session.tempUserDetails);
 
     const { email } = req.session.tempUserDetails;
@@ -124,7 +124,7 @@ const registerUser = async (req, res) => {
       });
 
       // Save the user data to the database
-      const userData = await user.save();
+      const userData = await user.save()
       // const userID = userData._id;
       // const token = authRoutes.createToken(userID);
       // res.cookie("jwt", token,{httpOnly:true,maxAge:authRoutes.maxAge*1000});
@@ -187,6 +187,7 @@ const loginUser = async (req,res) => {
     req.session.userId = user._id; // Store user ID in session
     req.session.save()
     console.log("userId is :",user._id);
+    console.log("User logged in");
     // res.redirect('/'); // Redirect to Home
     // Check if user is already logged in
     if (req.session.userId) {
@@ -221,7 +222,7 @@ const loginUser = async (req,res) => {
 const loadHomePage = async (req, res) => {
   try {
     const isLoggedIn = req.session.userId ? true : false;
-    console.log("isLoggedIn:",isLoggedIn);
+    console.log("User logged in:",isLoggedIn);
     res.render('homepage', { isLoggedIn });
   } catch (error) {
     console.log(error.message);
@@ -231,7 +232,8 @@ const loadHomePage = async (req, res) => {
 
 
 const loadProfileSettings = async (req, res) => {
-  console.log("I am in controller");
+  try {
+    console.log("User entered profile settings");
 
   //Check if the user id logged in 
   if(req.session.userId){
@@ -240,9 +242,15 @@ const loadProfileSettings = async (req, res) => {
   } else {
     res.redirect("/login")
   }
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("LoadProfileSettings failed")
+  }
 }
-const logoutUser = (req, res) => {
-  // Destroy the session
+const logoutUser = async (req, res) => {
+  try {
+    console.log("User logged out");
+    // Destroy the session
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).json({ message: 'Failed to logout' });
@@ -250,6 +258,10 @@ const logoutUser = (req, res) => {
     // Redirect the user to the login page or any other desired location
     res.redirect('/login');
   });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Logout User Failed")
+  }
 };
 
 
