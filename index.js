@@ -16,6 +16,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/CouchCartDB", { useNewUrlParser: true, useUnifiedTopology: true });
 
+app.set('view engine','ejs');
+
+
 //User Routes
 const userRoutes = require('./routes/userRoutes')
 app.use('/',userRoutes);
@@ -23,7 +26,6 @@ app.use('/',userRoutes);
 //Admin Routes
 const adminRoutes = require('./routes/adminRoutes');
 app.use('/admin',adminRoutes);
-
 
 
 const PORT = process.env.PORT || 3000;

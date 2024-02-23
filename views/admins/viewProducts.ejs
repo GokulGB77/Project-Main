@@ -18,7 +18,7 @@
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
             <a href="#" class="brand-wrap">
-                <img src="/admin/imgs/theme/logo.svg" class="logo" alt="Admin Dashboard">
+                <img src="/admin/imgs/theme/logo.png" class="logo" alt="Admin Dashboard">
             </a>
             <div>
                 <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
@@ -161,7 +161,7 @@
         </header>
 
         <section class="content-main">
-            <div class="content-header">
+            <!-- <div class="content-header">
                 <div>
                     <h2 class="content-title card-title">Products List</h2>
                     <p>Lorem ipsum dolor sit amet.</p>
@@ -171,11 +171,11 @@
                     <a href="#" class="btn btn-light rounded  font-md">Import</a>
                     <a href="/admin/products/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
                 </div>
-            </div>
+            </div> -->
             <div class="card mb-4">
                 <header class="card-header">
                     <div class="row align-items-center">
-                        <div class="col col-check flex-grow-0">
+                        <!-- <div class="col col-check flex-grow-0">
                             <div class="form-check ms-2">
                                 <input class="form-check-input" type="checkbox" value="">
                             </div>
@@ -183,21 +183,31 @@
                         <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
                             <select class="form-select">
                                 <option selected>All category</option>
-                                <option>Electronics</option>
-                                <option>Clothes</option>
-                                <option>Automobile</option>
+                                <option>Home</option>
+                                <option>Office</option>
+                                <option>Kitchen</option>
                             </select>
+                        </div> -->
+                        <div class="content-header">
+                            <div>
+                                <h2 class="content-title card-title">Products List</h2>
+                            </div>
+                            <div>
+                                <a href="#" class="btn btn-light rounded font-md">Export</a>
+                                <a href="#" class="btn btn-light rounded  font-md">Import</a>
+                                <a href="/admin/products/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
+                            </div>
                         </div>
                         <div class="col-md-2 col-6">
-                            <input type="date" value="02.05.2022" class="form-control">
+                            <!-- <input type="date" value="02.05.2022" class="form-control"> -->
                         </div>
                         <div class="col-md-2 col-6">
-                            <select class="form-select">
+                            <!-- <select class="form-select">
                                 <option selected>Status</option>
                                 <option>Active</option>
                                 <option>Disabled</option>
                                 <option>Show all</option>
-                            </select>
+                            </select> -->
                         </div>
                     </div>
                 </header> <!-- card-header end// -->
@@ -206,9 +216,6 @@
                         <article class="itemlist">
                             <div class="row align-items-center">
                                 <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="">
-                                    </div>
                                 </div>
                                 <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
                                     <a class="itemside" href="#">
@@ -240,12 +247,19 @@
                                     </span>
                                 </div>
                                 <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="/admin/products/edit-product?id=<%=products[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                    <a href="/admin/products/edit-product?id=<%=products[i]._id %>" class="btn btn-sm font-sm rounded btn-brand" >
                                         <i class="material-icons md-edit"></i> Edit
                                     </a>
-                                    <a href="/admins/products/archive-product?id=<%=products[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
-                                        <i class="material-icons md-delete_forever"></i> Archive
-                                    </a>
+                                    <% if (products[i].status === 1) { %>
+                                        <a href="/admin/products/unarchive-product?id=<%= products[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                            <i class="material-icons md-archive"></i> Archive
+                                        </a>
+                                    <% } else { %>
+                                        <a href="/admin/products/archive-product?id=<%= products[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                            <i class="material-icons md-delete_forever"></i> Unarchive
+                                        </a>
+                                    <% } %>
+                                    
                                 </div>
                             </div> <!-- row .// -->
                         </article> <!-- itemlist .// -->

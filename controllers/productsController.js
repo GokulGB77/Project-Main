@@ -4,6 +4,9 @@ const Productsdb = require("../models/productsModel")
 const loadAdminProducts = async (req, res) => {
   try {
     const products = await Productsdb.find({});
+    if(!products){
+      return res.status(404).send("Product Not Found")
+    }
     res.render("viewProducts", { products: products });
   } catch (error) {
     console.log(error.message);
@@ -30,7 +33,7 @@ const addProduct = async (req, res) => {
 
     let productTags;
     if (req.body.productTags) {
-      productTags = req.body.productTags.split(" ").map((tag) => tag.trim());
+      productTags = req.body.productTags.split(",").map((tag) => tag.trim());
     } else {
       productTags = [];
     }
@@ -38,7 +41,7 @@ const addProduct = async (req, res) => {
     const newProduct = new Productsdb({
       productName: req.body.productName,
       productSku: req.body.productSku,
-      productQty: req.body.productQty,
+      stock: req.body.stock,
       images: imagesToKeep, // Only save the images that are not removed
       productDetails: req.body.productDetails,
       productPrice: req.body.productPrice,
@@ -88,7 +91,7 @@ const updateProduct = async (req, res) => {
     const updatedProductDetails = {
       productName: req.body.productName,
       productSku: req.body.productSku,
-      productQty: req.body.productQty,
+      stock: req.body.stock,
       productDetails: req.body.productDetails,
       productPrice: req.body.productPrice,
       status: req.body.status,
@@ -124,11 +127,37 @@ const archiveProduct = async(req,res) => {
       status:1
     })
     const products = await Productsdb.find({});
-    console.log(`Prduct Archived: ${product}`);
-    res.render("viewProducts",{products})
+    console.log(`Product Archived: ${product}`);
+    res.render("viewProducts",{products});
    } catch (error) {
     console.log(error);
-    res.status(500).send("Archive Product Failed")
+    res.status(500).send("Archive Product Failed");
+  }
+}
+
+const unarchiveProduct = async(req,res) => {
+  try {
+    const id= req.query.id;
+    const product = await Productsdb.findByIdAndUpdate(id,{
+      status:0
+    })
+    const products = await Productsdb.find({});
+    console.log(`Product Unarchived: ${product}`);
+    res.render("viewProducts",{products});
+   } catch (error) {
+    console.log(error);
+    res.status(500).send("Unarchive Product Failed");
+  }
+}
+
+const loadShop = async (req,res)=>{
+  try {
+    const products = await Productsdb.find({})
+    console.log("Products Fetched From Database");
+    res.render("shop",{products})
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Products page render failed")    
   }
 }
 
@@ -140,5 +169,7 @@ module.exports = {
   editProduct,
   updateProduct,
   archiveProduct,
+  unarchiveProduct,
+  loadShop
   
 }

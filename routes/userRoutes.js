@@ -3,6 +3,7 @@ const userRoute = express();
 const session = require('express-session');
 const { v4:uuidv4 } = require('uuid');  
 const userController = require('../controllers/userController');
+const productsController = require('../controllers/productsController');
 
 
 userRoute.use(session({
@@ -31,22 +32,22 @@ userRoute.get('/resend-otp' ,userController.resendOtp);
 userRoute.get('/login',userController.loadLogin);
 userRoute.post('/login',userController.loginUser)
 userRoute.get("/home",userController.loadHomePage)
+
+userRoute.get('/shop',productsController.loadShop);
+
 userRoute.get("/profile",userController.loadProfileSettings)
 
 userRoute.get('/logout', userController.logoutUser);
 
 
-// userRoute.get('*',(req,res)=>{
-//   res.render("error404")
-// });
 
 
 
 
 
 
-// userRoute.get('/shop',userController.loadShop);
-userRoute.get('/about-us',userController.loadAboutUs);
+
+// userRoute.get('/about-us',userController.loadAboutUs);
 // userRoute.get('/contact-us',userController.loadContactUs);
 // userRoute.get('/cart',userController.loadCart);
 // userRoute.get('/checkout',userController.loadCheckout);

@@ -6,7 +6,8 @@ const { generateOTP } = require("../services/genereateOtp");
 const sendEmailOtp = require("../services/sendMail");
 const send_otp = require("../services/sendMail");
 
-// Function to securely hash passwords using bcrypt
+
+
 const securePassword = async (password) => {
   try {
     const passwordHash = await argon2.hash(password, 10);
@@ -16,7 +17,6 @@ const securePassword = async (password) => {
   }
 }
 
-// Function to render the registration page
 const loadRegister = async (req, res) => {
   try {
     res.render('register',{layout:false,currentPage: 'register' })
@@ -34,7 +34,6 @@ const loadRegister = async (req, res) => {
 const intialRegisterUser = async (req, res) => {
   try {
 
-    //  Hash the user's password
     const spassword = await securePassword(req.body.password);
 
     //Check if the email or mobile number already exists in the database
@@ -103,57 +102,7 @@ const resendOtp = async (req, res) => {
 
 
 // Inserting  new user into the database
-// const registerUser = async (req, res) => {
-//   try { 
-//     // Check if OTP is expired
-//     // if (req.session.tempUserDetails && req.session.tempUserDetails.otpExpiration && Date.now() > req.session.tempUserDetails.otpExpiration) {
-//       // OTP expired
-//     //   return res.render("otpVerify", { errorMessage: "OTP expired. Please resend OTP." });
-//     // }
 
-//     if (req.body.otp === req.session.tempUserDetails.otp) {
-//       //OTP is valid
-
-//       //Create a new User instance in the database with the provided data
-//       const user = new Userdb({
-//         name: req.session.tempUserDetails.name,
-//         email: req.session.tempUserDetails.email,
-//         mobile: req.session.tempUserDetails.mobile,
-//         password: req.session.tempUserDetails.password,
-//         is_admin: 0,
-//         is_verified: 1,
-//       });
-
-//       // Save the user data to the database
-//       const userData = await user.save()
-//       // const userID = userData._id;
-//       // const token = authRoutes.createToken(userID);
-//       // res.cookie("jwt", token,{httpOnly:true,maxAge:authRoutes.maxAge*1000});
-//       // console.log(token);
-//       res.redirect("/");
-//     } else {
-//       res.render("otpVerify", { errorMessage: "Not valid OTP" });
-//     }
-
-//     // Authentication successful
-//     req.session.userId = user._id; // Store user ID in session
-//     req.session.save()
-//     console.log("userId is :",user._id);
-//     // res.redirect('/'); // Redirect to Home
-//     // Check if user is already logged in
-//     if (req.session.userId) {
-//       // User is logged in, redirect to profile settings page
-//       res.redirect('/');
-//     } else {
-//       // User is not logged in, redirect to home page
-//       res.redirect('/login');
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).send("Internal Server Error");
-
-//   }
-// }
 const registerUser = async (req, res) => {
   try {
     // Check if OTP is expired
@@ -260,6 +209,8 @@ const loadHomePage = async (req, res) => {
 
 
 
+
+
 const loadProfileSettings = async (req, res) => {
   try {
     console.log("User entered profile settings");
@@ -297,14 +248,6 @@ const logoutUser = async (req, res) => {
 
 
 
-const loadAboutUs = async (req,res)=>{
-  try {
-    res.render("about-us")
-  } catch (error) {
-    console.log(error.message);    
-  }
-} 
-
 
 
 module.exports={
@@ -318,25 +261,61 @@ module.exports={
   loadProfileSettings,
   resendOtp,
   logoutUser,
-  // loadShop,
-  loadAboutUs,
-  // loadContactUs,
+  
+  
+  
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const loadAboutUs = async (req,res)=>{
+//   try {
+//     res.render("about-us")
+//   } catch (error) {
+//     console.log(error.message);    
+//   }
+// } 
+
+
+
+ // loadContactUs,
   // loadCart,
   // loadCheckout,
   // loadcompare,
   // loadwishlist,
-  
-
-}
-// const loadShop = async (req,res)=>{
-//   try {
-//     res.render("shop")
-//   } catch (error) {
-//     console.log(error.message);    
-//   }
-// }
-
-
 
 // const loadContactUs = async (req,res)=>{
 //   try {
