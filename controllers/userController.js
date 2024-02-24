@@ -153,42 +153,33 @@ const loadLogin = async (req, res) => {
 }
 
 
-const loginUser = async (req,res) => {
-  const {email, password} = req.body;
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    // Find user by email
-    const user = await Userdb.findOne({email});
-    if(!user){
-      return res.status(400).json({message:"Invalid email or password"});
+    const user = await Userdb.findOne({ email });
+    if (!user) {
+      return res.render('login', { message: "Invalid email or password" });
     }
-    
-    // Compare passwords
+    const status = user.status;
+    if (!status) {
+      return res.render('login', { message: "User is Blocked" });
+    }
     const isPasswordValid = await argon2.verify(user.password, password);
-    if(!isPasswordValid) {
-      return res.status(400).json ({message: "Invalid email or password"});
+    if (!isPasswordValid) {
+      return res.render('login', { message: "Invalid email or password" });
     }
-    
-    // Authentication successful
-    req.session.userId = user._id; // Store user ID in session
-    req.session.save()
-    console.log("userId is :",user._id);
-    console.log("User logged in");
-    // res.redirect('/'); // Redirect to Home
-    // Check if user is already logged in
+    req.session.userId = user._id; 
+    req.session.save();
+    console.log("User logged in...", "userId is :", user._id);
     if (req.session.userId) {
-      // User is logged in, redirect to profile settings page
-      res.redirect('/');
+      return res.redirect('/home');
     } else {
-      // User is not logged in, redirect to home page
-      res.redirect('/login');
+      return res.redirect('/login');
     }
-
-
   } catch (error) {
-    console.log("Login Error:",error);
-    res.status(500).json({ message: 'Internal server error' });
-
+    console.log("Login Error:", error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 }
 
