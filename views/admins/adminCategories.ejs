@@ -178,9 +178,10 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="categoryName" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" name="categoryName"
-                                        id="categoryName" required />
+                                    <input type="text" placeholder="Type here" class="form-control" name="categoryName" id="categoryName" required oninput="validateName()"/>
                                 </div>
+                                <div id="nameError" style="color: red;"></div>
+
                                 <div class="mb-4">
                                     <label for="categoryStatus" class="form-label">Status</label>
                                     <select class="form-select" name="categoryStatus" id="categoryStatus" required>
@@ -190,11 +191,12 @@
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" name="categoryDetails"
-                                        required></textarea>
+                                    <textarea placeholder="Type here" class="form-control" name="categoryDetails" id="categoryDetails" required oninput="validateDescription()"></textarea>
+                                        
                                 </div>
+                                <div id="descriptionError" style="color: red;"></div>
                                 <div class="d-grid">
-                                    <button class="btn btn-primary">Create Category</button>
+                                    <button class="btn btn-primary" onclick="return validateForm()">Create Category</button>
                                 </div>
                             </form>
                         </div>
@@ -288,6 +290,47 @@
             </div>
         </footer>
     </main>
+
+    <script>
+        function validateName() {
+            var name = document.getElementById("categoryName").value
+            var nameError = document.getElementById("nameError");
+            if (name.startsWith(" ") || name.endsWith(" ")) {
+                nameError.textContent = "Name should not start or end with space";
+            } else if (/\s{2,}/.test(name)) {
+                nameError.textContent = "Name should not have more than one space between two words";
+            } else {
+                nameError.textContent = "";
+            }
+        }
+    
+        function validateDescription() {
+            var description = document.getElementById("categoryDetails").value
+            var descriptionError = document.getElementById("descriptionError");
+            if (description.length > 300) {
+                descriptionError.textContent = "Description should not exceed 300 characters";
+            } else if (description.startsWith(" ") || description.endsWith(" ")) {
+                descriptionError.textContent = "Description should not start or end with space";
+            } else {
+                descriptionError.textContent = "";
+            }
+        }
+
+        function validateForm() {
+            var nameValid = validateName();
+            var descriptionValid = validateDescription();
+            
+            if (nameValid || descriptionValid) {
+                var createCategoryBtn = document.querySelector('.btn.btn-primary');
+                createCategoryBtn.disabled = true;
+            } else {
+                var createCategoryBtn = document.querySelector('.btn.btn-primary');
+                createCategoryBtn.disabled = false;
+            }
+        }
+
+    </script>
+
     <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/admin/js/vendors/select2.min.js"></script>

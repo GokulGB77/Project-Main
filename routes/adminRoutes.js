@@ -50,10 +50,13 @@ adminRoute.get("/user-details/unblock",adminController.unblockUser)
 adminRoute.get("/products",productsController.loadAdminProducts);
 adminRoute.get("/products/add-product",productsController.loadAddProduct)
 adminRoute.post("/products/add-product",upload.array("productImage", 4),productsController.addProduct)
+
 adminRoute.get("/products/edit-product",productsController.editProduct)
 adminRoute.post("/products/edit-product",productsController.updateProduct)
+
 adminRoute.get("/products/archive-product",productsController.archiveProduct)
 adminRoute.get("/products/unarchive-product",productsController.unarchiveProduct)
+adminRoute.get("/categories/delete-product",productsController.deleteProduct)
 
 adminRoute.get("/categories",categoriesController.loadAdmincategories)
 adminRoute.post("/categories/add-category",categoriesController.addCategory)

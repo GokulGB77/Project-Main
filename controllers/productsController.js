@@ -150,6 +150,22 @@ const unarchiveProduct = async(req,res) => {
   }
 }
 
+
+const deleteProduct = async(req,res) => {
+  try {
+    const id= req.query.id;
+    const product = await Productsdb.findByIdAndDelete(id,{
+      status:0
+    })
+    const products = await Productsdb.find({});
+    console.log(`Product Deleted: ${product.productName}`);
+    res.render("viewProducts",{products});
+   } catch (error) {
+    console.log(error);
+    res.status(500).send("Delete Product Failed");
+  }
+}
+
 const loadShop = async (req,res)=>{
   try {
     const products = await Productsdb.find({})
@@ -170,6 +186,6 @@ module.exports = {
   updateProduct,
   archiveProduct,
   unarchiveProduct,
-  loadShop
-  
+  deleteProduct,
+  loadShop,
 }

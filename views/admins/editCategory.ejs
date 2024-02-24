@@ -162,9 +162,9 @@
                     <h2 class="content-title card-title">Categories </h2>
                     <p>Add, edit or delete a category</p>
                 </div>
-                <div>
+                <!-- <div>
                     <input type="text" placeholder="Search Categories" class="form-control bg-white">
-                </div>
+                </div> -->
             </div>
             <div class="card">
                 <div class="card-body">
@@ -177,7 +177,9 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="categoryName" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" value="<%= categoryClicked.categoryName%>" name="categoryName" id="categoryName" required/>
+                                    <input type="text" placeholder="Type here" class="form-control" value="<%= categoryClicked.categoryName%>" name="categoryName" id="categoryName" required oninput="validateName()"/>
+                                    <div id="nameError" style="color: red;"></div>
+
                                 </div>
                         
                                 <div class="mb-4">
@@ -189,7 +191,8 @@
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" name="categoryDetails"  required><%= categoryClicked.categoryDetails%></textarea>
+                                    <textarea placeholder="Type here" class="form-control" name="categoryDetails" oninput="validateDescription()" id="categoryDetails" required><%= categoryClicked.categoryDetails%></textarea>
+                                    <div id="descriptionError" style="color: red;"></div>
                                 </div>
                                 <div class="d-grid">
                                     <button class="btn btn-primary">Update Category</button>
@@ -206,11 +209,11 @@
                                                     <input class="form-check-input" type="checkbox" value="" />
                                                 </div>
                                             </th> -->
-                                            <th class="text-center">Sl No.</th>
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                            <th class="text-center">Status</th>
-                                            <th class="text-center">Action</th>
+                                            <th class="text-center" style="width: 6%">Sl No.</th>
+                                            <th style="width: 20%">Name</th>
+                                            <th style="width: 54%">Description</th>
+                                            <th class="text-center" style="width: 10%">Status</th>
+                                            <th class="text-center" style="width: 10%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -271,6 +274,33 @@
             </div>
         </footer>
     </main>
+
+    <script>
+        function validateName() {
+            var name = document.getElementById("categoryName").value;
+            var nameError = document.getElementById("nameError");
+            if (name.startsWith(" ") || name.endsWith(" ")) {
+                nameError.textContent = "Name should not start or end with space";
+            } else if (/\s{2,}/.test(name)) {
+                nameError.textContent = "Name should not have more than one space between two words";
+            } else {
+                nameError.textContent = "";
+            }
+        }
+    
+        function validateDescription() {
+            var description = document.getElementById("categoryDetails").value;
+            var descriptionError = document.getElementById("descriptionError");
+            if (description.length > 300) {
+                descriptionError.textContent = "Description should not exceed 300 characters";
+            } else if (description.startsWith(" ") || description.endsWith(" ")) {
+                descriptionError.textContent = "Description should not start or end with space";
+            } else {
+                descriptionError.textContent = "";
+            }
+        }
+    </script>
+
     <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/admin/js/vendors/select2.min.js"></script>

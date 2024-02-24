@@ -109,7 +109,7 @@ const deleteCategory = async (req,res) => {
     const deletedCategory = await Categoriesdb.findByIdAndDelete(id);
     const category = await Categoriesdb.find({});
     
-    console.log("Category Enabled:",deletedCategory.categoryName);
+    console.log("Category Deleted:",deletedCategory.categoryName);
     res.render("adminCategories",{category});
  
   } catch (error) {
