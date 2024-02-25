@@ -378,6 +378,25 @@
                         emailErrorMessage.textContent = ''; // Remove the error message
                     }
                 }
+                // function validateName() {
+                //     let name = document.getElementById('name').value;
+                //     const nameErrorMessage = document.getElementById('nameErrorMessage');
+
+                //     // Remove leading and trailing spaces
+                //     name = name.trim();
+
+                //     // Check if name starts with space
+                //     if (name.charAt(0) === ' ') {
+                //         nameErrorMessage.textContent = 'Name should not start with space';
+                //     } else if (name.endsWith(' ')) { // Check if name ends with space
+                //         nameErrorMessage.textContent = 'Name should not end with space';
+                //     } else {
+                //         // Capitalize the first character and characters after space
+                //         name = name.replace(/\b\w/g, char => char.toUpperCase());
+                //         document.getElementById('name').value = name;
+                //         nameErrorMessage.textContent = ''; // Remove the error message
+                //     }
+                // }
                 function validateName() {
                     let name = document.getElementById('name').value;
                     const nameErrorMessage = document.getElementById('nameErrorMessage');
@@ -385,12 +404,21 @@
                     // Remove leading and trailing spaces
                     name = name.trim();
 
-                    // Check if name starts with space
-                    if (name.charAt(0) === ' ') {
-                        nameErrorMessage.textContent = 'Name should not start with space';
-                    } else if (name.endsWith(' ')) { // Check if name ends with space
-                        nameErrorMessage.textContent = 'Name should not end with space';
-                    } else {
+                    // Condition: Should not be all spaces
+                    if (name.length === 0) {
+                        nameErrorMessage.textContent = 'Name should not be empty or contain only spaces';
+                    }
+                    // Condition: Should contain only characters and not any special characters
+                    else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                        nameErrorMessage.textContent = 'Name should contain only letters';
+                    }
+                    // Condition: All characters shouldn't be the same
+                    else if (/^(\w)\1+$/.test(name)) {
+                        nameErrorMessage.textContent = 'Name should not contain all same characters';
+                    }
+                    // Add more conditions for checking if it's a valid name based on specific requirements
+
+                    else {
                         // Capitalize the first character and characters after space
                         name = name.replace(/\b\w/g, char => char.toUpperCase());
                         document.getElementById('name').value = name;

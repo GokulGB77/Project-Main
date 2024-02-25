@@ -10,8 +10,8 @@ const productSchema = new mongoose.Schema({
     productPrice: {type: Number,required: true},
     status:{type:Number,required:true},
     productTags:{type:Array,required:true},
-    // category: {type: mongoose.Schema.Types.ObjectId,ref: "category",required: true},
-    category: {type:String,required: true},
+    category: {type: mongoose.Schema.Types.ObjectId,ref: "category",required: true},
+    //category: {type:String,required: true},
   });
 
 module.exports = mongoose.model("Productsdb", productSchema);

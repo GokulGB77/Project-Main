@@ -204,8 +204,8 @@
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="productName" class="form-label">Product Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="productName" name="productName" maxlength="100" required>
-                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                    <input type="text" placeholder="Type here" class="form-control" id="productName" name="productName" maxlength="100" onblur="validateName()" required>
+                                    <p id="productNameError" class="error-message" style="color: red;"></p>
 
                                 </div>
                                 <div class="row gx-3">
@@ -270,10 +270,9 @@
                                 <h5 class="mb-3">Categories</h5>
                                 <div class="mb-4">
                                     <select class="form-select" name="productCategory" id="productCategory" required>
-                                        <option value="0">Living Room Furniture</option>
-                                        <option value="1">Bedroom Furniture</option>
-                                        <option value="2">Dining Room Furniture</option>
-                                        <option value="3">Home Office Furniture</option>
+                                        <% categories.forEach(category => { %>
+                                            <option value="<%= category._id %>"><%= category.categoryName %></option>
+                                          <% }); %>
                                         
                                     </select>
                                 </div>
@@ -324,25 +323,62 @@
             });
         </script>
         
-
         <script>
+            //Add the same to the edit product page also
             function submitForm() {
-            let isValid = true;
-
-            stockInputs.forEach(function (id) {
-                isValid = isValid && validateStock(id);
-            });
-
-            if (validateInput('productName', null, 'productTitleError', 'Product title') &&
-                validateInput('productBrand', /^[A-Za-z\s]+$/, 'productBrandError', 'Brand') &&
-                validateInput('productDetails', null, 'productDescriptionError', 'Description') &&
-                validateInput('productPrice', /^(0*[1-9]\d*)$/, 'productPriceError', 'Price') &&
-                isValid) {
+            if (validateName()) {
                 document.getElementById('productForm').submit();
             } else {
                 document.getElementById('main-error').innerText = 'CANNOT SUBMIT';
             }
         }
+        </script>
+
+        <script>
+            function validateName() {
+                let name = document.getElementById('productName').value;
+                const productNameError = document.getElementById('productNameError');
+
+                // Remove leading and trailing spaces
+                name = name.trim();
+
+                // Condition: Should not be all spaces
+                if (name.length === 0) {
+                    event.preventDefault();
+                    productNameError.textContent = 'Name should not be empty or contain only spaces';
+
+                }
+                // Condition: Should contain only characters and not any special characters
+                else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                    event.preventDefault();
+                    productNameError.textContent = 'Name should contain only letters';
+
+                }
+                // Condition: All characters shouldn't be the same
+                else if (/^(\w)\1+$/.test(name)) {
+                    event.preventDefault();
+                    productNameError.textContent = 'Name should not contain all same characters';
+
+                }
+                // Condition: Shouldn't contain multiple spaces between two words
+                else if (/\s{2,}/.test(name)) {
+                    event.preventDefault();
+                    productNameError.textContent = 'Name should not contain multiple spaces between words';
+
+                }
+                // Condition: Should be like "sasasasasasasa" or "ssaassaa" or any such pattern names
+                // else if (!/^(?:(\w)\1+)+$/.test(name)) {
+                //     productNameError.textContent = 'Name should follow a specific pattern';
+                // }
+                else {
+                    // Capitalize the first character and characters after space
+                    name = name.replace(/\b\w/g, char => char.toUpperCase());
+                    document.getElementById('productName').value = name;
+                    productNameError.textContent = ''; // Remove the error message
+                }
+            }
+
+
         </script>
         
        <footer >

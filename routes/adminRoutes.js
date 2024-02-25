@@ -71,8 +71,6 @@ adminRoute.get("/categories/disable",categoriesController.disableCategory)
 adminRoute.get("/categories/enable",categoriesController.enableCategory)
 adminRoute.get("/categories/enable",categoriesController.enableCategory)
 
-adminRoute.get("/categories/delete",categoriesController.deleteCategory)
-adminRoute.get("/categories/delete",categoriesController.deleteCategory)
 
 
 adminRoute.get("/logout", adminController.adminLogout);

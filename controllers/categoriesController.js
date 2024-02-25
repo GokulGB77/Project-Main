@@ -16,14 +16,14 @@ const addCategory = async (req,res) => {
   try {
     const category = await Categoriesdb.create({
       categoryName: req.body.categoryName,
-      categoryDetails: req.body.categoryDetails, 
+      categoryDetails: req.body.categoryDetails,  
       categoryStatus: req.body.categoryStatus
     });
-    console.log(category);
+    console.log(`Category '${category.categoryName}' added successfully.`);
     res.redirect("/admin/categories");
 
   } catch (error) {
-    console.log(error);
+    console.error('Error adding category:', error);
     res.status(500).send("Category adding failed");
   }
 }
@@ -63,7 +63,7 @@ const updateCategory = async (req,res) => {
 
 
   } catch (error) {
-    console.log(error);
+    console.log("Category Updation Failed: ",error);
     res.status(500).send("Category Updation Failed.. Try Again!!");
   }
 }
@@ -80,7 +80,7 @@ const disableCategory = async (req,res) => {
     res.render("adminCategories",{category});
  
   } catch (error) {
-    console.log(error);
+    console.log("Category disabling failed: ",error);
     res.status(500).send("Category disabling failed");
   }
 }
@@ -97,26 +97,13 @@ const enableCategory = async (req,res) => {
     res.render("adminCategories",{category});
  
   } catch (error) {
-    console.log(error);
+    console.log("Category enabling failed: ",error);
     res.status(500).send("Category enabling failed");
   }
 }
 
 
-const deleteCategory = async (req,res) => {
-  try {
-    id= req.query.id;
-    const deletedCategory = await Categoriesdb.findByIdAndDelete(id);
-    const category = await Categoriesdb.find({});
-    
-    console.log("Category Deleted:",deletedCategory.categoryName);
-    res.render("adminCategories",{category});
- 
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Category Deleting failed");
-  }
-}
+
 
 module.exports = {
   loadAdmincategories,
@@ -125,5 +112,5 @@ module.exports = {
   updateCategory,
   disableCategory,
   enableCategory,
-  deleteCategory,
+  
 }

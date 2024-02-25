@@ -1,25 +1,47 @@
 const Productsdb = require("../models/productsModel")
+const Categoriesdb = require("../models/categoriesModel");
+
 
 
 const loadAdminProducts = async (req, res) => {
   try {
-    const products = await Productsdb.find({});
+    const products = await Productsdb.find({})
+    // .populate({
+    //   path: 'categories',
+    //   select: 'name',
+    //   match: { categoryStatus: 0 }, // Only populate categories with categoryStatus: 0
+    // });;
     if(!products){
       return res.status(404).send("Product Not Found")
     }
     res.render("viewProducts", { products: products });
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Internal Server Error");
+    console.log("Error loading Product List page: ",error.message);
+
+    res.status(500).send("Error loading Product List page");
   }
 };
+
+
 const loadAddProduct = async (req, res) => {
   try {
-    //const categories = await getCategories();
+    const categories = await getCategories();
     console.log("Add product page loadedd...");
-    res.render("addProduct");//,{ categories }
+    res.render("addProduct",{ categories });
   } catch (error) {
-    console.log(error.message);
+    console.log("Error loading Product Add page: ",error.message);
+  }
+};
+
+
+const getCategories = async (req,res) => {
+  try {
+    const categories = await Categoriesdb.find({}, "categoryName");
+    return categories;
+  } catch (error) {
+    console.error("Get category from database failed: ",error);
+    throw error;
   }
 };
 
@@ -51,10 +73,12 @@ const addProduct = async (req, res) => {
     });
 
     await newProduct.save();
+    // await newProduct.populate('category', 'categoryName').execPopulate();
+
     console.log("New Product Added..........");
     res.redirect("/admin/products");
   } catch (error) {
-    console.error(error);
+    console.error("Error Saving Product Data: ",error);
     res.status(500).send("Error Saving Product Data");
   }
 };
@@ -64,20 +88,21 @@ const editProduct = async (req,res)=>{
   try {
     console.log("Edit Product Page Loaded");
     const id =req.query.id
-    const product = await Productsdb.findOne({_id:id}) //    const product = await Product.findById(id).populate("category");
-
-
+    const product = await Productsdb.findOne({_id:id})
+    
+    
     if(!product){
       return res.status(404).send("Product Not Found");
     }
     console.log("Product fetched using id...",id);
+    const categories = await getCategories();
 
     //const categories = await getCategories();
-    res.render("editProduct",{product})   //    res.render("editProduct",{product , categories})
+    res.render("editProduct",{product,categories})  
 
   } catch (error) {
     console.log(error)
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("Error editing product:", error);
 
 
   }
@@ -188,4 +213,5 @@ module.exports = {
   unarchiveProduct,
   deleteProduct,
   loadShop,
+  getCategories,
 }

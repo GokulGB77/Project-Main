@@ -285,13 +285,12 @@
                                 <hr>
                                 <h5 class="mb-3">Categories</h5>
                                 <div class="mb-4">
-                                    <select class="form-select" name="productCategory" id="productCategory" required>
-                                        <option value="0">Living Room Furniture</option>
-                                        <option value="1">Bedroom Furniture</option>
-                                        <option value="2">Dining Room Furniture</option>
-                                        <option value="3">Home Office Furniture</option>
-                                        
-                                    </select>
+                                    <select class="form-select" name="productCategory" id="productCategory">
+                                        <% categories.forEach(category => { %>
+                                          <option value="<%= category._id %>" <% if (category._id.toString() === product.category.toString()) { %> selected <% } %> ><%= category.categoryName %></option>
+                                        <% }); %>
+                                      </select>
+                                      
                                 </div>
                                
                             </div>
