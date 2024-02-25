@@ -5,7 +5,8 @@ const sendMail = require("../services/sendMail")
 const { generateOTP } = require("../services/genereateOtp");
 const sendEmailOtp = require("../services/sendMail");
 const send_otp = require("../services/sendMail");
-
+const { request } = require("../routes/userRoutes");
+const auth = require("../middleware/auth")
 
 
 const securePassword = async (password) => {
@@ -151,48 +152,83 @@ const loadLogin = async (req, res) => {
     console.log(error.message);
   }
 }
+// const loginUser = async (req, res) => {
+//   const email = req.body.email
+//   const password = req.body.password
+
+//   // const { email, password } = req.body;
+//   console.log(email,password);
+//   try {
+//       const user = await Userdb.findOne({ email });
+//       if (!user) {
+//           return res.status(400).json({ success: false, message: "Invalid email or password" });
+//       }
+//       const status = user.status;
+//       if (!status) {
+//           return res.status(400).json({ success: false, message: "User is Blocked" });
+//       }
+//       const isPasswordValid = await argon2.verify(user.password, password);
+//       if (!isPasswordValid) {
+//           return res.status(400).json({ success: false, message: "Invalid email or password" });
+//       }
+//       req.session.userId = user._id;
+//       req.session.save();
+//       console.log("User logged in...", "userId is :", user._id);
+//       if (req.session.userId) {
+//           return res.status(200).json({ success: true, message: "Login successful" });
+//       } else {
+//           return res.status(500).json({ success: false, message: "Internal server error" });
+//       }
+//   } catch (error) {
+//       console.log("Login Error:", error);
+//       return res.status(500).json({ success: false, message: "Internal server error" });
+//   }
+// }
 
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await Userdb.findOne({ email });
-    if (!user) {
-      return res.render('login', { message: "Invalid email or password" });
+    const userData = await Userdb.findOne({ email });
+    if (!userData) {
+      return res.status(400).json({ message: "Invalid email or password" });
     }
-    const status = user.status;
+
+    const status = userData.status;
     if (!status) {
-      return res.render('login', { message: "User is Blocked" });
+      return res.status(403).json({ message: "User is blocked" });
     }
-    const isPasswordValid = await argon2.verify(user.password, password);
+
+    const isPasswordValid = await argon2.verify(userData.password, password);
     if (!isPasswordValid) {
-      return res.render('login', { message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
-    req.session.userId = user._id; 
-    req.session.save();
-    console.log("User logged in...", "userId is :", user._id);
-    if (req.session.userId) {
-      return res.redirect('/home');
-    } else {
-      return res.redirect('/login');
-    }
+
+    const userID = userData._id; 
+    const token = auth.createToken(userID);
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      tokenExpiry: auth.tokenExpiry * 1000,
+    });
+
+    console.log("User logged in...", "User Name: ", userData.name);
+    return res.redirect('/home');
   } catch (error) {
-    console.log("Login Error:", error);
+    console.error("Login Error:", error);
     return res.status(500).json({ message: 'Internal server error' });
   }
 }
 
 
 
-
-
-
 const loadHomePage = async (req, res) => {
   try {
-    const isLoggedIn = req.session.userId ? true : false;
-    console.log("User logged in:",isLoggedIn);
-    res.render('homepage', { isLoggedIn });
+    const token = req.cookies.jwt ? true : false;
+    const tokenId = req.cookies.jwt
+    res.locals.token = tokenId,
+    console.log("User logged in:",tokenId);
+    res.render('homepage', { tokenId });
   } catch (error) {
     console.log(error.message);
   }
@@ -204,12 +240,12 @@ const loadHomePage = async (req, res) => {
 
 const loadProfileSettings = async (req, res) => {
   try {
-    console.log("User entered profile settings");
-
-  //Check if the user id logged in 
-  if(req.session.userId){
+  console.log("User entered profile settings");
+  const token = req.cookies.jwt;
+  console.log(`userToken: ${token}`)
+  if(token){
     console.log("I am in session");
-    res.render("my-account")
+    res.render("profile",{token})
   } else {
     res.redirect("/login")
   }
@@ -218,22 +254,22 @@ const loadProfileSettings = async (req, res) => {
     res.status(500).send("LoadProfileSettings failed")
   }
 }
+
+
+
 const logoutUser = async (req, res) => {
   try {
-    console.log("User logged out");
-    // Destroy the session
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Failed to logout' });
-    }
-    // Redirect the user to the login page or any other desired location
-    res.redirect('/login');
-  });
+    console.log("User logged out..Session Destroyed");
+    // Clear the JWT token from cookies
+    res.cookie('jwt', '', { expires: new Date(0) });
+    res.redirect("/login");
+  
   } catch (error) {
     console.log(error);
     res.status(500).send("Logout User Failed")
   }
 };
+
 
 
 

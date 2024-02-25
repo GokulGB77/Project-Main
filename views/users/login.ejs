@@ -33,10 +33,6 @@
     <link rel="stylesheet" href="/user/css/style.css" crossorigin="anonymous" />
     
 </head>
-
-
-
-
 <body>
     <div class="main-wrapper main-wrapper-2">
         <header class="header-area header-responsive-padding header-height-1">
@@ -194,9 +190,9 @@
                                             <h4> Login </h4>    
                                         </div>
                                         <div class="login-register-form" >
-                                            <form action="/login" method="post" id="login-form" >
+                                            <form  method="post" id="login-form" >
                                                 <input type="text" name="email" id="email" placeholder="Email" required>
-                                                <input type="password" name="password" id="password"placeholder="Password" required>
+                                                <input type="password" name="password" id="password" placeholder="Password" required>
                                                 <div class="login-toggle-btn">
                                                     <input type="checkbox">
                                                     <label>Remember me</label>
@@ -205,12 +201,16 @@
                                                 <div class="button-box btn-hover text-center">
                                                     <button type="submit">LOGIN</button>
                                                 </div>    
-                                                <% if (typeof message !== 'undefined') { %>
-                                                    <p class="text-center" id="errorMessage" style="color: red;">
-                                                        <%= message %>
-                                                    </p>
-                                                    <% } %>
+                                                <div style="margin-top:20px">
+                                                    <% if (typeof message !== 'undefined') { %>
+                                                        <h6 class="text-center" id="errorMessage" style="color: red;">
+                                                            <%= message %>
+                                                        </h6>
+                                                        <% } %>
+                                                </div>
                                             </form>
+                                            
+
                                                     <hr class="my-4">
                                                     <p>New to CouchCart.? <a href="/register">Register</a></p>
                                                 
@@ -275,7 +275,7 @@
                                 <div class="footer-widget footer-list mb-40">
                                     <h3 class="footer-title">My Account</h3>
                                     <ul>
-                                        <li><a href="my-account">My Account</a></li>
+                                        <li><a href="profile">My Account</a></li>
                                         <li><a href="#">Order History</a></li>
                                         <li><a href="wishlist">Wish List</a></li>
                                         <li><a href="#">Newsletter</a></li>
@@ -364,7 +364,7 @@
                                     <li><a href="about-us">About Us </a></li>
                                     <li><a href="cart">Cart Page</a></li>
                                     <li><a href="checkout">Checkout </a></li>
-                                    <li><a href="my-account">My Account</a></li>
+                                    <li><a href="profile">My Account</a></li>
                                     <li><a href="wishlist">Wishlist </a></li>
                                     <li><a href="compare">Compare </a></li>
                                     <li><a href="contact-us">Contact us </a></li>
@@ -417,17 +417,48 @@
         </div>
     </div>
 
-    
-<script>
-    $(document).ready(function() {
-    // Clear error message on page load
-    $('#errorMessage').text('');
-});
-</script>
 
-<script>
+
+
+<!-- <script>
     
-</script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('login-form');
+
+    loginForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value
+
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+
+        fetch('/login', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json()) // Parse the JSON response
+        .then(data => {
+            // Check if the login was successful
+            if (data.success) {
+                // Redirect to the home page or perform any other action
+                window.location.href = '/home';
+            } else {
+                // Display error message
+                document.getElementById('errorMessage').textContent = data.message;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Display generic error message
+            document.getElementById('errorMessage').textContent = 'An error occurred. Please try again.';
+        });
+    });
+});
+
+</script> -->
     
     <!-- All validation and ajax Js is here  -->
     <!-- <script src="/user/js/scripts/loginSubmitFormAjax.js"></script> -->

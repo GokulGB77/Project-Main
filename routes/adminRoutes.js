@@ -18,7 +18,9 @@ adminRoute.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }, // Set secure to true if using HTTPS
-  }));  
+  })); 
+
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

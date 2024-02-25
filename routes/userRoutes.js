@@ -4,7 +4,14 @@ const session = require('express-session');
 const { v4:uuidv4 } = require('uuid');  
 const userController = require('../controllers/userController');
 const productsController = require('../controllers/productsController');
+const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/adminAuth');
+const cookieParser = require('cookie-parser');
 
+
+
+// Parse cookies before other middleware
+userRoute.use(cookieParser());
 
 userRoute.use(session({
   secret: uuidv4(),
@@ -14,13 +21,22 @@ userRoute.use(session({
   }));  
 
   userRoute.use((req, res, next) => {
-    res.locals.isLoggedIn = req.session.userId ? true : false;
+    res.locals.isLoggedIn = req.cookies.jwt ? true : false;
     next();
   });
+
+  userRoute.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+  });
+
 
 userRoute.set('view engine','ejs');
 userRoute.set('views','./views/users')
 
+userRoute.get("*",auth.isUser)
 
 userRoute.get('/',userController.loadHomePage);
 userRoute.get('/register', userController.loadRegister);
@@ -31,11 +47,11 @@ userRoute.get('/resend-otp' ,userController.resendOtp);
 
 userRoute.get('/login',userController.loadLogin);
 userRoute.post('/login',userController.loginUser)
-userRoute.get("/home",userController.loadHomePage)
+userRoute.get("/home",auth.isLogin,userController.loadHomePage)
 
 userRoute.get('/shop',productsController.loadShop);
 
-userRoute.get("/profile",userController.loadProfileSettings)
+userRoute.get("/profile",auth.isLogin,userController.loadProfileSettings)
 
 userRoute.get('/logout', userController.logoutUser);
 

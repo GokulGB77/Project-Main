@@ -2,11 +2,15 @@ const express = require ("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 // const { v4:uuidv4 } = require('uuid');  
+const nocache = require("nocache")
 
 const app = express();
 
+const cookieParser = require('cookie-parser');
 
 // Middleware
+app.use(cookieParser());
+app.use(nocache())
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
@@ -17,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 mongoose.connect("mongodb://localhost:27017/CouchCartDB", { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.set('view engine','ejs');
+
 
 
 //User Routes
