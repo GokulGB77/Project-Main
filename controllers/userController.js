@@ -126,9 +126,13 @@ const registerUser = async (req, res) => {
       // Save the user data to the database
       const userData = await user.save();
 
-      // Authentication successful
-      req.session.userId = userData._id; // Store user ID in session
-      await req.session.save(); // Save the session
+
+      const userID = userData._id; 
+      const token = auth.createToken(userID);
+      res.cookie("jwt", token, {
+        httpOnly: true,
+        tokenExpiry: auth.tokenExpiry * 1000,
+      });
 
       console.log("userId is :", userData._id);
       res.redirect('/'); // Redirect to Home

@@ -42,7 +42,7 @@ const isUser = async (req, res, next) => {
         next();
       } else {
         try {
-          let user = await User.findById(decodedToken.id);
+          let user = await Userdb.findById(decodedToken.id);
           res.locals.currentUser = user;
           next();
         } catch (userError) {

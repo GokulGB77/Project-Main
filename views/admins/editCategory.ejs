@@ -170,15 +170,22 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form action="/admin/categories/edit-category/update?id=<%= categoryClicked._id%>" method="post">
+                            <% if (errorMessage) { %>
+                                <div class="alert alert-danger" role="alert">
+                                    <%= errorMessage %>
+                                </div>
+                                <% } %>
+                            <form action="/admin/categories/edit-category/update?id=<%= categoryClicked._id%>" id="createCategory" method="post">
                                 <div class="mb-4">
                                     <h4 class="content-title card-title text-center">Edit Category </h4>
                                     
                                 </div>
+
+                                <p id="main-error" class="errorMessage" style="color: red;"></p>
                                 <div class="mb-4">
                                     <label for="categoryName" class="form-label">Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" value="<%= categoryClicked.categoryName%>" name="categoryName" id="categoryName" required oninput="validateName()"/>
-                                    <div id="nameError" style="color: red;"></div>
+                                    <div id="nameError" class="errorMessage" style="color: red;"></div>
 
                                 </div>
                         
@@ -192,10 +199,10 @@
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
                                     <textarea placeholder="Type here" class="form-control" name="categoryDetails" oninput="validateDescription()" id="categoryDetails" required><%= categoryClicked.categoryDetails%></textarea>
-                                    <div id="descriptionError" style="color: red;"></div>
+                                    <div id="descriptionError" class="errorMessage" style="color: red;" ></div>
                                 </div>
                                 <div class="d-grid">
-                                    <button class="btn btn-primary">Update Category</button>
+                                    <button type="button" onclick="validateForm()" class="btn btn-primary">Update Category</button>
                                 </div>
                             </form>
                         </div>
@@ -217,7 +224,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% category.forEach((item, index) => { %>
+                                        <% categories.forEach((item, index) => { %>
                                           <tr>
                                             <!-- <td class="text-center">
                                                 <div class="form-check">
@@ -242,9 +249,7 @@
                                                         <% } else { %>
                                                             <a class="dropdown-item text-success" href="/admin/categories/enable?id=<%= item._id %>">Enable</a>
                                                         <% } %>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item text-danger" href="/admin/categories/delete?id=<%= item._id %>">Delete</a>    
-
+                                                       
                                                     </div>
                                                 </div> <!-- dropdown //end -->
                                             </td>
@@ -279,28 +284,59 @@
         function validateName() {
             var name = document.getElementById("categoryName").value;
             var nameError = document.getElementById("nameError");
-            if (name.startsWith(" ") || name.endsWith(" ")) {
+            var existingError = nameError.textContent.trim();
+            nameError.textContent = "";
+            let value = false
+
+            if (name.trim() === "") {
+                nameError.textContent = "Name cannot be empty";
+            } else if (/^\d+$/.test(name)) {
+                nameError.textContent = "Name cannot contain only numbers";
+            } else if (/^[^\w\s]+$/.test(name)) {
+                nameError.textContent = "Name cannot be just symbols";
+            } else if (name.startsWith(" ") || name.endsWith(" ")) {
                 nameError.textContent = "Name should not start or end with space";
             } else if (/\s{2,}/.test(name)) {
                 nameError.textContent = "Name should not have more than one space between two words";
+            } else if (existingError !== "") {
+                // If there is already an existing error, prevent adding the category
             } else {
                 nameError.textContent = "";
+                value = true;
             }
+
+            return value;
         }
     
         function validateDescription() {
-            var description = document.getElementById("categoryDetails").value;
+            var description = document.getElementById("categoryDetails").value
             var descriptionError = document.getElementById("descriptionError");
+            let value = false;
+            descriptionError.textContent = "";
             if (description.length > 300) {
                 descriptionError.textContent = "Description should not exceed 300 characters";
             } else if (description.startsWith(" ") || description.endsWith(" ")) {
                 descriptionError.textContent = "Description should not start or end with space";
             } else {
                 descriptionError.textContent = "";
+                value= true;
             }
+            return value;
         }
-    </script>
 
+      function validateForm() {
+     
+        if (validateName() && validateDescription()){
+            console.log("Hello");
+            document.getElementById('createCategory').submit();
+        } else {
+            document.getElementById("main-error").innerText = "Cannot Add Category"
+            console.log("Hellosssssssssssssssssssss");
+
+        }
+      }
+        
+    </script>
     <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/admin/js/vendors/select2.min.js"></script>

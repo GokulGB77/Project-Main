@@ -35,16 +35,17 @@
                                 <span class="form-check-label">Remember</span>
                             </label>
                         </div> form-group form-check .// -->
+                        <% if (typeof message !== 'undefined') { %>
+                            <p style="text-align: center; color: red;">
+                                <%= message %>
+                            </p>
+                        <% }; %>
+                        
                         <div class="mb-4">
                             <button type="submit" class="btn btn-primary w-100"> Login </button>
                         </div> <!-- form-group// -->
                     </form>
-                    <% if (typeof message !=='undefined' ) { %>
-                        <p>
-                            <%= message %>
-                        </p>
-                        <% }; %>
-
+                  
 
                  
      

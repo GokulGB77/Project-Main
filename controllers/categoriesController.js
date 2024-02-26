@@ -4,8 +4,8 @@ const { response } = require("../routes/userRoutes");
 
 const loadAdmincategories = async(req,res)=>{
   try {
-  const category = await Categoriesdb.find({});
-  res.render("adminCategories",{category});
+  const categories = await Categoriesdb.find({});
+  res.render("adminCategories",{categories,errorMessage:""});
   } catch (error) {
     console.log(error);
     res.status(500).send("Category Loading Failed");
@@ -14,17 +14,26 @@ const loadAdmincategories = async(req,res)=>{
 
 const addCategory = async (req,res) => {
   try {
-    const category = await Categoriesdb.create({
-      categoryName: req.body.categoryName,
-      categoryDetails: req.body.categoryDetails,  
-      categoryStatus: req.body.categoryStatus
-    });
-    console.log(`Category '${category.categoryName}' added successfully.`);
-    res.redirect("/admin/categories");
+      const existingCategory = await Categoriesdb.findOne({categoryName :req.body.categoryName })
+      if(existingCategory){
+        const categories = await Categoriesdb.find();
+        
+        return res.render("adminCategories", { categories, errorMessage: "Category already exists",
+        });
+        
+      }  
+      const category = await Categoriesdb.create({
+        categoryName: req.body.categoryName,
+        categoryDetails: req.body.categoryDetails,  
+        categoryStatus: req.body.categoryStatus
+      });
 
+      const categories = await Categoriesdb.find();
+      console.log(`Category '${category.categoryName}' added successfully.`);
+      return res.render("adminCategories",{categories, errorMessage: ""});
   } catch (error) {
     console.error('Error adding category:', error);
-    res.status(500).send("Category adding failed");
+    return res.status(500).send("Category adding failed");
   }
 }
 
@@ -32,13 +41,13 @@ const editCategory = async (req,res) => {
   try {
     const id = req.query.id;
     const categoryClicked = await Categoriesdb.findById(id) ;  
-    const category = await Categoriesdb.find({});
+    const categories = await Categoriesdb.find({});
 
     if(!categoryClicked){
       return res.status(404).send("Category Not Found");
     }
     console.log("Product fetched using id...",id);
-    res.render("editCategory",{categoryClicked, category});
+    res.render("editCategory",{categoryClicked, categories,errorMessage:""});
 
     
   } catch (error) {
@@ -50,16 +59,26 @@ const editCategory = async (req,res) => {
 const updateCategory = async (req,res) => {
   try {
     const id =req.query.id;
+    const categoryClicked = await Categoriesdb.findById(id) ;  
+
+    const existingCategory = await Categoriesdb.findOne({categoryName :req.body.categoryName })
+      if(existingCategory){
+        const categories = await Categoriesdb.find();
+        
+        return res.render("editCategory", { categories,categoryClicked, errorMessage: "Category already exists",
+        });
+        
+      }  
     
     const updatedCategory = await Categoriesdb.findByIdAndUpdate(id,{
       categoryName: req.body.categoryName,
       categoryDetails: req.body.categoryDetails, 
       categoryStatus: req.body.categoryStatus
     })
-    const category = await Categoriesdb.find({});
+    const categories = await Categoriesdb.find({});
     
     console.log("Category Updated:",updatedCategory.categoryName);
-    res.render("adminCategories",{category,updatedCategory});
+    res.render("adminCategories",{categories,updatedCategory,errorMessage:""});
 
 
   } catch (error) {

@@ -1,5 +1,5 @@
 const Admindb = require("../models/userModel")
-
+const auth = require("../middleware/auth")
 const argon2 = require('argon2');
 
 
@@ -29,31 +29,31 @@ const verifyAdminLogin = async (req, res) => {
       const passwordMatch = await argon2.verify(adminData.password,password);
       console.log("Password Verifying......");
 
-      if (passwordMatch) {
+      if (passwordMatch && adminData.is_admin === 1) {
         console.log("Password Matched..............");
+        const userID = adminData._id
+        console.log(adminData.name);
 
-        if (adminData.is_admin === 0) {
-          console.log("You are not an authorised admin..........");
-
-          res.render('login', { message: "You are not an authorised admin..........." });
-        } else {
-          console.log("Authorised admin Loggedin");
-
-          req.session.admin_id = adminData._id;
-          req.session.is_admin = adminData.is_admin;
-          res.redirect("/dashboard");
-        }
-
+        const token = auth.createToken(userID);
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          tokenExpiry: auth.tokenExpiry * 1000,
+        });
+        console.log(token);  
+        res.redirect("/admin/dashboard");
+       
+      } else if (adminData.is_admin === "0") {
+          res.render("login", {errorMessage: "You do not have permission to access the admin panel.",});
       } else {
-        console.log("1 Email and Password is Incorrect");
-
-        res.render('login', { message: "Email and Password is Incorrect" });
+        res.render('AdminLogin', { message: "Email and Password is Incorrect" });
       }
     } else {
-      res.render('login', { message: "Email and Password is Incorrect" });
-      console.log("2 Email and Password is Incorrect");
+      res.render('AdminLogin', { message: "User not Found!!!" });
+      console.log("User not Found!!!");
 
     }
+    req.session.message = null;
+
 
   } catch (error) {
     console.log(error.message);

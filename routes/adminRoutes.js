@@ -39,10 +39,9 @@ adminRoute.set('view engine','ejs');
 adminRoute.set('views','./views/admins')
 
 adminRoute.get('/',adminController.loadAdminLogin);
-adminRoute.get('/',adminController.verifyAdminLogin);
 adminRoute.get('/dashboard',dashboardController.loadAdminDashoard);
+adminRoute.post('/dashboard',adminController.verifyAdminLogin);
 
-adminRoute.post('/dashboard',dashboardController.loadAdminDashoard);
 
 adminRoute.get('/user-details',adminController.userDetails)
 adminRoute.get("/user-details/block",adminController.blockUser)
@@ -58,7 +57,6 @@ adminRoute.post("/products/edit-product",productsController.updateProduct)
 
 adminRoute.get("/products/archive-product",productsController.archiveProduct)
 adminRoute.get("/products/unarchive-product",productsController.unarchiveProduct)
-adminRoute.get("/categories/delete-product",productsController.deleteProduct)
 
 adminRoute.get("/categories",categoriesController.loadAdmincategories)
 adminRoute.post("/categories/add-category",categoriesController.addCategory)
