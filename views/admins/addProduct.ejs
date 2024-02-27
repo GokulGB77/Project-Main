@@ -195,7 +195,7 @@
                         <div class="content-header">
                             <h2 class="content-title">Add New Product</h2>
                             <div>
-                                <button class="btn btn-md rounded font-sm hover-up"  onclick="submitForm()">Add Product</button>
+                                <button class="btn btn-md rounded font-sm hover-up"  >Add Product</button>
                             </div>
                         </div>
                     </div>
@@ -204,22 +204,46 @@
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="productName" class="form-label">Product Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="productName" name="productName" maxlength="100" onblur="validateName()" required>
-                                    <p id="productNameError" class="error-message" style="color: red;"></p>
-
+                                    <input type="text" placeholder="Type here" class="form-control" id="productName" name="productName"
+                                        maxlength="100" pattern="^[A-Za-z0-9\s\-',.&()]+$"
+                                        title="Please enter a valid product name."
+                                        required>
+                                    <!-- <p id="productNameError" class="error-message" style="color: red;"></p> -->
+                            
                                 </div>
                                 <div class="row gx-3">
                                     <div class="col-md-6  mb-3">
-                                        <label for="productSku" class="form-label">SKU</label>
-                                        <input type="text" placeholder="Type here" class="form-control" maxlength="20"id="productSku" name="productSku" required>
-                                        <p id="productPriceError" class="error-message" style="color: red;"></p>
-
+                                        <label for="stock" class="form-label">Stock Quantity</label>
+                                        <input type="number" placeholder="Type here" class="form-control" maxlength="4" id="stock" name="stock"
+                                            pattern="^[1-9]\d*$" title="Stock Quantity can be  posiive numbers only" required>
+                                        <!-- <p id="productPriceError" class="error-message" style="color: red;"></p> -->
                                     </div>
                                     <div class="col-md-6  mb-3">
-                                        <label for="stock" class="form-label">Stock Quantity</label>
-                                        <input type="number" placeholder="Type here" class="form-control" maxlength="4" id="stock" name="stock" required>
-                                        <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                        <label class="form-label">Tags</label>
+                                        <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags"
+                                            class="form-control" pattern="^[a-zA-Z,]+$" title="Only alphabets and commas are allowed" required>
+                                        <!-- <p id="productPriceError" class="error-message" style="color: red;"></p> -->
+                            
                                     </div>
+                            
+                                </div>
+                            </div>
+                        </div> <!-- card end// -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" class="form-control" id="productDetails"  name="productDetails" required rows="4" 
+                                    pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$"
+                                    title="Description should not start or end with spaces, contain only one space between words, and consist of alphabets, numbers, and special characters (-,.:/+&%\(){}). It cannot be composed solely of special characters or numbers."></textarea>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Info</label>
+                                    <textarea placeholder="Type here" class="form-control" id="productInfo"  name="productInfo" required rows="4" 
+                                    pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$"
+                                    title="Enter Valid Info"></textarea>
                                 </div>
                             </div>
                         </div> <!-- card end// -->
@@ -229,29 +253,23 @@
                                     <label class="form-label">Images</label>
                                     <input class="form-control" type="file" id="imageUpload" name="productImage" multiple required>
                                 </div>
-                                <p id="productPriceError" class="error-message" style="color: red;"></p>
 
                                 <div id="imagePreview"></div>
                             </div>
                         </div> <!-- card end// -->
                         
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <div>
-                                    <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" id="productDetails"  name="productDetails" required rows="4"></textarea>
-                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
-                                </div>
-                            </div>
-                        </div> <!-- card end// -->
+                        
                     </div>
                     <div class="col-lg-3">
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" name="productPrice" required>
-                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" name="productPrice" 
+                                    pattern="^(?!0+(\.0+)?$)\d+(\.\d{1,2})?$" 
+                                    title="Please enter a valid price (e.g., 10 or 10.99)" 
+                                    required>
+                                    <!-- <p id="productPriceError" class="error-message" style="color: red;"></p> -->
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label" >Status</label>
@@ -260,12 +278,7 @@
                                         <option value="0">Draft</option>
                                     </select>
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Tags</label>
-                                    <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags" class="form-control" required>
-                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
-
-                                </div>
+                                
                                 <hr>
                                 <h5 class="mb-3">Categories</h5>
                                 <div class="mb-4">

@@ -36,8 +36,8 @@ const isUser = async (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
     jwt.verify(token, secretKey, async (err, decodedToken) => {
-      if (err) {
-        console.log("Error:", err.message);
+      if (error) {
+        console.log("Error:", error.message);
         res.locals.currentUser = null;
         next();
       } else {

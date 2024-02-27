@@ -47,7 +47,7 @@ const editCategory = async (req,res) => {
       return res.status(404).send("Category Not Found");
     }
     console.log("Product fetched using id...",id);
-    res.render("editCategory",{categoryClicked, categories,errorMessage:""});
+    res.render("editCategory",{categoryClicked, categories,errorMessage:null});
 
     
   } catch (error) {
@@ -61,7 +61,7 @@ const updateCategory = async (req,res) => {
     const id =req.query.id;
     const categoryClicked = await Categoriesdb.findById(id) ;  
 
-    const existingCategory = await Categoriesdb.findOne({categoryName :req.body.categoryName })
+    const existingCategory = await Categoriesdb.findOne({categoryName :req.body.categoryName , categoryDetails:req.body.categoryDetails ,categoryStatus:req.body.categoryStatus})
       if(existingCategory){
         const categories = await Categoriesdb.find();
         

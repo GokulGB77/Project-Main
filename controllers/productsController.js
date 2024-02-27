@@ -62,10 +62,10 @@ const addProduct = async (req, res) => {
 
     const newProduct = new Productsdb({
       productName: req.body.productName,
-      productSku: req.body.productSku,
       stock: req.body.stock,
       images: imagesToKeep, // Only save the images that are not removed
       productDetails: req.body.productDetails,
+      productInfo: req.body.productInfo,
       productPrice: req.body.productPrice,
       status: req.body.status,
       productTags: productTags,
@@ -88,7 +88,7 @@ const editProduct = async (req,res)=>{
   try {
     console.log("Edit Product Page Loaded");
     const id =req.query.id
-    const product = await Productsdb.findOne({_id:id})
+    const product = await Productsdb.findOne({_id:id}).populate("category");
     
     
     if(!product){
@@ -115,9 +115,9 @@ const updateProduct = async (req, res) => {
     // console.log("Existing dattaa.............",exstingData);
     const updatedProductDetails = {
       productName: req.body.productName,
-      productSku: req.body.productSku,
       stock: req.body.stock,
       productDetails: req.body.productDetails,
+      productInfo: req.body.productInfo,
       productPrice: req.body.productPrice,
       status: req.body.status,
       category: req.body.productCategory,
@@ -178,9 +178,12 @@ const unarchiveProduct = async(req,res) => {
 
 
 
+//--------------------------------------User Side---------------------------------
+
 const loadShop = async (req,res)=>{
   try {
-    const products = await Productsdb.find({})
+    
+    const products = await Productsdb.find({}).populate("category")
     console.log("Products Fetched From Database");
     res.render("shop",{products})
   } catch (error) {
@@ -188,6 +191,25 @@ const loadShop = async (req,res)=>{
     res.status(500).send("Products page render failed")    
   }
 }
+
+
+
+const loadProductDetails = async (req,res) => {
+  try {
+    const id= req.query.id
+    const product = await Productsdb.findById(id).populate("category");
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+    res.render("productDetails",{product})
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send("Internal Server Error");
+
+  }
+
+}
+
 
 
 module.exports = {
@@ -200,4 +222,5 @@ module.exports = {
   unarchiveProduct,
   loadShop,
   getCategories,
+  loadProductDetails,
 }

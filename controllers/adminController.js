@@ -6,6 +6,10 @@ const argon2 = require('argon2');
 
 const loadAdminLogin = async (req,res)=>{
   try {
+    const jwtcookie = req.cookies.adminjwt;
+    if(jwtcookie){
+      return res.redirect("/admin/dashboard")
+    } 
     console.log("adminLogin rendered");
     res.render('adminLogin')
   } catch (error) {
@@ -35,20 +39,20 @@ const verifyAdminLogin = async (req, res) => {
         console.log(adminData.name);
 
         const token = auth.createToken(userID);
-        res.cookie("jwt", token, {
+        res.cookie("adminjwt", token, {
           httpOnly: true,
           tokenExpiry: auth.tokenExpiry * 1000,
         });
-        console.log(token);  
-        res.redirect("/admin/dashboard");
+        console.log("admin token:",token);  
+        return res.redirect("/admin/dashboard");
        
       } else if (adminData.is_admin === "0") {
-          res.render("login", {errorMessage: "You do not have permission to access the admin panel.",});
+         return res.render("AdminLogin", {errorMessage: "You do not have permission to access the admin panel.",});
       } else {
-        res.render('AdminLogin', { message: "Email and Password is Incorrect" });
+        return res.render('AdminLogin', { message: "Email and Password is Incorrect" });
       }
     } else {
-      res.render('AdminLogin', { message: "User not Found!!!" });
+     return res.render('AdminLogin', { message: "User not Found!!!" });
       console.log("User not Found!!!");
 
     }
@@ -62,10 +66,12 @@ const verifyAdminLogin = async (req, res) => {
 
 const adminLogout = async (req, res) => {
   try {
-    req.session.destroy(() => {
-      console.log("Admin logged out");
+    res.cookie('adminjwt', '', { expires: new Date(0) },()=>{
+      console.log("adminjwt token destroyed");
     });
-    res.redirect("/admin");
+    return res.redirect("/admin")
+    console.log("Admin logged out");
+    
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Logout failed");

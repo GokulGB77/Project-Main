@@ -200,7 +200,7 @@
                         <div class="content-header">
                             <h2 class="content-title">Update Product</h2>
                             <div>
-                                <button class="btn btn-md rounded font-sm hover-up"  onclick="submitForm()">Update Product</button>
+                                <button class="btn btn-md rounded font-sm hover-up"  >Update Product</button>
                             </div>
                         </div>
                     </div>
@@ -209,21 +209,20 @@
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="productName" class="form-label">Product Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" value="<%=product.productName%>" required name="productName" maxlength="100" >
-                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                    <input type="text" placeholder="Type here" class="form-control" value="<%=product.productName%>" pattern="^[A-Za-z0-9\s\-',.&()]+$"
+                                    title="Please enter a valid product name." required name="productName" maxlength="100" >
 
                                 </div>
                                 <div class="row gx-3">
+                                    
                                     <div class="col-md-6  mb-3">
-                                        <label for="productSku" class="form-label">SKU</label>
-                                        <input type="text" placeholder="Type here" class="form-control" value="<%=product.productSku%>" maxlength="20" id="productSku" required name="productSku" >
-                                        <p id="productPriceError" class="error-message" style="color: red;"></p>
-
+                                        <label for="stock" class="form-label">Stock Quantity</label>
+                                        <input type="number" placeholder="Type here" class="form-control"  maxlength="4" value="<%=product.stock%>" id="stock" pattern="^[1-9]\d*$" title="Stock Quantity can be  posiive numbers only" required name="stock" >
                                     </div>
                                     <div class="col-md-6  mb-3">
-                                        <label for="stock" class="form-label">Stock</label>
-                                        <input type="number" placeholder="Type here" class="form-control" maxlength="4" value="<%=product.stock%>" id="stock" required name="stock" >
-                                        <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                        <label class="form-label">Tags</label>
+                                        <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags"  value="<%=product.productTags%>"class="form-control" pattern="^[a-zA-Z,]+$" title="Only alphabets and commas are allowed" required>
+    
                                     </div>
                                 </div>
                             </div>
@@ -232,8 +231,16 @@
                             <div class="card-body">
                                 <div>
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" id="productDetails"   name="productDetails" maxlength="200" rows="8" required><%=product.productDetails%></textarea>
-                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                    <textarea placeholder="Type here" class="form-control" id="productDetails"   name="productDetails" maxlength="600" rows="8" required  pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$"
+                                    title="Description should not start or end with spaces, contain only one space between words, and consist of alphabets, numbers, and special characters (-,.:/+&%\(){}). It cannot be composed solely of special characters or numbers."> ><%=product.productDetails%></textarea>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div>
+                                    <label class="form-label">Info</label>
+                                    <textarea placeholder="Type here" class="form-control" id="productInfo"  name="productInfo" required rows="4" 
+                                    pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$"
+                                    title="Enter Valid Info"><%=product.productInfo%></textarea>
                                 </div>
                             </div>
                         </div> <!-- card end// -->
@@ -252,7 +259,6 @@
                                         </div>
                                     <% }); %>
                                 </div>
-                                <p id="productPriceError" class="error-message" style="color: red;"></p>
 
                                 <div id="imagePreview"></div>
                             </div>
@@ -265,8 +271,8 @@
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label class="form-label">Price ( &#8377 )</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" value="<%=product.productPrice%>" name="productPrice" required>
-                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
+                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" value="<%=product.productPrice%>" name="productPrice" pattern="^(?!0+(\.0+)?$)\d+(\.\d{1,2})?$" 
+                                    title="Please enter a valid price (e.g., 10 or 10.99)"  required>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Status</label>
@@ -276,12 +282,7 @@
                                     </select>
                                 </div>
                                 
-                                <div class="mb-4">
-                                    <label class="form-label">Tags</label>
-                                    <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags"  value="<%=product.productTags%>"class="form-control" required>
-                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
-
-                                </div>
+                                
                                 <hr>
                                 <h5 class="mb-3">Categories</h5>
                                 <div class="mb-4">
@@ -337,26 +338,6 @@
                     }
                 });
             });
-        </script>
-
-        <script>
-            function submitForm() {
-            let isValid = true;
-
-            stockInputs.forEach(function (id) {
-                isValid = isValid && validateStock(id);
-            });
-
-            if (validateInput('productName', null, 'productTitleError', 'Product title') &&
-                validateInput('productCategory', /^[A-Za-z\s]+$/, 'productBrandError', 'Category') &&
-                validateInput('productDetails', null, 'productDescriptionError', 'Description') &&
-                validateInput('productPrice', /^(0*[1-9]\d*)$/, 'productPriceError', 'Price') &&
-                isValid) {
-                document.getElementById('productForm').submit();
-            } else {
-                document.getElementById('main-error').innerText = 'CANNOT SUBMIT';
-            }
-        }
         </script>
         
         <script>

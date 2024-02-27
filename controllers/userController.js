@@ -1,5 +1,8 @@
 const Userdb = require("../models/userModel")
+const Productsdb = require("../models/productsModel")
 const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
+
 
 const sendMail = require("../services/sendMail")
 const { generateOTP } = require("../services/genereateOtp");
@@ -7,6 +10,7 @@ const sendEmailOtp = require("../services/sendMail");
 const send_otp = require("../services/sendMail");
 const { request } = require("../routes/userRoutes");
 const auth = require("../middleware/auth")
+
 
 
 const securePassword = async (password) => {
@@ -20,6 +24,10 @@ const securePassword = async (password) => {
 
 const loadRegister = async (req, res) => {
   try {
+    const jwtcookie = req.cookies.jwt;
+    if(jwtcookie){
+      return res.redirect("/")
+    } 
     res.render('register',{layout:false,currentPage: 'register' })
   } catch (error) {
     console.log(error.message)
@@ -102,7 +110,6 @@ const resendOtp = async (req, res) => {
 };
 
 
-// Inserting  new user into the database
 
 const registerUser = async (req, res) => {
   try {
@@ -123,7 +130,6 @@ const registerUser = async (req, res) => {
         is_verified: 1,
       });
 
-      // Save the user data to the database
       const userData = await user.save();
 
 
@@ -135,6 +141,7 @@ const registerUser = async (req, res) => {
       });
 
       console.log("userId is :", userData._id);
+      console.log("token :", token);
       res.redirect('/'); // Redirect to Home
     } else {
       res.render("otpVerify", { errorMessage: "Not valid OTP" });
@@ -148,46 +155,18 @@ const registerUser = async (req, res) => {
 
 
 
-//Login user methods started
 const loadLogin = async (req, res) => {
   try {
-    res.render('login');
+    const jwtcookie = req.cookies.jwt;
+    if(jwtcookie){
+      return res.redirect("/")
+    } 
+      return res.render('login');
   } catch (error) {
     console.log(error.message);
   }
 }
-// const loginUser = async (req, res) => {
-//   const email = req.body.email
-//   const password = req.body.password
 
-//   // const { email, password } = req.body;
-//   console.log(email,password);
-//   try {
-//       const user = await Userdb.findOne({ email });
-//       if (!user) {
-//           return res.status(400).json({ success: false, message: "Invalid email or password" });
-//       }
-//       const status = user.status;
-//       if (!status) {
-//           return res.status(400).json({ success: false, message: "User is Blocked" });
-//       }
-//       const isPasswordValid = await argon2.verify(user.password, password);
-//       if (!isPasswordValid) {
-//           return res.status(400).json({ success: false, message: "Invalid email or password" });
-//       }
-//       req.session.userId = user._id;
-//       req.session.save();
-//       console.log("User logged in...", "userId is :", user._id);
-//       if (req.session.userId) {
-//           return res.status(200).json({ success: true, message: "Login successful" });
-//       } else {
-//           return res.status(500).json({ success: false, message: "Internal server error" });
-//       }
-//   } catch (error) {
-//       console.log("Login Error:", error);
-//       return res.status(500).json({ success: false, message: "Internal server error" });
-//   }
-// }
 
 
 const loginUser = async (req, res) => {
@@ -232,7 +211,19 @@ const loadHomePage = async (req, res) => {
     const tokenId = req.cookies.jwt
     res.locals.token = tokenId,
     console.log("User logged in:",tokenId);
-    res.render('homepage', { tokenId });
+    try {
+      const allItems = await Productsdb.find({}).populate("category").sort({ _id: 1 })
+      const newArrivals= await Productsdb.find({}).populate("category").sort({ _id: -1 })
+      const bestSellers= await Productsdb.find({}).populate("category").sort({ productName: 1 })
+      const saleItems= await Productsdb.find({}).populate("category").sort({ productName: -1 })
+      res.render('homepage', { tokenId, newArrivals,allItems,bestSellers,saleItems});
+
+    } catch (error) {
+      console.log("Error getting product data from db:",error)
+      res.status(404).send("Error getting product data from db")
+    }
+
+
   } catch (error) {
     console.log(error.message);
   }
