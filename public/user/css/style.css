@@ -2678,6 +2678,10 @@ textarea {
   letter-spacing: .2px;
 }
 
+.dropdown-menu {
+  --bs-dropdown-min-width: 0px;
+}
+
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .slider-btn-3 a.btn {
     font-size: 15px;

@@ -30,7 +30,6 @@
     <link rel="stylesheet" href="/user/css/plugins/slinky.css" crossorigin="anonymous" />
     <link rel="stylesheet" href="/user/css/style.css" crossorigin="anonymous" />
 
-    <link rel="stylesheet" href="/user/css/style.css" crossorigin="anonymous" />
     
 </head>
 <body>
@@ -95,6 +94,7 @@
                         <div class="col-lg-3 col-md-6 col-6">
                             <div class="header-action-wrap">
                                 <div class="header-action-style header-search-1">
+                                    <!-- Search Icon -->
                                     <a class="search-toggle" href="#">
                                         <i class="pe-7s-search s-open"></i>
                                         <i class="pe-7s-close s-close"></i>
@@ -106,22 +106,42 @@
                                         </form>
                                     </div>
                                 </div>
+                                
+                                <% if (token) { %>
+                                    <div class="header-action-style dropdown">
+                                        <!-- Dropdown Button with User Icon -->
+                                        <a href="#" class="" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="pe-7s-user"></i>
+                                        </a>
+                                        <!-- Dropdown Menu -->
+                                        <ul class="dropdown-menu" aria-labelledby="loginDropdown">
+                                            <li><a class="dropdown-item" style="font-size: 14px;" href="/profile">Account Settings</a></li>
+                                            <li><hr class="dropdown-divider"></li> <!-- Divider -->
+                                            <li><a class="dropdown-item" style="font-size: 14px;" href="/logout">Logout</a></li>
+                                        </ul>
+                                    </div>
+                                    <% } else { %>
+                                        <div class="header-action-style " >
+                                        <a title="Login" href="/login"><i class="pe-7s-user"></i></a>
+                                        </div>
+                                        <% } %>
                                 <div class="header-action-style">
-                                    <a title="Login" href="login"><i class="pe-7s-user"></i></a>
-                                </div>
-                                <div class="header-action-style">
+                                    <!-- Wishlist Icon -->
                                     <a title="Wishlist" href="wishlist"><i class="pe-7s-like"></i></a>
                                 </div>
                                 <div class="header-action-style header-action-cart">
+                                    <!-- Cart Icon -->
                                     <a class="cart-active" href="#"><i class="pe-7s-shopbag"></i>
                                         <span class="product-count bg-black">01</span>
                                     </a>
                                 </div>
                                 <div class="header-action-style d-block d-lg-none">
+                                    <!-- Mobile Menu Icon -->
                                     <a class="mobile-menu-active-button" href="#"><i class="pe-7s-menu"></i></a>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>

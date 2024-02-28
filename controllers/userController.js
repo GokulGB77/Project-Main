@@ -255,9 +255,10 @@ const loadProfileSettings = async (req, res) => {
 const logoutUser = async (req, res) => {
   try {
     console.log("User logged out..Session Destroyed");
+
     // Clear the JWT token from cookies
     res.cookie('jwt', '', { expires: new Date(0) });
-    res.redirect("/login");
+    res.redirect("/login",);
   
   } catch (error) {
     console.log(error);
@@ -288,6 +289,7 @@ module.exports={
   
 
 }
+
 
 
 

@@ -20,6 +20,7 @@ const isLogin = async (req, res, next) => {
         if(error){
           console.log(error.message);
           res.redirect('/login')
+          next()
         } else {
           console.log(decodedToken);
           next()
@@ -28,9 +29,17 @@ const isLogin = async (req, res, next) => {
     } else { res.redirect("/") }
   } catch (error) {
     console.log(error.message);
-    res.redirect('/login')
   }
 }
+
+// middleware.js
+
+const attachTokenToLocals = (req, res, next) => {
+  res.locals.token = req.cookies.jwt || null; 
+  next();
+};
+
+
 
 const isUser = async (req, res, next) => {
   const token = req.cookies.jwt;
@@ -72,5 +81,6 @@ module.exports= {
   createToken,
   isLogin, 
   isUser,
+  attachTokenToLocals,
   // isLogout,
 }

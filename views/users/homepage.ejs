@@ -105,13 +105,24 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="header-action-style">
-                                    <% if (token) { %>
-                                        <a title="Profile Settings" href="/profile"><i class="pe-7s-user"></i></a>
+                                <% if (token) { %>
+                                    <div class="header-action-style dropdown ">
+                                        <!-- Dropdown Button with User Icon -->
+                                        <a href="#"  id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="pe-7s-user"></i>
+                                        </a>
+                                        <!-- Dropdown Menu -->
+                                        <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="loginDropdown" style="left: 50%; transform: translateX(-50%);" >
+                                            <li><a class="dropdown-item" style="font-size: 14px;" href="/profile">Account Settings</a></li>
+                                            <li><hr class="dropdown-divider"></li> <!-- Divider -->
+                                            <li><a class="dropdown-item" style="font-size: 14px;" href="/logout">Logout</a></li>
+                                        </ul>
+                                    </div>
                                     <% } else { %>
+                                        <div class="header-action-style " >
                                         <a title="Login" href="/login"><i class="pe-7s-user"></i></a>
-                                    <% } %>
-                                </div>
+                                        </div>
+                                        <% } %>
                                 <div class="header-action-style">
                                     <a title="Wishlist" href="wishlist"><i class="pe-7s-like"></i></a>
                                 </div>

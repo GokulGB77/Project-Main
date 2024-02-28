@@ -9,6 +9,7 @@ const adminAuth = require('../middleware/adminAuth');
 const cookieParser = require('cookie-parser');
 
 
+userRoute.use(auth.attachTokenToLocals); // Use the middleware
 
 // Parse cookies before other middleware
 userRoute.use(cookieParser());
@@ -38,6 +39,7 @@ userRoute.set('views','./views/users')
 
 // userRoute.get("*",auth.isUser)
 // userRoute.get("*",auth.isLogin)
+// userRoute.get("*",auth.ifToken)
 
 userRoute.get('/',userController.loadHomePage);
 userRoute.get('/register', userController.loadRegister);
