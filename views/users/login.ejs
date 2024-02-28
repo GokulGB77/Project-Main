@@ -222,7 +222,10 @@
                                               
                                             <form  method="post" id="login-form" >
                                                 <input type="text" name="email" id="email" placeholder="Email" required>
-                                                <input type="password" name="password" id="password" placeholder="Password" required>
+                                                <div class="password-input">
+                                                    <input type="password" name="password" id="password" placeholder="Password" required>
+                                                    <span class="toggle-password"onclick="togglePasswordVisibility('password')"><i class="fa fa-eye" aria-hidden="false"></i></span>
+                                                </div>
                                                 <div class="login-toggle-btn">
                                                     <input type="checkbox">
                                                     <label>Remember me</label>
@@ -235,6 +238,40 @@
                                                     
                                                 </div>
                                             </form>
+                                            <script>
+                                                function togglePasswordVisibility(inputId) {
+                                                    var passwordInput = document.getElementById(inputId);
+                                                    var toggleButton = document.querySelector('.toggle-password i');
+
+                                                    if (passwordInput.type === "password") {
+                                                        passwordInput.type = "text";
+                                                        toggleButton.classList.remove('fa-eye');
+                                                        toggleButton.classList.add('fa-eye-slash');
+                                                    } else {
+                                                        passwordInput.type = "password";
+                                                        toggleButton.classList.remove('fa-eye-slash');
+                                                        toggleButton.classList.add('fa-eye');
+                                                    }
+                                                }
+
+                                            </script>
+                                            <style>
+                                                .password-input {
+                                                    position: relative;
+                                                }
+
+                                                .toggle-password {
+                                                    position: absolute;
+                                                    right: 20px;
+                                                    top: 40%;
+                                                    transform: translateY(-50%);
+                                                    cursor: pointer;
+                                                }
+                                            </style>
+
+                                            <div class="button-box btn-hover text-center">
+                                                <button type="submit">GENERATE OTP</button>
+                                            </div>
                                             
 
                                                     <hr class="my-4">

@@ -36,7 +36,7 @@ userRoute.set('views','./views/users')
 userRoute.get("*",auth.isUser)
 
 userRoute.get('/',auth.isLogin,userController.loadHomePage);
-userRoute.get('/register',auth.isLogin, userController.loadRegister);
+userRoute.get('/register', userController.loadRegister);
 userRoute.post('/register' ,userController.intialRegisterUser);
 
 userRoute.post("/verify-otp",userController.registerUser)

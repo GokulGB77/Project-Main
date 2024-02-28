@@ -222,35 +222,74 @@
                                                 onsubmit="return validateForm()">
                                                 <div class="mb-3">
                                                     <label for="name" class="form-label">Name</label>
-                                                    <input type="text" class="form-control" id="name" name="name" oninput="validateName()" required>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                        oninput="validateName()" required>
                                                     <span id="nameErrorMessage" style="color: red;"></span>
                                                 </div>
-                                                
+
                                                 <div class="mb-3">
                                                     <label for="email" class="form-label">Email</label>
-                                                    <input type="email" class="form-control" id="email" name="email" oninput="validateEmail()" required>
+                                                    <input type="email" class="form-control" id="email" name="email"
+                                                        oninput="validateEmail()" required>
                                                     <span id="emailErrorMessage" style="color: red;"></span>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="mobile" class="form-label">Mobile</label>
-                                                    <input type="tel" class="form-control" id="mobile" name="mobile" oninput="validateMobile()" required>
+                                                    <input type="tel" class="form-control" id="mobile" name="mobile"
+                                                        oninput="validateMobile()" required>
                                                     <span id="mobileErrorMessage" style="color: red;"></span>
                                                 </div>
-                                                
+
                                                 <div class="mb-3">
                                                     <label for="password" class="form-label">Password</label>
-                                                    <input type="password" class="form-control" id="password"
+                                                    <div class="password-input">
+                                                        <input type="password" class="form-control" id="password"
                                                         name="password" onblur="validatePassword()" required>
+                                                    <span class="toggle-password"onclick="togglePasswordVisibility('password')"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                                                    </div>
                                                     <span id="passwordErrorMessage" style="color: red;"></span>
 
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="password" class="form-label">Confirm Password</label>
-                                                    <input type="password" class="form-control" id="confirmPassword"
-                                                        name="confirmPassword" required oninput="confirmPassword()">
+                                                    <div class="password-input">
+                                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required oninput="confirmPassword()">
+                                                    <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword')"> <i class="fa fa-eye" aria-hidden="true"></i></span>
+                                                    </div>
                                                     <span id="confirmPasswordErrorMessage" style="color: red;"></span>
                                                 </div>
+                                               
+                                                
+                                                <script>
+                                                    function togglePasswordVisibility(inputId) {
+                                                        var passwordInput = document.getElementById(inputId);
+                                                        var toggleButton = document.querySelector('.toggle-password i');
 
+                                                        if (passwordInput.type === "password") {
+                                                            passwordInput.type = "text";
+                                                            toggleButton.classList.remove('fa-eye');
+                                                            toggleButton.classList.add('fa-eye-slash');
+                                                        } else {
+                                                            passwordInput.type = "password";
+                                                            toggleButton.classList.remove('fa-eye-slash');
+                                                            toggleButton.classList.add('fa-eye');
+                                                        }
+                                                    }
+
+                                                </script>
+                                                <style>
+                                                    .password-input {
+                                                        position: relative;
+                                                    }
+
+                                                    .toggle-password {
+                                                        position: absolute;
+                                                        right: 20px;
+                                                        top: 50%;
+                                                        transform: translateY(-65%);
+                                                        cursor: pointer;
+                                                    }
+                                                </style>
 
                                                 <div class="button-box btn-hover text-center">
                                                     <button type="submit">GENERATE OTP</button>
@@ -345,6 +384,7 @@
                     const mobileErrorMessage = document.getElementById('mobileErrorMessage');
                     const mobileRegex = /^[0-9]{10}$/;
                     const allSameRegex = /^(\d)\1+$/;
+                    const sequentialRegex = /^(?!(\d)\1+$)\d{10}$/;
 
                     if (mobileNumber.trim() === '') {
                         mobileErrorMessage.textContent = 'Mobile number should not be blank';
@@ -356,10 +396,13 @@
                         mobileErrorMessage.textContent = 'Mobile number should be 10 digits';
                     } else if (allSameRegex.test(mobileNumber)) {
                         mobileErrorMessage.textContent = 'All digits in the mobile number should not be the same';
+                    } else if (sequentialRegex.test(mobileNumber)) {
+                        mobileErrorMessage.textContent = 'Mobile number should not be sequential';
                     } else {
-                        mobileErrorMessage.textContent = ''; 
+                        mobileErrorMessage.textContent = '';
                     }
                 }
+
 
                 function validateEmail() {
                     const email = document.getElementById('email').value;
@@ -427,8 +470,8 @@
                 }
 
 
-                
-                
+
+
 
             </script>
 
