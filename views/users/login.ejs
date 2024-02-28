@@ -210,6 +210,16 @@
                                             <h4> Login </h4>    
                                         </div>
                                         <div class="login-register-form" >
+                                            <div style="margin-bottom: 20px;">
+                                                <div id="error-message" class="text-center" >
+                                                  <% if (typeof error !== 'undefined') { %>
+                                                    <% if (error === 'blocked' || error === 'usernotfound' || error === 'invalid') { %>
+                                                      <h5 style="color: red;" ><%= errorMessage %></h5>
+                                                    <% } %>
+                                                  <% } %>
+                                                </div>
+                                              </div>
+                                              
                                             <form  method="post" id="login-form" >
                                                 <input type="text" name="email" id="email" placeholder="Email" required>
                                                 <input type="password" name="password" id="password" placeholder="Password" required>
@@ -222,11 +232,7 @@
                                                     <button type="submit">LOGIN</button>
                                                 </div>    
                                                 <div style="margin-top:20px">
-                                                    <% if (typeof message !== 'undefined') { %>
-                                                        <h6 class="text-center" id="errorMessage" style="color: red;">
-                                                            <%= message %>
-                                                        </h6>
-                                                        <% } %>
+                                                    
                                                 </div>
                                             </form>
                                             

@@ -161,7 +161,25 @@ const loadLogin = async (req, res) => {
     if(jwtcookie){
       return res.redirect("/")
     } 
-      return res.render('login');
+      const {error} = req.query
+      let errorMessage = '';
+  
+      switch (error) {
+        case 'blocked':
+          errorMessage = 'User is blocked';
+          break;
+        case 'usernotfound':
+          errorMessage = 'User Not Found';
+          break;
+        case 'invalid':
+          errorMessage = 'Invalid Credentials';
+          break;
+        default:
+          errorMessage = '';
+      }
+  
+      
+      return res.render('login',{ error,errorMessage});
   } catch (error) {
     console.log(error.message);
   }
@@ -175,17 +193,17 @@ const loginUser = async (req, res) => {
   try {
     const userData = await Userdb.findOne({ email });
     if (!userData) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.redirect('/login?error=usernotfound');
     }
 
     const status = userData.status;
     if (!status) {
-      return res.status(403).json({ message: "User is blocked" });
+      return res.redirect('/login?error=blocked');
     }
 
     const isPasswordValid = await argon2.verify(userData.password, password);
     if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.redirect('/login?error=invalid');
     }
 
     const userID = userData._id; 

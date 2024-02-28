@@ -11,26 +11,29 @@ const createToken = (id) => {
 
 
 
-
 const isLogin = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
-    if(token){
-      jwt.verify(token,secretKey,(error,decodedToken) => {
-        if(error){
-          console.log(error.message);
-          res.redirect('/login')
-          next()
+    if (token) {
+      jwt.verify(token, secretKey, (err, decodedToken) => {
+        if (err) {
+          console.log(err.message);
+          res.redirect('/logout');
         } else {
           console.log(decodedToken);
-          next()
+          next();
         }
       });
-    } else { res.redirect("/") }
+    } else {
+      res.redirect('/logout');
+    }
   } catch (error) {
     console.log(error.message);
+    // If there's an error, pass it to the next middleware
+    next(error);
   }
 }
+
 
 // middleware.js
 
@@ -43,30 +46,46 @@ const attachTokenToLocals = (req, res, next) => {
 
 const isUser = async (req, res, next) => {
   const token = req.cookies.jwt;
+  res.locals.token = req.cookies.jwt || null;
+  
   if (token) {
     jwt.verify(token, secretKey, async (err, decodedToken) => {
-      if (error) {
-        console.log("Error:", error.message);
+      if (err) {
+        console.error("JWT Verification Error:", err.message);
         res.locals.currentUser = null;
-        next();
+        next(); // Proceed to the next middleware
       } else {
         try {
-          let user = await Userdb.findById(decodedToken.id);
-          res.locals.currentUser = user;
-          next();
+          const user = await Userdb.findById(decodedToken.id);
+          if (user) {
+            if (user.status === 1) {
+              res.locals.currentUser = user;
+              next(); // Proceed to the next middleware
+            } else {
+              console.error("User is blocked");
+              res.clearCookie('jwt'); // Clear JWT cookie
+              return res.redirect('/login?error=blocked');
+            }
+          } else {
+            console.error("User not found");
+            res.locals.currentUser = null;
+            next(); // Proceed to the next middleware
+          }
         } catch (userError) {
-          console.log("User Error:", userError.message);
+          console.error("User Lookup Error:", userError.message);
           res.locals.currentUser = null;
-          next();
+          next(); // Proceed to the next middleware
         }
       }
     });
   } else {
+    // No token found, proceed to the next middleware
     res.locals.currentUser = null;
-    console.log("No token found");
     next();
   }
-};
+}
+
+
 
 
 

@@ -119,7 +119,7 @@ const unblockUser = async (req,res) => {
     res.render("userDetails",{users});
   } catch (error) {
     console.log(error);
-    res.status(500).send("User Blocking Failed");
+    res.status(500).send("User Unblocking Failed");
   }
 }
 

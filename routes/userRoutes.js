@@ -9,10 +9,10 @@ const adminAuth = require('../middleware/adminAuth');
 const cookieParser = require('cookie-parser');
 
 
-userRoute.use(auth.attachTokenToLocals); // Use the middleware
 
 // Parse cookies before other middleware
 userRoute.use(cookieParser());
+userRoute.use(auth.attachTokenToLocals); // Use the middleware
 
 userRoute.use(session({
   secret: uuidv4(),
@@ -21,10 +21,6 @@ userRoute.use(session({
   cookie: { secure: false }, // Set secure to true if using HTTPS
   }));  
 
-  userRoute.use((req, res, next) => {
-    res.locals.isLoggedIn = req.cookies.jwt ? true : false;
-    next();
-  });
 
   userRoute.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -37,23 +33,21 @@ userRoute.use(session({
 userRoute.set('view engine','ejs');
 userRoute.set('views','./views/users')
 
-// userRoute.get("*",auth.isUser)
-// userRoute.get("*",auth.isLogin)
-// userRoute.get("*",auth.ifToken)
+userRoute.get("*",auth.isUser)
 
-userRoute.get('/',userController.loadHomePage);
-userRoute.get('/register', userController.loadRegister);
+userRoute.get('/',auth.isLogin,userController.loadHomePage);
+userRoute.get('/register',auth.isLogin, userController.loadRegister);
 userRoute.post('/register' ,userController.intialRegisterUser);
 
 userRoute.post("/verify-otp",userController.registerUser)
-userRoute.get('/resend-otp' ,userController.resendOtp);
+userRoute.get('/resend-otp' ,auth.isLogin,userController.resendOtp);
 
 userRoute.get('/login',userController.loadLogin);
 userRoute.post('/login',userController.loginUser)
 userRoute.get("/home",auth.isLogin,userController.loadHomePage)
 
-userRoute.get('/shop',productsController.loadShop);
-userRoute.get('/product-details?',productsController.loadProductDetails);
+userRoute.get('/shop',auth.isLogin,productsController.loadShop);
+userRoute.get('/product-details?',auth.isLogin,productsController.loadProductDetails);
 
 userRoute.get("/profile",auth.isLogin,userController.loadProfileSettings)
 
