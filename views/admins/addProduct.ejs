@@ -9,7 +9,6 @@
     <link rel="shortcut icon" type="image/x-icon" href="/admin/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/admin/css/main.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/css1/main.css" rel="stylesheet" type="text/css" />
 
     <style>
         .preview-image {
@@ -191,9 +190,12 @@
                         <div class="content-header">
                             <h2 class="content-title">Add New Product</h2>
                             <div>
-                                <button class="btn btn-md rounded font-sm hover-up"  >Add Product</button>
+                                <button class="btn btn-md rounded font-sm hover-up"  onclick="submitForm()" id="addProduct" >Add Product</button>
+
                             </div>
+                            
                         </div>
+                        <p id="main-error" class="errorMessage" style="color: red;"></p>
                     </div>
                     <div class="col-lg-6">
                         <div class="card mb-4">
@@ -201,24 +203,24 @@
                                 <div class="mb-4">
                                     <label for="productName" class="form-label">Product Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="productName" name="productName"
-                                        maxlength="100" pattern="^[A-Za-z0-9\s\-',.&()]+$"
-                                        title="Please enter a valid product name."
-                                        required>
-                                    <!-- <p id="productNameError" class="error-message" style="color: red;"></p> -->
+                                        maxlength="100" 
+                                        oninput="validateName()" onblur="trim()" required>
+                                    <p id="productNameError" class="error-message" style="color: red;"></p>
                             
                                 </div>
                                 <div class="row gx-3">
-                                    <div class="col-md-6  mb-3">
+                                    <div class="col-md-6 mb-3">
                                         <label for="stock" class="form-label">Stock Quantity</label>
-                                        <input type="number" placeholder="Type here" class="form-control" maxlength="4" id="stock" name="stock"
-                                            pattern="^[1-9]\d*$" title="Stock Quantity can be  posiive numbers only" required>
-                                        <!-- <p id="productPriceError" class="error-message" style="color: red;"></p> -->
+                                        <input type="text" placeholder="Type here" class="form-control" maxlength="4" id="stock" name="stock"
+                                            pattern="[0-9]+" title="Enter a valid Quantity (non-negative integer)" required>
+                                        <p id="productQuantityError" class="error-message" style="color: red;"></p>
                                     </div>
+                                    
                                     <div class="col-md-6  mb-3">
                                         <label class="form-label">Tags</label>
                                         <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags"
                                             class="form-control" pattern="^[a-zA-Z,]+$" title="Only alphabets and commas are allowed" required>
-                                        <!-- <p id="productPriceError" class="error-message" style="color: red;"></p> -->
+                                        <p id="productTagsError" class="error-message" style="color: red;"></p>
                             
                                     </div>
                             
@@ -265,7 +267,7 @@
                                     pattern="^(?!0+(\.0+)?$)\d+(\.\d{1,2})?$" 
                                     title="Please enter a valid price (e.g., 10 or 10.99)" 
                                     required>
-                                    <!-- <p id="productPriceError" class="error-message" style="color: red;"></p> -->
+                                    <p id="productPriceError" class="error-message" style="color: red;"></p>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label" >Status</label>
@@ -280,7 +282,7 @@
                                 <div class="mb-4">
                                     <select class="form-select" name="productCategory" id="productCategory" required>
                                         <% categories.forEach(category => { %>
-                                            <option value="<%= category._id %>"><%= category.categoryName %></option>
+                                            <option value="<%=category._id %>"><%=category.categoryName %></option>
                                           <% }); %>
                                         
                                     </select>
@@ -332,24 +334,19 @@
             });
         </script>
         
-        <script>
-            //Add the same to the edit product page also
-            function submitForm() {
-            if (validateName()) {
-                document.getElementById('productForm').submit();
-            } else {
-                document.getElementById('main-error').innerText = 'CANNOT SUBMIT';
-            }
-        }
-        </script>
+        
 
         <script>
+            function trim(){
+                let name = document.getElementById('productName').value;
+                const productNameError = document.getElementById('productNameError');
+                name = name.trim();
+            }
             function validateName() {
                 let name = document.getElementById('productName').value;
                 const productNameError = document.getElementById('productNameError');
-
+                let value = false
                 // Remove leading and trailing spaces
-                name = name.trim();
 
                 // Condition: Should not be all spaces
                 if (name.length === 0) {
@@ -381,13 +378,52 @@
                 // }
                 else {
                     // Capitalize the first character and characters after space
-                    name = name.replace(/\b\w/g, char => char.toUpperCase());
+                    value = true
+                    name = name.replace(/\b\w/g, char => char.toUpperCase())
                     document.getElementById('productName').value = name;
                     productNameError.textContent = ''; // Remove the error message
                 }
+                return value
             }
+            // function validateQty() {
+            //     console.log("validating qty");
+            //     let quantity = document.getElementById('stock').value.trim(); // Remove leading and trailing spaces
+            //     const productQuantityError = document.getElementById('productQuantityError');
+            //     let value = false;
+
+            //     // Condition: Should be a non-negative number, contain only digits, and not contain "-"
+            //     if (!/^\d+$/.test(quantity) || quantity.includes("-")) {
+            //         productQuantityError.textContent = 'Enter a valid Quantity';
+            //         console.log("Validd qtyyyyyyyyyyyyyy");
+            //     } else {
+            //         productQuantityError.textContent = ''; // Remove the error message
+            //         console.log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
+            //         value = true;
+            //     }
+            //     return value;
+            // }
 
 
+
+
+
+        </script>
+        <script>
+            //Add the same to the edit product page also
+            function submitForm() {
+               
+                if (validateName() ){
+                    console.log("Hellddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddo");
+                    
+
+                    document.getElementById('addProduct').submit();
+
+                } else {
+                    console.log("Hellwwwwwwwwwwwwwwwwwwwwwwwwwwwwwo");
+
+                    document.getElementById("main-error").innerText = "Cannot Add Product"
+                }
+            }
         </script>
         
        <footer >
@@ -405,15 +441,7 @@
       <script src="/admin/js/main.js" type="text/javascript"></script>
       <script src="/admin/js/custom-chart.js" type="text/javascript"></script>
       
-      <script src="/admin/js1/vendors/jquery-3.6.0.min.js"></script>
-      <script src="/admin/js1/vendors/bootstrap.bundle.min.js"></script>
-      <script src="/admin/js1/vendors/select2.min.js"></script>
-      <script src="/admin/js1/vendors/perfect-scrollbar.js"></script>
-      <script src="/admin/js1/vendors/jquery.fullscreen.min.js"></script>
-      <script src="/admin/js1/vendors/chart.js"></script>
-      <!-- Main Script -->
-      <script src="/admin/js1/main.js" type="text/javascript"></script>
-      <script src="/admin/js1/custom-chart.js" type="text/javascript"></script>
+     
       
       
       </body>

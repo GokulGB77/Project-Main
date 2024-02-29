@@ -35,7 +35,7 @@ userRoute.set('views','./views/users')
 
 userRoute.get("*",auth.isUser)
 
-userRoute.get('/',auth.isLogin,userController.loadHomePage);
+userRoute.get('/',userController.loadHomePage);
 userRoute.get('/register', userController.loadRegister);
 userRoute.post('/register' ,userController.intialRegisterUser);
 
@@ -46,7 +46,7 @@ userRoute.get('/login',userController.loadLogin);
 userRoute.post('/login',userController.loginUser)
 userRoute.get("/home",auth.isLogin,userController.loadHomePage)
 
-userRoute.get('/shop',auth.isLogin,productsController.loadShop);
+userRoute.get('/shop',productsController.loadShop);
 userRoute.get('/product-details?',auth.isLogin,productsController.loadProductDetails);
 
 userRoute.get("/profile",auth.isLogin,userController.loadProfileSettings)

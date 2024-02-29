@@ -4735,6 +4735,7 @@ textarea {
   font-family: "Poppins", sans-serif;
   color: #ffffff;
   margin-right: 10px;
+  margin-top: 10px;
   line-height: 1;
   display: inline-block;
 }
@@ -4744,6 +4745,7 @@ textarea {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  margin-top: 10px;
 }
 
 .timer-style-1 .syotimer__body .syotimer-cell {
@@ -5555,7 +5557,7 @@ textarea {
 }
 
 .quickview-modal-style .modal-dialog .modal-content .modal-header a i {
-  line-height: 1;
+  line-height: 3;
 }
 
 .quickview-modal-style .modal-dialog .modal-content .modal-header a:hover {
@@ -5582,12 +5584,13 @@ textarea {
 }
 
 .product-price span.new-price {
-  color: #fd1748;
+  color: #155801;
+  font-weight: 10%;
 }
 
 .product-price span.old-price {
+  color: #000000;
   margin-right: 13px;
-  color: #555252;
   text-decoration: line-through;
 }
 

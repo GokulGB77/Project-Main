@@ -226,8 +226,7 @@
                             <div class="card-body">
                                 <div>
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" id="productDetails"   name="productDetails" maxlength="600" rows="8" required  pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$"
-                                    title="Description should not start or end with spaces, contain only one space between words, and consist of alphabets, numbers, and special characters (-,.:/+&%\(){}). It cannot be composed solely of special characters or numbers."> ><%=product.productDetails%></textarea>
+                                    <textarea placeholder="Type here" class="form-control" id="productDetails" name="productDetails" maxlength="600" rows="8" required pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$" title="Description should not start or end with spaces, contain only one space between words, and consist of alphabets, numbers, and special characters (-,.:/+&%\(){}). It cannot be composed solely of special characters or numbers."><%=product.productDetails%></textarea>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -283,7 +282,7 @@
                                 <div class="mb-4">
                                     <select class="form-select" name="productCategory" id="productCategory">
                                         <% categories.forEach(category => { %>
-                                          <option value="<%= category._id %>" <% if (category._id.toString() === product.category.toString()) { %> selected <% } %> ><%= category.categoryName %></option>
+                                          <option value="<%=category._id %>" <% if (category._id.toString() ===product.category._id.toString() ) { %> selected <% } %> ><%= category.categoryName %></option>
                                         <% }); %>
                                       </select>
                                       

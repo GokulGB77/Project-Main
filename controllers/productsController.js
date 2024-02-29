@@ -5,7 +5,7 @@ const Categoriesdb = require("../models/categoriesModel");
 
 const loadAdminProducts = async (req, res) => {
   try {
-    const products = await Productsdb.find({})
+    const products = await Productsdb.find({}).sort({productName:1})
     // .populate({
     //   path: 'categories',
     //   select: 'name',
@@ -37,7 +37,7 @@ const loadAddProduct = async (req, res) => {
 
 const getCategories = async (req,res) => {
   try {
-    const categories = await Categoriesdb.find({}, "categoryName");
+    const categories = await Categoriesdb.find({}, "categoryName").sort({categoryName:1});
     return categories;
   } catch (error) {
     console.error("Get category from database failed: ",error);
@@ -97,12 +97,11 @@ const editProduct = async (req,res)=>{
     console.log("Product fetched using id...",id);
     const categories = await getCategories();
 
-    //const categories = await getCategories();
     res.render("editProduct",{product,categories})  
 
   } catch (error) {
     console.log(error)
-    res.status(500).send("Error editing product:", error);
+    res.status(500).send("Error editing product");
 
 
   }
@@ -136,7 +135,7 @@ const updateProduct = async (req, res) => {
     }
 
     const UpdatedDetails = await Productsdb.findByIdAndUpdate(id, updatedProductDetails);
-    // console.log(UpdatedDetails);
+    console.log(UpdatedDetails.categoryName);
     console.log("Product details updated..........");
     res.redirect("/admin/products");
   } catch (error) {
@@ -183,9 +182,10 @@ const unarchiveProduct = async(req,res) => {
 const loadShop = async (req,res)=>{
   try {
     
-    const products = await Productsdb.find({}).populate("category")
+    const allItems = await Productsdb.find({}).populate("category")
+    const oldPrice = allItems.productPrice + allItems.productPrice*(10/100)
     console.log("Products Fetched From Database");
-    res.render("shop",{products})
+    res.render("shop",{allItems,oldPrice})
   } catch (error) {
     console.log(error);
     res.status(500).send("Products page render failed")    

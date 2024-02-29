@@ -1,186 +1,5 @@
-<!DOCTYPE html>
-<html lang="zxx">
+<%- include('../layouts/header.ejs') %>
 
-
-<head>
-    <meta charset="utf-8">
-    <title>sayyamcode eCommerce HTML Template</title>
-    <link rel="canonical" href="#" />
-
-    <!-- Add site Favicon -->
-    <link rel="icon" href="user/images/favicon/cropped-favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" href="user/images/favicon/cropped-favicon-192x192.png" sizes="192x192" />
-    <link rel="apple-touch-icon" href="user/images/favicon/cropped-favicon-180x180.png" />
-
-    <!-- All CSS is here
-	============================================ -->
-    <link rel="stylesheet" href="user/css/vendor/bootstrap.min.css" />
-    <link rel="stylesheet" href="user/css/vendor/pe-icon-7-stroke.css" />
-    <link rel="stylesheet" href="user/css/vendor/themify-icons.css" />
-    <link rel="stylesheet" href="user/css/vendor/font-awesome.min.css" />
-    <link rel="stylesheet" href="user/css/plugins/animate.css" />
-    <link rel="stylesheet" href="user/css/plugins/aos.css" />
-    <link rel="stylesheet" href="user/css/plugins/magnific-popup.css" />
-    <link rel="stylesheet" href="user/css/plugins/swiper.min.css" />
-    <link rel="stylesheet" href="user/css/plugins/jquery-ui.css" />
-    <link rel="stylesheet" href="user/css/plugins/nice-select.css" />
-    <link rel="stylesheet" href="user/css/plugins/select2.min.css" />
-    <link rel="stylesheet" href="user/css/plugins/easyzoom.css" />
-    <link rel="stylesheet" href="user/css/plugins/slinky.css" />
-    <link rel="stylesheet" href="user/css/style.css" />
-</head>
-
-
-
-
-<body>
-    <div class="main-wrapper main-wrapper-2">
-        <header class="header-area header-responsive-padding header-height-1">
-            <div class="header-top d-none d-lg-block bg-gray">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6 col-6">
-                            <div class="welcome-text">
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-6">
-                            <div class="language-currency-wrap">
-                                <div class="currency-wrap border-style">
-                                    <a class="currency-active" href="#"> ₹ Rupee (INR) <i class=" ti-angle-down "></i></a>
-                                    <div class="currency-dropdown">
-                                        <ul>
-                                            <li><a href="#">$ Dollar (US) </a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="language-wrap">
-                                    <a class="language-active" href="#"><img src="/user/images/icon-img/flag.png" alt=""> English <i class=" ti-angle-down "></i></a>
-                                    <div class="language-dropdown">
-                                        <ul>
-                                            <li><a href="#"><img src="/user/images/icon-img/flag.png" alt="">English </a></li>
-                                            <li><a href="#"><img src="/user/images/icon-img/spanish.png" alt="">Spanish</a></li>
-                                            <li><a href="#"><img src="/user/images/icon-img/arabic.png" alt="">Arabic </a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="header-bottom sticky-bar">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <div class="logo">
-                                <a href="/"><img src="/user/images/logo/logo.png" alt="logo"></a>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 d-none d-lg-block">
-                            <div class="main-menu text-center">
-                                <nav>
-                                    <ul>
-                                        <li><a href="/">HOME</a></li>
-                                        <li><a href="/shop">SHOP</a></li>
-                                        <li><a href="/about-us">ABOUT</a></li>
-                                        <li><a href="/contact-us">CONTACT US</a></li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <div class="header-action-wrap">
-                                <div class="header-action-style header-search-1">
-                                    <a class="search-toggle" href="#">
-                                        <i class="pe-7s-search s-open"></i>
-                                        <i class="pe-7s-close s-close"></i>
-                                    </a>
-                                    <div class="search-wrap-1">
-                                        <form action="#">
-                                            <input placeholder="Search products…" type="text">
-                                            <button class="button-search"><i class="pe-7s-search"></i></button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <% if (token) { %>
-                                    <div class="header-action-style dropdown ">
-                                        <!-- Dropdown Button with User Icon -->
-                                        <a href="#"  id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="pe-7s-user"></i>
-                                        </a>
-                                        <!-- Dropdown Menu -->
-                                        <ul class="dropdown-menu dropdown-menu-center" aria-labelledby="loginDropdown" style="left: 50%; transform: translateX(-50%);" >
-                                            <li><a class="dropdown-item" style="font-size: 14px;" href="/profile">Account Settings</a></li>
-                                            <li><hr class="dropdown-divider"></li> <!-- Divider -->
-                                            <li><a class="dropdown-item" style="font-size: 14px;" href="/logout">Logout</a></li>
-                                        </ul>
-                                    </div>
-                                    <% } else { %>
-                                        <div class="header-action-style " >
-                                        <a title="Login" href="/login"><i class="pe-7s-user"></i></a>
-                                        </div>
-                                        <% } %>
-                                <div class="header-action-style">
-                                    <a title="Wishlist" href="wishlist"><i class="pe-7s-like"></i></a>
-                                </div>
-                                <div class="header-action-style header-action-cart">
-                                    <a class="cart-active" href="#"><i class="pe-7s-shopbag"></i>
-                                        <span class="product-count bg-black">01</span>
-                                    </a>
-                                </div>
-                                <div class="header-action-style d-block d-lg-none">
-                                    <a class="mobile-menu-active-button" href="#"><i class="pe-7s-menu"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-        <!-- mini cart start -->
-        <div class="sidebar-cart-active">
-            <div class="sidebar-cart-all">
-                <a class="cart-close" href="#"><i class="pe-7s-close"></i></a>
-                <div class="cart-content">
-                    <h3>Shopping Cart</h3>
-                    <ul>
-                        <li>
-                            <div class="cart-img">
-                                <a href="#"><img src="user/images/cart/cart-1.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="#">Stylish Swing Chair</a></h4>
-                                <span> 1 × $49.00	</span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#">×</a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="cart-img">
-                                <a href="#"><img src="user/images/cart/cart-2.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="#">Modern Chairs</a></h4>
-                                <span> 1 × $49.00	</span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#">×</a>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="cart-total">
-                        <h4>Subtotal: <span>$170.00</span></h4>
-                    </div>
-                    <div class="cart-btn btn-hover">
-                        <a class="theme-color" href="cart.html">view cart</a>
-                    </div>
-                    <div class="checkout-btn btn-hover">
-                        <a class="theme-color" href="checkout.html">checkout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1">
             <div class="container">
                 <div class="breadcrumb-content text-center">
@@ -273,8 +92,8 @@
                         <div class="product-details-content" data-aos="fade-up" data-aos-delay="400">
                             <h2><%=product.productName %></h2>
                             <div class="product-details-price">
-                                <span class="old-price">&#x20b9;<%=product.productPrice %></span>
-                                <span class="new-price">&#x20b9;<%=product.productPrice %></span>
+                                <span class="old-price">&#8377; <%=( product.productPrice +(product.productPrice*(10/100)) ).toFixed(0)%></span>
+                                <span class="new-price">&#8377; <%=product.productPrice %></span>
                             </div>
                             <div class="product-details-review">
                                 <div class="product-rating">
@@ -323,13 +142,13 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="social-icon-style-4">
+                            <!-- <div class="social-icon-style-4">
                                 <a href="#"><i class="fa fa-facebook"></i></a>
                                 <a href="#"><i class="fa fa-dribbble"></i></a>
                                 <a href="#"><i class="fa fa-pinterest-p"></i></a>
                                 <a href="#"><i class="fa fa-twitter"></i></a>
                                 <a href="#"><i class="fa fa-linkedin"></i></a>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -346,7 +165,7 @@
                 <div class="tab-content">
                     <div id="des-details1" class="tab-pane active">
                         <div class="product-description-content text-center">
-                            <p data-aos="fade-up" data-aos-delay="200"><%=product.productDetails %></p>
+                            <p data-aos="fade-up" data-aos-delay="200"> <%=product.productDetails %></p>
                         </div>
                     </div>
                     <div id="des-details2" class="tab-pane">

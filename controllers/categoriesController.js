@@ -93,10 +93,10 @@ const disableCategory = async (req,res) => {
     const disabledCategory = await Categoriesdb.findByIdAndUpdate(id,{
       categoryStatus: 0
     })
-    const category = await Categoriesdb.find({});
+    const categories = await Categoriesdb.find({});
     
     console.log("Category Disabled:",disabledCategory.categoryName);
-    res.render("adminCategories",{category});
+    res.render("adminCategories",{categories,errorMessage:""});
  
   } catch (error) {
     console.log("Category disabling failed: ",error);
@@ -110,10 +110,10 @@ const enableCategory = async (req,res) => {
     const enabledCategory = await Categoriesdb.findByIdAndUpdate(id,{
       categoryStatus: 1
     });
-    const category = await Categoriesdb.find({});
+    const categories = await Categoriesdb.find({});
     
     console.log("Category Enabled:",enabledCategory.categoryName);
-    res.render("adminCategories",{category});
+    res.render("adminCategories",{categories,errorMessage:""});
  
   } catch (error) {
     console.log("Category enabling failed: ",error);
