@@ -52,7 +52,7 @@ const intialRegisterUser = async (req, res) => {
     }
 
     const OTP = generateOTP()
-    //const otpExpiration = Date.now() + 5000 //5 * 60000 =  OTP expires in 5 minutes
+    const otpExpiration = Date.now() + 5000 //5 * 60000 =  OTP expires in 5 minutes
     req.session.tempUserDetails = {
       name: req.body.name,
       email: req.body.email,
@@ -63,7 +63,7 @@ const intialRegisterUser = async (req, res) => {
       status:0,
       otp: OTP,
       // Adding expiration time
-      // otpExpiration:  otpExpiration
+      otpExpiration:  otpExpiration
 
     };
 
@@ -114,10 +114,10 @@ const resendOtp = async (req, res) => {
 const registerUser = async (req, res) => {
   try {
     // Check if OTP is expired
-    // if (req.session.tempUserDetails && req.session.tempUserDetails.otpExpiration && Date.now() > req.session.tempUserDetails.otpExpiration) {
+    if (req.session.tempUserDetails.otpExpiration && Date.now() > req.session.tempUserDetails.otpExpiration) {
       // OTP expired
-    //   return res.render("otpVerify", { errorMessage: "OTP expired. Please resend OTP." });
-    // }
+      return res.render("otpVerify", { errorMessage: "OTP expired. Please resend OTP." });
+    }
 
     if (req.body.otp === req.session.tempUserDetails.otp) {
   
@@ -142,10 +142,10 @@ const registerUser = async (req, res) => {
 
       console.log("userId is :", userData._id);
       console.log("token :", token);
-      res.redirect('/'); // Redirect to Home
-    } else {
-      res.render("otpVerify", { errorMessage: "Not valid OTP" });
-    }
+      res.status(200).json({});
+    } else{
+      res.status(400).json({});           
+  } 
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");

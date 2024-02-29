@@ -40,7 +40,7 @@ userRoute.get('/register', userController.loadRegister);
 userRoute.post('/register' ,userController.intialRegisterUser);
 
 userRoute.post("/verify-otp",userController.registerUser)
-userRoute.get('/resend-otp' ,auth.isLogin,userController.resendOtp);
+userRoute.get('/resend-otp' ,userController.resendOtp);
 
 userRoute.get('/login',userController.loadLogin);
 userRoute.post('/login',userController.loginUser)

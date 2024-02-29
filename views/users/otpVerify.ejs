@@ -1,12 +1,6 @@
 <%- include('../layouts/header.ejs') %>
 
-   
-    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
-    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
-    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
-    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
-    <!------------------------------------------------------------------------FORM ACTION------------------------------------------------------------------------------------------------>
-
+  
     <div class="login-register-area pb-100 pt-95">
       <div class="container">
         <div class="row">
@@ -19,8 +13,12 @@
                 <div id="lg1" class="tab-pane active">
                   <div class="login-form-container">
                     <div class="login-register-form">
-                        <form action="/verify-otp" method="post" id="otp-form">
-                            <input type="text" name="otp" id="otp" placeholder="Enter OTP">
+                        <form action="/verify-otp" method="post" id="otpform">
+                          <div>
+                            <h5 style="color: red; text-align: center;" id="otpmessage"></h5>
+
+                          </div>
+                          <input type="text" name="otp" id="otp" placeholder="Enter OTP">
     
                             <div class="button-box btn-hover text-center">
                               <button type="submit" >Submit OTP</button>
@@ -35,11 +33,11 @@
                           </div>
                          
                           
-                            <% if (errorMessage) { %>
+                            <!-- <% if (errorMessage) { %>
                                 <p class="error-message" >
                                     <%= errorMessage %>
                                 </p>
-                            <% } %>
+                            <% } %> -->
                         </form>
                     </div>
                   </div>
@@ -51,6 +49,39 @@
       </div>
     </div>
 
+    <script>
+       const form = document.getElementById('otpform');
+            form.addEventListener('submit', async function submitForm(event) {
+                event.preventDefault();
+    
+                const preformData = new FormData(form);
+                const formData = new URLSearchParams(preformData);
+
+                try {
+                const response = await fetch('/verify-otp', {
+                    method: 'POST',
+                    body: formData
+                });
+
+
+                if (response.ok) {
+                    // Item remove successfully
+                    const data = await response.json();
+                    window.location.href = "/home";
+                    console.log('Verified otp');
+
+                } else {
+                    // Handle error
+                    document.getElementById('otpmessage').innerText = 'Otp is incorrect';
+                    console.error('otp incorrect');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+    
+            });
+
+    </script>
 
     <script>
       let canResend = true;
@@ -69,17 +100,17 @@
               // Format remaining time as minutes and seconds
               const minutes = Math.floor(remainingTime / 60);
               const seconds = Math.floor(remainingTime % 60);
-              resendTimer.textContent = `Resend OTP in ${minutes} minutes ${seconds} seconds`;
+              resendTimer.textContent = "Resend OTP in " +minutes+ " minutes "  +seconds+ " seconds.";
           } else {
               // Enable the resend button
               resendButton.disabled = false;
-              resendTimer.textContent = ''; // Clear the timer display
+              resendTimer.textContent = 'Send New OTP'; // Clear the timer display
           }
       };
   
       // Start the countdown timer
       const startResendTimer = () => {
-          resendTimeout = Date.now() + 60000; // 10 seconds
+          resendTimeout = Date.now() + 120000; // 10 seconds
           updateResendTimer();
   
           // Update the timer every second
