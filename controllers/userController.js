@@ -230,12 +230,13 @@ const loadHomePage = async (req, res) => {
     res.locals.token = tokenId,
     console.log("User logged in:",tokenId);
     try {
+      // const categoryLiving = await Productsdb.find({category:"Living Room Furniture"}).populate("category")
       const products = await Productsdb.find({}).populate("category")
       const allItems = await Productsdb.find({}).populate("category").sort({ _id: 1 })
       const newArrivals= await Productsdb.find({}).populate("category").sort({ _id: -1 })
       const bestSellers= await Productsdb.find({}).populate("category").sort({ productName: 1 })
       const saleItems= await Productsdb.find({}).populate("category").sort({ productName: -1 })
-      res.render('homepage', { tokenId, newArrivals,allItems,bestSellers,saleItems,products});
+      res.render('homepage', { tokenId, newArrivals,allItems,bestSellers,saleItems,products,});
 
     } catch (error) {
       console.log("Error getting product data from db:",error)

@@ -403,8 +403,8 @@
                             <div class="product-wrap" data-aos="fade-up" data-aos-delay="200">
 
                                 <div class="product-img img-zoom mb-25">
-                                    <a href="product-details?<%=product._id %>">
-                                        <img src="/productAssets/<%= product.images[0] %>" alt="">
+                                    <a href="product-details?id=<%=product._id %>">
+                                        <img src="/productAssets/<%= product.images[0] %>" alt="<%= product.productName %>">
                                     </a>
                                     <!-- <div class="product-badge badge-top badge-right badge-pink">
                                         <span>-5%</span>
@@ -420,7 +420,7 @@
                                     </div>
                                 </div>
                                 <div class="product-content">
-                                    <h3><a href="product-details">New Modern Sofa Set</a></h3>
+                                    <h3><a href="product-details"><%= product.productName %></a></h3>
                                     <div class="product-price">
                                         <span class="old-price">₹ <%=( product.productPrice +(product.productPrice*(10/100)) ).toFixed(0)%></span>
                                         <span class="new-price">₹ <%= product.productPrice %></span>
@@ -781,4 +781,3 @@
 </body>
 
 
-<>

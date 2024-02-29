@@ -197,11 +197,13 @@ const loadShop = async (req,res)=>{
 const loadProductDetails = async (req,res) => {
   try {
     const id= req.query.id
+    const products = await Productsdb.find({}).populate("category").limit(4)
+
     const product = await Productsdb.findById(id).populate("category");
     if (!product) {
       return res.status(404).send("Product not found");
     }
-    res.render("productDetails",{product})
+    res.render("productDetails",{product,products})
   } catch (error) {
     console.log(error.message)
     res.status(500).send("Internal Server Error");
