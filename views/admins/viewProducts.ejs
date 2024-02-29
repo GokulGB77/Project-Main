@@ -231,17 +231,23 @@
                                         &#8377 <%= products[i].productPrice %>
                                     </span>
                                 </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                <div class="col-lg-1 col-sm-1 col-1 col-status text-center">
+                                    <span
+                                        class="badge rounded-pill alert-<%=products[i].stock===0 ? 'danger' : 'success' %>">
+                                        <%= products[i].stock>0 ? 'In Stock' : 'Out Of Stock' %>
+                                    </span>
+                                </div>
+                                <div class="col-lg-1 col-sm-1 col-1 col-status">
                                     <span
                                         class="badge rounded-pill alert-<%=products[i].status === 1 ? 'success' : 'danger' %>">
                                         <%= products[i].status===1 ? 'Active' : 'Disabled' %>
                                     </span>
                                 </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
+                                <!-- <div class="col-lg-1 col-sm-2 col-4 col-date">
                                     <span>
                                         <%= products[i].createdAt %>
                                     </span>
-                                </div>
+                                </div> -->
                                 <div class="col-lg-2 col-sm-2 col-4 col-action text-left">
                                     <a href="/admin/products/edit-product?id=<%=products[i]._id %>"
                                         class="btn btn-sm font-sm rounded btn-brand">
