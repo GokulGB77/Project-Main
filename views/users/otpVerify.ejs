@@ -24,19 +24,16 @@
                               <button type="submit" >Submit OTP</button>
                             </div>
                             <br>
-
-                            
-                            
-                            <!-- <% if (errorMessage) { %>
-                              <p class="error-message" >
-                                <%= errorMessage %>
-                              </p>
-                              <% } %> -->
                             </form>
                             <div class=" btn-hover text-center">
-                              <button class="btn btn-outline-secondary" href="/resend-otp" type="button" id="resendOTP"><a href="/resend-otp" style="color: white;">Resend OTP</a></button>                              <br>
+                              <button onclick="startResendTimer(); resendSuccess();" class="btn btn-outline-secondary" href="/resend-otp" type="button" id="resendOTP"><a href="/resend-otp" style="color: white;">Resend OTP</a></button>   
                               <br>
-                              <span id="resendTimer"></span> <!-- Timer display -->
+                              <br>
+                              <h6 id="resendTimer"></h6> <!-- Timer display -->
+                              <br>
+                              <br>
+                              <h6 style="color: green; text-align: center;" id="resendotperror"></h6>
+                           
                           </div>
                     </div>
                   </div>
@@ -48,6 +45,38 @@
       </div>
     </div>
 
+    <script>
+      //**********************//
+        //Resend OTP - fetch
+      //**********************//
+      const resendButton = document.getElementById('resendOTP');
+      resendButton.addEventListener('click', async function resendOtp(event) {
+          event.preventDefault();
+
+          try {
+              const response = await fetch('/resend-otp', {
+                  method: 'GET',
+              });
+
+              if (response.ok) {
+                  // Item remove successfully
+                  window.location.href = "/verify-otp";
+                  document.getElementById('resendotperror').innerText = 'Resend OTP Successful';
+                  console.log('Resend OTP Successful');
+                  
+
+              } else {
+                  // Handle error
+                  document.getElementById('resendotperror').innerText = 'Resend OTP Failed';
+                  console.error('Resend OTP Failed');
+              }
+          } catch (error) {
+              console.error('Error:', error);
+          }
+      });
+
+
+    </script>
     <script>
       //**********************//
         //Submit OTP - fetch
@@ -76,6 +105,11 @@
                     // Handle error
                     document.getElementById('otpmessage').innerText = 'Otp is incorrect';
                     console.error('otp incorrect');
+                    setTimeout(() => {
+                      document.getElementById('otpmessage').innerText = ""
+                      console.log('Error message Disappered');
+                    }, 5000);
+
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -112,15 +146,21 @@
   
       // Start the countdown timer
       const startResendTimer = () => {
-          resendTimeout = Date.now() + 20000; // 10 seconds
+          resendTimeout = Date.now() + 25000; // 10 seconds
           updateResendTimer();
-  
           // Update the timer every second
           setInterval(updateResendTimer, 1000);
       };
   
       startResendTimer();
   
+      const resendSuccess = ()=> {
+        document.getElementById('resendotperror').innerText = 'Resend OTP Successful';
+          setTimeout(() => {
+            document.getElementById('resendotperror').innerText = ""
+            console.log('Error message Disappered');        
+          }, 3000);
+      }
       // Attach a submit event listener to the form
       document.getElementById('otp-form').addEventListener('submit', function (event) {
           // Clear the timeout if the form is submitted

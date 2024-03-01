@@ -24,6 +24,7 @@
     "nodemailer": "^6.9.9",
     "otp-generator": "^4.0.1",
     "parser": "^0.1.4",
+    "simple-toast-messages": "^2.0.1",
     "uuid": "^9.0.1"
   }
 }

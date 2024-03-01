@@ -66,14 +66,14 @@ const intialRegisterUser = async (req, res) => {
     };
     
     req.session.save()
-    console.log("This is the tempUserDetails:", req.session.tempUserDetails);
     if (req.session.tempUserDetails) {
       const subject = "Verify Your CouchCart. Account"
       
       console.log(OTP);
       const html = `<p> Your verification code is: ${OTP} </p>`
       await sendEmailOtp(req.body.email, subject, html);
-      console.log("This is the tempUserDetails:", req.session.tempUserDetails);
+      console.log("First otp is: "+OTP);
+
       res.render("otpVerify", { errorMessage: null });
       
       
@@ -82,7 +82,7 @@ const intialRegisterUser = async (req, res) => {
          req.session.tempUserDetails.otp = null;
          req.session.tempUserDetails.otpExpiration = null;
          req.session.save()
-        console.log('OTP expired');
+        console.log('First OTP expired');
       }, otpExpirationTime);
     }
   } catch (error) {
@@ -92,8 +92,7 @@ const intialRegisterUser = async (req, res) => {
 
 const resendOtp = async (req, res) => {
   try {
-    const OTP = generateOTP(); // Generate a new OTP
-    // const newOtpExpiration = Date.now() + 5 * 60000; // 5 * 60000 = OTP expires in 5 minutes
+    const OTP = generateOTP(); 
     const newOtpExpiration =    20000; // 5 * 60 * 1000 = 5 minutes in milliseconds
 
 
@@ -101,18 +100,18 @@ const resendOtp = async (req, res) => {
     req.session.tempUserDetails.otp = OTP;
     req.session.otpExpiration = newOtpExpiration
     req.session.save()
-    console.log("This is the tempUserDetails:", req.session.tempUserDetails);
     
     const { email } = req.session.tempUserDetails;
     const subject = "Resend OTP for CouchCart Account";
-    console.log(OTP);
     
     const html = `<p>Your new verification code is: ${OTP}</p>`;
     
     // Resend the OTP via email
     await sendEmailOtp(email, subject, html);
+    console.log("New otp is: "+OTP);
     
-    res.render("otpVerify", { errorMessage: null }); // Render the OTP verification page
+    // res.render("otpVerify", { errorMessage: null }); // Render the OTP verification page
+    res.status(200)
     setTimeout(() => {
       // Clear the OTP from the session
       req.session.tempUserDetails.otp = null;
