@@ -341,6 +341,9 @@
             document.getElementById('createCategory').submit();
         } else {
             document.getElementById("main-error").innerText = "Cannot Add Category"
+            setTimeout(()=>{
+                document.getElementById("main-error").innerText = ""
+            },3000)
             console.log("Hellosssssssssssssssssssss");
 
         }
