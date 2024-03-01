@@ -11,6 +11,7 @@ const loadAdminLogin = async (req,res)=>{
       return res.redirect("/admin/dashboard")
     } 
     console.log("adminLogin rendered");
+    const successMessage = "You have successfully logged out."
     res.render('adminLogin')
   } catch (error) {
     console.log(error.message)
