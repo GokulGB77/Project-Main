@@ -239,25 +239,7 @@
                         emailErrorMessage.textContent = ''; // Remove the error message
                     }
                 }
-                // function validateName() {
-                //     let name = document.getElementById('name').value;
-                //     const nameErrorMessage = document.getElementById('nameErrorMessage');
-
-                //     // Remove leading and trailing spaces
-                //     name = name.trim();
-
-                //     // Check if name starts with space
-                //     if (name.charAt(0) === ' ') {
-                //         nameErrorMessage.textContent = 'Name should not start with space';
-                //     } else if (name.endsWith(' ')) { // Check if name ends with space
-                //         nameErrorMessage.textContent = 'Name should not end with space';
-                //     } else {
-                //         // Capitalize the first character and characters after space
-                //         name = name.replace(/\b\w/g, char => char.toUpperCase());
-                //         document.getElementById('name').value = name;
-                //         nameErrorMessage.textContent = ''; // Remove the error message
-                //     }
-                // }
+                
                 function validateName() {
                     let name = document.getElementById('name').value;
                     const nameErrorMessage = document.getElementById('nameErrorMessage');
@@ -330,7 +312,7 @@
                 }
             </script> -->
 
-            </script>
+          
 
 
             <%- include('../layouts/footer.ejs') %>

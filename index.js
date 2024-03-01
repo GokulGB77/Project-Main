@@ -18,7 +18,16 @@ const path = require("path")
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/CouchCartDB", { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect("mongodb://localhost:27017/CouchCartDB", { 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true 
+})
+.then(()=>{
+  console.log("MongoDB Connected Successfully");
+}).catch ((err)=>{
+  console.log("MongoDB Connection Error:",err);
+
+})
 
 app.set('view engine','ejs');
 

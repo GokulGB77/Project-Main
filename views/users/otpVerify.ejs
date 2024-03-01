@@ -25,20 +25,19 @@
                             </div>
                             <br>
 
+                            
+                            
+                            <!-- <% if (errorMessage) { %>
+                              <p class="error-message" >
+                                <%= errorMessage %>
+                              </p>
+                              <% } %> -->
+                            </form>
                             <div class=" btn-hover text-center">
-                              <a href="/resend-otp" class="btn btn-outline-secondary "  id="resendOTP"  >Resend OTP</a>
-                              <br>
+                              <button class="btn btn-outline-secondary" href="/resend-otp" type="button" id="resendOTP"><a href="/resend-otp" style="color: white;">Resend OTP</a></button>                              <br>
                               <br>
                               <span id="resendTimer"></span> <!-- Timer display -->
                           </div>
-                         
-                          
-                            <!-- <% if (errorMessage) { %>
-                                <p class="error-message" >
-                                    <%= errorMessage %>
-                                </p>
-                            <% } %> -->
-                        </form>
                     </div>
                   </div>
                 </div>
@@ -50,6 +49,9 @@
     </div>
 
     <script>
+      //**********************//
+        //Submit OTP - fetch
+      //**********************//
        const form = document.getElementById('otpform');
             form.addEventListener('submit', async function submitForm(event) {
                 event.preventDefault();
@@ -110,7 +112,7 @@
   
       // Start the countdown timer
       const startResendTimer = () => {
-          resendTimeout = Date.now() + 120000; // 10 seconds
+          resendTimeout = Date.now() + 20000; // 10 seconds
           updateResendTimer();
   
           // Update the timer every second
@@ -126,14 +128,5 @@
       });
   </script>
 
-  <!-- <script>
-    let currentOtp =req.session.tempUserDetails.otp
-    const otpNull=()=>{
-    setInterval(()=>{
-      currentOtp = null;
-      console.log("Send otp again",req.session.tempUserDetails.otp);
-    },5000)
-  }
-  otpNull()
-  </script> -->
+  
 <%- include('../layouts/footer.ejs') %>

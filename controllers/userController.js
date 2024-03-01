@@ -9,7 +9,8 @@ const { generateOTP } = require("../services/genereateOtp");
 const sendEmailOtp = require("../services/sendMail");
 const send_otp = require("../services/sendMail");
 const { request } = require("../routes/userRoutes");
-const auth = require("../middleware/auth")
+const auth = require("../middleware/auth");
+const { devNull } = require("os");
 
 
 
@@ -35,11 +36,7 @@ const loadRegister = async (req, res) => {
 }
 
 
-// const generateRandomCode = () => {
-//   return Math.floor(1000 + Math.random() * 9000).toString(); // Generates a random number between 1000 and 9999 as a string
-// };
 
-//intial signup
 const intialRegisterUser = async (req, res) => {
   try {
 
@@ -52,7 +49,8 @@ const intialRegisterUser = async (req, res) => {
     }
 
     const OTP = generateOTP()
-    const otpExpiration = Date.now() + 5000 //5 * 60000 =  OTP expires in 5 minutes
+    const otpExpirationTime =    20000; // 5 * 60 * 1000 = 5 minutes in milliseconds
+    
     req.session.tempUserDetails = {
       name: req.body.name,
       email: req.body.email,
@@ -63,20 +61,29 @@ const intialRegisterUser = async (req, res) => {
       status:0,
       otp: OTP,
       // Adding expiration time
-      otpExpiration:  otpExpiration
-
+      otpExpiration:  otpExpirationTime
+      
     };
-
+    
     req.session.save()
     console.log("This is the tempUserDetails:", req.session.tempUserDetails);
     if (req.session.tempUserDetails) {
       const subject = "Verify Your CouchCart. Account"
-
+      
       console.log(OTP);
       const html = `<p> Your verification code is: ${OTP} </p>`
       await sendEmailOtp(req.body.email, subject, html);
       console.log("This is the tempUserDetails:", req.session.tempUserDetails);
       res.render("otpVerify", { errorMessage: null });
+      
+      
+      setTimeout(() => {
+        // Clear the OTP from the session
+         req.session.tempUserDetails.otp = null;
+         req.session.tempUserDetails.otpExpiration = null;
+         req.session.save()
+        console.log('OTP expired');
+      }, otpExpirationTime);
     }
   } catch (error) {
     console.log(error.message);
@@ -87,22 +94,34 @@ const resendOtp = async (req, res) => {
   try {
     const OTP = generateOTP(); // Generate a new OTP
     // const newOtpExpiration = Date.now() + 5 * 60000; // 5 * 60000 = OTP expires in 5 minutes
+    const newOtpExpiration =    20000; // 5 * 60 * 1000 = 5 minutes in milliseconds
+
+
     // Update the OTP in the session data
     req.session.tempUserDetails.otp = OTP;
-    // req.session.otpExpiration = newOtpExpiration
+    req.session.otpExpiration = newOtpExpiration
     req.session.save()
     console.log("This is the tempUserDetails:", req.session.tempUserDetails);
-
+    
     const { email } = req.session.tempUserDetails;
     const subject = "Resend OTP for CouchCart Account";
     console.log(OTP);
-
+    
     const html = `<p>Your new verification code is: ${OTP}</p>`;
-
+    
     // Resend the OTP via email
     await sendEmailOtp(email, subject, html);
-
+    
     res.render("otpVerify", { errorMessage: null }); // Render the OTP verification page
+    setTimeout(() => {
+      // Clear the OTP from the session
+      req.session.tempUserDetails.otp = null;
+      req.session.tempUserDetails.newOtpExpiration = null;
+      req.session.save()
+      console.log('New OTP expired');
+    }, newOtpExpiration);
+
+
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
@@ -114,10 +133,10 @@ const resendOtp = async (req, res) => {
 const registerUser = async (req, res) => {
   try {
     // Check if OTP is expired
-    if (req.session.tempUserDetails.otpExpiration && Date.now() > req.session.tempUserDetails.otpExpiration) {
+    // if (req.session.tempUserDetails && req.session.tempUserDetails.otpExpiration && Date.now() > req.session.tempUserDetails.otpExpiration) {
       // OTP expired
-      return res.render("otpVerify", { errorMessage: "OTP expired. Please resend OTP." });
-    }
+    //   return res.render("otpVerify", { errorMessage: "OTP expired. Please resend OTP." });
+    // }
 
     if (req.body.otp === req.session.tempUserDetails.otp) {
   
