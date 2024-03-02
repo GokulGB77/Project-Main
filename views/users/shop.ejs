@@ -25,18 +25,26 @@
                         <div class="shop-topbar-wrapper mb-40">
                             <div class="shop-topbar-left">
                                 <div class="showing-item">
-                                    <span>Showing 1–12 of 60 results</span>
+                                    <% const startItem = (currentPage - 1) * perPage + 1; %>
+                                    <% const endItem = Math.min(currentPage * perPage, totalCount); %>
+                                    <span>Showing <%= startItem %>–<%= endItem %> of <%= totalCount %> results</span>
                                 </div>
+                                
                             </div>
                             <div class="shop-topbar-right">
                                 <div class="shop-sorting-area">
-                                    <select class="nice-select nice-select-style-1">
-                                        <option>Default Sorting</option>
-                                        <option>Sort by popularity</option>
-                                        <option>Sort by average rating</option>
-                                        <option>Sort by latest</option>
-                                    </select>
+                                    <form action="/shop" method="GET">
+                                        <select class="nice-select nice-select-style-1" name="sortBy" onchange="this.form.submit()">
+                                            <option value="default" <%= sortBy === 'default' ? 'selected' : '' %>>Default Sorting</option>
+                                            <option value="A-Z" <%= sortBy === 'A-Z' ? 'selected' : '' %>>Sort by A-Z</option>
+                                            <option value="Z-A" <%= sortBy === 'Z-A' ? 'selected' : '' %>>Sort by Z-A</option>
+                                            <option value="Price high to low" <%= sortBy === 'Price high to low' ? 'selected' : '' %>>Price high to low</option>
+                                            <option value="Price low to high" <%= sortBy === 'Price low to high' ? 'selected' : '' %>>Price low to high</option>
+                                            <option value="latest" <%= sortBy === 'latest' ? 'selected' : '' %>>Sort by latest</option>
+                                        </select>
+                                    </form>
                                 </div>
+                                
                                 <div class="shop-view-mode nav" >
                                     <a class="active" href="#shop-1" data-bs-toggle="tab"><i class=" ti-layout-grid3 " style="line-height: 2;"></i> </a>
                                     <a href="#shop-2" data-bs-toggle="tab" class=""><i class=" ti-view-list-alt " style="line-height: 2;"></i></a>
@@ -79,17 +87,16 @@
                                             </div>
                                         </div>
                                         <% }); %>
-                                      
-                                        
                                     </div>
                                     <div class="pagination-style-1" data-aos="fade-up" data-aos-delay="200">
                                         <ul>
-                                            <li><a class="active" href="1">1</a></li>
-                                            <li><a href="2">2</a></li>
-                                            <li><a href="3">3</a></li>
-                                            <li><a class="next" href="#"><i class=" ti-angle-double-right "></i></a></li>
+                                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                                <li><a class="<%= currentPage === i ? 'active' : '' %>" href="/shop?page=<%= i %>&sortBy=<%= sortBy %>"><%= i %></a></li>
+                                            <% } %>
+                                            <li><a class="next" href="/shop?page=<%= currentPage + 1 %>&sortBy=<%= sortBy %>"><i class="ti-angle-double-right" style="line-height: 2"></i></a></li>
                                         </ul>
                                     </div>
+                                    
                                 </div>
                                 <div id="shop-2" class="tab-pane">
                                     <div class="shop-list-wrap mb-30">

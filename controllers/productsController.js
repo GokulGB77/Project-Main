@@ -181,18 +181,55 @@ const unarchiveProduct = async(req,res) => {
 
 //--------------------------------------User Side---------------------------------
 
-const loadShop = async (req,res)=>{
+const loadShop = async (req, res) => {
   try {
-    
-    const allItems = await Productsdb.find({}).populate("category")
-    const oldPrice = allItems.productPrice + allItems.productPrice*(10/100)
-    console.log("Products Fetched From Database");
-    res.render("shop",{allItems,oldPrice})
+    const perPage = 12; // Number of items per page
+    const page = parseInt(req.query.page) || 1; // Extract page number from query parameters
+    const skip = (page - 1) * perPage;
+    const limit = perPage;
+
+    // Retrieve total count of all items
+    const totalCount = await Productsdb.countDocuments({ status: 1 });
+
+    // Retrieve total pages based on total count and per page limit
+    const totalPages = Math.ceil(totalCount / perPage);
+
+    // Retrieve sorting criteria from query parameters
+    const sortBy = req.query.sortBy || 'default'; // Default sorting criteria
+
+    // Perform database query based on sorting criteria
+    let query;
+    switch (sortBy) {
+      case 'A-Z':
+        query = Productsdb.find({ status: 1 }).sort({ productName: 1 }).skip(skip).limit(limit).populate("category");
+        break;
+      case 'Z-A':
+        query = Productsdb.find({ status: 1 }).sort({ productName: -1 }).skip(skip).limit(limit).populate("category");
+        break;
+      case 'Price high to low':
+        query = Productsdb.find({ status: 1 }).sort({ productPrice: -1 }).skip(skip).limit(limit).populate("category");
+        break;
+      case 'Price low to high':
+        query = Productsdb.find({ status: 1 }).sort({ productPrice: 1 }).skip(skip).limit(limit).populate("category");
+        break;
+      case 'latest':
+        query = Productsdb.find({ status: 1 }).sort({ productName: -1 }).skip(skip).limit(limit).populate("category");
+        break;
+      default:
+        query = Productsdb.find({ status: 1 }).skip(skip).limit(limit).populate("category");
+    }
+
+    // Execute the query to retrieve paginated items
+    const allItems = await query;
+
+    // Render view with paginated items and pagination metadata
+    res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy });
   } catch (error) {
     console.log(error);
-    res.status(500).send("Products page render failed")    
+    res.status(500).send("Products page render failed");
   }
 }
+
 
 
 
