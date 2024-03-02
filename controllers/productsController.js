@@ -1,5 +1,7 @@
 const Productsdb = require("../models/productsModel")
 const Categoriesdb = require("../models/categoriesModel");
+const sharp = require('sharp'); // Import sharp for image cropping
+
 
 
 
@@ -23,6 +25,15 @@ const loadAdminProducts = async (req, res) => {
   }
 };
 
+const getCategories = async (req,res) => {
+  try {
+    const categories = await Categoriesdb.find({}, "categoryName").sort({categoryName:1});
+    return categories;
+  } catch (error) {
+    console.error("Get category from database failed: ",error);
+    throw error;
+  }
+};
 
 const loadAddProduct = async (req, res) => {
   try {
@@ -35,24 +46,15 @@ const loadAddProduct = async (req, res) => {
 };
 
 
-const getCategories = async (req,res) => {
-  try {
-    const categories = await Categoriesdb.find({}, "categoryName").sort({categoryName:1});
-    return categories;
-  } catch (error) {
-    console.error("Get category from database failed: ",error);
-    throw error;
-  }
-};
 
 const addProduct = async (req, res) => {
   try {
     const uploadedImages = req.files.map((file) => file.filename);
 
-    const removedImages = req.body.removeImage || [];
+const removedImages = req.body.removeImage || [];
 
     const imagesToKeep = uploadedImages.filter((image) => !removedImages.includes(image));
-
+   
     let productTags;
     if (req.body.productTags) {
       productTags = req.body.productTags.split(",").map((tag) => tag.trim());
@@ -150,8 +152,8 @@ const archiveProduct = async(req,res) => {
     const product = await Productsdb.findByIdAndUpdate(id,{
       status:1
     })
-    const products = await Productsdb.find({});
-    console.log(`Product Archived: ${product}`);
+    const products = await Productsdb.find({}).sort({productName:1});
+    console.log(`Product Archived: ${product.productName}`);
     res.render("viewProducts",{products});
    } catch (error) {
     console.log(error);
@@ -165,8 +167,8 @@ const unarchiveProduct = async(req,res) => {
     const product = await Productsdb.findByIdAndUpdate(id,{
       status:0
     })
-    const products = await Productsdb.find({});
-    console.log(`Product Unarchived: ${product}`);
+    const products = await Productsdb.find({}).sort({productName:1});
+    console.log(`Product Unarchived: ${product.productName}`);
     res.render("viewProducts",{products});
    } catch (error) {
     console.log(error);
@@ -197,13 +199,13 @@ const loadShop = async (req,res)=>{
 const loadProductDetails = async (req,res) => {
   try {
     const id= req.query.id
-    const products = await Productsdb.find({}).populate("category").limit(4)
+    const relatedProducts = await Productsdb.find({}).populate("category").limit(4)
 
     const product = await Productsdb.findById(id).populate("category");
     if (!product) {
       return res.status(404).send("Product not found");
     }
-    res.render("productDetails",{product,products})
+    res.render("productDetails",{product,relatedProducts})
   } catch (error) {
     console.log(error.message)
     res.status(500).send("Internal Server Error");

@@ -7,6 +7,8 @@ const dashboardController = require('../controllers/dashboardController');
 const productsController = require('../controllers/productsController');
 const categoriesController = require('../controllers/categoriesController');
 const multer = require("multer")
+const sharp = require('sharp'); // Import sharp for image cropping
+
 
 
 const adminAuth = require('../middleware/adminAuth')

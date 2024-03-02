@@ -250,11 +250,11 @@ const loadHomePage = async (req, res) => {
     try {
       // const categoryLiving = await Productsdb.find({category:"Living Room Furniture"}).populate("category")
       const products = await Productsdb.find({status:1}).populate("category")
-      const allItems = await Productsdb.find({status:1}).populate("category").sort({ _id: 1 })
-      const newArrivals= await Productsdb.find({status:1}).populate("category").sort({ _id: -1 })
-      const bestSellers= await Productsdb.find({status:1}).populate("category").sort({ productName: 1 })
-      const saleItems= await Productsdb.find({status:1}).populate("category").sort({ productName: -1 })
-      res.render('homepage', { tokenId, newArrivals,allItems,bestSellers,saleItems,products,});
+      const allItems = await Productsdb.find({status:1}).populate("category").sort({ _id: 1 }).limit(16);
+      const newArrivals= await Productsdb.find({status:1}).populate("category").sort({ _id: -1 }).limit(16);
+      const bestSellers= await Productsdb.find({status:1}).populate("category").sort({ productName: 1 }).limit(16);
+      const saleItems= await Productsdb.find({status:1}).populate("category").sort({ productName: -1 }).limit(16);
+      res.render('homepage', { tokenId, newArrivals,allItems,bestSellers,saleItems,products,}).limit(16);
 
     } catch (error) {
       console.log("Error getting product data from db:",error)

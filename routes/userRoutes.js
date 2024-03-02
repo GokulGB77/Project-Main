@@ -47,7 +47,7 @@ userRoute.post('/login',userController.loginUser)
 userRoute.get("/home",auth.isLogin,userController.loadHomePage)
 
 userRoute.get('/shop',productsController.loadShop);
-userRoute.get('/product-details?',auth.isLogin,productsController.loadProductDetails);
+userRoute.get('/product-details',productsController.loadProductDetails);
 
 userRoute.get("/profile",auth.isLogin,userController.loadProfileSettings)
 
