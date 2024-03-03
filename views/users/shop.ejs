@@ -22,7 +22,7 @@
             <div class="container">
                 <div class="row flex-row-reverse">
                     <div class="col-12">
-                        <div class="shop-topbar-wrapper mb-40">
+                        <div class="shop-topbar-wrapper mb-40" id="shopContent">
                             <div class="shop-topbar-left">
                                 <div class="showing-item">
                                     <% const startItem = (currentPage - 1) * perPage + 1; %>
@@ -96,7 +96,7 @@
                                             <li><a class="next" href="/shop?page=<%= currentPage + 1 %>&sortBy=<%= sortBy %>"><i class="ti-angle-double-right" style="line-height: 2"></i></a></li>
                                         </ul>
                                     </div>
-                                    
+                                    <script></script>
                                 </div>
                                 <div id="shop-2" class="tab-pane">
                                     <div class="shop-list-wrap mb-30">

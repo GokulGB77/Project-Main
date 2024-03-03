@@ -210,7 +210,7 @@ const loadShop = async (req, res) => {
         query = Productsdb.find({ status: 1 }).sort({ productPrice: -1 }).skip(skip).limit(limit).populate("category");
         break;
       case 'Price low to high':
-        query = Productsdb.find({ status: 1 }).sort({ productPrice: 1 }).skip(skip).limit(limit).populate("category");
+        query = Productsdb.find({ status: 1 }).sort({ productPrice: -1 }).skip(skip).limit(limit).populate("category");
         break;
       case 'latest':
         query = Productsdb.find({ status: 1 }).sort({ productName: -1 }).skip(skip).limit(limit).populate("category");
