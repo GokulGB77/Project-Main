@@ -271,21 +271,45 @@ const loadHomePage = async (req, res) => {
 
 
 
-const loadProfileSettings = async (req, res) => {
+const loadProfile = async (req, res) => {
   try {
-  console.log("User entered profile settings");
+  console.log("User entered User profile ");
   const token = req.cookies.jwt;
-  console.log(`userToken: ${token}`)
+  // const secretKey = process.env.JWT_SECRET;
+  // const decodedToken = jwt.verify(token,secretKey)
+  const currentUser = res.locals.currentUser
+  console.log("Current User: ",currentUser.name)
+  const addresses = await Userdb.find({_id:currentUser._id})
+
   if(token){
-    console.log("I am in session");
-    res.render("profile",{token})
+    res.render("profile",{token,currentUser})
   } else {
     res.redirect("/login")
   }
   } catch (error) {
     console.log(error)
-    res.status(500).send("LoadProfileSettings failed")
+    res.status(500).send("LoadProfile failed")
   }
+}
+
+const updateDetails = async (req,res) => {
+  try {
+  const newName = req.body.name;
+  const newMobile = req.body.mobile
+  const id = req.query.id
+  console.log(newName,newMobile,id);
+  const updateDb = await Userdb.findByIdAndUpdate(id,{
+    name: newName,
+    mobile: newMobile,
+  })
+  console.log("User Details Updated");
+  res.redirect("/profile?success=true")
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).send("Update Profile failed")
+  }
+
 }
 
 
@@ -293,7 +317,8 @@ const loadProfileSettings = async (req, res) => {
 const logoutUser = async (req, res) => {
   try {
     console.log("User logged out..Session Destroyed");
-
+    const token = req.cookies.jwt
+  
     // Clear the JWT token from cookies
     res.cookie('jwt', '', { expires: new Date(0) });
     res.redirect("/login",);
@@ -319,9 +344,10 @@ module.exports={
   intialRegisterUser,
   registerUser,
   loginUser,
-  loadProfileSettings,
+  loadProfile,
   resendOtp,
   logoutUser,
+  updateDetails,
   
   
   

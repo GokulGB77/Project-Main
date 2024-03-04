@@ -50,7 +50,8 @@ userRoute.get('/shop', productsController.loadShop);
 userRoute.get('/shop/:page', productsController.loadShop);
 userRoute.get('/product-details',productsController.loadProductDetails);
 
-userRoute.get("/profile",auth.isLogin,userController.loadProfileSettings)
+userRoute.get("/profile",auth.isLogin,userController.loadProfile)
+userRoute.post("/update-user-details",auth.isLogin,userController.updateDetails)
 
 userRoute.get('/search/suggestions', productsController.getSearchSuggestions);
 

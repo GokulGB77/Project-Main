@@ -410,7 +410,7 @@ textarea {
 }
 
 .pt-100 {
-  padding-top: 100px;
+  padding-top: 25px;
 }
 
 @media only screen and (max-width: 767px) {
@@ -11049,7 +11049,7 @@ textarea {
   border-bottom: 1px solid #ccc;
 }
 
-.myaccount-content .account-details-form {
+.myaccount-content .account-details-form .change-password-form {
   margin-top: 50px;
 }
 
