@@ -1,4 +1,5 @@
 <!DOCTYPE>
+
 <head>
     <meta charset="utf-8">
     <title>CouchCart. | Login</title>
@@ -32,12 +33,15 @@
 
     <style>
         /* styles.css */
-    .separator-line {
-        border: 5px solid #f5f3f3; /* Grey border */
-        margin: 0; /* Remove default margin */
-    }
+        .separator-line {
+            border: 5px solid #f5f3f3;
+            /* Grey border */
+            margin: 0;
+            /* Remove default margin */
+        }
     </style>
 </head>
+
 <body>
     <div class="main-wrapper main-wrapper-2">
         <header class="header-area header-responsive-padding header-height-1">
@@ -108,94 +112,212 @@
                                         <i class="pe-7s-close s-close"></i>
                                     </a>
                                     <div class="search-wrap-1">
-                                        <form action="#">
-                                            <input placeholder="Search products…" type="text">
-                                            <button class="button-search"><i class="pe-7s-search"></i></button>
+                                        <form id="searchForm">
+                                            <input id="searchInput" placeholder="Search products…" type="text">
+                                            <ul id="suggestionList"></ul>
+                                            <button class="button-search" type="submit"><i
+                                                    class="pe-7s-search"></i></button>
                                         </form>
                                     </div>
+
+
+                                    <script>
+                                        const searchInput = document.getElementById('searchInput');
+                                        const suggestionList = document.getElementById('suggestionList');
+
+                                        searchInput.addEventListener('input', async function () {
+                                            const query = searchInput.value;
+                                            if (query.trim() === '') {
+                                                suggestionList.innerHTML = ''; // Clear suggestion list if query is empty
+                                                return;
+                                            }
+
+                                            try {
+                                                const response = await fetch(`/search/suggestions?query=${encodeURIComponent(query)}`);
+                                                const suggestions = await response.json();
+
+                                                // Update suggestion list with retrieved suggestions
+                                                suggestionList.innerHTML = suggestions.map(suggestion => `<li>${suggestion}</li>`).join('');
+                                            } catch (error) {
+                                                console.error('Error fetching suggestions:', error);
+                                            }
+                                        });
+                                    </script>
+
+                                    <style>
+                                        #searchForm {
+                                            position: relative;
+                                            display: inline-block;
+                                            width: 300px;
+                                            /* Adjust width as needed */
+                                        }
+
+                                        #searchInput {
+                                            width: calc(100% - 40px);
+                                            /* Adjust width for search button */
+                                            padding: 10px;
+                                            border: 1px solid #ccc;
+                                            border-radius: 5px;
+                                            box-sizing: border-box;
+                                            font-size: 16px;
+                                        }
+
+                                        .button-search {
+                                            position: absolute;
+                                            top: 0;
+                                            right: 0;
+                                            padding: 0 10px;
+                                            background-color: #007bff;
+                                            border: none;
+                                            border-radius: 0 5px 5px 0;
+                                            color: #fff;
+                                            cursor: pointer;
+                                            transition: background-color 0.3s ease;
+                                            height: 100%;
+                                        }
+
+                                        .button-search i {
+                                            vertical-align: middle;
+                                        }
+
+                                        #suggestionList {
+                                            list-style-type: none;
+                                            margin: 0;
+                                            padding: 0;
+                                            position: absolute;
+                                            top: calc(100% + 5px);
+                                            /* Position below input */
+                                            left: 0;
+                                            width: calc(100% - 2px);
+                                            /* Adjust the width to match the input box */
+                                            background-color: #fff;
+                                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                                            border: 1px solid #ccc;
+                                            border-top: none;
+                                            border-radius: 0 0 5px 5px;
+                                            max-height: 200px;
+                                            overflow-y: auto;
+                                            z-index: 1000;
+                                            /* Ensure the suggestion list appears above other elements */
+                                        }
+
+                                        #suggestionList li {
+                                            padding: 10px;
+                                            cursor: pointer;
+                                            border-bottom: 1px solid #ccc;
+                                        }
+
+                                        #suggestionList li:last-child {
+                                            border-bottom: none;
+                                        }
+                                    </style>
+
+                                    <script>
+                                        document.getElementById('searchForm').addEventListener('submit', function (event) {
+                                            event.preventDefault(); // Prevent default form submission
+
+                                            const searchInput = document.getElementById('searchInput').value.trim();
+
+                                            // Send a fetch request to your server with the search query
+                                            fetch(`/search?query=${encodeURIComponent(searchInput)}`)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    // Process the search results and update the DOM
+                                                    console.log(data); // Replace with your logic to update the DOM with search results
+                                                })
+                                                .catch(error => console.error('Error fetching search results:', error));
+                                        });
+                                    </script>
+
                                 </div>
-                                
+
                                 <% if (token) { %>
                                     <div class="header-action-style dropdown">
                                         <!-- Dropdown Button with User Icon -->
-                                        <a href="#" class="" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <a href="#" class="" id="loginDropdown" role="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
                                             <i class="pe-7s-user"></i>
                                         </a>
                                         <!-- Dropdown Menu -->
                                         <ul class="dropdown-menu" aria-labelledby="loginDropdown">
-                                            <li><a class="dropdown-item" style="font-size: 14px;" href="/profile">Account Settings</a></li>
-                                            <li><hr class="dropdown-divider"></li> <!-- Divider -->
-                                            <li><a class="dropdown-item" style="font-size: 14px;" href="/logout">Logout</a></li>
+                                            <li><a class="dropdown-item" style="font-size: 14px;"
+                                                    href="/profile">Account Settings</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li> <!-- Divider -->
+                                            <li><a class="dropdown-item" style="font-size: 14px;"
+                                                    href="/logout">Logout</a></li>
                                         </ul>
                                     </div>
                                     <% } else { %>
-                                        <div class="header-action-style " >
-                                        <a title="Login" href="/login"><i class="pe-7s-user"></i></a>
+                                        <div class="header-action-style ">
+                                            <a title="Login" href="/login"><i class="pe-7s-user"></i></a>
                                         </div>
                                         <% } %>
-                                <div class="header-action-style">
-                                    <!-- Wishlist Icon -->
-                                    <a title="Wishlist" href="wishlist"><i class="pe-7s-like"></i></a>
-                                </div>
-                                <div class="header-action-style header-action-cart">
-                                    <!-- Cart Icon -->
-                                    <a class="cart-active" href="#"><i class="pe-7s-shopbag"></i>
-                                        <span class="product-count bg-black">01</span>
-                                    </a>
-                                </div>
-                                <div class="header-action-style d-block d-lg-none">
-                                    <!-- Mobile Menu Icon -->
-                                    <a class="mobile-menu-active-button" href="#"><i class="pe-7s-menu"></i></a>
-                                </div>
+                                            <div class="header-action-style">
+                                                <!-- Wishlist Icon -->
+                                                <a title="Wishlist" href="wishlist"><i class="pe-7s-like"></i></a>
+                                            </div>
+                                            <div class="header-action-style header-action-cart">
+                                                <!-- Cart Icon -->
+                                                <a class="cart-active" href="#"><i class="pe-7s-shopbag"></i>
+                                                    <span class="product-count bg-black">01</span>
+                                                </a>
+                                            </div>
+                                            <div class="header-action-style d-block d-lg-none">
+                                                <!-- Mobile Menu Icon -->
+                                                <a class="mobile-menu-active-button" href="#"><i
+                                                        class="pe-7s-menu"></i></a>
+                                            </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
             <!-- mini cart start -->
-        <div class="sidebar-cart-active">
-            <div class="sidebar-cart-all">
-                <a class="cart-close" href="#"><i class="pe-7s-close"></i></a>
-                <div class="cart-content">
-                    <h3>Shopping Cart</h3>
-                    <ul>
-                        <li>
-                            <div class="cart-img">
-                                <a href="#"><img src="/user/images/cart/cart-1.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="#">Stylish Swing Chair</a></h4>
-                                <span> 1 × $49.00 </span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#">×</a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="cart-img">
-                                <a href="#"><img src="/user/images/cart/cart-2.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="#">Modern Chairs</a></h4>
-                                <span> 1 × $49.00 </span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#">×</a>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="cart-total">
-                        <h4>Subtotal: <span>$170.00</span></h4>
-                    </div>
-                    <div class="cart-btn btn-hover">
-                        <a class="theme-color" href="cart">view cart</a>
-                    </div>
-                    <div class="checkout-btn btn-hover">
-                        <a class="theme-color" href="checkout">checkout</a>
+            <div class="sidebar-cart-active">
+                <div class="sidebar-cart-all">
+                    <a class="cart-close" href="#"><i class="pe-7s-close"></i></a>
+                    <div class="cart-content">
+                        <h3>Shopping Cart</h3>
+                        <ul>
+                            <li>
+                                <div class="cart-img">
+                                    <a href="#"><img src="/user/images/cart/cart-1.jpg" alt=""></a>
+                                </div>
+                                <div class="cart-title">
+                                    <h4><a href="#">Stylish Swing Chair</a></h4>
+                                    <span> 1 × $49.00 </span>
+                                </div>
+                                <div class="cart-delete">
+                                    <a href="#">×</a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="cart-img">
+                                    <a href="#"><img src="/user/images/cart/cart-2.jpg" alt=""></a>
+                                </div>
+                                <div class="cart-title">
+                                    <h4><a href="#">Modern Chairs</a></h4>
+                                    <span> 1 × $49.00 </span>
+                                </div>
+                                <div class="cart-delete">
+                                    <a href="#">×</a>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="cart-total">
+                            <h4>Subtotal: <span>$170.00</span></h4>
+                        </div>
+                        <div class="cart-btn btn-hover">
+                            <a class="theme-color" href="cart">view cart</a>
+                        </div>
+                        <div class="checkout-btn btn-hover">
+                            <a class="theme-color" href="checkout">checkout</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <hr class="separator-line">
+            <hr class="separator-line">
         </header>

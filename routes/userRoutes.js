@@ -52,6 +52,9 @@ userRoute.get('/product-details',productsController.loadProductDetails);
 
 userRoute.get("/profile",auth.isLogin,userController.loadProfileSettings)
 
+userRoute.get('/search/suggestions', productsController.getSearchSuggestions);
+
+
 userRoute.get('/logout', userController.logoutUser);
 
 

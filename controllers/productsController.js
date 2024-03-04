@@ -197,38 +197,48 @@ const loadShop = async (req, res) => {
     // Retrieve sorting criteria from query parameters
     const sortBy = req.query.sortBy || 'default'; // Default sorting criteria
 
-    // Perform database query based on sorting criteria
+    // Retrieve filter criteria from query parameters
+    const filterByCategory = req.query.category || null; // Filter by category, if provided
+
+    // Construct filter object based on filter criteria
+    const filter = { status: 1 };
+    if (filterByCategory) {
+      filter.category = filterByCategory;
+    }
+
+    // Perform database query based on sorting criteria and filter
     let query;
     switch (sortBy) {
       case 'A-Z':
-        query = Productsdb.find({ status: 1 }).sort({ productName: 1 }).skip(skip).limit(limit).populate("category");
+        query = Productsdb.find(filter).sort({ productName: 1 }).skip(skip).limit(limit).populate("category");
         break;
       case 'Z-A':
-        query = Productsdb.find({ status: 1 }).sort({ productName: -1 }).skip(skip).limit(limit).populate("category");
+        query = Productsdb.find(filter).sort({ productName: -1 }).skip(skip).limit(limit).populate("category");
         break;
       case 'Price high to low':
-        query = Productsdb.find({ status: 1 }).sort({ productPrice: -1 }).skip(skip).limit(limit).populate("category");
+        query = Productsdb.find(filter).sort({ productPrice: -1 }).skip(skip).limit(limit).populate("category");
         break;
       case 'Price low to high':
-        query = Productsdb.find({ status: 1 }).sort({ productPrice: -1 }).skip(skip).limit(limit).populate("category");
+        query = Productsdb.find(filter).sort({ productPrice: 1 }).skip(skip).limit(limit).populate("category");
         break;
       case 'latest':
-        query = Productsdb.find({ status: 1 }).sort({ productName: -1 }).skip(skip).limit(limit).populate("category");
+        query = Productsdb.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("category");
         break;
       default:
-        query = Productsdb.find({ status: 1 }).skip(skip).limit(limit).populate("category");
+        query = Productsdb.find(filter).skip(skip).limit(limit).populate("category");
     }
 
     // Execute the query to retrieve paginated items
     const allItems = await query;
 
-    // Render view with paginated items and pagination metadata
-    res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy });
+    // Render view with paginated items, pagination metadata, and filter criteria
+    res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy, filterByCategory });
   } catch (error) {
     console.log(error);
     res.status(500).send("Products page render failed");
   }
 }
+
 
 
 
@@ -253,6 +263,31 @@ const loadProductDetails = async (req,res) => {
 
 
 
+const getSearchSuggestions = async (req, res) => {
+  try {
+      const partialQuery = req.query.query;
+      if (!partialQuery) {
+          return res.status(400).json({ error: 'Missing search query' });
+      }
+
+      // Query the database for suggestions based on the partial query
+      const regex = new RegExp(partialQuery, 'i');
+      const suggestions = await Productsdb.find({ productName: { $regex: regex } }).limit(5);
+
+      // Extract the product names from the suggestions
+      const suggestionNames = suggestions.map(product => product.productName);
+
+      res.json(suggestionNames);
+  } catch (error) {
+      console.error('Error fetching search suggestions:', error);
+      res.status(500).json({ error: 'An error occurred while fetching search suggestions' });
+  }
+};
+
+module.exports = { getSearchSuggestions };
+
+
+
 module.exports = {
   loadAdminProducts,
   loadAddProduct,
@@ -264,4 +299,5 @@ module.exports = {
   loadShop,
   getCategories,
   loadProductDetails,
+  getSearchSuggestions,
 }

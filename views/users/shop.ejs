@@ -20,258 +20,174 @@
         </div>
         <div class="shop-area pt-100 pb-100">
             <div class="container">
-                <div class="row flex-row-reverse">
-                    <div class="col-12">
-                        <div class="shop-topbar-wrapper mb-40" id="shopContent">
-                            <div class="shop-topbar-left">
-                                <div class="showing-item">
-                                    <% const startItem = (currentPage - 1) * perPage + 1; %>
-                                    <% const endItem = Math.min(currentPage * perPage, totalCount); %>
-                                    <span>Showing <%= startItem %>–<%= endItem %> of <%= totalCount %> results</span>
-                                </div>
-                                
-                            </div>
-                            <div class="shop-topbar-right">
-                                <div class="shop-sorting-area">
-                                    <form action="/shop" method="GET">
-                                        <select class="nice-select nice-select-style-1" name="sortBy" onchange="this.form.submit()">
-                                            <option value="default" <%= sortBy === 'default' ? 'selected' : '' %>>Default Sorting</option>
-                                            <option value="A-Z" <%= sortBy === 'A-Z' ? 'selected' : '' %>>Sort by A-Z</option>
-                                            <option value="Z-A" <%= sortBy === 'Z-A' ? 'selected' : '' %>>Sort by Z-A</option>
-                                            <option value="Price high to low" <%= sortBy === 'Price high to low' ? 'selected' : '' %>>Price high to low</option>
-                                            <option value="Price low to high" <%= sortBy === 'Price low to high' ? 'selected' : '' %>>Price low to high</option>
-                                            <option value="latest" <%= sortBy === 'latest' ? 'selected' : '' %>>Sort by latest</option>
-                                        </select>
-                                    </form>
-                                </div>
-                                
-                                <div class="shop-view-mode nav" >
-                                    <a class="active" href="#shop-1" data-bs-toggle="tab"><i class=" ti-layout-grid3 " style="line-height: 2;"></i> </a>
-                                    <a href="#shop-2" data-bs-toggle="tab" class=""><i class=" ti-view-list-alt " style="line-height: 2;"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="shop-bottom-area">
-                            <div class="tab-content jump">
-                                <div id="shop-1" class="tab-pane active">
-                                    <div class="row">
-                                        <% allItems.forEach(product => { %>
-                                        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                                            <div class="product-wrap mb-35" data-aos="fade-up" data-aos-delay="200">
-                                                <div class="product-img img-zoom mb-25">
-                                                    <a href="/product-details?id=<%=product._id %>">
-                                                        <img src="/productAssets/<%= product.images[0] %>" alt="">
-                                                    </a>
-                                                    <!-- <div class="product-badge badge-top badge-right badge-pink">
-                                                        <span>-10%</span>
-                                                    </div> -->
-                                                    <div class="product-action-wrap">
-                                                        <button class="product-action-btn-1" title="Wishlist"><i class="pe-7s-like"></i></button>
-                                                        <button class="product-action-btn-1" title="Quick View" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                            <i class="pe-7s-look"></i>
-                                                        </button>
-                                                    </div>
-                                                    <div class="product-action-2-wrap">
-                                                        <button class="product-action-btn-2" title="Add To Cart"><i class="pe-7s-cart"></i> Add to cart</button>
-                                                    </div>
-                                                </div>
-                                                <div class="product-content">
-                                                    <h3><a href="/product-details?id=<%=product._id %>"><%=product.productName %></a></h3>
-                                                    <div class="product-price">
-                                                        <span class="old-price">₹ <%=( product.productPrice +(product.productPrice*(10/100)) ).toFixed(0)%> </span>
-                                                        <span class="new-price">₹ <%= product.productPrice %> </span>
-                                                    </div>
-                                                </div>
-                                                
+               <div class="row" >
+                <div class="col-lg-2" >
+                    <!-- Sidebar for sorting and filtering options -->
+                    <div class="sidebar" >
+                        <h3>Sort By</h3>
+                        <ul>
+                            <li><a href="/shop?page=1&sortBy=default">Default Sorting</a></li>
+                            <li><a href="/shop?page=1&sortBy=A-Z">Sort by A-Z</a></li>
+                            <li><a href="/shop?page=1&sortBy=Z-A">Sort by Z-A</a></li>
+                            <li><a href="/shop?page=1&sortBy=Price high to low">Price high to low</a></li>
+                            <li><a href="/shop?page=1&sortBy=Price low to high">Price low to high</a></li>
+                            <li><a href="/shop?page=1&sortBy=latest">Sort by latest</a></li>
+                        </ul>
+                        <br>
+                        <br>    
+                        <h3>Filter By</h3>
+                        <ul>
+                            <li><a href="/shop?page=1&filter=category1">Category 1</a></li>
+                            <li><a href="/shop?page=1&filter=category2">Category 2</a></li>
+                            <li><a href="/shop?page=1&filter=category3">Category 3</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <style>
+                    .sidebar {
+                        border: 1px solid #ccc; /* Add a 1px solid border with a color of #ccc */
+                        padding: 10px; /* Add some padding to create space between the border and content */
+                    }
 
-                                            </div>
-                                        </div>
-                                        <% }); %>
+                </style>
+                <div class="col-lg-10">
+                    <div class="row flex-row-reverse">
+                        <div class="col-12">
+                            <div class="shop-topbar-wrapper mb-40" id="shopContent">
+                                <div class="shop-topbar-left">
+                                    <div class="showing-item">
+                                        <% const startItem = (currentPage - 1) * perPage + 1; %>
+                                        <% const endItem = Math.min(currentPage * perPage, totalCount); %>
+                                        <span>Showing <%= startItem %>–<%= endItem %> of <%= totalCount %> results</span>
                                     </div>
-                                    <div class="pagination-style-1" data-aos="fade-up" data-aos-delay="200">
-                                        <ul>
-                                            <% for (let i = 1; i <= totalPages; i++) { %>
-                                                <li><a class="<%= currentPage === i ? 'active' : '' %>" href="/shop?page=<%= i %>&sortBy=<%= sortBy %>"><%= i %></a></li>
-                                            <% } %>
-                                            <li><a class="next" href="/shop?page=<%= currentPage + 1 %>&sortBy=<%= sortBy %>"><i class="ti-angle-double-right" style="line-height: 2"></i></a></li>
-                                        </ul>
-                                    </div>
-                                    <script></script>
+                                    
                                 </div>
-                                <div id="shop-2" class="tab-pane">
-                                    <div class="shop-list-wrap mb-30">
+                                <div class="shop-topbar-right">
+                                    <!-- <div class="shop-sorting-area">
+                                        <form action="/shop" method="GET">
+                                            <select class="nice-select nice-select-style-1" name="sortBy" onchange="this.form.submit()">
+                                                <option value="default" <%= sortBy === 'default' ? 'selected' : '' %>>Default Sorting</option>
+                                                <option value="A-Z" <%= sortBy === 'A-Z' ? 'selected' : '' %>>Sort by A-Z</option>
+                                                <option value="Z-A" <%= sortBy === 'Z-A' ? 'selected' : '' %>>Sort by Z-A</option>
+                                                <option value="Price high to low" <%= sortBy === 'Price high to low' ? 'selected' : '' %>>Price high to low</option>
+                                                <option value="Price low to high" <%= sortBy === 'Price low to high' ? 'selected' : '' %>>Price low to high</option>
+                                                <option value="latest" <%= sortBy === 'latest' ? 'selected' : '' %>>Sort by latest</option>
+                                            </select>
+                                        </form>
+                                    </div> -->
+                                    
+                                    <div class="shop-view-mode nav" >
+                                        <a class="active" href="#shop-1" data-bs-toggle="tab"><i class=" ti-layout-grid3 " style="line-height: 2;"></i> </a>
+                                        <a href="#shop-2" data-bs-toggle="tab" class=""><i class=" ti-view-list-alt " style="line-height: 2;"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="shop-bottom-area">
+                                <div class="tab-content jump">
+                                    <div id="shop-1" class="tab-pane active">
                                         <div class="row">
-                                            <div class="col-lg-4 col-sm-5">
-                                                <div class="product-list-img">
-                                                    <a href="product-details">
-                                                        <img src="/user/images/product/product-5.png" alt="Product Style">
-                                                    </a>
-                                                    <div class="product-list-badge badge-right badge-pink">
-                                                        <span>-20%</span>
+                                            <% allItems.forEach(product => { %>
+                                            <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                                                <div class="product-wrap mb-35" data-aos="fade-up" data-aos-delay="200">
+                                                    <div class="product-img img-zoom mb-25">
+                                                        <a href="/product-details?id=<%=product._id %>">
+                                                            <img src="/productAssets/<%= product.images[0] %>" alt="">
+                                                        </a>
+                                                        <!-- <div class="product-badge badge-top badge-right badge-pink">
+                                                            <span>-10%</span>
+                                                        </div> -->
+                                                        <div class="product-action-wrap">
+                                                            <button class="product-action-btn-1" title="Wishlist"><i class="pe-7s-like"></i></button>
+                                                            <button class="product-action-btn-1" title="Quick View" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                                <i class="pe-7s-look"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="product-action-2-wrap">
+                                                            <button class="product-action-btn-2" title="Add To Cart"><i class="pe-7s-cart"></i> Add to cart</button>
+                                                        </div>
                                                     </div>
-                                                    <div class="product-list-quickview">
-                                                        <button class="product-action-btn-2" title="Quick View" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                            <i class="pe-7s-look"></i>
-                                                        </button>
+                                                    <div class="product-content">
+                                                        <h3><a href="/product-details?id=<%=product._id %>"><%=product.productName %></a></h3>
+                                                        <div class="product-price">
+                                                            <span class="old-price">₹ <%=( product.productPrice +(product.productPrice*(10/100)) ).toFixed(0)%> </span>
+                                                            <span class="new-price">₹ <%= product.productPrice %> </span>
+                                                        </div>
                                                     </div>
+                                                    
+    
                                                 </div>
                                             </div>
-                                            <div class="col-lg-8 col-sm-7">
-                                                <div class="shop-list-content">
-                                                    <h3><a href="product-details">Interior moderno render</a></h3>
-                                                    <div class="product-price">
-                                                        <span class="old-price">$70.89 </span>
-                                                        <span class="new-price">$55.25 </span>
+                                            <% }); %>
+                                        </div>
+                                        <div class="pagination-style-1" data-aos="fade-up" data-aos-delay="200">
+                                            <ul>
+                                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                                    <li><a class="<%= currentPage === i ? 'active' : '' %>" href="/shop?page=<%= i %>&sortBy=<%= sortBy %>"><%= i %></a></li>
+                                                <% } %>
+                                                <li><a class="next" href="/shop?page=<%= currentPage + 1 %>&sortBy=<%= sortBy %>"><i class="ti-angle-double-right" style="line-height: 2"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <script></script>
+                                    </div>
+                                    <div id="shop-2" class="tab-pane">
+                                        <div class="shop-list-wrap mb-30">
+                                            <div class="row">
+                                                <div class="col-lg-4 col-sm-5">
+                                                    <div class="product-list-img">
+                                                        <a href="product-details">
+                                                            <img src="/user/images/product/product-5.png" alt="Product Style">
+                                                        </a>
+                                                        <div class="product-list-badge badge-right badge-pink">
+                                                            <span>-20%</span>
+                                                        </div>
+                                                        <div class="product-list-quickview">
+                                                            <button class="product-action-btn-2" title="Quick View" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                                <i class="pe-7s-look"></i>
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <div class="product-list-rating">
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                    </div>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent tristique bibend est a fermentum. Cras faucibus ex quis justo consectetur eleifend in eget diam.</p>
-                                                    <div class="product-list-action">
-                                                        <button class="product-action-btn-3" title="Add to cart"><i class="pe-7s-cart"></i></button>
-                                                        <button class="product-action-btn-3" title="Wishlist"><i class="pe-7s-like"></i></button>
-                                                        <button class="product-action-btn-3" title="Compare"><i class="pe-7s-shuffle"></i></button>
+                                                </div>
+                                                <div class="col-lg-8 col-sm-7">
+                                                    <div class="shop-list-content">
+                                                        <h3><a href="product-details">Interior moderno render</a></h3>
+                                                        <div class="product-price">
+                                                            <span class="old-price">$70.89 </span>
+                                                            <span class="new-price">$55.25 </span>
+                                                        </div>
+                                                        <div class="product-list-rating">
+                                                            <i class=" ti-star"></i>
+                                                            <i class=" ti-star"></i>
+                                                            <i class=" ti-star"></i>
+                                                            <i class=" ti-star"></i>
+                                                            <i class=" ti-star"></i>
+                                                        </div>
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent tristique bibend est a fermentum. Cras faucibus ex quis justo consectetur eleifend in eget diam.</p>
+                                                        <div class="product-list-action">
+                                                            <button class="product-action-btn-3" title="Add to cart"><i class="pe-7s-cart"></i></button>
+                                                            <button class="product-action-btn-3" title="Wishlist"><i class="pe-7s-like"></i></button>
+                                                            <button class="product-action-btn-3" title="Compare"><i class="pe-7s-shuffle"></i></button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="shop-list-wrap mb-30">
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-5">
-                                                <div class="product-list-img">
-                                                    <a href="product-details">
-                                                        <img src="/user/images/product/product-7.png" alt="Product Style">
-                                                    </a>
-                                                    <div class="product-list-quickview">
-                                                        <button class="product-action-btn-2" title="Quick View" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                            <i class="pe-7s-look"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-8 col-sm-7">
-                                                <div class="shop-list-content">
-                                                    <h3><a href="product-details">Round Standard Chair</a></h3>
-                                                    <div class="product-price">
-                                                        <span>$50.25 </span>
-                                                    </div>
-                                                    <div class="product-list-rating">
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                    </div>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent tristique bibend est a fermentum. Cras faucibus ex quis justo consectetur eleifend in eget diam.</p>
-                                                    <div class="product-list-action">
-                                                        <button class="product-action-btn-3" title="Add to cart"><i class="pe-7s-cart"></i></button>
-                                                        <button class="product-action-btn-3" title="Wishlist"><i class="pe-7s-like"></i></button>
-                                                        <button class="product-action-btn-3" title="Compare"><i class="pe-7s-shuffle"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        
+                                        
+                                        <div class="pagination-style-1">
+                                            <ul>
+                                                <li><a class="active" href="#">1</a></li>
+                                                <li><a href="#">2</a></li>
+                                                <li><a href="#">3</a></li>
+                                                <li><a class="next" href="#"><i class=" ti-angle-double-right "></i></a></li>
+                                            </ul>
                                         </div>
-                                    </div>
-                                    <div class="shop-list-wrap mb-30">
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-5">
-                                                <div class="product-list-img">
-                                                    <a href="product-details">
-                                                        <img src="/user/images/product/product-4.png" alt="Product Style">
-                                                    </a>
-                                                    <div class="product-list-badge badge-right badge-pink">
-                                                        <span>-10%</span>
-                                                    </div>
-                                                    <div class="product-list-quickview">
-                                                        <button class="product-action-btn-2" title="Quick View" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                            <i class="pe-7s-look"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-8 col-sm-7">
-                                                <div class="shop-list-content">
-                                                    <h3><a href="product-details">Stylish Swing Chair</a></h3>
-                                                    <div class="product-price">
-                                                        <span class="old-price">$80.89 </span>
-                                                        <span class="new-price">$60.25 </span>
-                                                    </div>
-                                                    <div class="product-list-rating">
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                    </div>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent tristique bibend est a fermentum. Cras faucibus ex quis justo consectetur eleifend in eget diam.</p>
-                                                    <div class="product-list-action">
-                                                        <button class="product-action-btn-3" title="Add to cart"><i class="pe-7s-cart"></i></button>
-                                                        <button class="product-action-btn-3" title="Wishlist"><i class="pe-7s-like"></i></button>
-                                                        <button class="product-action-btn-3" title="Compare"><i class="pe-7s-shuffle"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="shop-list-wrap mb-30">
-                                        <div class="row">
-                                            <div class="col-lg-4 col-sm-5">
-                                                <div class="product-list-img">
-                                                    <a href="product-details">
-                                                        <img src="/user/images/product/product-8.png" alt="Product Style">
-                                                    </a>
-                                                    <div class="product-list-badge badge-right badge-pink">
-                                                        <span>-10%</span>
-                                                    </div>
-                                                    <div class="product-list-quickview">
-                                                        <button class="product-action-btn-2" title="Quick View" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                            <i class="pe-7s-look"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-8 col-sm-7">
-                                                <div class="shop-list-content">
-                                                    <h3><a href="product-details">Modern Swivel Chair</a></h3>
-                                                    <div class="product-price">
-                                                        <span class="old-price">$45.89 </span>
-                                                        <span class="new-price">$30.25 </span>
-                                                    </div>
-                                                    <div class="product-list-rating">
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                        <i class=" ti-star"></i>
-                                                    </div>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent tristique bibend est a fermentum. Cras faucibus ex quis justo consectetur eleifend in eget diam.</p>
-                                                    <div class="product-list-action">
-                                                        <button class="product-action-btn-3" title="Add to cart"><i class="pe-7s-cart"></i></button>
-                                                        <button class="product-action-btn-3" title="Wishlist"><i class="pe-7s-like"></i></button>
-                                                        <button class="product-action-btn-3" title="Compare"><i class="pe-7s-shuffle"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="pagination-style-1">
-                                        <ul>
-                                            <li><a class="active" href="#">1</a></li>
-                                            <li><a href="#">2</a></li>
-                                            <li><a href="#">3</a></li>
-                                            <li><a class="next" href="#"><i class=" ti-angle-double-right "></i></a></li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+               </div>
             </div>
         </div>
         <footer class="footer-area">
