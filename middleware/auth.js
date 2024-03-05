@@ -60,6 +60,8 @@ const isUser = async (req, res, next) => {
           if (user) {
             if (user.status === 1) {
               res.locals.currentUser = user;
+              res.locals.currentUserId = user._id;
+              
               next(); // Proceed to the next middleware
             } else {
               console.error("User is blocked");

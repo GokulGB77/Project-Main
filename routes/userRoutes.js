@@ -4,6 +4,7 @@ const session = require('express-session');
 const { v4:uuidv4 } = require('uuid');  
 const userController = require('../controllers/userController');
 const productsController = require('../controllers/productsController');
+const addressController = require('../controllers/addressController');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 const cookieParser = require('cookie-parser');
@@ -52,6 +53,8 @@ userRoute.get('/product-details',productsController.loadProductDetails);
 
 userRoute.get("/profile",auth.isLogin,userController.loadProfile)
 userRoute.post("/update-user-details",auth.isLogin,userController.updateDetails)
+userRoute.post("/profile/add-address",auth.isLogin,addressController.addNewAddress)
+// userRoute.get("/address/save",auth.isLogin,addressController.addAddress)
 
 userRoute.get('/search/suggestions', productsController.getSearchSuggestions);
 

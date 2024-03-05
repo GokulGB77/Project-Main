@@ -134,22 +134,128 @@
                                     <!-- Single Tab Content End -->
                                     <!-- Single Tab Content Start -->
                                     <div class="tab-pane fade" id="address-edit" role="tabpanel">
-                                        <% addresses.forEach(address => { %>
+                                        <% if (addresslist.length < 4) { %>
                                             <div class="row">
                                                 <div class="myaccount-content col-lg-6">
-                                                    <h3>Billing Address</h3>
-                                                    <address>
-                                                        <p><strong><%= address.name %></strong></p>
-                                                        <p><%= address.street %>, <%= address.city %>, <%= address.zip %></p>
-                                                        <p>Mobile: <%= address.mobile %></p>
-                                                    </address>
-                                                    <a href="#" class="check-btn sqr-btn"><i class="fa fa-edit"></i> Edit Address</a>
+                                                    <button id="addAddressButton" class="btn btn-primary"><i
+                                                            class="fa fa-plus"></i> Add Address</button>
                                                 </div>
-                                                <!-- Add any additional columns or data here -->
                                             </div>
-                                        <% }); %>
+                                            <% } %>
                                     </div>
-                                    
+                                    <script>
+                                        document.getElementById('addAddressButton').addEventListener('click', function () {
+                                            // Show the modal popup
+                                            $('#addAddressModal').modal('show');
+                                        });
+                                    </script>
+                                    <!-- Modal HTML -->
+                                    <div id="addAddressModal" class="modal">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <!-- Modal Header -->
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Add New Address</h4>
+                                                    <button type="button" class="close"
+                                                        data-dismiss="modal">&times;</button>
+                                                </div>
+                                                <!-- Modal Body -->
+                                                <div class="modal-body">
+                                                    <!-- Form for adding a new address -->
+                                                    <form id="addAddressForm" action="/profile/add-address"
+                                                        method="post">
+                                                        <div class="form-group">
+                                                            <label for="name">Name:</label>
+                                                            <input type="text" class="form-control" id="addname"
+                                                                name="addname" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="house">House:</label>
+                                                            <input type="text" class="form-control" id="house"
+                                                                name="house" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="street">Street:</label>
+                                                            <input type="text" class="form-control" id="street"
+                                                                name="street" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="city">City:</label>
+                                                            <input type="text" class="form-control" id="city"
+                                                                name="city" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="state">State:</label>
+                                                            <input type="text" class="form-control" id="state"
+                                                                name="state" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="pincode">Pincode:</label>
+                                                            <input type="number" class="form-control" id="pincode"
+                                                                name="pincode" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="type">Address Type:</label>
+                                                            <input type="text" class="form-control" id="type"
+                                                                name="type" value="Home" required>
+                                                        </div>
+                                                        <!-- Submit button -->
+                                                        <button type="submit" class="btn btn-primary">Add
+                                                            Address</button>
+
+                                                        <a href="/profile?selected=Address"
+                                                            class="btn btn-secondary">Back</a>
+                                                    </form>
+                                                </div>
+
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        // Check if success parameter exists in URL and if the message has not been shown yet
+                                                        const urlParams = new URLSearchParams(window.location.search);
+                                                        const success = urlParams.get('success');
+                                                        const error = urlParams.get('error');
+                                                        const successAlreadyShown = sessionStorage.getItem('toast1Shown');
+                                                        const errorAlreadyShown = sessionStorage.getItem('toast2Shown');
+                                                
+                                                        if (success === 'true' && !successAlreadyShown) {
+                                                            // Display toast message for success
+                                                            $.toast({
+                                                                heading: 'Success',
+                                                                text: 'New Address Added',
+                                                                showHideTransition: 'slide',
+                                                                position: 'top-center',
+                                                                icon: 'success'
+                                                            });
+                                                
+                                                            // Set session storage to indicate that the message has been shown
+                                                            sessionStorage.setItem('toast1Shown', 'true');
+                                                
+                                                        } else if (error === 'true' && !errorAlreadyShown) {
+                                                            // Display toast message for error
+                                                            $.toast({
+                                                                heading: 'Error',
+                                                                text: 'Error Adding New Address',
+                                                                showHideTransition: 'fade',
+                                                                position: 'top-center',
+                                                                icon: 'error'
+                                                            });
+                                                
+                                                            // Set session storage to indicate that the message has been shown
+                                                            sessionStorage.setItem('toast2Shown', 'true');
+                                                        }
+                                                    });
+                                                </script>
+                                                
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- JavaScript code -->
+
+
+
+
+
                                     <!-- Single Tab Content End -->
                                     <!-- Single Tab Content Start -->
                                     <div class="tab-pane fade" id="account-info" role="tabpanel">

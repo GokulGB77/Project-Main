@@ -26,10 +26,10 @@ const securePassword = async (password) => {
 const loadRegister = async (req, res) => {
   try {
     const jwtcookie = req.cookies.jwt;
-    if(jwtcookie){
+    if (jwtcookie) {
       return res.redirect("/")
-    } 
-    res.render('register',{layout:false,currentPage: 'register' })
+    }
+    res.render('register', { layout: false, currentPage: 'register' })
   } catch (error) {
     console.log(error.message)
   }
@@ -49,8 +49,8 @@ const intialRegisterUser = async (req, res) => {
     }
 
     const OTP = generateOTP()
-    const otpExpirationTime =    20000; // 5 * 60 * 1000 = 5 minutes in milliseconds
-    
+    const otpExpirationTime = 20000; // 5 * 60 * 1000 = 5 minutes in milliseconds
+
     req.session.tempUserDetails = {
       name: req.body.name,
       email: req.body.email,
@@ -58,30 +58,30 @@ const intialRegisterUser = async (req, res) => {
       password: spassword,
       is_admin: 0,
       is_verified: 0,
-      status:0,
+      status: 0,
       otp: OTP,
       // Adding expiration time
-      otpExpiration:  otpExpirationTime
-      
+      otpExpiration: otpExpirationTime
+
     };
-    
+
     req.session.save()
     if (req.session.tempUserDetails) {
       const subject = "Verify Your CouchCart. Account"
-      
+
       console.log(OTP);
       const html = `<p> Your verification code is: ${OTP} </p>`
       await sendEmailOtp(req.body.email, subject, html);
-      console.log("First otp is: "+OTP);
+      console.log("First otp is: " + OTP);
 
       res.render("otpVerify", { errorMessage: null });
-      
-      
+
+
       setTimeout(() => {
         // Clear the OTP from the session
-         req.session.tempUserDetails.otp = null;
-         req.session.tempUserDetails.otpExpiration = null;
-         req.session.save()
+        req.session.tempUserDetails.otp = null;
+        req.session.tempUserDetails.otpExpiration = null;
+        req.session.save()
         console.log('First OTP expired');
       }, otpExpirationTime);
     }
@@ -92,24 +92,24 @@ const intialRegisterUser = async (req, res) => {
 
 const resendOtp = async (req, res) => {
   try {
-    const OTP = generateOTP(); 
-    const newOtpExpiration =    20000; // 5 * 60 * 1000 = 5 minutes in milliseconds
+    const OTP = generateOTP();
+    const newOtpExpiration = 20000; // 5 * 60 * 1000 = 5 minutes in milliseconds
 
 
     // Update the OTP in the session data
     req.session.tempUserDetails.otp = OTP;
     req.session.otpExpiration = newOtpExpiration
     req.session.save()
-    
+
     const { email } = req.session.tempUserDetails;
     const subject = "Resend OTP for CouchCart Account";
-    
+
     const html = `<p>Your new verification code is: ${OTP}</p>`;
-    
+
     // Resend the OTP via email
     await sendEmailOtp(email, subject, html);
-    console.log("New otp is: "+OTP);
-    
+    console.log("New otp is: " + OTP);
+
     // res.render("otpVerify", { errorMessage: null }); // Render the OTP verification page
     res.status(200)
     setTimeout(() => {
@@ -133,13 +133,13 @@ const registerUser = async (req, res) => {
   try {
     // Check if OTP is expired
     // if (req.session.tempUserDetails && req.session.tempUserDetails.otpExpiration && Date.now() > req.session.tempUserDetails.otpExpiration) {
-      // OTP expired
+    // OTP expired
     //   return res.render("otpVerify", { errorMessage: "OTP expired. Please resend OTP." });
     // }
 
     if (req.body.otp === req.session.tempUserDetails.otp) {
-  
-        const user = new Userdb({
+
+      const user = new Userdb({
         name: req.session.tempUserDetails.name,
         email: req.session.tempUserDetails.email,
         mobile: req.session.tempUserDetails.mobile,
@@ -151,7 +151,7 @@ const registerUser = async (req, res) => {
       const userData = await user.save();
 
 
-      const userID = userData._id; 
+      const userID = userData._id;
       const token = auth.createToken(userID);
       res.cookie("jwt", token, {
         httpOnly: true,
@@ -161,9 +161,9 @@ const registerUser = async (req, res) => {
       console.log("userId is :", userData._id);
       console.log("token :", token);
       res.status(200).json({});
-    } else{
-      res.status(400).json({});           
-  } 
+    } else {
+      res.status(400).json({});
+    }
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
@@ -176,28 +176,28 @@ const registerUser = async (req, res) => {
 const loadLogin = async (req, res) => {
   try {
     const jwtcookie = req.cookies.jwt;
-    if(jwtcookie){
+    if (jwtcookie) {
       return res.redirect("/")
-    } 
-      const {error} = req.query
-      let errorMessage = '';
-  
-      switch (error) {
-        case 'blocked':
-          errorMessage = 'User is blocked';
-          break;
-        case 'usernotfound':
-          errorMessage = 'User Not Found';
-          break;
-        case 'invalid':
-          errorMessage = 'Invalid Credentials';
-          break;
-        default:
-          errorMessage = '';
-      }
-  
-      
-      return res.render('login',{ error,errorMessage});
+    }
+    const { error } = req.query
+    let errorMessage = '';
+
+    switch (error) {
+      case 'blocked':
+        errorMessage = 'User is blocked';
+        break;
+      case 'usernotfound':
+        errorMessage = 'User Not Found';
+        break;
+      case 'invalid':
+        errorMessage = 'Invalid Credentials';
+        break;
+      default:
+        errorMessage = '';
+    }
+
+
+    return res.render('login', { error, errorMessage });
   } catch (error) {
     console.log(error.message);
   }
@@ -224,7 +224,7 @@ const loginUser = async (req, res) => {
       return res.redirect('/login?error=invalid');
     }
 
-    const userID = userData._id; 
+    const userID = userData._id;
     const token = auth.createToken(userID);
     res.cookie("jwt", token, {
       httpOnly: true,
@@ -246,18 +246,18 @@ const loadHomePage = async (req, res) => {
     const token = req.cookies.jwt ? true : false;
     const tokenId = req.cookies.jwt
     res.locals.token = tokenId,
-    console.log("User logged in:",tokenId);
+      console.log("User logged in:", tokenId);
     try {
       // const categoryLiving = await Productsdb.find({category:"Living Room Furniture"}).populate("category")
-      const products = await Productsdb.find({status:1}).populate("category")
-      const allItems = await Productsdb.find({status:1}).populate("category").sort({ _id: 1 }).limit(16);
-      const newArrivals= await Productsdb.find({status:1}).populate("category").sort({ _id: -1 }).limit(16);
-      const bestSellers= await Productsdb.find({status:1}).populate("category").sort({ productName: 1 }).limit(16);
-      const saleItems= await Productsdb.find({status:1}).populate("category").sort({ productName: -1 }).limit(16);
-      res.render('homepage', { tokenId, newArrivals,allItems,bestSellers,saleItems,products,}).limit(16);
+      const products = await Productsdb.find({ status: 1 }).populate("category")
+      const allItems = await Productsdb.find({ status: 1 }).populate("category").sort({ _id: 1 }).limit(16);
+      const newArrivals = await Productsdb.find({ status: 1 }).populate("category").sort({ _id: -1 }).limit(16);
+      const bestSellers = await Productsdb.find({ status: 1 }).populate("category").sort({ productName: 1 }).limit(16);
+      const saleItems = await Productsdb.find({ status: 1 }).populate("category").sort({ productName: -1 }).limit(16);
+      res.render('homepage', { tokenId, newArrivals, allItems, bestSellers, saleItems, products, }).limit(16);
 
     } catch (error) {
-      console.log("Error getting product data from db:",error)
+      console.log("Error getting product data from db:", error)
       res.status(404).send("Error getting product data from db")
     }
 
@@ -273,37 +273,38 @@ const loadHomePage = async (req, res) => {
 
 const loadProfile = async (req, res) => {
   try {
-  console.log("User entered User profile ");
-  const token = req.cookies.jwt;
-  // const secretKey = process.env.JWT_SECRET;
-  // const decodedToken = jwt.verify(token,secretKey)
-  const currentUser = res.locals.currentUser
-  console.log("Current User: ",currentUser.name)
-  const addresses = await Userdb.find({_id:currentUser._id})
+    console.log("User entered User profile");
+    const token = req.cookies.jwt;
+    const currentUser = res.locals.currentUser;
+    console.log("Current User: ", currentUser.name);
+    console.log("userId:", res.locals.currentUserId)
+    // Use findOne to retrieve a single user document
+    const user = await Userdb.findOne({ _id: currentUser._id }).populate('addresses');
 
-  if(token){
-    res.render("profile",{token,currentUser})
-  } else {
-    res.redirect("/login")
-  }
+    if (token) {
+      res.render("profile", { token, currentUser, addresslist: user.addresses });
+    } else {
+      res.redirect("/login");
+    }
   } catch (error) {
-    console.log(error)
-    res.status(500).send("LoadProfile failed")
+    console.log(error);
+    res.status(500).send("LoadProfile failed");
   }
-}
+};
 
-const updateDetails = async (req,res) => {
+
+const updateDetails = async (req, res) => {
   try {
-  const newName = req.body.name;
-  const newMobile = req.body.mobile
-  const id = req.query.id
-  console.log(newName,newMobile,id);
-  const updateDb = await Userdb.findByIdAndUpdate(id,{
-    name: newName,
-    mobile: newMobile,
-  })
-  console.log("User Details Updated");
-  res.redirect("/profile?success=true")
+    const newName = req.body.name;
+    const newMobile = req.body.mobile
+    const id = req.query.id
+    console.log(newName, newMobile, id);
+    const updateDb = await Userdb.findByIdAndUpdate(id, {
+      name: newName,
+      mobile: newMobile,
+    })
+    console.log("User Details Updated");
+    res.redirect("/profile?success=true")
 
   } catch (error) {
     console.log(error)
@@ -318,11 +319,11 @@ const logoutUser = async (req, res) => {
   try {
     console.log("User logged out..Session Destroyed");
     const token = req.cookies.jwt
-  
+
     // Clear the JWT token from cookies
     res.cookie('jwt', '', { expires: new Date(0) });
     res.redirect("/login",);
-  
+
   } catch (error) {
     console.log(error);
     res.status(500).send("Logout User Failed")
@@ -336,7 +337,7 @@ const logoutUser = async (req, res) => {
 
 
 
-module.exports={
+module.exports = {
   securePassword,
   loadRegister,
   loadLogin,
@@ -348,9 +349,10 @@ module.exports={
   resendOtp,
   logoutUser,
   updateDetails,
-  
-  
-  
+
+
+
+
 
 }
 
@@ -393,23 +395,23 @@ module.exports={
 //   try {
 //     res.render("about-us")
 //   } catch (error) {
-//     console.log(error.message);    
+//     console.log(error.message);
 //   }
-// } 
+// }
 
 
 
- // loadContactUs,
-  // loadCart,
-  // loadCheckout,
-  // loadcompare,
-  // loadwishlist,
+// loadContactUs,
+// loadCart,
+// loadCheckout,
+// loadcompare,
+// loadwishlist,
 
 // const loadContactUs = async (req,res)=>{
 //   try {
 //     res.render("contact-us")
 //   } catch (error) {
-//     console.log(error.message);    
+//     console.log(error.message);
 //   }
 // }
 
@@ -417,7 +419,7 @@ module.exports={
 //   try {
 //     res.render("cart")
 //   } catch (error) {
-//     console.log(error.message);    
+//     console.log(error.message);
 //   }
 // }
 
@@ -425,7 +427,7 @@ module.exports={
 //   try {
 //     res.render("checkout")
 //   } catch (error) {
-//     console.log(error.message);    
+//     console.log(error.message);
 //   }
 // }
 
@@ -433,14 +435,14 @@ module.exports={
 //   try {
 //     res.render("compare")
 //   } catch (error) {
-//     console.log(error.message);    
+//     console.log(error.message);
 //   }
 // }
 
 // const loadwishlist = async (req,res)=>{
 //   try {
-//     res.render("wishlist")
+//     res.render("wishlist")  
 //   } catch (error) {
-//     console.log(error.message);    
+//     console.log(error.message);
 //   }
 // }
