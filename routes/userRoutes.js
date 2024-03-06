@@ -54,7 +54,9 @@ userRoute.get('/product-details',productsController.loadProductDetails);
 userRoute.get("/profile",auth.isLogin,userController.loadProfile)
 userRoute.post("/update-user-details",auth.isLogin,userController.updateDetails)
 userRoute.post("/profile/add-address",auth.isLogin,addressController.addNewAddress)
-// userRoute.get("/address/save",auth.isLogin,addressController.addAddress)
+userRoute.get("/profile/edit-address",auth.isLogin,addressController.editAddress)
+userRoute.post("/profile/edit-address",auth.isLogin,addressController.updateAddress)
+userRoute.get("/profile/delete-address",auth.isLogin,addressController.deleteAddress)
 
 userRoute.get('/search/suggestions', productsController.getSearchSuggestions);
 

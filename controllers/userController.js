@@ -1,5 +1,6 @@
 const Userdb = require("../models/userModel")
 const Productsdb = require("../models/productsModel")
+const Addressdb = require("../models/addressModel")
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 
@@ -280,9 +281,10 @@ const loadProfile = async (req, res) => {
     console.log("userId:", res.locals.currentUserId)
     // Use findOne to retrieve a single user document
     const user = await Userdb.findOne({ _id: currentUser._id }).populate('addresses');
-
+    const addressDocument = await Addressdb.findOne({ user: currentUser._id });
+    const addresses = addressDocument ? addressDocument.addresses : [];
     if (token) {
-      res.render("profile", { token, currentUser, addresslist: user.addresses });
+      res.render("profile", { token, currentUser, addresslist: addresses, user });
     } else {
       res.redirect("/login");
     }
@@ -291,6 +293,7 @@ const loadProfile = async (req, res) => {
     res.status(500).send("LoadProfile failed");
   }
 };
+
 
 
 const updateDetails = async (req, res) => {

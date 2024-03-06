@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 // const { v4:uuidv4 } = require('uuid');  
 const nocache = require("nocache")
+const flash = require('connect-flash');
 
 const app = express();
 
@@ -30,6 +31,7 @@ mongoose.connect("mongodb://localhost:27017/CouchCartDB", {
 })
 
 app.set('view engine','ejs');
+app.use(flash());
 
 
 
