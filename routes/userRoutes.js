@@ -13,7 +13,7 @@ const cookieParser = require('cookie-parser');
 
 // Parse cookies before other middleware
 userRoute.use(cookieParser());
-userRoute.use(auth.attachTokenToLocals); // Use the middleware
+// userRoute.use(auth.attachTokenToLocals); // Use the middleware
 
 userRoute.use(session({
   secret: uuidv4(),
@@ -51,12 +51,13 @@ userRoute.get('/shop', productsController.loadShop);
 userRoute.get('/shop/:page', productsController.loadShop);
 userRoute.get('/product-details',productsController.loadProductDetails);
 
-userRoute.get("/profile",auth.isLogin,userController.loadProfile)
-userRoute.post("/update-user-details",auth.isLogin,userController.updateDetails)
-userRoute.post("/profile/add-address",auth.isLogin,addressController.addNewAddress)
-userRoute.get("/profile/edit-address",auth.isLogin,addressController.editAddress)
-userRoute.post("/profile/edit-address",auth.isLogin,addressController.updateAddress)
-userRoute.get("/profile/delete-address",auth.isLogin,addressController.deleteAddress)
+userRoute.get("/profile",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)
+userRoute.post("/update-user-details",auth.attachTokenToLocals,auth.isLogin,userController.updateDetails)
+userRoute.post("/profile/add-address",auth.attachTokenToLocals,auth.isLogin,addressController.addNewAddress)
+userRoute.get("/profile/edit-address",auth.attachTokenToLocals,auth.isLogin,addressController.editAddress)
+userRoute.post("/profile/edit-address",auth.attachTokenToLocals,auth.isLogin,addressController.updateAddress)
+userRoute.get("/profile/delete-address",auth.attachTokenToLocals,auth.isLogin,addressController.deleteAddress)
+userRoute.post("/profile/change-password",auth.attachTokenToLocals,auth.isLogin,auth.isUser,userController.changePassword)
 
 userRoute.get('/search/suggestions', productsController.getSearchSuggestions);
 

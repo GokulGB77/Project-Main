@@ -17,8 +17,8 @@
                                     <a href="#address-edit" id="address-menu" data-bs-toggle="tab">Address</a>
                                     <a href="#change-password" id="cpassword-menu" data-bs-toggle="tab">Change Password</a>
                                     <a href="#orders" id="orders-menu" data-bs-toggle="tab">Orders</a>
-                                    <a href="#download" id="download" data-bs-toggle="tab">Download</a>
-                                    <a href="#payment-method" id="payment-menu" data-bs-toggle="tab">Payment Method</a>
+                                    <!-- <a href="#download" id="download" data-bs-toggle="tab">Download</a> -->
+                                    <!-- <a href="#payment-method" id="payment-menu" data-bs-toggle="tab">Payment Method</a> -->
                                     <a href="/logout">Logout</a>
                                 </div>
                             </div>
@@ -225,6 +225,7 @@
                                             // Remove the 'active' class from other tabs if needed
                                             // Add similar lines for other tabs if necessary
                                         }
+                                        
                                     </script>
                                     <script>
                                         document.getElementById('addAddressButton').addEventListener('click', function () {
@@ -322,9 +323,10 @@
                                         // Check if success parameter exists in URL and if the message has not been shown yet
                                         const urlParams = new URLSearchParams(window.location.search);
                                         const success = urlParams.get('deleted');
-                                        const alreadyShown = sessionStorage.getItem('toastShown');
+                                        const added = urlParams.get('added');
+                                        const removedAddressToast = sessionStorage.getItem('removedAddressToast');
                             
-                                        if (success === 'true') {
+                                        if (success === 'true' && !removedAddressToast) {
                                             // Display toast message for success
                                             $.toast({
                                                 heading: 'Success',
@@ -333,27 +335,32 @@
                                                 position: 'top-center',
                                                 icon: 'success'
                                             });
-                            
                                             // Set session storage to indicate that the message has been shown
-                                            sessionStorage.setItem('toastShown', 'true');
+                                            sessionStorage.setItem('removedAddressToast', 'true');
+                                            setTimeout(() => {
+                                                sessionStorage.setItem('removedAddressToast', 'null');
+                                            }, 60000);
                             
+                                        }
+                                        const addedAddressSuccess = sessionStorage.getItem('addedAddressSuccess');
+                                        if (added === 'true' && !addedAddressSuccess) {
+                                            // Display toast message for success
+                                            $.toast({
+                                                heading: 'Success',
+                                                text: 'New Address Added',
+                                                showHideTransition: 'slide',
+                                                position: 'top-center',
+                                                icon: 'success'
+                                            });
+                                            sessionStorage.setItem('addedAddressSuccess', 'true');
+                                            setTimeout(() => {
+                                                sessionStorage.setItem('addedAddressSuccess', 'null');
+                                            }, 60000);
+                            
+
                                         }
                                     });
                                 </script>
-
-
-                                    
-                                   
-                                    
-
-
-
-                                    
-                                   
-                                    
-
-
-
 
                                     <!-- Single Tab Content End -->
                                     <!-- Single Tab Content Start -->
@@ -442,6 +449,15 @@
                                                             // Set session storage to indicate that the message has been shown
                                                             sessionStorage.setItem('toastShown', 'true');
 
+                                                        } else if (success === 'false') {
+                                                            // Display toast message for success
+                                                            $.toast({
+                                                                heading: 'Error',
+                                                                text: 'Address Updation Failed',
+                                                                showHideTransition: 'slide',
+                                                                position: 'top-center',
+                                                                icon: 'success'
+                                                            });
                                                         }
                                                     });
                                                 </script>
@@ -556,34 +572,168 @@
                                         <div class="myaccount-content">
                                             <h3>Change Password</h3>
                                             <div class="account-details-form">
-                                                <form action="/change-password">
+                                                <form action="/profile/change-password" method="post">
                                                     <fieldset>
+                                                        <input type="text" value="<%=currentUserId%>" hidden class="form-control" id="user" name="user">
+
                                                         <div class="single-input-item">
-                                                            <label for="current-pwd" class="required">Current
-                                                                Password</label>
-                                                            <input type="password" id="current-pwd" />
+                                                            <label for="current-pwd" class="required">Current Password</label>
+                                                            <input type="password" id="currentPwd" name="currentPwd" />
+
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="single-input-item">
-                                                                    <label for="new-pwd" class="required">New
-                                                                        Password</label>
-                                                                    <input type="password" id="new-pwd" />
+                                                                    <label for="new-pwd" class="required">New Password</label>
+                                                                    <input type="text" id="newPwd" name="newPwd" />
+                                                                    <span id="passwordErrorMessage" style="color: red;"></span>
+
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="single-input-item">
-                                                                    <label for="confirm-pwd" class="required">Confirm
-                                                                        Password</label>
-                                                                    <input type="password" id="confirm-pwd" />
+                                                                    <label for="confirm-pwd" class="required" >Confirm Password</label>
+                                                                    <input type="password" id="confirmPwd" onchange=" confirmPassword()" name="confirm-pwd" />
+                                                                    <span id="confirmPasswordErrorMessage" style="color: red;"></span>
+
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </fieldset>
                                                     <div class="single-input-item btn-hover">
-                                                        <button class="check-btn sqr-btn">Save Changes</button>
+                                                        <button class="check-btn sqr-btn" onclick="return validation()" >Save Changes</button>
                                                     </div>
                                                 </form>
+                                                
+                                                <script>
+        
+                                                    function confirmPassword() {
+                                                        let newPassword = document.getElementById("newPwd").value;
+                                                        let confirmPassword = document.getElementById("confirmPwd").value;
+                                                        let confirmPasswordErrorMessage = document.getElementById("confirmPasswordErrorMessage");
+                                                        if (newPassword !== confirmPassword) {
+                                                            confirmPasswordErrorMessage.textContent = 'Password does not match';
+                                                            return false;
+                                                        }
+                                                        return true;
+                                                    }
+
+                                                    function validation(){
+                                                        if(!confirmPassword() || !validatePassword()){
+                                                            $.toast({
+                                                                heading: 'Error',
+                                                                text: 'Fix the errors',
+                                                                showHideTransition: 'slide',
+                                                                position: 'top-center',
+                                                                icon: 'error'
+                                                            });
+                                                            return false;
+                                                        }
+                                                        return true;
+                                                    }
+                                                    function validatePassword() {
+                                                        const password = document.getElementById('newPwd').value;
+                                                        const passwordErrorMessage = document.getElementById('passwordErrorMessage');
+                                                        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+                                                        if (password.length < 8) {
+                                                            passwordErrorMessage.textContent = 'Password must be at least 8 characters long';
+                                                        } else if (/\s/.test(password)) {
+                                                            passwordErrorMessage.textContent = 'Password should not contain spaces';
+                                                        } else if (!passwordRegex.test(password)) {
+                                                            passwordErrorMessage.textContent = 'Password should contain at least one lowercase letter, one uppercase letter, one number, and one special character from !@#$%^&*';
+                                                        } else {
+                                                            passwordErrorMessage.textContent = ''; // Remove the error message
+                                                            setTimeout(() => {
+                                                                passwordErrorMessage.textContent = '';
+                                                            }, 2000); // Hide after 2 seconds
+                                                        }
+                                                    }
+
+                                                    document.getElementById('newPwd').addEventListener('input', validatePassword);
+
+                                                    document.getElementById('newPwd').addEventListener('focus', function () {
+                                                        document.getElementById('passwordErrorMessage').textContent = '';
+                                                    });
+                                                   
+                                                </script>
+                                                <script>
+                                                    $(document).ready(function () {
+                                                        // Check if success parameter exists in URL and if the message has not been shown yet
+                                                        const urlParams = new URLSearchParams(window.location.search);
+                                                        const success = urlParams.get('updated');
+                                                        const alreadyShown = sessionStorage.getItem('PwdErrToast');
+                                                        
+                                                        if (success === 'true' && !alreadyShown) {
+                                                            // Display toast message for success
+                                                            $.toast({
+                                                                heading: 'Success',
+                                                                text: 'Password Updated Successfully',
+                                                                showHideTransition: 'slide',
+                                                                position: 'top-center',
+                                                                icon: 'success'
+                                                            });
+                                                            
+                                                            // Set session storage to indicate that the message has been shown
+                                                            sessionStorage.setItem('PwdErrToast', 'true');
+                                                            setTimeout(()=>{
+                                                                sessionStorage.setItem('PwdErrToast', 'null')
+                                                            },60000)
+                                                            
+                                                        } 
+                                                        if (success === 'false') {
+                                                            // Display toast message for success
+                                                            $.toast({
+                                                                heading: 'Error',
+                                                                text: 'Password Updation Failed',
+                                                                showHideTransition: 'slide',
+                                                                position: 'top-center',
+                                                                icon: 'error'
+                                                            });
+                                                            
+                                                        }
+                                                        const samepass = urlParams.get('samepass');
+                                                        if (samepass === 'true') {
+                                                            // Display toast message for success
+                                                            $.toast({
+                                                                heading: 'Error',
+                                                                text: 'New Password cannot be same as Old Password',
+                                                                showHideTransition: 'slide',
+                                                                position: 'top-center',
+                                                                icon: 'error'
+                                                            });
+
+                                                        }
+                                                        const currentpwd = urlParams.get('currentpwd');
+                                                        if (currentpwd === 'false') {
+                                                            // Display toast message for success
+                                                            $.toast({
+                                                                heading: 'Error',
+                                                                text: 'Entered Current Password Is Incorrect',
+                                                                showHideTransition: 'slide',
+                                                                position: 'top-center',
+                                                                icon: 'error'
+                                                            });
+
+                                                        }
+                                                       
+                                                    });
+
+                                                    const urlPwdParams = new URLSearchParams(window.location.search);
+                                                        const updated = urlParams.get('selected');
+                                                      
+                                                         if (selected === 'change-password') {
+                                                            // Add a class to the address tab to keep it open
+                                                            document.getElementById('change-password').classList.add('show', 'active');
+                                                            document.getElementById('cpassword-menu').classList.add('active');
+                                                            document.getElementById('dashboard-menu').classList.remove('active');
+                                                            // Remove the 'active' class from other tabs if needed
+                                                            // Add similar lines for other tabs if necessary
+                                                    }
+                                                </script>
+                                                
+
+                                                
                                             </div>
                                         </div>
                                     </div> <!-- Single Tab Content End -->

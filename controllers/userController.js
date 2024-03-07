@@ -311,10 +311,50 @@ const updateDetails = async (req, res) => {
 
   } catch (error) {
     console.log(error)
-    res.status(500).send("Update Profile failed")
+    res.redirect("/profile?success=false")
   }
 
 }
+
+
+
+const changePassword = async (req, res) => {
+  try {
+      const { currentPwd, newPwd, user } = req.body;
+      const currentUser = user; // Assuming currentUser is the username or ID of the current user
+      const isUser = await Userdb.findById(currentUser);
+
+      
+      if (!isUser) {
+          return res.status(404).send("User not found");
+      }
+      const samePassword = await argon2.verify(isUser.password,newPwd)
+      if(samePassword){
+        return res.redirect("/profile?selected=change-password&samepass=true")
+
+      }
+      // Verify if the current password matches the user's password
+      const isPasswordMatch = await argon2.verify(isUser.password, currentPwd);
+
+      if (!isPasswordMatch) {
+        return res.redirect("/profile?selected=change-password&currentpwd=false")
+      }
+
+      // Hash the new password
+      const hashedNewPwd = await securePassword(newPwd);
+
+      // Update the user's password
+      isUser.password = hashedNewPwd;
+      await isUser.save();
+
+      console.log("Password Updated Successfully");
+      return res.redirect("/profile?updated=true")
+    } catch (error) {
+      console.log(error);
+      res.redirect("/profile?window=change-password&updated=false")
+  }
+};
+
 
 
 
@@ -352,7 +392,7 @@ module.exports = {
   resendOtp,
   logoutUser,
   updateDetails,
-
+  changePassword,
 
 
 
