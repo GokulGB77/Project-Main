@@ -5365,7 +5365,7 @@ textarea {
 }
 
 .product-quality > input {
-  width: 83px;
+  width: 78px;
   border: none;
   height: 60px;
   line-height: 50px;
@@ -5397,7 +5397,7 @@ textarea {
   left: auto;
   right: 10px;
   font-size: 20px;
-  top: 15px;
+  top: 18px;
 }
 
 .product-quality .qtybutton.dec {

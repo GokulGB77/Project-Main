@@ -183,6 +183,9 @@ const unarchiveProduct = async(req,res) => {
 
 const loadShop = async (req, res) => {
   try {
+
+    const userId = res.locals.currentUserId
+    console.log("userId in shoppage:---- ",userId)
     const perPage = 12; // Number of items per page
     const page = parseInt(req.query.page) || 1; // Extract page number from query parameters
     const skip = (page - 1) * perPage;
@@ -232,7 +235,7 @@ const loadShop = async (req, res) => {
     const allItems = await query;
 
     // Render view with paginated items, pagination metadata, and filter criteria
-    res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy, filterByCategory });
+    res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy, filterByCategory,userId });
   } catch (error) {
     console.log(error);
     res.status(500).send("Products page render failed");
