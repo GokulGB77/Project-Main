@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Offside Outfits</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Molla - Bootstrap eCommerce Template">
+    <meta name="author" content="p-themes">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href=" /productAssets/User-icon.svg">
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/plugins/owl-carousel/owl.carousel.css">
+    <link rel="stylesheet" href="assets/css/plugins/magnific-popup/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/plugins/nouislider/nouislider.css">
+    <link rel="stylesheet" href="path/to/sweetalert2.min.css">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <header class="header ">
+            <div class="header-middle">
+                <div class="header-top">
+                    <div class="container-fluid">
+                        <div class="header-left m-4">
+
+                        </div><!-- End .header-left -->
+
+                        <div class="header-right">
+                            <ul class="top-menu">
+                                <li>
+                                    <a href="#">Links</a>
+                                    <ul>
+                                        <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
+                                        <li><a href="about.html">About Us</a></li>
+                                        <li><a href="contact.html">Contact Us</a></li>
+                                        <li style="display: none;"><a href="#signin-modal" data-toggle="modal"><i
+                                                    class="icon-user"></i>Login</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul><!-- End .top-menu -->
+                        </div><!-- End .header-right -->
+                    </div><!-- End .container-fluid -->
+                </div><!-- End .header-top -->
+
+                <div class="header-middle ">
+                    <div class="container-fluid">
+                        <div class="header-left">
+
+
+                            <a href="/home" class="logo">
+                                <img src="assets/images/Logo1.png" alt="Molla Logo" width="50" height="25">
+                            </a>
+
+                            <nav class="main-nav">
+                                <ul class="menu sf-arrows">
+                                    <li class="megamenu-container ">
+                                        <a href="/home" class="">Home</a>
+                                    </li>
+                                    <li class="">
+                                        <a href="/products" class=" ">Shop</a>
+                                    </li>
+                                    <li>
+                                        <a href="" class="">Product</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="">Pages</a>
+                                    </li>
+                                    <li>
+                                        <a href="" class="">Blog</a>
+                                    </li>
+                                    <li>
+                                        <a href="" class="">Elements</a>
+
+
+                                    </li>
+                                </ul><!-- End .menu -->
+                            </nav><!-- End .main-nav -->
+                        </div><!-- End .header-left -->
+
+                        <div class="header-right">
+
+                            <div class="header-search">
+                                <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
+                                <form action="#" method="get">
+                                    <div class="header-search-wrapper">
+                                        <label for="q" class="sr-only">Search</label>
+                                        <input type="search" class="form-control" name="q" id="q"
+                                            placeholder="Search in..." required>
+                                    </div><!-- End .header-search-wrapper -->
+                                </form>
+                            </div><!-- End .header-search -->
+
+                            <a href="/wishlist" class="wishlist-link">
+                                <i class="icon-heart-o"></i>
+                            </a>
+
+                            <div class=" cart-dropdown">
+                                <a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true"
+                                    aria-expanded="false" data-display="static">
+                                    <i class="icon-shopping-cart"></i>
+                                </a>
+                            </div>
+
+                            <div class=" cart-dropdown">
+                                <a href="/profile" class="dropdown-toggle" role="button" aria-haspopup="true"
+                                    aria-expanded="false" data-display="static">
+                                    <i class="icon-user"></i>
+
+                                </a>
+                            </div>
+
+                        </div><!-- End .header-right -->
+                    </div><!-- End .container-fluid -->
+                </div><!-- End .header-middle -->
+            </div>
+        </header><!-- End .header -->
+        <main class="main">
+            <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+                <div class="container-fluid">
+                    <h1 class="page-title"><span>Cart</span></h1>
+                </div><!-- End .container-fluid -->
+            </div>
+            <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 m-1"></nav><!-- End .breadcrumb-nav -->
+            <div class="page-content">
+                <div class="container-fluid">
+                    <div class="page-content">
+                        <div class="cart">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-9">
+                                        <table class="table table-cart table-mobile">
+                                        <thead>
+                                            <tr>
+                                                <th>Image</th>
+                                                <th>Product</th>
+                                                <th>Size</th>
+                                                <th>Price</th>
+                                                <th>Quantity</th>
+                                                <th>Total</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+
+                                    <tbody>
+                                        <% if (cartItems && cartItems.length!== 0) { %>
+                                            <% cartItems.forEach(cartItem=> { %>
+                                                <% if (cartItem.cartProducts && cartItem.cartProducts.length> 0) { %>
+                                                    <% cartItem.cartProducts.forEach(product=> { %>
+                                                        <tr data-cart-item="<%= cartItem._id %>" data-product-id="<%= product.productDetail._id %>">
+                                                            <td class="image-col">
+                                                                <img src="/productAssets/<%= product.productDetail.images[0] %>" alt="Product Image"
+                                                                    style="width: 50px; height: 50px;">
+                                                            </td>
+                                                            <td class="product-col">
+                                                                <div class="product">
+                                                                    <h3 class="product-title">
+                                                                        
+                                                                            
+                                                                        
+                                                                        <a href="/products/<%= product.productDetail._id %>">
+                                                                            <%= product.productDetail.pname %>
+                                                                        </a>
+                                                                    </h3>
+                                                                </div>
+                                                            </td>
+                                                            <td class="size-col">
+                                                              <b><%= product.size %></b>  
+                                                            </td>
+                                                            <td class="price-col">
+                                                                <%= product.productDetail.priceAfterDiscount.toFixed(2)%>
+                                                            </td>
+                                                            <td class="quantity-col">
+                                                                <div class="cart-product-quantity">
+                                                                    <input type="number" class="form-control" value="<%= product.quantity %>" min="1"
+                                                                        max="5" step="1" data-decimals="0" required data-cart-id="<%= cartItem._id %>"
+                                                                        data-product-id="<%= product.productDetail._id %>">
+                                                                </div>
+                                                            </td>
+                                                            <td class="total-col">
+                                                                <%= product.productDetail.priceAfterDiscount * product.quantity.toFixed(2) %>
+                                                            </td>
+                                                            <td class="remove-col">
+                                                                <button class="btn-remove"
+                                                                    onclick="removeProduct('<%= cartItem._id %>', '<%= product.productDetail._id %>')">
+                                                                    <i class="icon-close"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <% }); %>
+                                                            <% } %>
+                                                                <% }); %>
+                                                                    <% } else { %>
+                                                                       
+                                                                        <tr>
+                                                                            <td colspan="5" class="text-center">
+                                                                                <div class="alert alert-warning">
+                                                                                    <strong>Cart Is empty</strong>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <% } %>
+                                    </tbody>
+
+                                        </table>
+
+                                        <div class="cart-bottom">
+                                            <div class="cart-discount">
+                                                
+                                            </div><!-- End .cart-discount -->
+                                        </div><!-- End .cart-bottom -->
+                                    </div><!-- End .col-lg-9 -->
+
+                                    <aside class="col-lg-3">
+                                        <div class="summary summary-cart">
+                                            <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+
+                                            <table class="table table-summary">
+                                                <tbody>
+                                                    <tr class="summary-subtotal">
+                                                        <td>Subtotal:</td>
+                                                        <td style="font-weight: 800;" id="dynamicTotal"></td>
+                                                    </tr>
+                                                    
+
+                                                    <!-- Add your dynamic shipping rows here -->
+
+                                                    <tr class="summary-shipping-estimate">
+                                                        <td>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                height="16" fill="currentColor" class="bi bi-geo-fill"
+                                                                viewBox="0 0 16 16"></svg>
+                                                            <p id="currentAddress"></p><br>
+                                                            <a href="/profile?selected=Address">Change address</a>
+                                                        </td>
+                                                        <td>&nbsp;</td>
+                                                    </tr><!-- End .summary-shipping-estimate -->
+<!-- 
+                                                    <tr class="summary-total">
+                                                        <td>Total:</td>
+                                                        <td id="dynamicTotal" style="font-weight: 900;">
+                                                            
+                                                        </tr> -->
+                                                </tbody>
+                                            </table><!-- End .table table-summary -->
+
+                                            <button id="checkoutBtn" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</button>
+
+                                        </div><!-- End .summary -->
+
+                                        <a href="/products" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE
+                                                SHOPPING</span></i></a>
+                                    </aside>
+                                </div><!-- End .row -->
+                            </div><!-- End .container -->
+                        </div>
+                    </div><!-- End .page-content -->
+                </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-middle">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget widget-about">
+                                <img src="assets/images/logo.png" class="footer-logo" alt="Footer Logo" width="105"
+                                    height="25">
+                                <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate
+                                    magna eros eu erat. </p>
+
+                                <div class="social-icons">
+                                    <a href="#" class="social-icon" target="_blank" title="Facebook"><i
+                                            class="icon-facebook-f"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Twitter"><i
+                                            class="icon-twitter"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Instagram"><i
+                                            class="icon-instagram"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Youtube"><i
+                                            class="icon-youtube"></i></a>
+                                    <a href="#" class="social-icon" target="_blank" title="Pinterest"><i
+                                            class="icon-pinterest"></i></a>
+                                </div><!-- End .soial-icons -->
+                            </div><!-- End .widget about-widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="about.html">About Molla</a></li>
+                                    <li><a href="#">How to shop on Molla</a></li>
+                                    <li><a href="#">FAQ</a></li>
+                                    <li><a href="contact.html">Contact us</a></li>
+                                    <li><a href="login.html">Log in</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="#">Payment Methods</a></li>
+                                    <li><a href="#">Money-back guarantee!</a></li>
+                                    <li><a href="#">Returns</a></li>
+                                    <li><a href="#">Shipping</a></li>
+                                    <li><a href="#">Terms and conditions</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="#">Sign In</a></li>
+                                    <li><a href="cart.html">View Cart</a></li>
+                                    <li><a href="#">My Wishlist</a></li>
+                                    <li><a href="#">Track My Order</a></li>
+                                    <li><a href="#">Help</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-middle -->
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <p class="footer-copyright">Copyright</p>
+                    <!-- End .footer-copyright -->
+                    <figure class="footer-payments">
+                        <img src="assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                    </figure><!-- End .footer-payments -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-bottom -->
+        </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+            <form action="#" method="get" class="mobile-search">
+                <label for="mobile-search" class="sr-only">Search</label>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search"
+                    placeholder="Search in..." required>
+                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+            </form>
+
+         
+
+            <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+            </div><!-- End .social-icons -->
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .mobile-menu-container -->
+
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/jquery.hoverIntent.min.js"></script>
+    <script src="assets/js/jquery.waypoints.min.js"></script>
+    <script src="assets/js/superfish.min.js"></script>
+    <script src="assets/js/owl.carousel.min.js"></script>
+    <script src="assets/js/bootstrap-input-spinner.js"></script>
+    
+    <script src="path/to/sweetalert2.all.min.js"></script>
+    
+    <script src="assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script defer src="your-script.js"></script>
+
+
+
+    <script>
+        function calculateTotal() {
+            let total = 0;
+            const cartItems = document.querySelectorAll('.table-cart tbody tr');
+
+            cartItems.forEach(item => {
+                const quantityInput = item.querySelector('.cart-product-quantity input');
+                const priceCell = item.querySelector('.price-col');
+                const totalCell = item.querySelector('.total-col');
+                const quantity = parseInt(quantityInput.value);
+                const price = parseFloat(priceCell.textContent.replace('Rs:', ''));
+
+                const itemTotal = price * quantity;
+                total += itemTotal;
+                totalCell.textContent = itemTotal.toFixed(2);
+            });
+
+            return total.toFixed(2);
+        }
+
+     
+            function updateQuantityOnServer(cartId, productId, newQuantity) {
+                    fetch('/update-cart-quantity', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            cartId: cartId,
+                            productId: productId,
+                            newQuantity: newQuantity
+                        })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Failed to update quantity. Error: ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            console.log(result);
+                           
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed to update quantity',
+                                text: "Insufficent Stock",  
+                            }).then(() => {
+                                location.reload();  
+                            });
+                        });
+                }
+
+
+
+        function removeProduct(cartId, productId) {
+            fetch('/remove-from-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cartId: cartId,
+                    productId: productId
+                })
+            })
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result);
+
+                    
+                    const cartCountElement = document.getElementById('cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = result.cartCount;
+                    }
+
+                    window.location.reload(); 
+                    updateCartTotal();
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const dynamicTotalElement = document.getElementById('dynamicTotal');
+            dynamicTotalElement.textContent = 'Rs:' + calculateTotal();
+        });
+
+        const quantityInputs = document.querySelectorAll('.cart-product-quantity input');
+
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                const dynamicTotalElement = document.getElementById('dynamicTotal');
+                dynamicTotalElement.textContent = 'Rs:' + calculateTotal();
+
+                const cartId = input.getAttribute('data-cart-id');
+                const productId = input.getAttribute('data-product-id');
+                const newQuantity = parseInt(input.value);
+
+                updateQuantityOnServer(cartId, productId, newQuantity);
+            });
+
+            input.addEventListener('input', () => {
+                const item = input.closest('tr');
+                const priceCell = item.querySelector('.price-col');
+                const totalCell = item.querySelector('.total-col');
+                const price = parseFloat(priceCell.textContent.replace('Rs:', ''));
+
+                const quantity = parseInt(input.value);
+                const itemTotal = price * quantity;
+                totalCell.textContent = itemTotal.toFixed(2);
+            });
+        });
+
+    </script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkoutBtn = document.getElementById('checkoutBtn');
+
+        
+        function isCartEmpty() {
+            const cartItems = document.querySelectorAll('.table-cart tbody tr');
+            return cartItems.length === 0;
+        }
+
+        checkoutBtn.addEventListener('click', async function () {
+           
+            if (isCartEmpty()) {
+               
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cart is Empty',
+                    text: 'Please add items to your cart before proceeding to checkout.',
+                });
+                return;
+            }
+
+        
+            try {
+                const response = await fetch('/checkQuantities', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    window.location.replace('/checkout');
+                } else {
+                    if (response.status === 400) {
+                        const errorMessage = await response.text();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage,
+                        });
+                    } else {
+                        const errorMessage = await response.text();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: `Cannot proceed to checkout: ${errorMessage}`,
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error during checkout:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred during checkout. Please try again.',
+                });
+            }
+        });
+    });
+</script>
+
+
+
+
+
+</body>
+
+
+</html>

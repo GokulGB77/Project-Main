@@ -12,10 +12,10 @@
             </div>
         </div>
         <div class="breadcrumb-img-1">
-            <img src="assets/images/banner/breadcrumb-1.png" alt="">
+            <img src="/user/images/banner/breadcrumb-1.png" alt="">
         </div>
         <div class="breadcrumb-img-2">
-            <img src="assets/images/banner/breadcrumb-2.png" alt="">
+            <img src="/user/images/banner/breadcrumb-2.png" alt="">
         </div>
     </div>
     <div class="cart-area pt-100 pb-100">
@@ -26,82 +26,183 @@
                         <div class="cart-table-content">
                             <div class="table-content table-responsive">
                                 <table>
-                                    <thead>
+                                    <% if (cart.cartProducts.length===0) { %>
                                         <tr>
-                                            <th class="width-thumbnail"></th>
-                                            <th class="width-name">Product</th>
-                                            <th class="width-price"> Price</th>
-                                            <th class="width-quantity">Quantity</th>
-                                            <th class="width-subtotal">Subtotal</th>
-                                            <th class="width-remove"></th>
+                                            <td colspan="6" style="text-align: center;">The cart is empty</td>
                                         </tr>
-                                    </thead>
-                                    <% cart.cartProducts.forEach(product=> { %>
-                                        <tr>
-                                            <td class="product-thumbnail">
-                                                <a href="/product-details?id=<%=product._id %>"><img
-                                                        src="/productAssets/<%= product.product.images[0] %>"
-                                                        alt=""></a>
-                                            </td>
-                                            <td class="product-name">
-                                                <h5><a href="/product-details?id=<%=product._id %>">
-                                                        <%= product.product.productName %>
-                                                    </a></h5>
-                                            </td>
-                                            <td class="product-cart-price"><span class="amount">₹ <%=
-                                                        product.product.productPrice %></span></td>
-                                            <td class="cart-quality">
-                                                <!-- <div class="product-quality">
-                                                    <input class="cart-plus-minus-box input-text qty text"
-                                                        name="qtybutton" value="<%= product.quantity %>">
-                                                </div> -->
-                                                <div class="quantity">
-                                                    <button id="decrease_<%= index %>">-</button>
-                                                    <input type="number" id="quantity_<%= index %>" data-cart-id="<%= product._id %>"
-                                                           data-product-id="<%= product._id %>" value="<%= product.quantity %>">
-                                                    <button id="increase_<%= index %>">+</button>
-                                                </div>
-                                                
-                                            </td>
-                                            <td class="product-total"><span>₹ <%= (product.product.productPrice *
-                                                        product.quantity).toFixed(2) %></span></td>
-                                            <td class="product-remove"><a href="#"><i class=" ti-trash "></i></a></td>
-                                        </tr>
-                                        <% }); %>
+                                        <% } else { %>
+                                            <thead>
+                                                <tr>
+                                                    <th class="width-thumbnail"></th>
+                                                    <th class="width-name">Product</th>
+                                                    <th class="width-price"> Price</th>
+                                                    <th class="width-quantity">Quantity</th>
+                                                    <th class="width-subtotal">Subtotal</th>
+                                                    <th class="width-remove"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+
+                                                <% cart.cartProducts.forEach(product=> { %>
+                                                    <tr>
+                                                        <td class="product-thumbnail">
+                                                            <a href="/product-details?id=<%=product._id %>"><img
+                                                                    src="/productAssets/<%= product.product.images[0] %>"
+                                                                    alt=""></a>
+                                                        </td>
+                                                        <td class="product-name">
+                                                            <h5><a href="/product-details?id=<%=product._id %>">
+                                                                    <%= product.product.productName %>
+                                                                </a></h5>
+                                                        </td>
+                                                        <td class="product-cart-price"><span class="amount">₹ <%=
+                                                                    product.product.productPrice %></span></td>
+                                                        <td class="cart-quality">
+
+
+                                                            <div class="quantity">
+                                                                <button class="minus-btn"
+                                                                    onclick="decreaseQuantity('<%=product.product._id%>', '<%=cart._id%>')">-</button>
+                                                                <input type="text"
+                                                                    id="quantity_<%=product.product._id%>" min="1"
+                                                                    max="5" value="<%=product.quantity%>">
+                                                                <button class="plus-btn"
+                                                                    onclick="increaseQuantity('<%=product.product._id%>', '<%=cart._id%>')">+</button>
+                                                            </div>
+
+
+
+
+
+                                                        </td>
+                                                        <td class="product-total"
+                                                            id="subtotal_<%=product.product._id%>"><span>₹ <%=
+                                                                    ((product.product.productPrice *
+                                                                    product.quantity).toFixed(2)) %></span></td>
+                                                        <td class="product-remove"><a href="#"><i
+                                                                    class=" ti-trash "></i></a></td>
+                                                    </tr>
+                                                    <% }); %>
+                                                        <% } %>
                                             </tbody>
                                             <style>
                                                 .quantity {
                                                     display: flex;
                                                     align-items: center;
                                                 }
-                                                .quantity input[type="number"] {
-                                                    width: 50px;
-                                                    height: 30px;
-                                                    border-color: #ccc;
+
+                                                .quantity input[type="text"] {
+                                                    width: 40px;
+                                                    /* Adjust width as needed */
                                                     text-align: center;
-                                                    appearance: none; /* Remove default arrow buttons */
-                                                    -moz-appearance: textfield; /* Firefox */
                                                 }
-                                                .quantity input[type="number"]::-webkit-inner-spin-button,
-                                                .quantity input[type="number"]::-webkit-outer-spin-button {
-                                                    appearance: none; /* Remove default arrow buttons */
-                                                    -webkit-appearance: none; /* Safari and Chrome */
-                                                }
-                                                .quantity button {
-                                                    background-color: #eee;
-                                                    border: 1px solid #ccc;
+
+                                                .minus-btn,
+                                                .plus-btn {
+                                                    background-color: #ccc;
+                                                    border: none;
                                                     padding: 5px 10px;
                                                     cursor: pointer;
                                                 }
-                                                .quantity button:first-child {
-                                                    border-top-right-radius: 0;
-                                                    border-bottom-right-radius: 0;
-                                                }
-                                                .quantity button:last-child {
-                                                    border-top-left-radius: 0;
-                                                    border-bottom-left-radius: 0;
+
+                                                .minus-btn:hover,
+                                                .plus-btn:hover {
+                                                    background-color: #aaa;
                                                 }
                                             </style>
+                                            <script>
+                                                function decreaseQuantity(productId, cartId) {
+                                                    var quantityInput = document.getElementById('quantity_' + productId);
+                                                    var currentValue = parseInt(quantityInput.value);
+                                                    if (currentValue > 1) {
+                                                        quantityInput.value = currentValue - 1;
+                                                        updateCart(productId, cartId, currentValue - 1);
+                                                        $.toast({
+                                                            heading: 'Success',
+                                                            text: 'Product Quantity Decreased',
+                                                            showHideTransition: 'slide',
+                                                            position: 'top-center',
+                                                            icon: 'success'
+                                                        });
+                                                    } else {
+                                                        $.toast({
+                                                            heading: 'Error',
+                                                            text: 'Minimum one quantity is required',
+                                                            showHideTransition: 'slide',
+                                                            position: 'top-center',
+                                                            icon: 'error'
+                                                        });
+                                                    }
+                                                }
+
+                                                function increaseQuantity(productId, cartId) {
+                                                    var quantityInput = document.getElementById('quantity_' + productId);
+                                                    var currentValue = parseInt(quantityInput.value);
+                                                    var maxQuantity = 5; // Maximum quantity limit
+
+                                                    if (currentValue < maxQuantity) {
+                                                        quantityInput.value = currentValue + 1;
+                                                        updateCart(productId, cartId, currentValue + 1);
+                                                        $.toast({
+                                                            heading: 'Success',
+                                                            text: 'Product Quantity Increased',
+                                                            showHideTransition: 'slide',
+                                                            position: 'top-center',
+                                                            icon: 'success'
+                                                        });
+                                                    } else {
+                                                        $.toast({
+                                                            heading: 'Error',
+                                                            text: 'Maximum quantity limit reached',
+                                                            showHideTransition: 'slide',
+                                                            position: 'top-center',
+                                                            icon: 'error'
+                                                        });
+                                                    }
+                                                }
+
+                                                function updateCart(productId, cartId, newQuantity) {
+                                                    fetch('/cart/update-cart-quantity', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({
+                                                            productId: productId,
+                                                            cartId: cartId,
+                                                            quantity: newQuantity
+                                                        })
+                                                    })
+                                                        .then(response => {
+                                                            if (!response.ok) {
+                                                                throw new Error('Network response was not ok');
+                                                            }
+                                                            return response.json();
+                                                        })
+                                                        .then(data => {
+                                                            // Update the quantity input value
+                                                            var quantityInput = document.getElementById('quantity_' + productId);
+                                                            quantityInput.value = newQuantity;
+
+                                                            // Update the subtotal for the specific product
+                                                            var productSubtotal = document.getElementById('subtotal_' + productId);
+                                                            productSubtotal.textContent = '₹ ' + (data.productSubtotal).toFixed(2);
+
+                                                            // Update the total cart value
+                                                            var cartTotalValue = document.getElementById('cart-total-value');
+                                                            cartTotalValue.textContent = (data.cartTotal).toFixed(2);
+
+                                                            console.log('Cart updated successfully:', data);
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('There was a problem updating the cart:', error);
+                                                        });
+                                                }
+
+
+                                            </script>
+
                                 </table>
                             </div>
                         </div>
@@ -125,38 +226,32 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-12">
-                    <div class="cart-calculate-discount-wrap mb-40">
-                        <h4>Calculate shipping </h4>
-                        <div class="calculate-discount-content">
-                            <div class="select-style mb-15">
-                                <select class="select-two-active">
-                                    <option>Bangladesh</option>
-                                    <option>Bahrain</option>
-                                    <option>Azerbaijan</option>
-                                    <option>Barbados</option>
-                                    <option>Barbados</option>
-                                </select>
+                    <div class="tab-pane fade show active" id="address-content" role="tabpanel">
+                        <div class="">
+                            <% addresses.forEach(function(address, index) { %>
+                            <div class="col-md-6 ">
+                                <div class="myaccount-content">
+                                    <h5>Address <%= index + 1 %></h5>
+                                    <div class="row address-details">
+                                        <div class="col-md-8">
+                                            <p> <%= address.type %></p>
+                                            <p> <%= address.name %></p>
+                                            <p><%= address.house %></p>
+                                            <p> <%= address.street %></p>
+                                            <p> <%= address.city %></p>
+                                            <p> <%= address.state %></p>
+                                            <p> <%= address.mobile %></p>
+                                            <p> <%= address.pincode %></p>
+                                            <input type="radio">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="select-style mb-15">
-                                <select class="select-two-active">
-                                    <option>State / County</option>
-                                    <option>Bahrain</option>
-                                    <option>Azerbaijan</option>
-                                    <option>Barbados</option>
-                                    <option>Barbados</option>
-                                </select>
-                            </div>
-                            <div class="input-style">
-                                <input type="text" placeholder="Town / City">
-                            </div>
-                            <div class="input-style">
-                                <input type="text" placeholder="Postcode / ZIP">
-                            </div>
-                            <div class="calculate-discount-btn btn-hover">
-                                <a class="btn theme-color" href="#">Update</a>
-                            </div>
+                            <% }); %>
+                            
                         </div>
                     </div>
+                    
                 </div>
                 <div class="col-lg-4 col-md-6 col-12">
                     <div class="cart-calculate-discount-wrap mb-40">
@@ -175,7 +270,8 @@
                 <div class="col-lg-4 col-md-12 col-12">
                     <div class="grand-total-wrap">
                         <div class="grand-total-content">
-                            <h3>Subtotal <span>$180.00</span></h3>
+                            <h3 id="cart-total">Subtotal: <span id="cart-total-value">₹ <%=cart.cartTotal.toLocaleString()%></span></h3>
+
                             <div class="grand-shipping">
                                 <span>Shipping</span>
                                 <ul>
@@ -203,62 +299,8 @@
         </div>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const userId = "<%=userId%>"; // Replace this with the actual user ID
-            
-            const decreaseButtons = document.querySelectorAll('[id^="decrease_"]');
-            const increaseButtons = document.querySelectorAll('[id^="increase_"]');
-    
-            decreaseButtons.forEach(button => {
-                button.addEventListener("click", async () => {
-                    const index = button.id.split("_")[1];
-                    const quantityInput = document.getElementById(`quantity_${index}`);
-                    const productId = quantityInput.dataset.productId;
-                    let newQuantity = parseInt(quantityInput.value);
-                    if (newQuantity > 0) {
-                        newQuantity--;
-                        quantityInput.value = newQuantity;
-                        await updateCartQuantity(userId, productId, newQuantity);
-                    }
-                });
-            });
-    
-            increaseButtons.forEach(button => {
-                button.addEventListener("click", async () => {
-                    const index = button.id.split("_")[1];
-                    const quantityInput = document.getElementById(`quantity_${index}`);
-                    const productId = quantityInput.dataset.productId;
-                    let newQuantity = parseInt(quantityInput.value);
-                    newQuantity++;
-                    quantityInput.value = newQuantity;
-                    await updateCartQuantity(userId, productId, newQuantity);
-                });
-            });
-    
-            async function updateCartQuantity(userId, productId, newQuantity) {
-                try {
-                    const response = await fetch(`/updateCartQuantity?user=${userId}&productId=${productId}&quantity=${newQuantity}`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        // You can include credentials if needed
-                        credentials: "same-origin"
-                    });
-                    if (!response.ok) {
-                        throw new Error("Error updating cart quantity");
-                    }
-                    const data = await response.json();
-                    console.log(data);
-                } catch (error) {
-                    console.error("Error updating cart quantity:", error);
-                }
-            }
-        });
+
+
     </script>
-    
-    
-      
-      
-    
+
     <%- include('../layouts/footer.ejs') %>

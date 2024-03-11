@@ -47,7 +47,7 @@ const attachTokenToLocals = (req, res, next) => {
 const isUser = async (req, res, next) => {
   const token = req.cookies.jwt;
   res.locals.token = req.cookies.jwt || null;
-  
+ 
   if (token) {
     jwt.verify(token, secretKey, async (err, decodedToken) => {
       if (err) {
@@ -61,7 +61,8 @@ const isUser = async (req, res, next) => {
             if (user.status === 1) {
               res.locals.currentUser = user;
               res.locals.currentUserId = user._id;
-              
+              req.session.userId = user._id
+              req.session.save()
               next(); // Proceed to the next middleware
             } else {
               console.error("User is blocked");

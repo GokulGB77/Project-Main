@@ -396,8 +396,8 @@
                                                     </style>
                                                     <div class="single-input-item">
                                                         <label for="mobile" class="required">Mobile</label>
-                                                        <input type="mobile" oninput="validateMobile()" name="mobile"
-                                                            value="<%=currentUser.mobile%>" id="mobile" />
+                                                        <input type="mobile" oninput="validateMobile()" name="newMobile"
+                                                            value="<%=currentUser.mobile%>" id="newMobile" />
                                                         <span id="mobileErrorMessage" style="color: red;"></span>
 
                                                     </div>
@@ -574,7 +574,7 @@
                                             <div class="account-details-form">
                                                 <form action="/profile/change-password" method="post">
                                                     <fieldset>
-                                                        <input type="text" value="<%=currentUserId%>" hidden class="form-control" id="user" name="user">
+                                                        <input type="text" value="<%=currentUserId%>" hidden class="form-control" id="user1" name="user1">
 
                                                         <div class="single-input-item">
                                                             <label for="current-pwd" class="required">Current Password</label>
@@ -584,16 +584,16 @@
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="single-input-item">
-                                                                    <label for="new-pwd" class="required">New Password</label>
-                                                                    <input type="text" id="newPwd" name="newPwd" />
+                                                                    <label for="newPwd" class="required">New Password</label>
+                                                                    <input type="text" id="newPwd" name="newPwd"  />
                                                                     <span id="passwordErrorMessage" style="color: red;"></span>
 
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="single-input-item">
-                                                                    <label for="confirm-pwd" class="required" >Confirm Password</label>
-                                                                    <input type="password" id="confirmPwd" onchange=" confirmPassword()" name="confirm-pwd" />
+                                                                    <label for="confirmPwd" class="required" >Confirm Password</label>
+                                                                    <input type="password" id="confirmPwd" onchange=" confirmPassword()" name="confirmPwd" />
                                                                     <span id="confirmPasswordErrorMessage" style="color: red;"></span>
 
                                                                 </div>
@@ -613,13 +613,52 @@
                                                         let confirmPasswordErrorMessage = document.getElementById("confirmPasswordErrorMessage");
                                                         if (newPassword !== confirmPassword) {
                                                             confirmPasswordErrorMessage.textContent = 'Password does not match';
+                                                            setTimeout(() => {
+                                                                confirmPasswordErrorMessage.textContent = null;
+                                                            }, 3000); // Hide after 2 seconds
                                                             return false;
                                                         }
                                                         return true;
                                                     }
 
-                                                    function validation(){
-                                                        if(!confirmPassword() || !validatePassword()){
+                                                    
+                                                    function validatePassword() {
+                                                        console.log('Validating password...'); // Add this line
+
+                                                        const password = document.getElementById('newPwd').value;
+                                                        const passwordErrorMessage = document.getElementById('passwordErrorMessage');
+                                                        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+                                                        if (password.length < 8) {
+                                                            passwordErrorMessage.textContent = 'Password must be at least 8 characters long';
+                                                            return false
+                                                        } else if (/\s/.test(password)) {
+                                                            passwordErrorMessage.textContent = 'Password should not contain spaces';
+                                                            return false
+                                                        } else if (!passwordRegex.test(password)) {
+                                                            passwordErrorMessage.textContent = 'Password should contain at least one lowercase letter, one uppercase letter, one number, and one special character from !@#$%^&*';
+                                                            return false
+                                                        } else {
+                                                            passwordErrorMessage.textContent = null; // Remove the error message
+                                                            
+                                                            setTimeout(() => {
+                                                                passwordErrorMessage.textContent = null;
+                                                            }, 3000); // Hide after 2 seconds
+                                                        }
+                                                        return true
+                                                    }
+
+                                                    document.getElementById('newPwd').addEventListener('input', validatePassword);
+
+                                                    document.getElementById('newPwd').addEventListener('focus', function () {
+                                                        document.getElementById('passwordErrorMessage').textContent = null;
+                                                    });
+
+                                                    function validation() {
+                                                        const newPasswordValid = validatePassword();
+                                                        const confirmPasswordValid = confirmPassword();
+                                                        
+                                                        if (!newPasswordValid || !confirmPasswordValid) {
                                                             $.toast({
                                                                 heading: 'Error',
                                                                 text: 'Fix the errors',
@@ -631,30 +670,7 @@
                                                         }
                                                         return true;
                                                     }
-                                                    function validatePassword() {
-                                                        const password = document.getElementById('newPwd').value;
-                                                        const passwordErrorMessage = document.getElementById('passwordErrorMessage');
-                                                        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-                                                        if (password.length < 8) {
-                                                            passwordErrorMessage.textContent = 'Password must be at least 8 characters long';
-                                                        } else if (/\s/.test(password)) {
-                                                            passwordErrorMessage.textContent = 'Password should not contain spaces';
-                                                        } else if (!passwordRegex.test(password)) {
-                                                            passwordErrorMessage.textContent = 'Password should contain at least one lowercase letter, one uppercase letter, one number, and one special character from !@#$%^&*';
-                                                        } else {
-                                                            passwordErrorMessage.textContent = ''; // Remove the error message
-                                                            setTimeout(() => {
-                                                                passwordErrorMessage.textContent = '';
-                                                            }, 2000); // Hide after 2 seconds
-                                                        }
-                                                    }
-
-                                                    document.getElementById('newPwd').addEventListener('input', validatePassword);
-
-                                                    document.getElementById('newPwd').addEventListener('focus', function () {
-                                                        document.getElementById('passwordErrorMessage').textContent = '';
-                                                    });
                                                    
                                                 </script>
                                                 <script>

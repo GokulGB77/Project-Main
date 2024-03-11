@@ -2,12 +2,13 @@ const Categoriesdb = require("../models/categoriesModel");
 const Productsdb = require("../models/productsModel")
 const Userdb = require("../models/userModel")
 const Cartdb = require("../models/cartModel")
+const Addressdb = require("../models/addressModel")
 
 
 const addToCart = async (req, res) => {
   try {
     const productId = req.body.productId;
-    const userId = req.query.user;
+    const userId =  req.session.userId;
 
     const userDetails = await Userdb.findById(userId);
     const productDetails = await Productsdb.findById(productId).populate("category");
@@ -48,7 +49,7 @@ const addToCart = async (req, res) => {
     // Calculate cart total
     let cartTotal = 0;
     cart.cartProducts.forEach(item => {
-      cartTotal += item.totalPrice || 0; // Add total price of each product in cart
+      cartTotal = cartTotal + (item.pPrice*item.quantity) || 0; // Add total price of each product in cart
     });
 
     // Set cartTotal
@@ -66,21 +67,22 @@ const addToCart = async (req, res) => {
 
 const loadCart = async (req, res) => {
   try {
-    const userId = req.query.user;
+    const userId = req.session.userId;
+    console.log("userId:req.session.userId:--",userId)
+    const addressDocument = await Addressdb.findOne({ user: userId });
+    const addresses = addressDocument ? addressDocument.addresses : [];
     if (!userId) {
       // Handle case where userId is missing in the query parameters
       return res.status(400).json({ error: "User ID is required." });
     }
     
-    console.log(userId);
     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
     
     if (!cart) {
       // Handle case where cart is not found for the provided userId
-      return res.status(404).json({ error: "Cart not found." });
-    }
+      return res.render("cart", { userId, cart: { cartProducts: [] }, index: 0 });    }
     
-    return res.render("cart", { userId, cart, index: 0 });
+    return res.render("cart", { userId,addresses, cart, index: 0 });
   } catch (error) {
     console.error("Error Loading Cart: ", error);
     res.status(500).json({ error: "Error Loading Cart." });
@@ -88,36 +90,56 @@ const loadCart = async (req, res) => {
 };
 
 
+
 const updateCartQuantity = async (req, res) => {
+  const { productId, cartId, quantity } = req.body;
+
   try {
-    const userId = req.query.user;
-    const productId = req.body.productId;
-    const newQuantity = req.body.quantity;
+      // Find the cart by its ID
+      const cart = await Cartdb.findById(cartId);
+    
+      // Find the index of the product in the cartProducts array
+      const productIndex = cart.cartProducts.findIndex(item => item.product.toString() === productId);
 
-    // Find the user's cart and populate the cart products
-    const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
+      if (productIndex !== -1) {
+          // If the product is found in the cartProducts array, update its quantity
+          cart.cartProducts[productIndex].quantity = quantity;
+          // Update totalPrice based on the new quantity
+          cart.cartProducts[productIndex].totalPrice = cart.cartProducts[productIndex].price * quantity;
+      } else {
+          // If the product is not found in the cartProducts array, push a new item
+          // Assuming you have access to product price here
+          const product = await Productdb.findById(productId);
+          cart.cartProducts.push({
+              product: productId,
+              quantity: quantity,
+              price: product.productPrice,
+              totalPrice: product.productPrice * quantity,
+          });
+      }
 
-    // Find the index of the product in the cart products array
-    const productIndex = cart.cartProducts.findIndex(item => item.product._id.toString() === productId);
+      // Calculate the new cartTotal based on the updated cartProducts array
+      cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
 
-    if (productIndex !== -1) {
-      // Update the quantity of the product
-      cart.cartProducts[productIndex].quantity = newQuantity;
-
-      // Save the updated cart
+      // Save the updated cart to the database
       await cart.save();
 
-      // Send a success response with user ID included
-      res.status(200).json({ userId: userId, message: "Product Quantity Updated Successfully" });
-    } else {
-      // If the product is not found in the cart, send a 404 error
-      res.status(404).json({ error: "Product not found in cart" });
-    }
+      // Prepare the response with updated subtotal and total values
+      const productSubtotal = cart.cartProducts.find(item => item.product.toString() === productId).totalPrice;
+      const cartTotal = cart.cartTotal;
+
+           // Log the values to ensure they are correct
+          //  console.log("Product Subtotal:", productSubtotal);
+          //  console.log("Cart Total:", cartTotal);
+      res.status(200).json({ message: 'Cart updated successfully', productSubtotal, cartTotal });
   } catch (error) {
-    console.error("Error Updating Cart Quantity: ", error);
-    res.status(500).json({ error: "Error Updating Cart Quantity" });
+      console.error('Error updating cart:', error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+
 
 
 

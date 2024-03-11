@@ -65,6 +65,7 @@ const addNewAddress = async (req, res) => {
 //Edit address page loading
 const editAddress = async (req, res) => {
   try {
+   
     const addressId = req.query.id;
 
     // Find the document where the addresses array contains an address with the specified ID
@@ -97,7 +98,7 @@ const editAddress = async (req, res) => {
 const updateAddress = async (req, res) => {
   try {
     // Extract the address data from the request body
-    const { addname, house, street, city, state, pincode, type, addressId, mobile } = req.body;
+    const { name, house, street, city, state, pincode, type, addressId, mobile } = req.body;
     console.log("Address ID: ", addressId);
     console.log("Address ID received:-----------", addressId);
 
@@ -106,7 +107,7 @@ const updateAddress = async (req, res) => {
       { "addresses._id": addressId },
       {
         "$set": {
-          "addresses.$.name": addname,
+          "addresses.$.name": name,
           "addresses.$.house": house,
           "addresses.$.street": street,
           "addresses.$.city": city,

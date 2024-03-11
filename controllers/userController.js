@@ -132,11 +132,7 @@ const resendOtp = async (req, res) => {
 
 const registerUser = async (req, res) => {
   try {
-    // Check if OTP is expired
-    // if (req.session.tempUserDetails && req.session.tempUserDetails.otpExpiration && Date.now() > req.session.tempUserDetails.otpExpiration) {
-    // OTP expired
-    //   return res.render("otpVerify", { errorMessage: "OTP expired. Please resend OTP." });
-    // }
+    
 
     if (req.body.otp === req.session.tempUserDetails.otp) {
 
@@ -161,7 +157,7 @@ const registerUser = async (req, res) => {
 
       console.log("userId is :", userData._id);
       console.log("token :", token);
-      res.status(200).json({});
+      res.status(200).json({userId: userID});
     } else {
       res.status(400).json({});
     }
@@ -244,6 +240,7 @@ const loginUser = async (req, res) => {
 
 const loadHomePage = async (req, res) => {
   try {
+    const userId = req.query.userId
     const token = req.cookies.jwt ? true : false;
     const tokenId = req.cookies.jwt
     res.locals.token = tokenId,
@@ -255,7 +252,7 @@ const loadHomePage = async (req, res) => {
       const newArrivals = await Productsdb.find({ status: 1 }).populate("category").sort({ _id: -1 }).limit(16);
       const bestSellers = await Productsdb.find({ status: 1 }).populate("category").sort({ productName: 1 }).limit(16);
       const saleItems = await Productsdb.find({ status: 1 }).populate("category").sort({ productName: -1 }).limit(16);
-      res.render('homepage', { tokenId, newArrivals, allItems, bestSellers, saleItems, products, }).limit(16);
+      res.render('homepage', { tokenId, newArrivals, allItems, bestSellers, saleItems, products,userId })
 
     } catch (error) {
       console.log("Error getting product data from db:", error)
@@ -273,7 +270,9 @@ const loadHomePage = async (req, res) => {
 
 
 const loadProfile = async (req, res) => {
+
   try {
+    const userId = req.query.userId
     console.log("User entered User profile");
     const token = req.cookies.jwt;
     const currentUser = res.locals.currentUser;
@@ -284,7 +283,7 @@ const loadProfile = async (req, res) => {
     const addressDocument = await Addressdb.findOne({ user: currentUser._id });
     const addresses = addressDocument ? addressDocument.addresses : [];
     if (token) {
-      res.render("profile", { token, currentUser, addresslist: addresses, user });
+      res.render("profile", { token, currentUser, addresslist: addresses, user,userId });
     } else {
       res.redirect("/login");
     }
@@ -299,7 +298,7 @@ const loadProfile = async (req, res) => {
 const updateDetails = async (req, res) => {
   try {
     const newName = req.body.name;
-    const newMobile = req.body.mobile
+    const newMobile = req.body.newMobile
     const id = req.query.id
     console.log(newName, newMobile, id);
     const updateDb = await Userdb.findByIdAndUpdate(id, {
@@ -320,29 +319,32 @@ const updateDetails = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-      const { currentPwd, newPwd, user } = req.body;
-      const currentUser = user; // Assuming currentUser is the username or ID of the current user
+      const { currentPwd, newPwd, user1 } = req.body;
+      const currentUser = user1; // Assuming currentUser is the username or ID of the current user
       const isUser = await Userdb.findById(currentUser);
-
+      console.log("currentPwd:",currentPwd);
+      console.log("currentUser:",user1);
+      console.log("isUser:",true);
       
       if (!isUser) {
-          return res.status(404).send("User not found");
+        return res.status(404).send("User not found");
       }
       const samePassword = await argon2.verify(isUser.password,newPwd)
       if(samePassword){
         return res.redirect("/profile?selected=change-password&samepass=true")
-
+        
       }
       // Verify if the current password matches the user's password
       const isPasswordMatch = await argon2.verify(isUser.password, currentPwd);
-
+      console.log("Passwrod matched with existing password:");
+      
       if (!isPasswordMatch) {
         return res.redirect("/profile?selected=change-password&currentpwd=false")
       }
 
       // Hash the new password
       const hashedNewPwd = await securePassword(newPwd);
-
+      console.log("hashedNewPwd",hashedNewPwd)
       // Update the user's password
       isUser.password = hashedNewPwd;
       await isUser.save();

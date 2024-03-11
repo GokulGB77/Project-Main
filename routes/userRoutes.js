@@ -56,7 +56,7 @@ userRoute.get('/product-details',productsController.loadProductDetails);
 userRoute.post("/add-to-cart",auth.isLogin,cartController.addToCart)
 userRoute.get("/cart",auth.isLogin,cartController.loadCart)
 // userRoute.get("/shop/side-cart",auth.isLogin,cartController.sideCartDetails)
-userRoute.put("/cart/update-cart-quantity",auth.isLogin,cartController.updateCartQuantity)
+userRoute.post("/cart/update-cart-quantity",auth.isLogin,cartController.updateCartQuantity)
 
 userRoute.get("/profile",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)
 userRoute.post("/update-user-details",auth.attachTokenToLocals,auth.isLogin,userController.updateDetails)
