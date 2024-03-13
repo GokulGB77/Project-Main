@@ -82,7 +82,7 @@ const adminLogout = async (req, res) => {
 
 const userDetails = async (req,res) => {
   try {
-    const users = await Admindb.find({})
+    const users = await Admindb.find({}).sort({_id:-1})
 
     res.render("userDetails",{users})
 

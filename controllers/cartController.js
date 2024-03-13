@@ -3,6 +3,7 @@ const Productsdb = require("../models/productsModel")
 const Userdb = require("../models/userModel")
 const Cartdb = require("../models/cartModel")
 const Addressdb = require("../models/addressModel")
+const MAX_CART_QUANTITY = 5;
 
 
 const addToCart = async (req, res) => {
@@ -16,6 +17,18 @@ const addToCart = async (req, res) => {
     const pImg = productDetails.images[0];
 
     let cart = await Cartdb.findOne({ user: userId });
+
+    // Check if the cart already contains the maximum quantity limit
+    let cartQuantity = 0;
+    if (cart) {
+      cart.cartProducts.forEach(item => {
+        cartQuantity += item.quantity;
+      });
+    }
+
+    if (cartQuantity >= MAX_CART_QUANTITY) {
+      return res.status(400).json({ error: "Cart already contains the maximum quantity limit" });
+    }
 
     if (!cart) {
       // If cart doesn't exist, create a new one
@@ -42,14 +55,14 @@ const addToCart = async (req, res) => {
         quantity: 1, // Initialize quantity to 1
         price: pPrice,
         totalPrice: pPrice, // Initialize total price to price of a single product
-        pImg:pImg
+        pImg: pImg
       });
     }
 
     // Calculate cart total
     let cartTotal = 0;
     cart.cartProducts.forEach(item => {
-      cartTotal = cartTotal + (item.pPrice*item.quantity) || 0; // Add total price of each product in cart
+      cartTotal = cartTotal + (item.pPrice * item.quantity) || 0; // Add total price of each product in cart
     });
 
     // Set cartTotal
@@ -65,6 +78,7 @@ const addToCart = async (req, res) => {
   }
 }
 
+
 const loadCart = async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -77,12 +91,15 @@ const loadCart = async (req, res) => {
     }
     
     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
-    
+    cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
+    let deliveryCharge = 500
+      const Total = cart.cartTotal + deliveryCharge;
+
     if (!cart) {
       // Handle case where cart is not found for the provided userId
       return res.render("cart", { userId, cart: { cartProducts: [] }, index: 0 });    }
     
-    return res.render("cart", { userId,addresses, cart, index: 0 });
+    return res.render("cart", { userId,Total,addresses, cart, index: 0 });
   } catch (error) {
     console.error("Error Loading Cart: ", error);
     res.status(500).json({ error: "Error Loading Cart." });
@@ -109,7 +126,7 @@ const updateCartQuantity = async (req, res) => {
       } else {
           // If the product is not found in the cartProducts array, push a new item
           // Assuming you have access to product price here
-          const product = await Productdb.findById(productId);
+          const product = await Productsdb.findById(productId);
           cart.cartProducts.push({
               product: productId,
               quantity: quantity,
@@ -117,6 +134,11 @@ const updateCartQuantity = async (req, res) => {
               totalPrice: product.productPrice * quantity,
           });
       }
+
+      // Update the totalPrice for all products in the cart
+      cart.cartProducts.forEach(item => {
+        item.totalPrice = item.price * item.quantity;
+      });
 
       // Calculate the new cartTotal based on the updated cartProducts array
       cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
@@ -127,16 +149,105 @@ const updateCartQuantity = async (req, res) => {
       // Prepare the response with updated subtotal and total values
       const productSubtotal = cart.cartProducts.find(item => item.product.toString() === productId).totalPrice;
       const cartTotal = cart.cartTotal;
+      let deliveryCharge = 500
+      const Total = cart.cartTotal + deliveryCharge;
 
-           // Log the values to ensure they are correct
-          //  console.log("Product Subtotal:", productSubtotal);
-          //  console.log("Cart Total:", cartTotal);
-      res.status(200).json({ message: 'Cart updated successfully', productSubtotal, cartTotal });
+      res.status(200).json({ message: 'Cart updated successfully', productSubtotal, cartTotal, Total });
   } catch (error) {
       console.error('Error updating cart:', error);
       res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+const checkProductStock = async (req, res) => {
+  const { productId, quantity } = req.body;
+
+  try {
+      // Find the product by ID
+      const product = await Productsdb.findById(productId);
+
+      // Check if product exists and has enough stock
+      if (product && product.stock >= quantity) {
+          res.json({ enoughStock: true });
+      } else {
+          res.json({ enoughStock: false });
+      }
+  } catch (error) {
+      console.error('Error checking product stock:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+const removeCartProduct = async (req, res) => {
+  const { productId, cartId } = req.body;
+
+  try {
+    // Find the cart by its ID
+    const cart = await Cartdb.findById(cartId);
+
+    // Check if the cart exists
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    // Find the index of the product in the cartProducts array
+    const productIndex = cart.cartProducts.findIndex(item => item.product.toString() === productId);
+    
+    if (productIndex !== -1) {
+      // If the product is found in the cartProducts array, remove it
+      cart.cartProducts.splice(productIndex, 1);
+      
+      // Recalculate the cart total based on the updated cartProducts array
+      cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
+      
+      // Save the updated cart to the database
+      await cart.save();
+
+      // Redirect the user to a specified page
+      res.redirect('/cart'); // Change '/cart' to the desired page URL
+    } else {
+      // If the product is not found in the cartProducts array, send an error response
+      res.status(404).json({ message: 'Product not found in the cart' });
+    }
+  } catch (error) {
+    // Handle errors
+    console.error('Error removing product from cart:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+const removeAllCartProducts = async (req, res) => {
+  const { id } = req.query;
+
+  try {
+    // Find the cart by its ID
+    const cart = await Cartdb.findById(id);
+
+    // Check if the cart exists
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    // Set cartProducts array to empty
+    cart.cartProducts = [];
+    
+    // Reset cart total to 0
+    cart.cartTotal = 0;
+
+    // Save the updated cart to the database
+    await cart.save();
+
+    // Redirect the user to a specified page
+    res.redirect('/cart'); // Change '/cart' to the desired page URL
+  } catch (error) {
+    // Handle errors
+    console.error('Error removing all products from cart:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
 
 
 
@@ -149,4 +260,7 @@ module.exports = {
   addToCart,
   loadCart,
   updateCartQuantity,
+  checkProductStock,
+  removeCartProduct,
+  removeAllCartProducts,
 }

@@ -7,7 +7,7 @@ const sharp = require('sharp'); // Import sharp for image cropping
 
 const loadAdminProducts = async (req, res) => {
   try {
-    const products = await Productsdb.find({}).sort({productName:1})
+    const products = await Productsdb.find({}).sort({_id:-1})
     // .populate({
     //   path: 'categories',
     //   select: 'name',
@@ -136,8 +136,8 @@ const updateProduct = async (req, res) => {
       updatedProductDetails.images = uploadedImages;
     }
 
-    const UpdatedDetails = await Productsdb.findByIdAndUpdate(id, updatedProductDetails);
-    console.log(UpdatedDetails.categoryName);
+    const UpdatedDetails = await Productsdb.findByIdAndUpdate(id, updatedProductDetails).populate("category");
+    console.log(UpdatedDetails.category.categoryName);
     console.log("Product details updated..........");
     res.redirect("/admin/products");
   } catch (error) {
@@ -183,16 +183,15 @@ const unarchiveProduct = async(req,res) => {
 
 const loadShop = async (req, res) => {
   try {
-
-    const userId = res.locals.currentUserId
-    console.log("userId in shoppage:---- ",userId)
+    const userId = res.locals.currentUserId;
+    console.log("userId in shoppage:---- ", userId);
     const perPage = 12; // Number of items per page
     const page = parseInt(req.query.page) || 1; // Extract page number from query parameters
     const skip = (page - 1) * perPage;
     const limit = perPage;
 
     // Retrieve total count of all items
-    const totalCount = await Productsdb.countDocuments({ status: 1 });
+    const totalCount = await Productsdb.countDocuments();
 
     // Retrieve total pages based on total count and per page limit
     const totalPages = Math.ceil(totalCount / perPage);
@@ -202,11 +201,15 @@ const loadShop = async (req, res) => {
 
     // Retrieve filter criteria from query parameters
     const filterByCategory = req.query.category || null; // Filter by category, if provided
+    const filterByStock = req.query.stock || null; // Filter by color, if provided
 
     // Construct filter object based on filter criteria
     const filter = { status: 1 };
     if (filterByCategory) {
       filter.category = filterByCategory;
+    }
+    if (filterByColor) {
+      filter.stock = filterByStock;
     }
 
     // Perform database query based on sorting criteria and filter
@@ -235,12 +238,13 @@ const loadShop = async (req, res) => {
     const allItems = await query;
 
     // Render view with paginated items, pagination metadata, and filter criteria
-    res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy, filterByCategory,userId });
+    res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy, filterByCategory, userId });
   } catch (error) {
     console.log(error);
     res.status(500).send("Products page render failed");
   }
 }
+
 
 
 
