@@ -1,4 +1,5 @@
 const Userdb = require("../models/userModel")
+const Cartdb = require("../models/cartModel")
 const Addressdb = require("../models/addressModel")
 
 
@@ -7,10 +8,12 @@ const Addressdb = require("../models/addressModel")
 // Controller function to handle adding a new address
 const addNewAddress = async (req, res) => {
   try {
-
     // Extract the address data from the request body
-    const { addname, house, street, city, state, pincode, type, user,mobile } = req.body;
+    const { addname, house, street, city, state, pincode, type, user, mobile, setDefault } = req.body;
     console.log("current user ID: ", user);
+
+    // Convert empty setDefault to false
+    const isDefault = setDefault === "" ? false : setDefault;
 
     // Create a new address object
     const newAddress = {
@@ -21,6 +24,7 @@ const addNewAddress = async (req, res) => {
       state,
       pincode,
       mobile,
+      setDefault: isDefault,
       type: type || 'home' // Default to 'home' if type is not provided
     };
 
@@ -31,11 +35,17 @@ const addNewAddress = async (req, res) => {
       if (existingAddress.addresses.length >= 4) {
         // Redirect with message if the user has reached the maximum allowed addresses
         req.flash('error', 'You have reached the maximum allowed addresses.');
-
         return res.redirect("/profile?selected=Address&SizeLimit=true");
       }
 
       // If the user already has an address document, add the new address to it
+      if (isDefault) {
+        // If the new address is set as default, update all other existing addresses' setDefault to false
+        existingAddress.addresses.forEach(address => {
+          address.setDefault = false;
+        });
+      }
+
       existingAddress.addresses.push(newAddress);
       await existingAddress.save();
     } else {
@@ -50,16 +60,82 @@ const addNewAddress = async (req, res) => {
 
     // Redirect back to the profile page after adding the address
     req.flash('success', 'New address added successfully.');
-
     res.redirect("/profile?selected=Address&added=true");
   } catch (error) {
     // Handle errors
     req.flash('error', 'Error adding new address.');
-
     console.error('Error adding address:', error);
     res.redirect("/profile?selected=Address&notadded=true");
   }
 };
+const addAddressFrmCart = async (req, res) => {
+  try {
+    // Extract the address data from the request body
+    const { addname, house, street, city, state, pincode, type, user, mobile, setDefault } = req.body;
+    console.log("current user ID: ", user);
+
+    // Convert empty setDefault to false
+    const isDefault = setDefault === "" ? false : setDefault;
+
+    // Create a new address object
+    const newAddress = {
+      name: addname,
+      house,
+      street,
+      city,
+      state,
+      pincode,
+      mobile,
+      setDefault: isDefault,
+      type: type || 'home' // Default to 'home' if type is not provided
+    };
+
+    // Check if the user already has an address document
+    let existingAddress = await Addressdb.findOne({ user: user });
+
+    if (existingAddress) {
+      if (existingAddress.addresses.length >= 4) {
+        // Redirect with message if the user has reached the maximum allowed addresses
+        req.flash('error', 'You have reached the maximum allowed addresses.');
+        return res.redirect(`/checkout?id=${cartId}&SizeLimit=true`);
+      }
+
+      // If the user already has an address document, add the new address to it
+      if (isDefault) {
+        // If the new address is set as default, update all other existing addresses' setDefault to false
+        existingAddress.addresses.forEach(address => {
+          address.setDefault = false;
+        });
+      }
+
+      existingAddress.addresses.push(newAddress);
+      await existingAddress.save();
+    } else {
+      // If the user does not have an address document, create a new one
+      const address = new Addressdb({
+        user: user,
+        addresses: [newAddress],
+      });
+
+      existingAddress = await address.save();
+    }
+    const cart = await Cartdb.findOne({user:user})
+    const cartId = cart._id
+
+    // Redirect back to the profile page after adding the address
+    req.flash('success', 'New address added successfully.');
+    res.redirect(`/checkout?id=${cartId}&added=true`);  } catch (error) {
+    // Handle errors
+    req.flash('error', 'Error adding new address.');
+    console.error('Error adding address:', error);
+    res.redirect(`/checkout?id=${cartId}&notadded=true`);
+  }
+};
+
+
+
+   
+
 
 
 //Edit address page loading
@@ -98,9 +174,9 @@ const editAddress = async (req, res) => {
 const updateAddress = async (req, res) => {
   try {
     // Extract the address data from the request body
-    const { name, house, street, city, state, pincode, type, addressId, mobile } = req.body;
+    const { name, house, street, city, state, pincode, type, addressId, mobile, setDefault } = req.body;
     console.log("Address ID: ", addressId);
-    console.log("Address ID received:-----------", addressId);
+    console.log("setDefault received:", setDefault); // Log the setDefault value
 
     // Find the address document where the addresses array contains the address to edit
     const existingAddress = await Addressdb.findOneAndUpdate(
@@ -114,7 +190,8 @@ const updateAddress = async (req, res) => {
           "addresses.$.state": state,
           "addresses.$.pincode": pincode,
           "addresses.$.mobile": mobile,
-          "addresses.$.type": type || 'home' // Default to 'home' if type is not provided
+          "addresses.$.type": type || 'home', // Default to 'home' if type is not provided
+          "addresses.$.setDefault": setDefault // Update setDefault value
         }
       },
       { new: true }
@@ -128,6 +205,19 @@ const updateAddress = async (req, res) => {
       return res.redirect("/profile?selected=Address&notfound=true");
     }
 
+    // If setDefault is true, update other addresses to set setDefault as false
+    if (setDefault) {
+      console.log("Update query:", {
+        "addresses._id": { $ne: addressId },
+        "$set": { "addresses.$.setDefault": false }
+      });
+
+      await Addressdb.updateMany(
+        { "addresses._id": { $ne: addressId } },
+        { $set: { "addresses.$.setDefault": false } }
+      ).catch(error => console.error("Error updating setDefault:", error));
+    }
+
     // Redirect back to the profile page after editing the address
     req.flash('success', 'Address updated successfully.');
     res.redirect("/profile?selected=Address&edited=true");
@@ -138,6 +228,9 @@ const updateAddress = async (req, res) => {
     res.redirect("/profile/edit-address?edited=false");
   }
 };
+
+
+
 
 const deleteAddress = async (req, res) => {
   try {
@@ -178,6 +271,7 @@ const deleteAddress = async (req, res) => {
 
 module.exports = {
   addNewAddress,
+  addAddressFrmCart,
   editAddress,
   updateAddress,
   deleteAddress

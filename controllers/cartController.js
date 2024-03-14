@@ -3,7 +3,7 @@ const Productsdb = require("../models/productsModel")
 const Userdb = require("../models/userModel")
 const Cartdb = require("../models/cartModel")
 const Addressdb = require("../models/addressModel")
-const MAX_CART_QUANTITY = 5;
+const MAX_CART_QUANTITY = 10;
 
 
 const addToCart = async (req, res) => {
@@ -38,7 +38,6 @@ const addToCart = async (req, res) => {
         cartTotal: 0
       });
     }
-
     const existingProductIndex = cart.cartProducts.findIndex(item => item.product && item.product.equals(productId));
 
     if (existingProductIndex !== -1) {
@@ -78,7 +77,6 @@ const addToCart = async (req, res) => {
   }
 }
 
-
 const loadCart = async (req, res) => {
   try {
     const userId = req.session.userId;
@@ -105,8 +103,6 @@ const loadCart = async (req, res) => {
     res.status(500).json({ error: "Error Loading Cart." });
   }
 };
-
-
 
 const updateCartQuantity = async (req, res) => {
   const { productId, cartId, quantity } = req.body;
@@ -246,21 +242,64 @@ const removeAllCartProducts = async (req, res) => {
   }
 };
 
+const cartCount = async (req, res) => {
+  try {
+      const userId = req.query.user; 
+      // Assuming Cartdb is your Mongoose model for the cart
+      const cart = await Cartdb.findOne({ user: userId });
+      
+      if (!cart) {
+          // If cart is not found, return 0 as the count
+          res.json({ count: 0 });
+          return;
+      }
+      
+      // Assuming cartProducts is an array field in your Cart schema
+      const cartCount = cart.cartProducts.length;
+      // console.log("cart count is:", cartCount);
+      
+      // Send the cart count as a JSON response
+      res.json({ count: cartCount });
+  } catch (error) {
+      console.error('Error fetching cart count:', error);
+      // Send an error response if there's an error fetching the cart count
+      res.status(500).json({ error: 'Failed to fetch cart count' });
+  }
+};
 
+const loadCheckout = async(req,res) => {
+ try {
+  const userId = req.session.userId
+  const addresses = await Addressdb.findOne({user:userId})
+  const addresslist = addresses.addresses
+  // const addresses = userDetails.addresses
 
+  const cardId = req.query.id;
+  const cart = await Cartdb.findById(cardId)
+  const cartProdDetails = cart.cartProducts
+ 
 
-
-
-
-
-
-
+  console.log("userId:--------",userId);
+  console.log("cardId:--------",cardId);
+  console.log("Address:--------",addresses.addresses);
+  console.log("Cart Product Details:--------",cartProdDetails);
+  if(!cart){
+   return  res.status(400).send("Error getting cart details")
+  }
+   return res.render("checkout",{cart,cartProdDetails,userId,addresslist})
+ } catch (error) {
+  console.error('Error Loading CheckoutPage', error);
+    res.status(500).json({ message: 'Internal server error' });
+ }
+}
 
 module.exports = {
   addToCart,
+  cartCount,
   loadCart,
   updateCartQuantity,
   checkProductStock,
   removeCartProduct,
   removeAllCartProducts,
+  loadCheckout,
 }

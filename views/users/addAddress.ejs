@@ -254,8 +254,8 @@
                                                     href="/logout">Logout</a></li>
                                         </ul>
                                     </div>
-                                  
-                                   
+
+
                                     <% } else { %>
                                         <div class="header-action-style ">
                                             <a title="Login" href="/login"><i class="pe-7s-user"></i></a>
@@ -319,113 +319,118 @@
             </div>
             <hr class="separator-line">
         </header>
-       
-        
-        
-    <!-- editAddress.ejs -->
 
-    <!-- Add any necessary HTML structure if needed -->
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <h2 class="mt-4 mb-4" >Edit Address</h2>
-                <!-- Form for editing the address -->
-                <form id="editAddressForm" action="/profile/edit-address?id<%=addressObject%>" method="post">
-                    <div class="form-group">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="setDefault" name="setDefault" value="<%=currentUser.setDefault%>" >
-                            <label class="form-check-label" for="setDefault">Set as Default</label>
-                        </div>
-                        
-                        
-                        <div>
+
+        <!-- editAddress.ejs -->
+
+        <!-- Add any necessary HTML structure if needed -->
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <h2 class="mt-4 mb-4">Edit Address</h2>
+                    <!-- Form for editing the address -->
+                    <form id="editAddressForm" action="/profile/edit-address?id<%=addressObject%>" method="post">
+                        <div class="form-group">
                             <label for="type">Address Type:</label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="home" name="type" value="home" checked>
-                                <label class="form-check-label" for="home">Home</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="office" name="type" value="office">
-                                <label class="form-check-label" for="office">Office</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="home" name="type" 
+                                        checked>
+                                    <label class="form-check-label" for="home">Home</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="office" name="type" value="office">
+                                    <label class="form-check-label" for="office">Office</label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" value="<%=addressObject._id%>" hidden class="form-control" id="addressId" name="addressId">
-                        <label for="name">Name:</label>
-                        <input type="text" value="<%= addressObject.name %>" class="form-control" id="name" name="name" required pattern="[A-Za-z ]{1,20}" title="Name should be max 20 characters, and contain only letters and spaces">
-                    </div>
-                    <br>
-                    <input type="text" value="<%=currentUserId%>" hidden class="form-control" id="user" name="user">
-                    <div class="form-group">
-                        <label for="house">House:</label>
-                        <input type="text" value="<%= addressObject.house %>" class="form-control" id="house" name="house" required maxlength="20" title="House should be max 20 characters">
-                    </div>
-                    <br>
-                    <div class="form-group">
-                        <label for="street">Street:</label>
-                        <input type="text" value="<%= addressObject.street %>" class="form-control" id="street" name="street" required maxlength="20" title="Street should be max 20 characters">
-                    </div>
-                    <br>
-                    <div class="form-group">
-                        <label for="city">City:</label>
-                        <input type="text" value="<%= addressObject.city %>" class="form-control" id="city" name="city" required maxlength="16" title="City should be max 16 characters">
-                    </div>
-                    <br>
-                    <div class="form-group">
-                        <label for="state">State:</label>
-                        <input type="text" value="<%= addressObject.state %>" class="form-control" id="state" name="state" required maxlength="16" title="State should be max 16 characters">
-                    </div>
-                    <br>
-                    <div class="form-group">
-                        <label for="mobile">Mobile:</label>
-                        <input type="text" class="form-control" value="<%= addressObject.mobile %>" id="mobile" name="mobile" required pattern="[0-9]{10}" min="0000000000" max="9999999999" title="Mobile number should be 10 digits">
-                    </div>
-                    <br>
-                    <br>
-                    <div class="form-group">
-                        <label for="pincode">Pincode:</label>
-                        <input type="number" class="form-control" value="<%= addressObject.pincode %>" id="pincode" name="pincode" required min="000000" max="999999" title="Pincode should be 6 digits">
-                    </div>
-                    <br>
-                    
+                        <div class="form-group">
+                            <input type="text" value="<%=addressObject._id%>" hidden class="form-control" id="addressId"
+                                name="addressId">
+                            <label for="name">Name:</label>
+                            <input type="text"  class="form-control" id="name"
+                                name="name" required pattern="[A-Za-z ]{1,20}"
+                                title="Name should be max 20 characters, and contain only letters and spaces">
+                        </div>
+                        <br>
+                        <input type="text" value="<%=currentUserId%>" hidden class="form-control" id="user" name="user">
+                        <div class="form-group">
+                            <label for="house">House:</label>
+                            <input type="text"  class="form-control" id="house"
+                                name="house" required maxlength="20" title="House should be max 20 characters">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="street">Street:</label>
+                            <input type="text"  class="form-control" id="street"
+                                name="street" required maxlength="20" title="Street should be max 20 characters">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="city">City:</label>
+                            <input type="text"  class="form-control" id="city"
+                                name="city" required maxlength="16" title="City should be max 16 characters">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="state">State:</label>
+                            <input type="text"  class="form-control" id="state"
+                                name="state" required maxlength="16" title="State should be max 16 characters">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="mobile">Mobile:</label>
+                            <input type="text" class="form-control"  id="mobile"
+                                name="mobile" required pattern="[0-9]{10}" min="0000000000" max="9999999999"
+                                title="Mobile number should be 10 digits">
+                        </div>
+                        <br>
+                        <br>
+                        <div class="form-group">
+                            <label for="pincode">Pincode:</label>
+                            <input type="number" class="form-control"  id="pincode"
+                                name="pincode" required min="000000" max="999999" title="Pincode should be 6 digits">
+                        </div>
+                        <br>
 
-                    <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary"
-                        style="font-size: 14px; padding: 5px 10px; background-color: #e97730;">Edit
-                        Address</button>
 
-                    <a href="/profile?selected=Address" class="btn btn-secondary"
-                        style=" font-size: 14px; padding: 5px 10px;background-color: #e97730;">Back</a>
-                </form>
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary"
+                            style="font-size: 14px; padding: 5px 10px; background-color: #e97730;">Add
+                            Address</button>
+
+                        <a href="/profile?selected=Address" class="btn btn-secondary"
+                            style=" font-size: 14px; padding: 5px 10px;background-color: #e97730;">Back</a>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        $(document).ready(function () {
-            // Check if success parameter exists in URL and if the message has not been shown yet
-            const urlParams = new URLSearchParams(window.location.search);
-            const success = urlParams.get('edited');
-            const alreadyShown = sessionStorage.getItem('toastShown');
+        <script>
+            $(document).ready(function () {
+                // Check if success parameter exists in URL and if the message has not been shown yet
+                const urlParams = new URLSearchParams(window.location.search);
+                const success = urlParams.get('edited');
+                const alreadyShown = sessionStorage.getItem('toastShown');
 
-            if (success === 'false') {
-                // Display toast message for success
-                $.toast({
-                    heading: 'Error',
-                    text: 'Address Updation Failed',
-                    showHideTransition: 'slide',
-                    position: 'top-center',
-                    icon: 'success'
-                });
+                if (success === 'false') {
+                    // Display toast message for success
+                    $.toast({
+                        heading: 'Error',
+                        text: 'Add Address Failed',
+                        showHideTransition: 'slide',
+                        position: 'top-center',
+                        icon: 'success'
+                    });
 
-                // Set session storage to indicate that the message has been shown
-                sessionStorage.setItem('toastShown', 'true');
+                    // Set session storage to indicate that the message has been shown
+                    sessionStorage.setItem('toastShown', 'true');
 
-            }
-        });
-    </script>
-    
+                }
+            });
+        </script>
 
-    <%- include('../layouts/footer.ejs') %>
+
+        <%- include('../layouts/footer.ejs') %>

@@ -1,0 +1,284 @@
+<%- include('../layouts/header.ejs',{userId:userId}) %>
+
+    <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1">
+        <div class="container">
+            <div class="breadcrumb-content text-center">
+                <h2>Checkout </h2>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><i class="ti-angle-right"></i></li>
+                    <li>Checkout </li>
+                </ul>
+            </div>
+        </div>
+        <div class="breadcrumb-img-1">
+            <img src="/user/images/banner/breadcrumb-1.png" alt="">
+        </div>
+        <div class="breadcrumb-img-2">
+            <img src="/user/images/banner/breadcrumb-2.png" alt="">
+        </div>
+    </div>
+    <div class="checkout-main-area pb-100 pt-100">
+        <div class="container">
+
+            <!-- <div class="customer-zone mb-20">
+                <p class="cart-page-title">Have a coupon? <a class="checkout-click3" href="#">Click here to enter your
+                        code</a></p>
+                <div class="checkout-login-info3">
+                    <form action="#">
+                        <input type="text" placeholder="Coupon code">
+                        <input type="submit" value="Apply Coupon">
+                    </form>
+                </div>
+            </div> -->
+            <div class="checkout-wrap pt-30">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="billing-info-wrap">
+                            <h3>Billing Details</h3>
+
+
+                            <h6>Delivery Address</h6>
+                            <div class="tab-pane fade show active" id="address-content">
+                                <select id="address-dropdown" class="form-control">
+                                    </option>
+                                    <% addresslist.forEach(function(address, index) { %>
+                                        <option value="" disabled></option>
+                                        <option value="<%= address._id %>" <%= address.setDefault ? 'selected' : '' %>>
+                                            <strong>Address <%= index + 1 %></strong>
+                                            <span class="multiline">
+                                                <%= address.type %> : <%= address.name %>,  <%= address.house %>, <%= address.street %>, <%= address.city %> , <%= address.state %> - <%= address.pincode %> | <%= address.mobile %>
+                                            </span>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </div>
+                            <style>
+                                .multiline {
+                                    white-space: pre-wrap;
+                                }
+                            </style>
+                            <br>
+                            <% if (addresslist.length < 4) { %>
+                                <div class="row">
+                                    <button id="addAddressButton" class="btn btn-primary rounded-pill"
+                                        style="font-size: 14px; padding: 5px 10px; background-color: #e97730;width: 8rem; border-color: #e97730; margin-left: 1rem;"><i
+                                            class="fa fa-plus"></i> Add Address</button>
+                                </div>
+                                <% } %>
+                                    <script>
+                                        document.getElementById('addAddressButton').addEventListener('click', function () {
+                                            // Show the modal popup
+                                            $('#addAddressModal').modal('show');
+                                        });
+                                    </script>
+                                    <div id="addAddressModal" class="modal">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <!-- Modal Header -->
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Add New Address</h4>
+                                                    <button type="button" class="close"
+                                                        data-dismiss="modal">&times;</button>
+                                                </div>
+                                                <!-- Modal Body -->
+                                                <div class="modal-body">
+                                                    <!-- Form for adding a new address -->
+                                                    <form id="addAddressForm" action="/checkout/add-address"
+                                                        method="post">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="setDefault" name="setDefault" value="true" >
+                                                            <label class="form-check-label"
+                                                                for="setDefault">Set as Default </label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="type">Address Type:</label>
+                                                            <div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        id="home" name="type" value="Home" checked>
+                                                                    <label class="form-check-label"
+                                                                        for="home">Home</label>
+                                                                </div>
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        id="office" name="type" value="Office">
+                                                                    <label class="form-check-label"
+                                                                        for="office">Office</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <input type="text" hidden class="form-control"
+                                                                id="addressId" name="addressId">
+                                                            <label for="name">Name:</label>
+                                                            <input type="text" class="form-control" id="addname"
+                                                                name="addname" required pattern="[A-Za-z ]{1,20}"
+                                                                title="Name should be max 20 characters, and contain only letters and spaces">
+                                                        </div>
+                                                        <br>
+                                                        <input type="text" value="<%=currentUserId%>" hidden
+                                                            class="form-control" id="user" name="user">
+                                                        <div class="form-group">
+                                                            <label for="house">House:</label>
+                                                            <input type="text" class="form-control" id="house"
+                                                                name="house" required maxlength="20"
+                                                                title="House should be max 20 characters">
+                                                        </div>
+                                                        <br>
+                                                        <div class="form-group">
+                                                            <label for="street">Street:</label>
+                                                            <input type="text" class="form-control" id="street"
+                                                                name="street" required maxlength="20"
+                                                                title="Street should be max 20 characters">
+                                                        </div>
+                                                        <br>
+                                                        <div class="form-group">
+                                                            <label for="city">City:</label>
+                                                            <input type="text" class="form-control" id="city"
+                                                                name="city" required maxlength="16"
+                                                                title="City should be max 16 characters">
+                                                        </div>
+                                                        <br>
+                                                        <div class="form-group">
+                                                            <label for="state">State:</label>
+                                                            <input type="text" class="form-control" id="state"
+                                                                name="state" required maxlength="16"
+                                                                title="State should be max 16 characters">
+                                                        </div>
+                                                        <br>
+                                                        <div class="form-group">
+                                                            <label for="mobile">Mobile:</label>
+                                                            <input type="text" class="form-control" id="mobile"
+                                                                name="mobile" required pattern="[0-9]{10}"
+                                                                min="0000000000" max="9999999999"
+                                                                title="Mobile number should be 10 digits">
+                                                        </div>
+                                                        <br>
+
+                                                        <div class="form-group">
+                                                            <label for="pincode">Pincode:</label>
+                                                            <input type="number" class="form-control" id="pincode"
+                                                                name="pincode" required min="000000" max="999999"
+                                                                title="Pincode should be 6 digits">
+                                                        </div>
+
+                                                        <br>
+                                                        <!-- Submit button -->
+                                                        <button type="submit" class="btn btn-primary"
+                                                            style="font-size: 14px; padding: 5px 10px; background-color: #e97730;">Add
+                                                            Address</button>
+
+                                                        <a href="/profile?selected=Address" class="btn btn-secondary"
+                                                            style=" font-size: 14px; padding: 5px 10px;background-color: #e97730;">Back</a>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="checkout-account mb-25">
+                                <input class="checkout-toggle2" type="checkbox">
+                                <span>Create an account?</span>
+                            </div> -->
+
+                                    <!-- <div class="checkout-account mt-25">
+                                <input class="checkout-toggle" type="checkbox">
+                                <span>Ship to a different address?</span>
+                            </div> -->
+
+                                    <div class="additional-info-wrap">
+                                        <label>Order notes</label>
+                                        <textarea
+                                            placeholder="Notes about your order, e.g. special notes for delivery. "
+                                            name="message"></textarea>
+                                    </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="your-order-area">
+                            <h3>Your order</h3>
+                            <div class="your-order-wrap gray-bg-4">
+                                <div class="your-order-info-wrap">
+                                    <div class="your-order-info">
+                                        <ul>
+                                            <li>Product <span>Total</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-middle">
+                                        <ul>
+                                            <li>Product Name X 1 <span>$329 </span></li>
+                                            <li>Product Name X 1 <span>$329 </span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-subtotal">
+                                        <ul>
+                                            <li>Subtotal <span>$329 </span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-shipping">
+                                        <ul>
+                                            <li>Shipping <p>
+                                                <div id="selected-address"></div>
+                                                </p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-info order-total">
+                                        <ul>
+                                            <li>Total <span>$273.00 </span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="payment-method">
+                                    <div class="pay-top sin-payment">
+                                        <input id="payment_method_1" class="input-radio" type="radio" value="cheque"
+                                            checked="checked" name="payment_method">
+                                        <label for="payment_method_1"> Direct Bank Transfer </label>
+                                        <div class="payment-box payment_method_bacs">
+                                            <p>Make your payment directly into our bank account. Please use your Order
+                                                ID as the payment reference.</p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-top sin-payment">
+                                        <input id="payment-method-2" class="input-radio" type="radio" value="cheque"
+                                            name="payment_method">
+                                        <label for="payment-method-2">Check payments</label>
+                                        <div class="payment-box payment_method_bacs">
+                                            <p>Make your payment directly into our bank account. Please use your Order
+                                                ID as the payment reference.</p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-top sin-payment">
+                                        <input id="payment-method-3" class="input-radio" type="radio" value="cheque"
+                                            name="payment_method">
+                                        <label for="payment-method-3">Cash on delivery </label>
+                                        <div class="payment-box payment_method_bacs">
+                                            <p>Make your payment directly into our bank account. Please use your Order
+                                                ID as the payment reference.</p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-top sin-payment sin-payment-3">
+                                        <input id="payment-method-4" class="input-radio" type="radio" value="cheque"
+                                            name="payment_method">
+                                        <label for="payment-method-4">PayPal <img alt=""
+                                                src="/user/images/icon-img/payment.png"><a href="#">What is
+                                                PayPal?</a></label>
+                                        <div class="payment-box payment_method_bacs">
+                                            <p>Make your payment directly into our bank account. Please use your Order
+                                                ID as the payment reference.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="Place-order btn-hover">
+                                <a href="#">Place Order</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('../layouts/footer.ejs',) %>

@@ -12,10 +12,12 @@
                         <div class="row">
                             <div class="col-lg-3 col-md-4">
                                 <div class="myaccount-tab-menu nav" role="tablist">
-                                    <a href="/profile" class="active" id="dashboard-menu" data-bs-toggle="tab">Dashboard</a>
+                                    <a href="/profile" class="active" id="dashboard-menu"
+                                        data-bs-toggle="tab">Dashboard</a>
                                     <a href="#account-info" id="myprofile-menu" data-bs-toggle="tab">My Profile</a>
                                     <a href="#address-edit" id="address-menu" data-bs-toggle="tab">Address</a>
-                                    <a href="#change-password" id="cpassword-menu" data-bs-toggle="tab">Change Password</a>
+                                    <a href="#change-password" id="cpassword-menu" data-bs-toggle="tab">Change
+                                        Password</a>
                                     <a href="#orders" id="orders-menu" data-bs-toggle="tab">Orders</a>
                                     <!-- <a href="#download" id="download" data-bs-toggle="tab">Download</a> -->
                                     <!-- <a href="#payment-method" id="payment-menu" data-bs-toggle="tab">Payment Method</a> -->
@@ -135,7 +137,7 @@
                                     <!-- Single Tab Content Start -->
                                     <div class="tab-pane fade" id="address-edit" role="tabpanel">
                                         <% if (addresslist.length < 4) { %>
-                                            <div class="row"  >
+                                            <div class="row">
                                                 <div class="myaccount-content col-lg-6" style="border: none;">
                                                     <button id="addAddressButton" class="btn btn-primary"
                                                         style="font-size: 14px; padding: 5px 10px; background-color: #e97730; border-color: #e97730;"><i
@@ -143,77 +145,114 @@
                                                 </div>
                                             </div>
                                             <% } %>
-                                            <div class="tab-pane fade show active" id="address-content" role="tabpanel">
-                                                <div class="row">
-                                                    <% addresslist.forEach(function(address, index) { %>
-                                                    <div class="col-md-6 ">
-                                                        <div class="myaccount-content">
-                                                            <h5>Address <%= index + 1 %></h5>
-                                                            <div class="row address-details">
-                                                                <div class="col-md-8">
-                                                                    <p><strong>Type:</strong> <%= address.type %></p>
-                                                                    <p><strong>Name:</strong> <%= address.name %></p>
-                                                                    <p><strong>House:</strong> <%= address.house %></p>
-                                                                    <p><strong>Street:</strong> <%= address.street %></p>
-                                                                    <p><strong>City:</strong> <%= address.city %></p>
-                                                                    <p><strong>State:</strong> <%= address.state %></p>
-                                                                    <p><strong>Mobile:</strong> <%= address.mobile %></p>
-                                                                    <p><strong>Pincode:</strong> <%= address.pincode %></p>
-                                                                </div>
-                                                                <div class="col-md-4 d-flex flex-column justify-content-center align-items-center">
-                                                                    <!-- Edit Address Button -->
-                                                                    <a href="#" class="btn btn-danger edit-address-btn"data-address-id="<%= address._id %>" style="font-size: 14px; padding: 5px 10px;background-color: #e97730;">Edit</a>
-                                                                    <br>
-                                                                    <br>
-                                                                    <!-- Delete Address Button -->
-                                                                    <a href="/profile/delete-address?id=<%= address._id %>" class="btn btn-danger delete-btn"style="font-size: 14px; padding: 5px 10px;">Delete</a>
-                                                                   
+                                                <div class="tab-pane fade show active" id="address-content"
+                                                    role="tabpanel">
+                                                    <div class="row">
+                                                        <% addresslist.forEach(function(address, index) { %>
+                                                            <div class="col-md-6 ">
+                                                                <div class="myaccount-content">
+                                                                    <h5>
+                                                                        Address <%= index + 1 %> 
+                                                                            <%if(address.setDefault==="true") { %> | <span
+                                                                                    class="default-pill">Default</span>
+                                                                                <% } %>
+                                                                                    <style>
+                                                                                        .default-pill {
+                                                                                            background-color: green;
+                                                                                            color: white;
+                                                                                            padding: 3px 6px;
+                                                                                            border-radius: 10px;
+                                                                                            font-size: small;
+                                                                                        }
+                                                                                    </style>
+                                                                    </h5>
+                                                                    <div class="row address-details">
+                                                                        <div class="col-md-8">
+                                                                            <p><strong>Type:</strong>
+                                                                                <%= address.type %>
+                                                                            </p>
+                                                                            <p><strong>Name:</strong>
+                                                                                <%= address.name %>
+                                                                            </p>
+                                                                            <p><strong>House:</strong>
+                                                                                <%= address.house %>
+                                                                            </p>
+                                                                            <p><strong>Street:</strong>
+                                                                                <%= address.street %>
+                                                                            </p>
+                                                                            <p><strong>City:</strong>
+                                                                                <%= address.city %>
+                                                                            </p>
+                                                                            <p><strong>State:</strong>
+                                                                                <%= address.state %>
+                                                                            </p>
+                                                                            <p><strong>Mobile:</strong>
+                                                                                <%= address.mobile %>
+                                                                            </p>
+                                                                            <p><strong>Pincode:</strong>
+                                                                                <%= address.pincode %>
+                                                                            </p>
+                                                                        </div>
+                                                                        <div
+                                                                            class="col-md-4 d-flex flex-column justify-content-center align-items-center">
+                                                                            <!-- Edit Address Button -->
+                                                                            <a href="#"
+                                                                                class="btn btn-danger edit-address-btn"
+                                                                                data-address-id="<%= address._id %>"
+                                                                                style="font-size: 14px; padding: 5px 10px;background-color: #e97730;">Edit</a>
+                                                                            <br>
+                                                                            <br>
+                                                                            <!-- Delete Address Button -->
+                                                                            <a href="/profile/delete-address?id=<%= address._id %>"
+                                                                                class="btn btn-danger delete-btn"
+                                                                                style="font-size: 14px; padding: 5px 10px;">Delete</a>
+
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                            <% }); %>
+                                                                <script>
+                                                                    document.querySelector('.delete-btn').addEventListener('click', function (event) {
+                                                                        event.preventDefault();
+                                                                        const confirmation = confirm('Are you sure you want to delete this item?');
+                                                                        if (confirmation) {
+                                                                            window.location.href = this.getAttribute('href');
+                                                                        }
+                                                                    });
+                                                                </script>
                                                     </div>
-                                                    <% }); %>
-                                                    <script>
-                                                        document.querySelector('.delete-btn').addEventListener('click', function(event) {
-                                                            event.preventDefault();
-                                                            const confirmation = confirm('Are you sure you want to delete this item?');
-                                                            if (confirmation) {
-                                                                window.location.href = this.getAttribute('href');
-                                                            }
-                                                        });
-                                                        </script>
                                                 </div>
-                                            </div>
-                                            
-                                            
-                                            <script>
-                                                // Edit Address button click event
-                                                document.addEventListener('DOMContentLoaded', function() {
-                                                    const editAddressButtons = document.querySelectorAll('.edit-address-btn');
-                                                    
-                                                    editAddressButtons.forEach(function(button) {
-                                                        button.addEventListener('click', function(event) {
-                                                            event.preventDefault();
-                                                            
-                                                            // Get the address ID from the data attribute
-                                                            const addressId = button.dataset.addressId;
-                                                            
-                                                            // Redirect to the edit address page with the address ID
-                                                            window.location.href = '/profile/edit-address?id=' + addressId;
+
+
+                                                <script>
+                                                    // Edit Address button click event
+                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                        const editAddressButtons = document.querySelectorAll('.edit-address-btn');
+
+                                                        editAddressButtons.forEach(function (button) {
+                                                            button.addEventListener('click', function (event) {
+                                                                event.preventDefault();
+
+                                                                // Get the address ID from the data attribute
+                                                                const addressId = button.dataset.addressId;
+
+                                                                // Redirect to the edit address page with the address ID
+                                                                window.location.href = '/profile/edit-address?id=' + addressId;
+                                                            });
                                                         });
                                                     });
-                                                });
-                                            </script>
-                                            
-                                            <style>
-                                                .address-details p {
-                                                    margin-bottom: 5px; /* Adjust as needed */
-                                                }
+                                                </script>
 
-                                            </style>
+                                                <style>
+                                                    .address-details p {
+                                                        margin-bottom: 5px;
+                                                        /* Adjust as needed */
+                                                    }
+                                                </style>
                                     </div>
-                                     <!-- JavaScript code -->
-                                     <script>
+                                    <!-- JavaScript code -->
+                                    <script>
                                         // Check if the URL contains the parameter 'selected=Address'
                                         const urlParams = new URLSearchParams(window.location.search);
                                         const selected = urlParams.get('selected');
@@ -225,7 +264,7 @@
                                             // Remove the 'active' class from other tabs if needed
                                             // Add similar lines for other tabs if necessary
                                         }
-                                        
+
                                     </script>
                                     <script>
                                         document.getElementById('addAddressButton').addEventListener('click', function () {
@@ -248,55 +287,82 @@
                                                     <!-- Form for adding a new address -->
                                                     <form id="addAddressForm" action="/profile/add-address"
                                                         method="post">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="setDefault" name="setDefault" value="true">
+                                                            <label class="form-check-label" for="setDefault">Set as
+                                                                Default </label>
+                                                        </div>
                                                         <div class="form-group">
                                                             <label for="type">Address Type:</label>
                                                             <div>
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" id="home" name="type" value="home" checked>
-                                                                    <label class="form-check-label" for="home">Home</label>
+                                                                    <input class="form-check-input" type="radio"
+                                                                        id="home" name="type" value="Home" checked>
+                                                                    <label class="form-check-label"
+                                                                        for="home">Home</label>
                                                                 </div>
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" id="office" name="type" value="office">
-                                                                    <label class="form-check-label" for="office">Office</label>
+                                                                    <input class="form-check-input" type="radio"
+                                                                        id="office" name="type" value="Office">
+                                                                    <label class="form-check-label"
+                                                                        for="office">Office</label>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
-                                                            <input type="text"  hidden class="form-control" id="addressId" name="addressId">
+                                                            <input type="text" hidden class="form-control"
+                                                                id="addressId" name="addressId">
                                                             <label for="name">Name:</label>
-                                                            <input type="text"  class="form-control" id="addname" name="addname" required pattern="[A-Za-z ]{1,20}" title="Name should be max 20 characters, and contain only letters and spaces">
+                                                            <input type="text" class="form-control" id="addname"
+                                                                name="addname" required pattern="[A-Za-z ]{1,20}"
+                                                                title="Name should be max 20 characters, and contain only letters and spaces">
                                                         </div>
                                                         <br>
-                                                        <input type="text" value="<%=currentUserId%>" hidden class="form-control" id="user" name="user">
+                                                        <input type="text" value="<%=currentUserId%>" hidden
+                                                            class="form-control" id="user" name="user">
                                                         <div class="form-group">
                                                             <label for="house">House:</label>
-                                                            <input type="text"  class="form-control" id="house" name="house" required maxlength="20" title="House should be max 20 characters">
+                                                            <input type="text" class="form-control" id="house"
+                                                                name="house" required maxlength="20"
+                                                                title="House should be max 20 characters">
                                                         </div>
                                                         <br>
                                                         <div class="form-group">
                                                             <label for="street">Street:</label>
-                                                            <input type="text"  class="form-control" id="street" name="street" required maxlength="20" title="Street should be max 20 characters">
+                                                            <input type="text" class="form-control" id="street"
+                                                                name="street" required maxlength="20"
+                                                                title="Street should be max 20 characters">
                                                         </div>
                                                         <br>
                                                         <div class="form-group">
                                                             <label for="city">City:</label>
-                                                            <input type="text"  class="form-control" id="city" name="city" required maxlength="16" title="City should be max 16 characters">
+                                                            <input type="text" class="form-control" id="city"
+                                                                name="city" required maxlength="16"
+                                                                title="City should be max 16 characters">
                                                         </div>
                                                         <br>
                                                         <div class="form-group">
                                                             <label for="state">State:</label>
-                                                            <input type="text" class="form-control" id="state" name="state" required maxlength="16" title="State should be max 16 characters">
+                                                            <input type="text" class="form-control" id="state"
+                                                                name="state" required maxlength="16"
+                                                                title="State should be max 16 characters">
                                                         </div>
                                                         <br>
                                                         <div class="form-group">
                                                             <label for="mobile">Mobile:</label>
-                                                            <input type="text" class="form-control"  id="mobile" name="mobile" required pattern="[0-9]{10}" min="0000000000" max="9999999999" title="Mobile number should be 10 digits">
+                                                            <input type="text" class="form-control" id="mobile"
+                                                                name="mobile" required pattern="[0-9]{10}"
+                                                                min="0000000000" max="9999999999"
+                                                                title="Mobile number should be 10 digits">
                                                         </div>
                                                         <br>
-                                        
+
                                                         <div class="form-group">
                                                             <label for="pincode">Pincode:</label>
-                                                            <input type="number" class="form-control"  id="pincode" name="pincode" required min="000000" max="999999" title="Pincode should be 6 digits">
+                                                            <input type="number" class="form-control" id="pincode"
+                                                                name="pincode" required min="000000" max="999999"
+                                                                title="Pincode should be 6 digits">
                                                         </div>
 
                                                         <br>
@@ -312,55 +378,50 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     <script>
-                                        document.getElementById('editAddressButton').addEventListener('click', function () {
-                                            // Show the modal popup
-                                            $('#editAddressModal').modal('show');
+                                        $(document).ready(function () {
+                                            // Check if success parameter exists in URL and if the message has not been shown yet
+                                            const urlParams = new URLSearchParams(window.location.search);
+                                            const success = urlParams.get('deleted');
+                                            const added = urlParams.get('added');
+                                            const removedAddressToast = sessionStorage.getItem('removedAddressToast');
+
+                                            if (success === 'true' && !removedAddressToast) {
+                                                // Display toast message for success
+                                                $.toast({
+                                                    heading: 'Success',
+                                                    text: 'Address Removed',
+                                                    showHideTransition: 'slide',
+                                                    position: 'top-center',
+                                                    icon: 'success'
+                                                });
+                                                // Set session storage to indicate that the message has been shown
+                                                sessionStorage.setItem('removedAddressToast', 'true');
+                                                setTimeout(() => {
+                                                    sessionStorage.setItem('removedAddressToast', 'null');
+                                                }, 60000);
+
+                                            }
+                                            const addedAddressSuccess = sessionStorage.getItem('addedAddressSuccess');
+                                            if (added === 'true' && !addedAddressSuccess) {
+                                                // Display toast message for success
+                                                $.toast({
+                                                    heading: 'Success',
+                                                    text: 'New Address Added',
+                                                    showHideTransition: 'slide',
+                                                    position: 'top-center',
+                                                    icon: 'success'
+                                                });
+                                                sessionStorage.setItem('addedAddressSuccess', 'true');
+                                                setTimeout(() => {
+                                                    sessionStorage.setItem('addedAddressSuccess', 'null');
+                                                }, 60000);
+
+
+                                            }
                                         });
                                     </script>
-                                  <script>
-                                    $(document).ready(function () {
-                                        // Check if success parameter exists in URL and if the message has not been shown yet
-                                        const urlParams = new URLSearchParams(window.location.search);
-                                        const success = urlParams.get('deleted');
-                                        const added = urlParams.get('added');
-                                        const removedAddressToast = sessionStorage.getItem('removedAddressToast');
-                            
-                                        if (success === 'true' && !removedAddressToast) {
-                                            // Display toast message for success
-                                            $.toast({
-                                                heading: 'Success',
-                                                text: 'Address Removed',
-                                                showHideTransition: 'slide',
-                                                position: 'top-center',
-                                                icon: 'success'
-                                            });
-                                            // Set session storage to indicate that the message has been shown
-                                            sessionStorage.setItem('removedAddressToast', 'true');
-                                            setTimeout(() => {
-                                                sessionStorage.setItem('removedAddressToast', 'null');
-                                            }, 60000);
-                            
-                                        }
-                                        const addedAddressSuccess = sessionStorage.getItem('addedAddressSuccess');
-                                        if (added === 'true' && !addedAddressSuccess) {
-                                            // Display toast message for success
-                                            $.toast({
-                                                heading: 'Success',
-                                                text: 'New Address Added',
-                                                showHideTransition: 'slide',
-                                                position: 'top-center',
-                                                icon: 'success'
-                                            });
-                                            sessionStorage.setItem('addedAddressSuccess', 'true');
-                                            setTimeout(() => {
-                                                sessionStorage.setItem('addedAddressSuccess', 'null');
-                                            }, 60000);
-                            
-
-                                        }
-                                    });
-                                </script>
 
                                     <!-- Single Tab Content End -->
                                     <!-- Single Tab Content Start -->
@@ -370,6 +431,7 @@
                                             <div class="account-details-form">
                                                 <form action="/update-user-details?id=<%=currentUser._id%>"
                                                     method="post" onsubmit="return validateForm()">
+
                                                     <div class="single-input-item">
                                                         <label for="display-name" class="required">Name</label>
                                                         <input type="text" oninput="validateName()" name="name"
@@ -574,39 +636,48 @@
                                             <div class="account-details-form">
                                                 <form action="/profile/change-password" method="post">
                                                     <fieldset>
-                                                        <input type="text" value="<%=currentUserId%>" hidden class="form-control" id="user1" name="user1">
+                                                        <input type="text" value="<%=currentUserId%>" hidden
+                                                            class="form-control" id="user1" name="user1">
 
                                                         <div class="single-input-item">
-                                                            <label for="current-pwd" class="required">Current Password</label>
+                                                            <label for="current-pwd" class="required">Current
+                                                                Password</label>
                                                             <input type="password" id="currentPwd" name="currentPwd" />
 
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-lg-6">
                                                                 <div class="single-input-item">
-                                                                    <label for="newPwd" class="required">New Password</label>
-                                                                    <input type="text" id="newPwd" name="newPwd"  />
-                                                                    <span id="passwordErrorMessage" style="color: red;"></span>
+                                                                    <label for="newPwd" class="required">New
+                                                                        Password</label>
+                                                                    <input type="text" id="newPwd" name="newPwd" />
+                                                                    <span id="passwordErrorMessage"
+                                                                        style="color: red;"></span>
 
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-6">
                                                                 <div class="single-input-item">
-                                                                    <label for="confirmPwd" class="required" >Confirm Password</label>
-                                                                    <input type="password" id="confirmPwd" onchange=" confirmPassword()" name="confirmPwd" />
-                                                                    <span id="confirmPasswordErrorMessage" style="color: red;"></span>
+                                                                    <label for="confirmPwd" class="required">Confirm
+                                                                        Password</label>
+                                                                    <input type="password" id="confirmPwd"
+                                                                        onchange=" confirmPassword()"
+                                                                        name="confirmPwd" />
+                                                                    <span id="confirmPasswordErrorMessage"
+                                                                        style="color: red;"></span>
 
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </fieldset>
                                                     <div class="single-input-item btn-hover">
-                                                        <button class="check-btn sqr-btn" onclick="return validation()" >Save Changes</button>
+                                                        <button class="check-btn sqr-btn"
+                                                            onclick="return validation()">Save Changes</button>
                                                     </div>
                                                 </form>
-                                                
+
                                                 <script>
-        
+
                                                     function confirmPassword() {
                                                         let newPassword = document.getElementById("newPwd").value;
                                                         let confirmPassword = document.getElementById("confirmPwd").value;
@@ -621,7 +692,7 @@
                                                         return true;
                                                     }
 
-                                                    
+
                                                     function validatePassword() {
                                                         console.log('Validating password...'); // Add this line
 
@@ -640,7 +711,7 @@
                                                             return false
                                                         } else {
                                                             passwordErrorMessage.textContent = null; // Remove the error message
-                                                            
+
                                                             setTimeout(() => {
                                                                 passwordErrorMessage.textContent = null;
                                                             }, 3000); // Hide after 2 seconds
@@ -657,7 +728,7 @@
                                                     function validation() {
                                                         const newPasswordValid = validatePassword();
                                                         const confirmPasswordValid = confirmPassword();
-                                                        
+
                                                         if (!newPasswordValid || !confirmPasswordValid) {
                                                             $.toast({
                                                                 heading: 'Error',
@@ -671,7 +742,7 @@
                                                         return true;
                                                     }
 
-                                                   
+
                                                 </script>
                                                 <script>
                                                     $(document).ready(function () {
@@ -679,7 +750,7 @@
                                                         const urlParams = new URLSearchParams(window.location.search);
                                                         const success = urlParams.get('updated');
                                                         const alreadyShown = sessionStorage.getItem('PwdErrToast');
-                                                        
+
                                                         if (success === 'true' && !alreadyShown) {
                                                             // Display toast message for success
                                                             $.toast({
@@ -689,14 +760,14 @@
                                                                 position: 'top-center',
                                                                 icon: 'success'
                                                             });
-                                                            
+
                                                             // Set session storage to indicate that the message has been shown
                                                             sessionStorage.setItem('PwdErrToast', 'true');
-                                                            setTimeout(()=>{
+                                                            setTimeout(() => {
                                                                 sessionStorage.setItem('PwdErrToast', 'null')
-                                                            },60000)
-                                                            
-                                                        } 
+                                                            }, 60000)
+
+                                                        }
                                                         if (success === 'false') {
                                                             // Display toast message for success
                                                             $.toast({
@@ -706,7 +777,7 @@
                                                                 position: 'top-center',
                                                                 icon: 'error'
                                                             });
-                                                            
+
                                                         }
                                                         const samepass = urlParams.get('samepass');
                                                         if (samepass === 'true') {
@@ -732,24 +803,24 @@
                                                             });
 
                                                         }
-                                                       
+
                                                     });
 
                                                     const urlPwdParams = new URLSearchParams(window.location.search);
-                                                        const updated = urlParams.get('selected');
-                                                      
-                                                         if (selected === 'change-password') {
-                                                            // Add a class to the address tab to keep it open
-                                                            document.getElementById('change-password').classList.add('show', 'active');
-                                                            document.getElementById('cpassword-menu').classList.add('active');
-                                                            document.getElementById('dashboard-menu').classList.remove('active');
-                                                            // Remove the 'active' class from other tabs if needed
-                                                            // Add similar lines for other tabs if necessary
+                                                    const updated = urlParams.get('selected');
+
+                                                    if (selected === 'change-password') {
+                                                        // Add a class to the address tab to keep it open
+                                                        document.getElementById('change-password').classList.add('show', 'active');
+                                                        document.getElementById('cpassword-menu').classList.add('active');
+                                                        document.getElementById('dashboard-menu').classList.remove('active');
+                                                        // Remove the 'active' class from other tabs if needed
+                                                        // Add similar lines for other tabs if necessary
                                                     }
                                                 </script>
-                                                
 
-                                                
+
+
                                             </div>
                                         </div>
                                     </div> <!-- Single Tab Content End -->

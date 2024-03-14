@@ -20,7 +20,7 @@ const isLogin = async (req, res, next) => {
           console.log(err.message);
           res.redirect('/logout');
         } else {
-          console.log(decodedToken);
+          console.log("Decoded JWT Token:",decodedToken);
           next();
         }
       });

@@ -50,6 +50,8 @@ userRoute.get('/login',userController.loadLogin);
 userRoute.post('/login',userController.loginUser)
 userRoute.get("/home",auth.isLogin,userController.loadHomePage)
 
+userRoute.get("/cart/count",auth.isLogin,cartController.cartCount)
+
 userRoute.get('/shop', productsController.loadShop);
 userRoute.get('/shop/:page', productsController.loadShop);
 userRoute.get('/product-details',productsController.loadProductDetails);
@@ -60,6 +62,9 @@ userRoute.post("/cart/update-cart-quantity",auth.isLogin,cartController.updateCa
 userRoute.post("/cart/check-product-stock",auth.isLogin,cartController.checkProductStock)
 userRoute.post("/cart/remove-cart-product",auth.isLogin,cartController.removeCartProduct)
 userRoute.get("/cart/remove-all-products",auth.isLogin,cartController.removeAllCartProducts)
+
+userRoute.get("/checkout",auth.isLogin,cartController.loadCheckout)
+userRoute.post("/checkout/add-address",auth.isLogin,addressController.addAddressFrmCart)
 
 userRoute.get("/profile",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)
 userRoute.post("/update-user-details",auth.attachTokenToLocals,auth.isLogin,userController.updateDetails)
