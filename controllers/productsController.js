@@ -201,15 +201,11 @@ const loadShop = async (req, res) => {
 
     // Retrieve filter criteria from query parameters
     const filterByCategory = req.query.category || null; // Filter by category, if provided
-    const filterByStock = req.query.stock || null; // Filter by color, if provided
 
     // Construct filter object based on filter criteria
-    const filter = { status: 1 };
+    const filter ={};
     if (filterByCategory) {
-      filter.category = filterByCategory;
-    }
-    if (filterByColor) {
-      filter.stock = filterByStock;
+      filter.category.categoryame = filterByCategory;
     }
 
     // Perform database query based on sorting criteria and filter
