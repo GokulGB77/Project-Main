@@ -68,6 +68,8 @@ const addNewAddress = async (req, res) => {
     res.redirect("/profile?selected=Address&notadded=true");
   }
 };
+
+
 const addAddressFrmCart = async (req, res) => {
   try {
     // Extract the address data from the request body
@@ -133,11 +135,6 @@ const addAddressFrmCart = async (req, res) => {
 };
 
 
-
-   
-
-
-
 //Edit address page loading
 const editAddress = async (req, res) => {
   try {
@@ -157,15 +154,16 @@ const editAddress = async (req, res) => {
     if (!addressDetails) {
       return res.status(404).send('Address not found');
     }
-
+    
+    
     // Find the specific address object within the addresses array
     const addressObject = addressDetails.addresses.find(address => address._id == addressId);
-
+    const setDefaultVal = addressObject.setDefault
     // Render the editAddress template with the found address object
-    res.render('editAddress', { addressObject });
+    res.render('editAddress', { addressObject,setDefaultVal });
   } catch (error) {
     console.error('Error fetching address details:', error);
-    res.redirect('/profile/editAddress',{error});
+    res.redirect('/profile/editAddress');
   }
 };
 
@@ -177,7 +175,14 @@ const updateAddress = async (req, res) => {
     const { name, house, street, city, state, pincode, type, addressId, mobile, setDefault } = req.body;
     console.log("Address ID: ", addressId);
     console.log("setDefault received:", setDefault); // Log the setDefault value
-
+   
+    if (setDefault === 'true') {
+      await Addressdb.updateMany({"addresses._id": {$ne: addressId},"addresses.$.setDefault": "true"}, {
+          $set: {"addresses.$.setDefault": "false"}
+      })
+      .then(() => console.log("setDefault updated successfully for other addresses"))
+      .catch(error => console.error("Error updating setDefault:", error));
+  }
     // Find the address document where the addresses array contains the address to edit
     const existingAddress = await Addressdb.findOneAndUpdate(
       { "addresses._id": addressId },
@@ -197,26 +202,21 @@ const updateAddress = async (req, res) => {
       { new: true }
     );
 
-    console.log("Existing Address:", existingAddress);
+    // console.log("Existing Address:", existingAddress);
 
     if (!existingAddress) {
       // Redirect with message if the address to edit is not found
       req.flash('error', 'Address not found.');
-      return res.redirect("/profile?selected=Address&notfound=true");
+      return res.redirect("/profile?selected=Address&notfound=true",{});
     }
 
     // If setDefault is true, update other addresses to set setDefault as false
-    if (setDefault) {
-      console.log("Update query:", {
-        "addresses._id": { $ne: addressId },
-        "$set": { "addresses.$.setDefault": false }
-      });
+  
+      // If the new address is set as default, update all other existing addresses' setDefault to false
+      
+    
 
-      await Addressdb.updateMany(
-        { "addresses._id": { $ne: addressId } },
-        { $set: { "addresses.$.setDefault": false } }
-      ).catch(error => console.error("Error updating setDefault:", error));
-    }
+    
 
     // Redirect back to the profile page after editing the address
     req.flash('success', 'Address updated successfully.');

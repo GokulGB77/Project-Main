@@ -280,8 +280,10 @@ const loadProfile = async (req, res) => {
     console.log("userId:", res.locals.currentUserId)
     // Use findOne to retrieve a single user document
     const user = await Userdb.findOne({ _id: currentUser._id }).populate('addresses');
-    const addressDocument = await Addressdb.findOne({ user: currentUser._id });
-    const addresses = addressDocument ? addressDocument.addresses : [];
+    const addressDocument = await Addressdb.findOne({ user: currentUser._id }).sort({_id:1});
+    let addresses = addressDocument ? addressDocument.addresses : [];
+       // Reorder addresses to show the last added address as the first one
+       addresses = addresses.reverse();
     if (token) {
       res.render("profile", { token, currentUser, addresslist: addresses, user,userId });
     } else {

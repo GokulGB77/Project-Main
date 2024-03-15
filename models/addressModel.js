@@ -13,7 +13,7 @@ const addressSchema = new mongoose.Schema({
             mobile:{type:Number, required: true },
             pincode: { type: Number, required: true },
             type: { type: String, default: "home" },
-            setDefault:{type:String,required:false,default:false}
+            setDefault:{type:String,required:false,default:"false"}
         }
     ]
 });
