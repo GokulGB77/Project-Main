@@ -11,6 +11,7 @@ const productSchema = new mongoose.Schema({
     status:{type:Number,required:true},
     productTags:{type:Array,required:true},
     category: {type: mongoose.Schema.Types.ObjectId,ref: "Categoriesdb",required: true},
+    popularity:{type:Number,required:true,default:0}
   });
 
 module.exports = mongoose.model("Productsdb", productSchema);

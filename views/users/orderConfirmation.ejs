@@ -1,0 +1,46 @@
+<%- include('../layouts/header.ejs') %>
+
+    <body>
+        
+
+        <main>
+            <h1>Order Confirmation</h1>
+            <p>Thank you for your order! Your order has been successfully placed.</p>
+    
+            <!-- Display order details -->
+            <h2>Order Details</h2>
+            <ul>
+                <li>Order ID: <%= orderDetails.orderId %></li>
+                <li>Date: <%= orderDetails.orderDate %> </li>
+                <li>Total Amount: &#8377 <%= orderDetails.orderTotal %></li>
+                <!-- Add more order details here as needed -->
+            </ul>
+    
+            <!-- Display shipping information -->
+            <h2>Shipping Information</h2>
+            <p><%= orderDetails.orderTotal %></p>
+    
+            
+            <!-- Display ordered products -->
+            <h2>Ordered Products</h2>
+            <ul>
+                <!-- Iterate over ordered products and display their details -->
+                <!-- Replace this with actual data dynamically retrieved from your backend -->
+                <li>
+                    <h3><!-- Product name --></h3>
+                    <p>Price: $<!-- Product price --></p>
+                    <p>Quantity: <!-- Product quantity --></p>
+                    <p>Total: $<!-- Total price for this product (price * quantity) --></p>
+                    <!-- You can add more product details here if needed -->
+                </li>
+                <!-- Repeat the above structure for each ordered product -->
+            </ul>
+    
+            <!-- Provide a link to return to the home page or continue shopping -->
+            <p><a href="/">Continue Shopping</a></p>
+        </main>
+
+        
+    </body>
+
+    <%- include('../layouts/footer.ejs',) %>

@@ -176,13 +176,13 @@ const updateAddress = async (req, res) => {
     console.log("Address ID: ", addressId);
     console.log("setDefault received:", setDefault); // Log the setDefault value
    
-    if (setDefault === 'true') {
-      await Addressdb.updateMany({"addresses._id": {$ne: addressId},"addresses.$.setDefault": "true"}, {
-          $set: {"addresses.$.setDefault": "false"}
-      })
-      .then(() => console.log("setDefault updated successfully for other addresses"))
-      .catch(error => console.error("Error updating setDefault:", error));
-  }
+  //   if (setDefault === 'true') {
+  //     await Addressdb.updateMany({"addresses._id": {$ne: addressId},"addresses.$.setDefault": "true"}, {
+  //         $set: {"addresses.$.setDefault": "false"}
+  //     })
+  //     .then(() => console.log("setDefault updated successfully for other addresses"))
+  //     .catch(error => console.error("Error updating setDefault:", error));
+  // }
     // Find the address document where the addresses array contains the address to edit
     const existingAddress = await Addressdb.findOneAndUpdate(
       { "addresses._id": addressId },
@@ -201,6 +201,19 @@ const updateAddress = async (req, res) => {
       },
       { new: true }
     );
+    console.log("Existing address updated successfully:-------",);
+
+   if("existingAddress.setDefault"===true){
+    const allOtherAddresses = await Addressdb.findOneAndUpdate(
+      { "addresses._id": addressId },
+      {
+        "$set": {
+          "addresses.$.setDefault": false // Update setDefault value
+        }
+      }
+    );
+    console.log("count of all other addresssss:-------",allOtherAddresses.length);
+   }
 
     // console.log("Existing Address:", existingAddress);
 

@@ -36,8 +36,6 @@ const loadRegister = async (req, res) => {
   }
 }
 
-
-
 const intialRegisterUser = async (req, res) => {
   try {
 
@@ -127,8 +125,6 @@ const resendOtp = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
-
 
 const registerUser = async (req, res) => {
   try {

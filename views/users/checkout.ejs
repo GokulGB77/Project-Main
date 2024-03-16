@@ -5,7 +5,7 @@
             <div class="breadcrumb-content text-center">
                 <h2>Checkout </h2>
                 <ul>
-                    <li><a href="index.html">Home</a></li>
+                    <li><a href="/">Home</a></li>
                     <li><i class="ti-angle-right"></i></li>
                     <li>Checkout </li>
                 </ul>
@@ -40,24 +40,24 @@
 
                             <h6>Delivery Address</h6>
                             <div class="tab-pane fade show active" id="address-content">
-                                <select id="address-dropdown" class="form-control">
+                                <select id="selectedAddress" name="selectedAddress" class="form-control">
                                     </option>
                                     <% addresslist.forEach(function(address, index) { %>
+
                                         <option value="" disabled></option>
-                                        <option value="<%= address._id %>" <%= address.setDefault ? 'selected' : '' %>>
+                                        <option value="<%= address._id %>" <%=address.setDefault ? 'selected' : '' %>>
                                             <strong>Address <%= index + 1 %></strong>
-                                            <span class="multiline">
-                                                <%= address.type %> : <%= address.name %>,  <%= address.house %>, <%= address.street %>, <%= address.city %> , <%= address.state %> - <%= address.pincode %> | <%= address.mobile %>
-                                            </span>
+                                            <%= address.type %> : <%= address.name %>, <%= address.house %>, <%=
+                                                            address.street %>, <%= address.city %> , <%= address.state
+                                                                    %> - <%= address.pincode %> | <%= address.mobile %>
                                         </option>
+
                                         <% }); %>
                                 </select>
+
+
                             </div>
-                            <style>
-                                .multiline {
-                                    white-space: pre-wrap;
-                                }
-                            </style>
+
                             <br>
                             <% if (addresslist.length < 4) { %>
                                 <div class="row">
@@ -88,9 +88,9 @@
                                                         method="post">
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" type="checkbox"
-                                                                id="setDefault" name="setDefault" value="true" >
-                                                            <label class="form-check-label"
-                                                                for="setDefault">Set as Default </label>
+                                                                id="setDefault" name="setDefault" value="true">
+                                                            <label class="form-check-label" for="setDefault">Set as
+                                                                Default </label>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="type">Address Type:</label>
@@ -192,7 +192,7 @@
                                         <label>Order notes</label>
                                         <textarea
                                             placeholder="Notes about your order, e.g. special notes for delivery. "
-                                            name="message"></textarea>
+                                            name="order-notes" id="order-notes"></textarea>
                                     </div>
                         </div>
                     </div>
@@ -208,59 +208,63 @@
                                     </div>
                                     <div class="your-order-middle">
                                         <ul>
-                                            <li>Product Name X 1 <span>$329 </span></li>
-                                            <li>Product Name X 1 <span>$329 </span></li>
+                                            <% cart.cartProducts.forEach(product=> { %>
+                                                <li>
+                                                    <%= product.product.productName %> x <%= product.quantity %> <span>₹
+                                                                <%= (product.price*product.quantity).toLocaleString() %>
+                                                            </span>
+                                                </li>
+                                                <% }); %>
                                         </ul>
                                     </div>
                                     <div class="your-order-info order-subtotal">
                                         <ul>
-                                            <li>Subtotal <span>$329 </span></li>
+                                            <li>Subtotal:<span>₹ <%= (cart.cartTotal).toLocaleString() %> </span></li>
                                         </ul>
                                     </div>
                                     <div class="your-order-info order-shipping">
                                         <ul>
-                                            <li>Shipping <p>
-                                                <div id="selected-address"></div>
-                                                </p>
+                                            <li>Shipping: <span>₹ <%= deliveryCharge %> </span></li>
+
                                             </li>
                                         </ul>
                                     </div>
                                     <div class="your-order-info order-total">
                                         <ul>
-                                            <li>Total <span>$273.00 </span></li>
+                                            <li style="font-size: 20px; font-weight: bold;">Total: <span>₹ <%=
+                                                        (cart.cartTotal + deliveryCharge).toLocaleString() %> </span>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="payment-method">
                                     <div class="pay-top sin-payment">
-                                        <input id="payment_method_1" class="input-radio" type="radio" value="cheque"
+                                        <input id="payment-method-3" class="input-radio" type="radio" value="cod"
                                             checked="checked" name="payment_method">
+                                        <label for="payment-method-3">Cash on delivery </label>
+                                        <div class="payment-box payment_method_bacs">
+                                            <p>Cash, UPI and Cards accepted.</p>
+                                        </div>
+                                    </div>
+                                    <div class="pay-top sin-payment">
+                                        <input id="payment_method_1" class="input-radio" type="radio"
+                                            value="bankTransfer" name="payment_method">
                                         <label for="payment_method_1"> Direct Bank Transfer </label>
                                         <div class="payment-box payment_method_bacs">
                                             <p>Make your payment directly into our bank account. Please use your Order
                                                 ID as the payment reference.</p>
                                         </div>
                                     </div>
-                                    <div class="pay-top sin-payment">
-                                        <input id="payment-method-2" class="input-radio" type="radio" value="cheque"
-                                            name="payment_method">
+                                    <!-- <div class="pay-top sin-payment">
+                                        <input id="payment-method-2" class="input-radio" type="radio" value="cheque" name="payment_method">
                                         <label for="payment-method-2">Check payments</label>
                                         <div class="payment-box payment_method_bacs">
-                                            <p>Make your payment directly into our bank account. Please use your Order
-                                                ID as the payment reference.</p>
+                                            <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
                                         </div>
-                                    </div>
-                                    <div class="pay-top sin-payment">
-                                        <input id="payment-method-3" class="input-radio" type="radio" value="cheque"
-                                            name="payment_method">
-                                        <label for="payment-method-3">Cash on delivery </label>
-                                        <div class="payment-box payment_method_bacs">
-                                            <p>Make your payment directly into our bank account. Please use your Order
-                                                ID as the payment reference.</p>
-                                        </div>
-                                    </div>
+                                    </div> -->
+
                                     <div class="pay-top sin-payment sin-payment-3">
-                                        <input id="payment-method-4" class="input-radio" type="radio" value="cheque"
+                                        <input id="payment-method-4" class="input-radio" type="radio" value="paypal"
                                             name="payment_method">
                                         <label for="payment-method-4">PayPal <img alt=""
                                                 src="/user/images/icon-img/payment.png"><a href="#">What is
@@ -273,7 +277,7 @@
                                 </div>
                             </div>
                             <div class="Place-order btn-hover">
-                                <a href="#">Place Order</a>
+                                <a href="/checkout/place-order">Place Order</a>
                             </div>
                         </div>
                     </div>
@@ -281,4 +285,52 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // JavaScript code to send the selected address value to the server
+        document.querySelector('.Place-order a').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default action of the anchor tag
+
+
+            const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
+            // Get the selected address value from the dropdown
+            const selectedAddress = document.getElementById('selectedAddress').value;
+            const deliveryNotes = document.getElementById('order-notes').value || null;
+            const cartId = "<%=cart._id%>";
+            // Make a fetch request to the server
+            fetch('/checkout/place-order?', {
+                method: 'POST', // Or 'GET', 'PUT', etc., depending on your server-side route configuration
+                headers: {
+                    'Content-Type': 'application/json' // Specify the content type as JSON
+                },
+                body: JSON.stringify({
+                    selectedAddress: selectedAddress,
+                    selectedPaymentMethod: selectedPaymentMethod,
+                    deliveryNotes: deliveryNotes,
+                    cartId: cartId
+                }) // Convert the data to JSON format
+            })
+                .then(response => {
+                    // Handle the response from the server (if needed)
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                   return response.json()
+                })
+                .then(data=>{
+                    const orderDataId = data.orderDetailsId
+                    console.log("orderDataFrnt",orderDataId)
+                    // Optionally, you can redirect the user to another page after successful response
+                    window.location.href = `/order-success?orderId=${orderDataId}&cartId=${cartId}`;
+                })
+                .catch(error => {
+                    // Handle errors here
+                    console.error('There was an error!', error);
+                });
+        });
+
+
+
+    </script>
     <%- include('../layouts/footer.ejs',) %>

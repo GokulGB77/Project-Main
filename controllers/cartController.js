@@ -9,27 +9,15 @@ const MAX_CART_QUANTITY = 10;
 const addToCart = async (req, res) => {
   try {
     const productId = req.body.productId;
-    const userId =  req.session.userId;
+    const userId = req.session.userId;
 
     const userDetails = await Userdb.findById(userId);
     const productDetails = await Productsdb.findById(productId).populate("category");
+    const currentStock = productDetails.stock; 
     const pPrice = productDetails.productPrice;
-    const pImg = productDetails.images[0];
 
     let cart = await Cartdb.findOne({ user: userId });
-
-    // Check if the cart already contains the maximum quantity limit
-    let cartQuantity = 0;
-    if (cart) {
-      cart.cartProducts.forEach(item => {
-        cartQuantity += item.quantity;
-      });
-    }
-
-    if (cartQuantity >= MAX_CART_QUANTITY) {
-      return res.status(400).json({ error: "Cart already contains the maximum quantity limit" });
-    }
-
+    console.log("Cart Found");
     if (!cart) {
       // If cart doesn't exist, create a new one
       cart = await Cartdb.create({
@@ -38,11 +26,36 @@ const addToCart = async (req, res) => {
         cartTotal: 0
       });
     }
+
+    // Calculate total quantity of the product in the cart
+    const productInCartQuantity = cart.cartProducts.reduce((total, item) => {
+      if (item.product && item.product.equals(productId)) {
+        return total + item.quantity;
+      }
+      return total;
+    }, 0);
+    console.log("Calculate total quantity of the product in the cart");
+    // Check if adding the product would exceed the available stock
+    if (productInCartQuantity >= currentStock) {
+      return res.status(405).json({ error: "Cannot add more of this product, insufficient stock available" });
+    }
+
+    // Check if adding the product would exceed the maximum quantity limit
+    let cartQuantity = 0;
+    cart.cartProducts.forEach(item => {
+      cartQuantity += item.quantity;
+    });
+
+    if (cartQuantity >= MAX_CART_QUANTITY) {
+      return res.status(401).json({ error: "Cart already contains the maximum quantity limit" });
+    }
+
     const existingProductIndex = cart.cartProducts.findIndex(item => item.product && item.product.equals(productId));
 
     if (existingProductIndex !== -1) {
       // If the product exists in the cart, increase its quantity by 1
-      cart.cartProducts[existingProductIndex].quantity += 1;
+      const newQuantity = cart.cartProducts[existingProductIndex].quantity + 1;
+      cart.cartProducts[existingProductIndex].quantity = newQuantity;
       // Update total price if quantity is more than 1
       if (cart.cartProducts[existingProductIndex].quantity > 1) {
         cart.cartProducts[existingProductIndex].totalPrice = cart.cartProducts[existingProductIndex].price * cart.cartProducts[existingProductIndex].quantity;
@@ -54,20 +67,18 @@ const addToCart = async (req, res) => {
         quantity: 1, // Initialize quantity to 1
         price: pPrice,
         totalPrice: pPrice, // Initialize total price to price of a single product
-        pImg: pImg
       });
     }
 
     // Calculate cart total
-    let cartTotal = 0;
     cart.cartProducts.forEach(item => {
-      cartTotal = cartTotal + (item.pPrice * item.quantity) || 0; // Add total price of each product in cart
+      item.totalPrice = item.price * item.quantity;
     });
 
-    // Set cartTotal
-    cart.cartTotal = parseInt(cartTotal);
+    // Calculate the new cartTotal based on the updated cartProducts array
+    cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
 
-    // Save the updated cart (with new cart total)
+    // Save the updated cart to the database
     await cart.save();
 
     res.status(200).json({ message: "Product added to cart successfully" });
@@ -76,6 +87,8 @@ const addToCart = async (req, res) => {
     res.status(500).json({ error: "Error adding product to cart" });
   }
 }
+
+
 
 const loadCart = async (req, res) => {
   try {
@@ -268,31 +281,26 @@ const cartCount = async (req, res) => {
 };
 
 const loadCheckout = async(req,res) => {
- try {
-  const userId = req.session.userId
-  const addresses = await Addressdb.findOne({user:userId})
-  const addresslist = addresses.addresses
-  // const addresses = userDetails.addresses
-
-  const cardId = req.query.id;
-  const cart = await Cartdb.findById(cardId)
-  const cartProdDetails = cart.cartProducts
+  try {
+   const userId = req.session.userId;
+   const addresses = await Addressdb.findOne({ user: userId });
+   let addresslist = addresses.addresses.reverse();
+   const cardId = req.query.id;
+   const cart = await Cartdb.findById(cardId).populate("cartProducts.product");
+   const deliveryCharge = 500
+  //  console.log("Cart with populated products:", cart); // Log the cart to see if products are populated correctly
  
-
-  console.log("userId:--------",userId);
-  console.log("cardId:--------",cardId);
-  console.log("Address:--------",addresses.addresses);
-  console.log("Cart Product Details:--------",cartProdDetails);
-  if(!cart){
-   return  res.status(400).send("Error getting cart details")
+   if(!cart) {
+     return res.status(400).send("Error getting cart details");
+   }
+ 
+   return res.render("checkout", { cart, userId, addresslist, deliveryCharge,cardId });
+  } catch (error) {
+   console.error('Error Loading CheckoutPage', error);
+   return res.status(500).json({ message: 'Internal server error' });
   }
-   return res.render("checkout",{cart,cartProdDetails,userId,addresslist})
- } catch (error) {
-  console.error('Error Loading CheckoutPage', error);
-    res.status(500).json({ message: 'Internal server error' });
  }
-}
-
+ 
 module.exports = {
   addToCart,
   cartCount,

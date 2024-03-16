@@ -243,15 +243,23 @@
                                                                         icon: 'success'
                                                                     })
                                                                     showToast("Product added to cart successfully");
-                                                                } else if (response.status === 400) {
+                                                                } else if (response.status === 401) {
                                                                     $.toast({
                                                                         heading: 'Error',
-                                                                        text: 'Requested quantity not available',
+                                                                        text: 'Maximum Quantity Per Order Reached',
                                                                         showHideTransition: 'fade',
                                                                         position: 'top-center',
                                                                         icon: 'error'
                                                                     })
-                                                                    showToast("Requested quantity not available");
+                                                                    
+                                                                } else if (response.status === 405) {
+                                                                    $.toast({
+                                                                        heading: 'Error',
+                                                                        text: 'Insufficient stock available',
+                                                                        showHideTransition: 'fade',
+                                                                        position: 'top-center',
+                                                                        icon: 'error'
+                                                                    })
                                                                 } else {
                                                                     $.toast({
                                                                         heading: 'Error',
@@ -276,11 +284,7 @@
                                                             });
                                                         }
 
-                                                        function showToast(message) {
-                                                            // Implement your toast message display logic here, e.g., using a library like Toastify
-                                                            // For simplicity, I'll just log the message to the console
-                                                            console.log(message);
-                                                        }
+                                                       
                                                     </script>
                                         </div>
                                         <div class="pagination-style-1" data-aos="fade-up" data-aos-delay="200">

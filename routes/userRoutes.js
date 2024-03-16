@@ -6,6 +6,7 @@ const userController = require('../controllers/userController');
 const productsController = require('../controllers/productsController');
 const addressController = require('../controllers/addressController');
 const cartController = require('../controllers/cartController');
+const ordersController = require('../controllers/ordersController');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 const cookieParser = require('cookie-parser');
@@ -65,6 +66,9 @@ userRoute.get("/cart/remove-all-products",auth.isLogin,cartController.removeAllC
 
 userRoute.get("/checkout",auth.isLogin,cartController.loadCheckout)
 userRoute.post("/checkout/add-address",auth.isLogin,addressController.addAddressFrmCart)
+
+userRoute.post("/checkout/place-order",auth.isLogin,ordersController.placeOrder)
+userRoute.get("/order-success",auth.isLogin,ordersController.orderSuccess)
 
 userRoute.get("/profile",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)
 userRoute.post("/update-user-details",auth.attachTokenToLocals,auth.isLogin,userController.updateDetails)
