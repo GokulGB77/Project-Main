@@ -81,7 +81,10 @@ const addToCart = async (req, res) => {
     // Save the updated cart to the database
     await cart.save();
 
-    res.status(200).json({ message: "Product added to cart successfully" });
+    const Qty = await Cartdb.findOne({user:userId})
+    const cartQty = Qty.cartProducts.length
+
+    res.status(200).json({cartQty, message: "Product added to cart successfully" });
   } catch (error) {
     console.error("Error Adding Product To Cart: ", error);
     res.status(500).json({ error: "Error adding product to cart" });

@@ -6,6 +6,7 @@ const adminController = require('../controllers/adminController');
 const dashboardController = require('../controllers/dashboardController');
 const productsController = require('../controllers/productsController');
 const categoriesController = require('../controllers/categoriesController');
+const ordersController = require('../controllers/ordersController');
 const multer = require("multer")
 const sharp = require('sharp'); // Import sharp for image cropping
 
@@ -70,6 +71,10 @@ adminRoute.get("/categories/disable",categoriesController.disableCategory)
 
 adminRoute.get("/categories/enable",categoriesController.enableCategory)
 adminRoute.get("/categories/enable",categoriesController.enableCategory)
+
+adminRoute.get("/orders",ordersController.loadOrders)
+adminRoute.get("/orders/order-details",ordersController.loadOrdersDetails)
+adminRoute.post("/orders/order-details/save-notes",ordersController.adminCancel)
 
 
 

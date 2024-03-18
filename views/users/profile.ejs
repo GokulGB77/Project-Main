@@ -12,9 +12,9 @@
                         <div class="row">
                             <div class="col-lg-3 col-md-4">
                                 <div class="myaccount-tab-menu nav" role="tablist">
-                                    <a href="/profile" class="active" id="dashboard-menu"
-                                        data-bs-toggle="tab">Dashboard</a>
-                                    <a href="#account-info" id="myprofile-menu" data-bs-toggle="tab">My Profile</a>
+                                    <!-- <a href="/profile" class="active" id="dashboard-menu"
+                                        data-bs-toggle="tab">Dashboard</a> -->
+                                    <a href="#account-info" class="active" id="myprofile-menu" data-bs-toggle="tab">My Profile</a>
                                     <a href="#address-edit" id="address-menu" data-bs-toggle="tab">Address</a>
                                     <a href="#change-password" id="cpassword-menu" data-bs-toggle="tab">Change
                                         Password</a>
@@ -29,7 +29,7 @@
                             <div class="col-lg-9 col-md-8">
                                 <div class="tab-content" id="myaccountContent">
                                     <!-- Single Tab Content Start -->
-                                    <div class="tab-pane fade show active" id="dashboad" role="tabpanel">
+                                    <div class="tab-pane fade " id="dashboad" role="tabpanel">
                                         <div class="myaccount-content">
                                             <h3>My Profile</h3>
                                             <div class="welcome">
@@ -53,8 +53,9 @@
                                             <div class="myaccount-table table-responsive text-center">
                                                 <table class="table table-bordered">
                                                     <thead class="thead-light">
-                                                        <tr>
-                                                            <th>Order</th>
+                                                        <tr class="text-center">
+                                                            <th >Sl No.</th>
+                                                            <th >Order ID</th>
                                                             <th>Date</th>
                                                             <th>Status</th>
                                                             <th>Total</th>
@@ -62,32 +63,22 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td>1</td>
-                                                            <td>Aug 22, 2022</td>
-                                                            <td>Pending</td>
-                                                            <td>$3000</td>
-                                                            <td><a href="cart" class="check-btn sqr-btn ">View</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>2</td>
-                                                            <td>July 22, 2022</td>
-                                                            <td>Approved</td>
-                                                            <td>$200</td>
-                                                            <td><a href="cart" class="check-btn sqr-btn ">View</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3</td>
-                                                            <td>June 12, 2017</td>
-                                                            <td>On Hold</td>
-                                                            <td>$990</td>
-                                                            <td><a href="cart" class="check-btn sqr-btn ">View</a></td>
-                                                        </tr>
+                                                        <% orderDetails.forEach((order,index) => { %>
+                                                            <tr class="text-center">
+                                                                <td><%= index + 1%></td>
+                                                                <td><a href="/order-details?id=<%=order._id%>" class="check-btn sqr-btn"><%= order.orderId %></a></td>
+                                                                <td><%= order.orderDate %></td>
+                                                                <td ><%= order.orderStatus %></td>
+                                                                <td>&#8377 <%= (order.orderTotal).toLocaleString() %></td>
+                                                                <td><a href="/order-details?id=<%=order._id%>" class="check-btn sqr-btn">View</a></td>
+                                                            </tr>
+                                                        <% }); %>
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     <!-- Single Tab Content End -->
                                     <!-- Single Tab Content Start -->
                                     <div class="tab-pane fade" id="download" role="tabpanel">
@@ -260,7 +251,7 @@
                                             // Add a class to the address tab to keep it open
                                             document.getElementById('address-edit').classList.add('show', 'active');
                                             document.getElementById('address-menu').classList.add('active');
-                                            document.getElementById('dashboard-menu').classList.remove('active');
+                                            document.getElementById('myprofile-menu').classList.remove('active');
                                             // Remove the 'active' class from other tabs if needed
                                             // Add similar lines for other tabs if necessary
                                         }
@@ -424,9 +415,25 @@
 
                                     <!-- Single Tab Content End -->
                                     <!-- Single Tab Content Start -->
-                                    <div class="tab-pane fade" id="account-info" role="tabpanel">
+                                    <div class="tab-pane fade show active" id="account-info" role="tabpanel">
+                                      
                                         <div class="myaccount-content">
                                             <h3>Account Details</h3>
+                                            <div class="welcome">
+                                                <p>Hello, <strong>
+                                                        <%=currentUser.name%>
+                                                    </strong> (If Not <strong>
+                                                        <%=currentUser.name.split(" ")[0]%> !</strong><a href=" /logout"
+                                                            class="logout"> Logout</a>)</p>
+                                            </div>
+
+                                            <div>
+                                                <p class="mb-0">From your account dashboard. you can easily check & view
+                                                    your recent orders, manage your shipping and billing addresses and edit
+                                                    your password and account details.</p>
+                                                    <br>
+                                                    <br>
+                                            </div>
                                             <div class="account-details-form">
                                                 <form action="/update-user-details?id=<%=currentUser._id%>"
                                                     method="post" onsubmit="return validateForm()">
@@ -807,15 +814,27 @@
 
                                                     const urlPwdParams = new URLSearchParams(window.location.search);
                                                     const updated = urlParams.get('selected');
-
+                                                    
+                                                    //change password loading
                                                     if (selected === 'change-password') {
                                                         // Add a class to the address tab to keep it open
                                                         document.getElementById('change-password').classList.add('show', 'active');
                                                         document.getElementById('cpassword-menu').classList.add('active');
-                                                        document.getElementById('dashboard-menu').classList.remove('active');
+                                                        document.getElementById('myprofile-menu').classList.remove('active');
                                                         // Remove the 'active' class from other tabs if needed
                                                         // Add similar lines for other tabs if necessary
                                                     }
+                                                    //Order loading
+                                                    if (selected === 'orders') {
+                                                        // Add a class to the address tab to keep it open
+                                                        document.getElementById('orders').classList.add('show', 'active');
+                                                        document.getElementById('orders-menu').classList.add('active');
+                                                        document.getElementById('myprofile-menu').classList.remove('active');
+                                                        // Remove the 'active' class from other tabs if needed
+                                                        // Add similar lines for other tabs if necessary
+                                                    }
+
+
                                                 </script>
 
 

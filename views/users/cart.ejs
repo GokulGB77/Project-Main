@@ -51,7 +51,7 @@
                                                             <td class="product-thumbnail">
                                                                 <% if (product.product.images && product.product.images.length > 0) { %>
                                                                     <a href="/product-details?id=<%= product._id %>">
-                                                                        <img src="/productAssets/<%= product.product.images[0] %>" alt="">
+                                                                        <img src="/productAssets/<%= product.product.images[0] %>" alt="product.product.productName">
                                                                     </a>
                                                                 <% } else { %>
                                                                     <!-- Provide a default image or handle the absence of images -->

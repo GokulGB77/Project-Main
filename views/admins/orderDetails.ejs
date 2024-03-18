@@ -1,0 +1,541 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/admin/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link href="/admin/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="/admin/css1/main.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="#" class="brand-wrap">
+                <img src="/admin/imgs/theme/logo.png" class="logo" alt="Admin Dashboard">
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/user-details"> <i class="icon material-icons md-person"></i>
+                        <span class="text">User Details</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Products</span>
+                    </a>
+
+                </li>
+
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Categories</span>
+                    </a>
+
+                </li>
+
+                <li class="menu-item active">
+                    <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
+                        <span class="text">Orders</span>
+                    </a>
+
+                </li>
+
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Sales</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-sellers-cards.html">Sellers cards</a>
+                        <a href="page-sellers-list.html">Sellers list</a>
+                        <a href="page-seller-detail.html">Seller profile</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Coupons</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-sellers-cards.html">Sellers cards</a>
+                        <a href="page-sellers-list.html">Sellers list</a>
+                        <a href="page-seller-detail.html">Seller profile</a>
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Banners</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="page-form-product-1.html">Add product 1</a>
+                        <a href="page-form-product-2.html">Add product 2</a>
+                        <a href="page-form-product-3.html">Add product 3</a>
+                        <a href="page-form-product-4.html">Add product 4</a>
+                    </div>
+                </li>
+
+            </ul>
+            <hr>
+            <ul class="menu-aside">
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/logout"> <i class="icon material-icons md-settings"></i>
+                        <span class="text">Logout</span>
+                    </a>
+                </li>
+            </ul>
+            <br>
+            <br>
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <!-- <form class="searchform">
+                    <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                        <button class="btn btn-light bg" type="button"> <i
+                                class="material-icons md-search"></i></button>
+                    </div>
+                    <datalist id="search_terms">
+                        <option value="Products">
+                        <option value="New orders">
+                        <option value="Apple iphone">
+                        <option value="Ahmed Hassan">
+                    </datalist>
+                </form> -->
+            </div>
+            <div class="col-nav">
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
+                        class="material-icons md-apps"></i> </button>
+                <ul class="nav">
+
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
+                    </li>
+
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                            aria-expanded="false"> <img class="img-xs rounded-circle"
+                                src="/admin/imgs/people/avatar2.jpg" alt="User"></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
+                                Settings</a>
+                            <a class="dropdown-item" href="#"><i
+                                    class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="#"><i
+                                    class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Order Details</h2>
+                    <p>Details for Order ID: #<%= orderDetails.orderId %>
+                    </p>
+                </div>
+            </div>
+            <div class="card">
+                <header class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                            <span>
+                                <i class="material-icons md-calendar_today"></i> <b>
+                                    <%= formattedDate %>, <%= formattedTime %>
+                                </b>
+                            </span> <br>
+                            <small class="text-muted">Order ID: <%= orderDetails.orderId %></small>
+                        </div>
+                        <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                            <% if (orderDetails.orderStatus==="pending" ){ %>
+                                <label for="form-select">Change status:</label>
+                                <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                    <option>Order Shipped</option>
+                                    <option>Order Delivered</option>
+                                </select>
+                                <a class="btn btn-primary" href="#">Save</a>
+                                <% } else if (orderDetails.orderStatus==="Delivered" ){ %>
+                                    <label for="form-select">Change status:</label>
+                                    <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                        <option>Order Returned</option>
+                                    </select>
+                                    <a class="btn btn-primary" href="#">Save</a>
+                                <% } else if (orderDetails.orderStatus==="shipped" ){ %>
+                                    <label for="form-select">Change status:</label>
+                                    <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                        <option>Order Delivered</option>
+                                    </select>
+                                    <a class="btn btn-primary" href="#">Save</a>
+                                    <% } %>
+                             
+
+                                        <!-- <option>Order Pending</option>
+                                        <option>Order Shipped</option>
+                                        <option>Order Delivered</option>
+                                        <option>Order Returned</option>
+                                        <option>Cancel Order</option> -->
+                            <a class="btn btn-secondary print ms-2" href="#"><i
+                                    class="icon material-icons md-print"></i></a>
+                        </div>
+
+                    </div>
+                </header> <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="row mb-50 mt-20 order-info-wrap">
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-person"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Customer</h6>
+                                    <p class="mb-1">
+                                        <%= orderDetails.user.name %> <br>
+                                            <%= orderDetails.user.email %> <br>
+                                                <%= orderDetails.user.mobile %>
+                                    </p>
+                                    <!-- <a href="#">View profile</a> -->
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-local_shipping"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Order info</h6>
+                                    <p class="mb-1">
+                                        Shipping: Fargo express <br> Pay method:
+                                        <% if (orderDetails.paymentMethod==="cod" ) { %>
+                                            Cash On Delivery
+                                            <% } else if (orderDetails.paymentMethod==="razorpay" ) { %>
+                                                Online Payment - RazorPay
+                                                <% } %> <br>
+                                    </p>
+                                    <!-- badges-------------------------->
+                                    <div>
+                                        <% if (orderDetails.orderStatus==="pending" ) { %>
+                                            <span class="badge rounded-pill  alert-warning text-warning"
+                                                style="width:7rem;; font-size: 0.8rem; ;">Delivery
+                                                Pending</span>
+                                            <% } else if(orderDetails.orderStatus==="delivered" ) { %>
+                                                <span class="badge rounded-pill alert-success text-success"
+                                                    style="width:5rem;; font-size: 0.8rem; ;">Delivered</span>
+                                                <% } else if(orderDetails.orderStatus==="cancelled" ) { %>
+                                                    <span class="badge rounded-pill alert-danger text-danger"
+                                                        style=" width:5rem; font-size: 0.8rem;">Cancelled</span>
+                                                    <% } else if(orderDetails.orderStatus==="returned" ) { %>
+                                                        <span class="badge rounded-pill alert-primary text-primary"
+                                                            style="width:5rem; font-size: 0.8rem;">Returned</span>
+                                                        <% } %>
+                                    </div>
+                                    <!-- <a href="#">Download info</a> -->
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                        <div class="col-md-4">
+                            <article class="icontext align-items-start">
+                                <span class="icon icon-sm rounded-circle bg-primary-light">
+                                    <i class="text-primary material-icons md-place"></i>
+                                </span>
+                                <div class="text">
+                                    <h6 class="mb-1">Deliver to</h6>
+                                    <p class="mb-1">
+                                        Name: <%= orderDetails.address.name %> <br>City: <%= orderDetails.address.city
+                                                %>, <%= orderDetails.address.state %> <br>
+                                                    <%= orderDetails.address.house %>, <%= orderDetails.address.street
+                                                            %><br> Pincode: <%= orderDetails.address.pincode %>
+                                    </p>
+                                    <!-- <a href="#">View profile</a> -->
+                                </div>
+                            </article>
+                        </div> <!-- col// -->
+                    </div> <!-- row // -->
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th width="40%" style="text-align: center;">Product</th>
+                                            <th width="20%">Unit Price</th>
+                                            <th width="20%">Quantity</th>
+                                            <th width="20%" class="text-end">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% orderDetails.orderProducts.forEach(item=>{ %>
+                                            <tr>
+                                                <td>
+                                                    <a class="itemside" href="#">
+                                                        <div class="left">
+                                                            <img src="/productAssets/<%=item.product.images[0] %>"
+                                                                width="60" height="50" class="img-xs"
+                                                                alt="<%= item.product.productName %>">
+                                                        </div>
+                                                        <div class="info">
+                                                            <%= item.product.productName %>
+                                                        </div>
+                                                    </a>
+                                                </td>
+                                                <td>&#8377; <%= (item.price).toLocaleString() %>
+                                                <td>
+                                                    <%= item.quantity %>
+                                                </td>
+                                                <td class="text-end"> &#8377; <%= (item.totalPrice).toLocaleString() %>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+
+
+                                                <tr>
+                                                    <td colspan="4">
+                                                        <article class="float-end">
+                                                            <dl class="dlist">
+                                                                <dt>Subtotal:</dt>
+                                                                <dd>&#8377; <%=
+                                                                        (orderDetails.orderTotal).toLocaleString() %>
+                                                                </dd>
+                                                            </dl>
+                                                            <dl class="dlist">
+                                                                <dt>Shipping cost:</dt>
+                                                                <dd>&#8377; <%= deliveryCharge %>
+                                                                </dd>
+                                                            </dl>
+                                                            <dl class="dlist">
+                                                                <dt>Grand total:</dt>
+                                                                <dd> <b class="h5">&#8377; <%=
+                                                                            (orderDetails.orderTotal+deliveryCharge).toLocaleString()
+                                                                            %></b> </dd>
+                                                            </dl>
+                                                            <dl class="dlist">
+                                                                <dt class="text-muted">Status:</dt>
+                                                                <!-- badges-------------------------->
+                                                                <dd>
+                                                                    <% if (orderDetails.paymentMethod==="cod" &&
+                                                                        orderDetails.orderStatus==="pending" ) { %>
+                                                                        <span
+                                                                            class="badge rounded-pill alert-warning text-warning">Payment
+                                                                            Pending</span>
+
+                                                                        <% } else if
+                                                                            (orderDetails.paymentMethod==="razorpay" &&
+                                                                            orderDetails.orderStatus==="pending" ) { %>
+                                                                            <span
+                                                                                class="badge rounded-pill alert-success text-success">Payment
+                                                                                Done</span>
+
+                                                                            <% } else if
+                                                                                (orderDetails.orderStatus==="returned"
+                                                                                &&
+                                                                                (orderDetails.paymentMethod==="razorpay"
+                                                                                || orderDetails.paymentMethod==="cod" ))
+                                                                                { %>
+                                                                                <span
+                                                                                    class="badge rounded-pill alert-primary text-primary">Refund
+                                                                                    Initiated</span>
+
+                                                                                <% } else if
+                                                                                    ((orderDetails.paymentMethod==="razorpay"
+                                                                                    ||
+                                                                                    orderDetails.paymentMethod==="cod"
+                                                                                    )&&
+                                                                                    orderDetails.orderStatus==="delivered"
+                                                                                    ) { %>
+                                                                                    <span
+                                                                                        class="badge rounded-pill alert-success text-success">Payment
+                                                                                        Done</span>
+
+                                                                                    <% } else if
+                                                                                        (orderDetails.paymentMethod==="razorpay"
+                                                                                        &&
+                                                                                        orderDetails.orderStatus==="cancelled"
+                                                                                        ) { %>
+                                                                                        <span
+                                                                                            class="badge rounded-pill alert-primary text-primary">Refund
+                                                                                            Initiated</span>
+
+                                                                                        <% } else if
+                                                                                            (orderDetails.paymentMethod==="cod"
+                                                                                            &&
+                                                                                            orderDetails.orderStatus==="cancelled"
+                                                                                            ) { %>
+                                                                                            <span
+                                                                                                class="badge rounded-pill alert-info text-info">No
+                                                                                                Payment Done</span>
+                                                                                            <% } %>
+                                                                </dd>
+                                                            </dl>
+                                                        </article>
+                                                    </td>
+                                                </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- table-responsive// -->
+                            <a class="btn btn-primary" href="page-orders-tracking.html">Cancel Order </a>
+                        </div> <!-- col// -->
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-4">
+                            <!-- <div class="box shadow-sm bg-light">
+                                <h6 class="mb-15">Payment info</h6>
+                                <p>
+                                    <img src="/admin/imgs/card-brands/2.png" class="border" height="20"> Master Card
+                                    **** **** 4768 <br>
+                                    Business name: Grand Market LLC <br>
+                                    Phone: +1 (800) 555-154-52
+                                </p>
+                            </div> -->
+                            <div class="h-25 pt-4">
+                                <div class="mb-3">
+                                    <label>Cancellation Reason</label>
+                                    <textarea class="form-control" style="padding: 0;margin:0px;" name="notes" id="notes" placeholder="Type some note" >
+                                        <% if (orderDetails.adminNotes) { %>
+                                            <%= orderDetails.adminNotes %>
+                                        <% } %>
+                                    </textarea>
+                                   
+                                </div>
+                                
+                                <button id="saveButton" class="btn btn-primary">Cancel Order</button>
+                            </div>
+                        </div> <!-- col// -->
+                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            document.getElementById('saveButton').addEventListener('click', async function () {
+                                try {
+                                    const notes = document.getElementById("notes").value;
+                                    const orderId = "<%= orderDetails._id %>";
+                                    if (notes) {
+                                        const response = await fetch('/admin/orders/order-details/save-notes?orderId=<%=orderDetails._id %>', {
+                                            method: 'POST',
+                                            body: JSON.stringify({ orderId: orderId, notes: notes }),
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            }
+                                        });
+
+                                        if (response.ok) {
+                                            const data = await response.json();
+                                            console.log('Notes saved:', data);
+
+                                            sessionStorage.setItem('showToastAfterReload', 'true');
+
+                                            window.location.reload()
+                                        } else {
+                                            // Display error toast based on the response status code
+                                            const errorMessage = `Error saving notes (${response.status})`;
+                                            console.error(errorMessage);
+                                            $.toast({
+                                                heading: 'Error Saving Notes',
+                                                text: errorMessage,
+                                                position: 'top-center',
+                                                showHideTransition: 'slide',
+                                                icon: 'error'
+                                            });
+                                        }
+                                    } else {
+                                        $.toast({
+                                            heading: 'Enter Notes Before Saving',
+                                            text: 'You have enter some notes to save it to the order details.',
+                                            position: 'top-center',
+                                            showHideTransition: 'slide',
+                                            icon: 'info'
+                                        });
+                                    }
+
+
+                                } catch (error) {
+                                    console.error('There was a problem with your fetch operation:', error);
+                                    $.toast({
+                                        heading: 'There was a problem with the fetch operation',
+                                        position: 'top-center',
+                                        showHideTransition: 'slide',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
+
+                        // Check if there is a flag to show toast after reload
+                        window.onload = function () {
+                            const showToastAfterReload = sessionStorage.getItem('showToastAfterReload');
+                            if (showToastAfterReload === 'true') {
+                                // Display the toast
+                                $.toast({
+                                    heading: 'Notes Saved..',
+                                    text: 'Notes Successfully Saved.',
+                                    position: 'top-center',
+                                    showHideTransition: 'slide',
+                                    icon: 'success'
+                                });
+
+                                // Remove the flag from session storage
+                                sessionStorage.removeItem('showToastAfterReload');
+                            }
+                        };
+                    </script>
+
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script> ©, CouchCart Ecommerce
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/admin/js/vendors/select2.min.js"></script>
+    <script src="/admin/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/admin/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="/admin/js/main.js" type="text/javascript"></script>
+
+    <!-- $.toast plugins -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+
+</body>
+
+</html>

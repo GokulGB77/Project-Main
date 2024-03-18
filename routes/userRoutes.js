@@ -69,8 +69,12 @@ userRoute.post("/checkout/add-address",auth.isLogin,addressController.addAddress
 
 userRoute.post("/checkout/place-order",auth.isLogin,ordersController.placeOrder)
 userRoute.get("/order-success",auth.isLogin,ordersController.orderSuccess)
+userRoute.post("/cancel-order",auth.isLogin,ordersController.cancelOrder)
+
 
 userRoute.get("/profile",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)
+userRoute.get("/profile/orders",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)
+userRoute.get("/order-details",auth.attachTokenToLocals,auth.isLogin,ordersController.loadOrderDetails)
 userRoute.post("/update-user-details",auth.attachTokenToLocals,auth.isLogin,userController.updateDetails)
 userRoute.post("/profile/add-address",auth.attachTokenToLocals,auth.isLogin,addressController.addNewAddress)
 userRoute.get("/profile/edit-address",auth.attachTokenToLocals,auth.isLogin,addressController.editAddress)

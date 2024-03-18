@@ -1,6 +1,7 @@
 const Userdb = require("../models/userModel")
 const Productsdb = require("../models/productsModel")
 const Addressdb = require("../models/addressModel")
+const Ordersdb = require("../models/ordersModel")
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 
@@ -163,9 +164,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-
-
-
 const loadLogin = async (req, res) => {
   try {
     const jwtcookie = req.cookies.jwt;
@@ -195,8 +193,6 @@ const loadLogin = async (req, res) => {
     console.log(error.message);
   }
 }
-
-
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -232,8 +228,6 @@ const loginUser = async (req, res) => {
   }
 }
 
-
-
 const loadHomePage = async (req, res) => {
   try {
     const userId = req.query.userId
@@ -261,19 +255,20 @@ const loadHomePage = async (req, res) => {
   }
 }
 
-
-
-
-
 const loadProfile = async (req, res) => {
-
+  
   try {
-    const userId = req.query.userId
-    console.log("User entered User profile");
+    // console.log("User entered User profile");
     const token = req.cookies.jwt;
     const currentUser = res.locals.currentUser;
-    console.log("Current User: ", currentUser.name);
-    console.log("userId:", res.locals.currentUserId)
+    const userId = currentUser._id
+    // console.log("Current User: ", currentUser.name);
+    // console.log("userId:", res.locals.currentUserId)
+
+  //Order related
+    const orderDetails =  await Ordersdb.find({user:userId}).sort({orderDate:-1,orderTime:-1})
+    console.log("orderDetails",orderDetails);
+
     // Use findOne to retrieve a single user document
     const user = await Userdb.findOne({ _id: currentUser._id }).populate('addresses');
     const addressDocument = await Addressdb.findOne({ user: currentUser._id }).sort({_id:1});
@@ -281,7 +276,7 @@ const loadProfile = async (req, res) => {
        // Reorder addresses to show the last added address as the first one
        addresses = addresses.reverse();
     if (token) {
-      res.render("profile", { token, currentUser, addresslist: addresses, user,userId });
+      res.render("profile", { token, currentUser, addresslist: addresses, user,userId,orderDetails });
     } else {
       res.redirect("/login");
     }
@@ -354,9 +349,6 @@ const changePassword = async (req, res) => {
       res.redirect("/profile?window=change-password&updated=false")
   }
 };
-
-
-
 
 const logoutUser = async (req, res) => {
   try {

@@ -101,8 +101,8 @@
                                 <nav>
                                     <ul>
                                         <li><a href="/">HOME</a></li>
-                                        <li><a href="shop/:1">SHOP</a></li>
-                                        <li><a href="about-us">ABOUT</a></li>
+                                        <li><a href="/shop/:1">SHOP</a></li>
+                                        <li><a href="/about-us">ABOUT</a></li>
                                         <li><a href="contact-us">CONTACT US</a></li>
                                     </ul>
                                 </nav>
@@ -237,6 +237,7 @@
                                 </div>
 
                                 <% if (token) { %>
+                                    <script>console.log("Button pressed")</script>
                                     <div class="header-action-style dropdown">
                                         <!-- Dropdown Button with User Icon -->
                                         <a href="#" class="" id="loginDropdown" role="button" data-bs-toggle="dropdown"
@@ -246,7 +247,9 @@
                                         <!-- Dropdown Menu -->
                                         <ul class="dropdown-menu" aria-labelledby="loginDropdown">
                                             <li><a class="dropdown-item" style="font-size: 14px;"
-                                                    href="/profile">Account Settings</a></li>
+                                                    href="/profile?userid=<%=currentUser._id%>">Account Settings</a></li>
+                                            <li><a class="dropdown-item" style="font-size: 14px;"
+                                                    href="/profile/orders?selected=orders">Orders</a></li>
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li> <!-- Divider -->
@@ -268,19 +271,7 @@
                                         <a  href="/cart?user=<%=userId%>"><i class="pe-7s-shopbag"></i>
                                             <span id="cartItemCount" class="product-count bg-black"></span></a>
                                     </div>
-                                    <script>
-                                        // Fetch cart count from the server
-                                        fetch('/cart/count?user=<%=userId%>')
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                // Update the cart item count dynamically
-                                                document.getElementById('cartItemCount').textContent = data.count;
-                                            })
-                                            .catch(error => {
-                                                console.error('Error fetching cart count:', error);
-                                                document.getElementById('cartItemCount').textContent = 'Error';
-                                            });
-                                    </script>
+                                    
                                     <% } else { %>
                                         <div class="header-action-style ">
                                             <a title="Login" href="/login"><i class="pe-7s-user"></i></a>
@@ -294,7 +285,19 @@
                                             </div>
                             </div>
                         </div>
-                        
+                        <script>
+                            // Fetch cart count from the server
+                            fetch('/cart/count?user=<%=userId%>')
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Update the cart item count dynamically
+                                    document.getElementById('cartItemCount').textContent = data.count;
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching cart count:', error);
+                                    document.getElementById('cartItemCount').textContent = 'Error';
+                                });
+                        </script>
 
                     </div>
                 </div>

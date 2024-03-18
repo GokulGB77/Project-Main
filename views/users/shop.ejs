@@ -92,8 +92,6 @@
                         padding: 10px;
                         /* Add some padding to create space between the border and content */
                     }
-
-                   
                 </style>
                 <style>
                     /* Style for the checkbox list */
@@ -242,7 +240,6 @@
                                                                         showHideTransition: 'slide',
                                                                         icon: 'success'
                                                                     })
-                                                                    showToast("Product added to cart successfully");
                                                                 } else if (response.status === 401) {
                                                                     $.toast({
                                                                         heading: 'Error',
@@ -251,7 +248,7 @@
                                                                         position: 'top-center',
                                                                         icon: 'error'
                                                                     })
-                                                                    
+
                                                                 } else if (response.status === 405) {
                                                                     $.toast({
                                                                         heading: 'Error',
@@ -271,6 +268,9 @@
 
                                                                     showToast("Error adding product to cart");
                                                                 }
+                                                            }).then(data => {
+                                                                cartQuantity = data.cartQty;
+                                                                updateCartQuantity()
                                                             }).catch(error => {
                                                                 console.error("Error adding product to cart:", error);
                                                                 showToast("Error adding product to cart");
@@ -283,8 +283,13 @@
                                                                 })
                                                             });
                                                         }
+                                                        let cartQuantity = 0;
 
-                                                       
+                                                        // Function to update the cart quantity element
+                                                        function updateCartQuantity() {
+                                                            document.getElementById('cartItemCount').textContent = cartQuantity;
+                                                        }
+
                                                     </script>
                                         </div>
                                         <div class="pagination-style-1" data-aos="fade-up" data-aos-delay="200">
