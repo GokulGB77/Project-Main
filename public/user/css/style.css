@@ -1301,7 +1301,7 @@ textarea {
 }
 
 .search-wrap-1 {
-  background-color: transparent;
+  background-color: rgb(255, 255, 255);
   opacity: 0;
   position: absolute;
   right: 0;
@@ -1316,7 +1316,7 @@ textarea {
   width: 340px;
   z-index: -99;
   padding-bottom: 1px;
-  margin-right: 10px;
+  margin-top: 10px;
 }
 
 @media only screen and (max-width: 767px) {
@@ -1377,10 +1377,11 @@ textarea {
           transform: translateY(-50%);
   padding: 0;
   border: none;
-  background-color: transparent;
+  background-color: rgb(255, 255, 255);
   height: 100%;
   font-size: 18px;
-  border-left: 1px solid #E2DCDC;
+  border: 1px solid #E2DCDC;
+  border-radius: 50px;
   padding: 0 15px;
   color: #000000;
   line-height: 45px;

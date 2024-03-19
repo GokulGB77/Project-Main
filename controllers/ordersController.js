@@ -316,25 +316,51 @@ const formatTime = (timeString) => {
 const adminCancel = async (req, res) => {
   try {
     const orderId = req.query.orderId;
-    const notes = req.body.notes;
-    console.log("orderId",orderId);
-    console.log("notes",notes);
-    if (!orderId || !notes) {
-      return res.status(400).send({ message: "orderId and notes are required" });
+    const adminNotes = req.body.notes;
+
+    if (!adminNotes) {
+      return res.status(406).json({ message: "Missing order cancellation reason." });
+    } else {
+      const orderDetails = await Ordersdb.findOneAndUpdate(
+        { _id: orderId },
+        {
+          $set: {
+            orderStatus: "cancelled",
+            adminNotes: adminNotes
+          },
+        },
+        { new: true } // Return the updated document
+      );
+  
+      if (!orderDetails) {
+        return res.status(404).json({ message: "Order not found." });
+      }
+  
+      // Add quantities back to product stock
+      for (const orderProduct of orderDetails.orderProducts) {
+        try {
+          const product = await Productsdb.findById(orderProduct.product);
+          if (!product) {
+            throw new Error(`Product with ID ${orderProduct.product} not found.`);
+          }
+  
+          product.stock += orderProduct.quantity;
+          await product.save();
+        } catch (error) {
+          console.log("Error in saving product stock:", error);
+          // You might want to handle this error differently, maybe skip this product and continue with others.
+        }
+      }
+  
+      res.status(200).json({ message: "Order cancelled successfully.", orderDetails });
     }
 
-    const orderDetails = await Ordersdb.findOneAndUpdate(
-      { _id: orderId }, 
-      { $set: { adminNotes: notes }}, 
-      { upsert: true, new: true }
-      );
-
-    res.status(200).json({ message: "Notes saved", orderDetails})
+    
   } catch (error) {
-    console.log("Error in saveNote:", error);
-    res.status(500).send({ message: "Internal Server Error" });
+    console.log("Error in adminCancel:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 module.exports = {
   placeOrder,

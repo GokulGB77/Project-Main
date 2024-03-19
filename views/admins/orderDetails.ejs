@@ -187,22 +187,23 @@
                                         <option>Order Returned</option>
                                     </select>
                                     <a class="btn btn-primary" href="#">Save</a>
-                                <% } else if (orderDetails.orderStatus==="shipped" ){ %>
-                                    <label for="form-select">Change status:</label>
-                                    <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
-                                        <option>Order Delivered</option>
-                                    </select>
-                                    <a class="btn btn-primary" href="#">Save</a>
-                                    <% } %>
-                             
+                                    <% } else if (orderDetails.orderStatus==="shipped" ){ %>
+                                        <label for="form-select">Change status:</label>
+                                        <select id="statusSelect"
+                                            class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                            <option>Order Delivered</option>
+                                        </select>
+                                        <a class="btn btn-primary" href="#">Save</a>
+                                        <% } %>
 
-                                        <!-- <option>Order Pending</option>
+
+                                            <!-- <option>Order Pending</option>
                                         <option>Order Shipped</option>
                                         <option>Order Delivered</option>
                                         <option>Order Returned</option>
                                         <option>Cancel Order</option> -->
-                            <a class="btn btn-secondary print ms-2" href="#"><i
-                                    class="icon material-icons md-print"></i></a>
+                                            <a class="btn btn-secondary print ms-2" href="#"><i
+                                                    class="icon material-icons md-print"></i></a>
                         </div>
 
                     </div>
@@ -401,7 +402,7 @@
                                 </table>
                             </div>
                             <!-- table-responsive// -->
-                            <a class="btn btn-primary" href="page-orders-tracking.html">Cancel Order </a>
+                            <!-- <a class="btn btn-primary" href="page-orders-tracking.html">Cancel Order </a> -->
                         </div> <!-- col// -->
                         <div class="col-lg-1"></div>
                         <div class="col-lg-4">
@@ -414,18 +415,36 @@
                                     Phone: +1 (800) 555-154-52
                                 </p>
                             </div> -->
-                            <div class="h-25 pt-4">
-                                <div class="mb-3">
-                                    <label>Cancellation Reason</label>
-                                    <textarea class="form-control" style="padding: 0;margin:0px;" name="notes" id="notes" placeholder="Type some note" >
-                                        <% if (orderDetails.adminNotes) { %>
-                                            <%= orderDetails.adminNotes %>
+
+                            <div>
+                                <% if(orderDetails.orderStatus!=="cancelled" && orderDetails.orderStatus!=="returned" )
+                                    { %>
+                                    <div class="h-25 pt-4">
+                                        <div class="mb-3">
+                                            <label for="notes">Cancellation Reason</label>
+                                            <select class="form-control" id="notes" name="notes">
+                                                <option value="">Select a reason</option>
+                                                <option value="Order Cancelled due to Unavailability of stock"> Order
+                                                    Cancelled due to Unavailability of stock</option>
+                                                <option value="Order Cancelled due to Incomplete Payemnt">Order
+                                                    Cancelled due to Incomplete Payemnt</option>
+                                                <option value="Order Cancelled due to other reason">Order Cancelled due
+                                                    to other reason </option>
+                                                <!-- Add more options as needed -->
+                                            </select>
+                                        </div>
+                                        <button id="saveButton" class="btn btn-primary">Cancel Order</button>
+                                        <!--Cancel Button------------------------>
                                         <% } %>
-                                    </textarea>
-                                   
-                                </div>
-                                
-                                <button id="saveButton" class="btn btn-primary">Cancel Order</button>
+                                    </div>
+                                    <div>
+                                        <% if((orderDetails.orderStatus==="cancelled" ||
+                                        orderDetails.orderStatus==="returned" ) &&
+                                        orderDetails.paymentMethod==="razorpay" ) { %>
+                                        <button id="refundApprove" class="btn btn-primary">Approve Refund</button>
+                                        <% } %>
+
+                                    </div>
                             </div>
                         </div> <!-- col// -->
                     </div>
@@ -492,8 +511,8 @@
                             if (showToastAfterReload === 'true') {
                                 // Display the toast
                                 $.toast({
-                                    heading: 'Notes Saved..',
-                                    text: 'Notes Successfully Saved.',
+                                    heading: 'Order Cancelled',
+                                    text: 'Order has been cancelled',
                                     position: 'top-center',
                                     showHideTransition: 'slide',
                                     icon: 'success'

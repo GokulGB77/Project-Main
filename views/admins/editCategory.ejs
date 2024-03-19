@@ -19,7 +19,8 @@
                 <img src="/admin/imgs/theme/logo.png" class="logo" alt="Admin Dashboard">
             </a>
             <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
             </div>
         </div>
         <nav>
@@ -38,23 +39,23 @@
                     <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item active">
                     <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Categories</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
-                  
+
                 </li>
-                
+
                 <li class="menu-item ">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
                         <span class="text">Sales</span>
@@ -86,10 +87,10 @@
                         <a href="page-form-product-4.html">Add product 4</a>
                     </div>
                 </li>
-                 
+
             </ul>
             <hr>
-            <ul class="menu-aside">     
+            <ul class="menu-aside">
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/logout"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Logout</span>
@@ -159,41 +160,53 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <% if (errorMessage != null) { %>
+                            <% if (errorMessage !=null) { %>
                                 <div class="alert alert-danger" role="alert">
                                     <%= errorMessage %>
                                 </div>
                                 <% } %>
-                            <form action="/admin/categories/edit-category/update?id=<%= categoryClicked._id%>" id="createCategory" method="post">
-                                <div class="mb-4">
-                                    <h4 class="content-title card-title text-center">Edit Category </h4>
-                                    
-                                </div>
+                                    <form action="/admin/categories/edit-category/update?id=<%= categoryClicked._id%>"
+                                        id="createCategory" method="post">
+                                        <div class="mb-4">
+                                            <h4 class="content-title card-title text-center">Edit Category </h4>
 
-                                <p id="main-error" class="errorMessage" style="color: red;"></p>
-                                <div class="mb-4">
-                                    <label for="categoryName" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" value="<%= categoryClicked.categoryName%>" name="categoryName" id="categoryName" required oninput="validateName()"/>
-                                    <div id="nameError" class="errorMessage" style="color: red;"></div>
+                                        </div>
 
-                                </div>
-                        
-                                <div class="mb-4">
-                                    <label for="categoryStatus" class="form-label">Status</label>
-                                    <select class="form-select" name="categoryStatus" id="categoryStatus">
-                                        <option value="1" <% if (categoryClicked.categoryStatus === 1) { %> selected <% } %> >Active</option>
-                                        <option value="0" <% if (categoryClicked.categoryStatus === 0) { %> selected <% } %> >Inactive</option>
-                                    </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" name="categoryDetails" oninput="validateDescription()" id="categoryDetails" required><%= categoryClicked.categoryDetails%></textarea>
-                                    <div id="descriptionError" class="errorMessage" style="color: red;" ></div>
-                                </div>
-                                <div class="d-grid">
-                                    <button type="button" onclick="validateForm()" class="btn btn-primary">Update Category</button>
-                                </div>
-                            </form>
+                                        <p id="main-error" class="errorMessage" style="color: red;"></p>
+                                        <div class="mb-4">
+                                            <label for="categoryName" class="form-label">Name</label>
+                                            <input type="text" placeholder="Type here" class="form-control"
+                                                value="<%= categoryClicked.categoryName%>" name="categoryName"
+                                                id="categoryName" required oninput="validateName()" />
+                                            <div id="nameError" class="errorMessage" style="color: red;"></div>
+
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="categoryStatus" class="form-label">Status</label>
+                                            <select class="form-select" name="categoryStatus" id="categoryStatus">
+                                                <option value="1" <% if (categoryClicked.categoryStatus===1) { %>
+                                                    selected <% } %> >Active</option>
+                                                <option value="0" <% if (categoryClicked.categoryStatus===0) { %>
+                                                    selected <% } %> >Inactive</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">Description</label>
+                                            <textarea placeholder="Type here" class="form-control"
+                                                name="categoryDetails" oninput="validateDescription()"
+                                                id="categoryDetails"
+                                                required><%= categoryClicked.categoryDetails%></textarea>
+                                            <div id="descriptionError" class="errorMessage" style="color: red;"></div>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="button"  id="update-category"
+                                                onclick="validateForm()"
+                                                data-category-id="<%= categoryClicked._id %>" class="update-category btn
+                                                btn-primary">Update Category</button>
+                                                
+                                        </div>
+                                    </form>
                         </div>
                         <div class="col-md-9">
                             <div class="table-responsive">
@@ -213,39 +226,52 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% categories.forEach((item, index) => { %>
-                                          <tr>
-                                            <!-- <td class="text-center">
+                                        <% categories.forEach((item, index)=> { %>
+                                            <tr>
+                                                <!-- <td class="text-center">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" value="" />
                                                 </div>
                                             </td> -->
-                                            <td class="text-center"><%= index + 1 %></td> <!-- Use index + 1 for order numbers -->
-                                            <td><b><%= item.categoryName %></b></td>
-                                            <td><%= item.categoryDetails %></td>
-                                            <td class="text-center">
-                                                <span class="badge  rounded-pill alert-<%= item.categoryStatus === 1 ? 'success' : 'danger' %>">
-                                                  <%= item.categoryStatus === 1 ? 'Active' : 'Inactive' %>
-                                                </span>
-                                              </td>
-                                            <td class="text-center">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="/admin/categories/edit-category?id=<%= item._id %>">Edit info</a>
-                                                        <% if (item.categoryStatus === 1) { %>
-                                                            <a class="dropdown-item text-danger" href="/admin/categories/disable?id=<%= item._id %>">Disable</a>
-                                                        <% } else { %>
-                                                            <a class="dropdown-item text-success" href="/admin/categories/enable?id=<%= item._id %>">Enable</a>
-                                                        <% } %>
-                                                       
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                          </tr>  
-                                        <% }); %>
-                                      </tbody>
-                                      
+                                                <td class="text-center">
+                                                    <%= index + 1 %>
+                                                </td> <!-- Use index + 1 for order numbers -->
+                                                <td><b>
+                                                        <%= item.categoryName %>
+                                                    </b></td>
+                                                <td>
+                                                    <%= item.categoryDetails %>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span
+                                                        class="badge  rounded-pill alert-<%= item.categoryStatus === 1 ? 'success' : 'danger' %>">
+                                                        <%= item.categoryStatus===1 ? 'Active' : 'Inactive' %>
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="dropdown">
+                                                        <a href="#" data-bs-toggle="dropdown"
+                                                            class="btn btn-light rounded btn-sm font-sm"> <i
+                                                                class="material-icons md-more_horiz"></i> </a>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item"
+                                                                href="/admin/categories/edit-category?id=<%= item._id %>">Edit
+                                                                info</a>
+                                                            <% if (item.categoryStatus===1) { %>
+                                                                <a class="dropdown-item text-danger"
+                                                                    href="/admin/categories/disable?id=<%= item._id %>">Disable</a>
+                                                                <% } else { %>
+                                                                    <a class="dropdown-item text-success"
+                                                                        href="/admin/categories/enable?id=<%= item._id %>">Enable</a>
+                                                                    <% } %>
+
+                                                        </div>
+                                                    </div> <!-- dropdown //end -->
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                    </tbody>
+
                                 </table>
                             </div>
                         </div> <!-- .col// -->
@@ -296,7 +322,7 @@
 
             return value;
         }
-    
+
         function validateDescription() {
             var description = document.getElementById("categoryDetails").value
             var descriptionError = document.getElementById("descriptionError");
@@ -308,23 +334,23 @@
                 descriptionError.textContent = "Description should not start or end with space";
             } else {
                 descriptionError.textContent = "";
-                value= true;
+                value = true;
             }
             return value;
         }
 
-      function validateForm() {
-     
-        if (validateName() && validateDescription()){
-            console.log("Hello");
-            document.getElementById('createCategory').submit();
-        } else {
-            document.getElementById("main-error").innerText = "Cannot Add Category"
-            console.log("Hellosssssssssssssssssssss");
+        function validateForm() {
 
+            if (validateName() && validateDescription()) {
+                console.log("Fn validated");
+                document.getElementById('createCategory').submit();
+            } else {
+                document.getElementById("main-error").innerText = "Cannot Add Category"
+                console.log("Hellosssssssssssssssssssss");
+
+            }
         }
-      }
-        
+
     </script>
     <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
