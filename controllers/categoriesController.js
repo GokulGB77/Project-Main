@@ -15,7 +15,9 @@ const loadAdmincategories = async (req, res) => {
 const addCategory = async (req, res) => {
   try {
     // const existingCategory = await Categoriesdb.findOne({categoryName :req.body.categoryName })
-    const existingCategory = await Categoriesdb.findOne({ categoryName: { $regex: new RegExp('^' + req.body.categoryName + '$', 'i') } });
+    const categoryName = (req.body.categoryName).trim()
+    const existingCategory = await Categoriesdb.findOne({ categoryName: { $regex: new RegExp('^' + categoryName + '$', 'i') } })
+   
     if (existingCategory) {
       const categories = await Categoriesdb.find();
       return res.render("adminCategories", {
@@ -24,9 +26,9 @@ const addCategory = async (req, res) => {
 
     }
     const category = await Categoriesdb.create({
-      categoryName: req.body.categoryName,
-      categoryDetails: req.body.categoryDetails,
-      categoryStatus: req.body.categoryStatus
+      categoryName: (req.body.categoryName).trim(),
+      categoryDetails: (req.body.categoryDetails).trim(),
+      categoryStatus: (req.body.categoryStatus).trim()
     });
 
     const categories = await Categoriesdb.find();
@@ -61,10 +63,9 @@ const updateCategory = async (req, res) => {
   try {
     const id = req.query.id;
     const categoryClicked = await Categoriesdb.findById(id);
-
-    const existingCategory = await Categoriesdb.findOne({ 
-      categoryName: { $regex: new RegExp(req.body.categoryName, "i") }
-    })
+    const categoryName = (req.body.categoryName).trim()
+     const existingCategory = await Categoriesdb.findOne({_id:{$ne:id} ,categoryName: { $regex: new RegExp('^' + categoryName + '$', 'i') } })
+    
     if (existingCategory) {
       const categories = await Categoriesdb.find();
 
@@ -73,11 +74,10 @@ const updateCategory = async (req, res) => {
       });
 
     }
-
     const updatedCategory = await Categoriesdb.findByIdAndUpdate(id, {
-      categoryName: req.body.categoryName,
-      categoryDetails: req.body.categoryDetails,
-      categoryStatus: req.body.categoryStatus
+      categoryName: (req.body.categoryName).trim(),
+      categoryDetails: (req.body.categoryDetails).trim(),
+      categoryStatus: (req.body.categoryStatus).trim()
     })
     const categories = await Categoriesdb.find({});
 
