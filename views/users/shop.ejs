@@ -26,7 +26,7 @@
 
                     <!-- Sidebar for sorting and filtering options -->
                     <div class="sidebar">
-                        <h3>Sort By</h3>
+                        <!-- <h3>Sort By</h3>
                         <ul>
                             <li><a href="/shop?page=1&sortBy=default">Default Sorting</a></li>
                             <li><a href="/shop?page=1&sortBy=A-Z">Sort by A-Z</a></li>
@@ -36,64 +36,165 @@
                             <li><a href="/shop?page=1&sortBy=latest">Sort by latest</a></li>
                         </ul>
                         <br>
-                        <br>
-                        <h3>Filter By</h3>
+                        <br> -->
+                        <h4 class="text-center">Filter By </h4>
+                        <!-- For category filters -->
                         <ul class="checkbox-list">
-                            <li class="checkbox-container">
-                                <input type="checkbox" id="category1" name="category" value="Outdoor">
-                                <label for="category1">Outdoor </label>
-                            </li>
-                            <li class="checkbox-container">
-                                <input type="checkbox" id="category2" name="category" value=">Dining Room">
-                                <label for="category2">Dining Room </label>
-                            </li>
-                            <li class="checkbox-container">
-                                <input type="checkbox" id="category3" name="category" value="Living Room">
-                                <label for="category3">Living Room </label>
-                            </li>
-                            <li class="checkbox-container">
-                                <input type="checkbox" id="category4" name="category" value="Bedroom">
-                                <label for="category4">Bedroom </label>
-                            </li>
-                            <li class="checkbox-container">
-                                <input type="checkbox" id="category5" name="category" value="Out Of Stock">
-                                <label for="category5"> Out Of Stock </label>
-                            </li>
-                            <button id="applyFiltersBtn" class="btn btn-primary">Apply Filters</button>
+                            <h6 class="text-left">Category </h6>
+                            <% allCategories.forEach(category=> { %>
+                                <li class="checkbox-container">
+                                    <input type="checkbox" id="<%= category._id %>" name="category"
+                                        value="<%= category._id %>" <% if (filterByCategories &&
+                                        filterByCategories.includes(category._id.toString())) { %> checked <% } %>>
+                                        <label for="<%= category._id %>">
+                                            <%= category.categoryName %>
+                                        </label>
+                                </li>
+                                <% }) %>
+                                    <hr>
+                                    <h6 class="text-left">Stock </h6>
+                                    <!-- For the "Out Of Stock" filter -->
+                                    <li class="checkbox-container">
+                                        <input type="checkbox" id="outofstock" name="outofstock" value="true" <% if
+                                            (filterByOutOfStock) { %> checked <% } %>>
+                                            <label for="outofstock"> Exclude Out Of Stock </label>
+                                    </li>
+                                    <hr>
 
+                                    <h6 class="text-left">Price</h6>
+                                    <div class="box border-bottom">
+
+                                        <div class="" id="price">
+                                            <div class="middle">
+                                                <div class="multi-range-slider">
+                                                    <input type="range" id="input-left" min="0" max="100000"
+                                                        value="1000">
+                                                    <input type="range" id="input-right" min="0" max="100000"
+                                                        value="100000">
+                                                    <div class="slider">
+                                                        <div class="track"></div>
+                                                        <div class="range"></div>
+                                                        <div class="thumb left"></div>
+                                                        <div class="thumb right"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between mt-2">
+                                                <div> ₹ <span id="amount-left" class=""></span></div>
+                                                <div> ₹ <span id="amount-right" class=""></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button id="applyFiltersBtn" class="applybtn btn-primary">Apply Filters</button>
                         </ul>
                     </div>
+
+
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
                             const applyFiltersBtn = document.getElementById('applyFiltersBtn');
                             if (applyFiltersBtn) {
                                 applyFiltersBtn.addEventListener('click', applyFilters);
                             }
+
+                            // Set initial values for the price slider based on the current URL parameters
+                            const urlParams = new URLSearchParams(window.location.search);
+                            const priceParam = urlParams.get('price');
+                            if (priceParam) {
+                                const [minPrice, maxPrice] = priceParam.split(',');
+                                document.getElementById('input-left').value = minPrice;
+                                document.getElementById('input-right').value = maxPrice;
+                                updatePriceRangeLabels(minPrice, maxPrice);
+                            }
+
+                            const searchForm = document.getElementById('searchForm');
+                            if (searchForm) {
+                                searchForm.addEventListener('submit', function (event) {
+                                    event.preventDefault();
+                                    const searchInput = document.getElementById('searchInput').value.trim();
+                                    const queryParams = new URLSearchParams(window.location.search);
+                                    queryParams.set('search', searchInput);
+                                    window.location.href = `/shop?page=1&sortBy=${document.querySelector('select[name="sortBy"]').value}&${queryParams}`;
+                                });
+                            }
                         });
 
                         function applyFilters() {
                             const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(checkbox => checkbox.value);
+                            const queryParams = new URLSearchParams(window.location.search);
 
-                            // Redirect to shop page with selected categories as query parameters
-                            const queryParams = new URLSearchParams();
+                            // Add search query parameter if it exists
+                            const searchInput = document.getElementById('searchInput').value.trim();
+                            if (searchInput) {
+                                queryParams.set('search', searchInput);
+                            }
+
                             if (selectedCategories.length > 0) {
                                 queryParams.set('category', selectedCategories.join(','));
+                            } else {
+                                queryParams.delete('category');
                             }
-                            window.location.href = `/shop?page=1&sortBy=default&${queryParams.toString()}`;
+
+                            // Check if the "Out Of Stock" checkbox is checked
+                            const outOfStockCheckbox = document.getElementById('outofstock');
+                            if (outOfStockCheckbox.checked) {
+                                queryParams.set('outOfStock', true);
+                            } else {
+                                queryParams.delete('outOfStock');
+                            }
+
+                            const minPrice = document.getElementById('input-left').value;
+                            const maxPrice = document.getElementById('input-right').value;
+                            queryParams.set('price', `${minPrice},${maxPrice}`);
+
+                            // Construct the new URL with the search query and applied filters
+                            let newUrl = `/shop?page=1&sortBy=${document.querySelector('select[name="sortBy"]').value}`;
+                            if (queryParams.toString()) {
+                                newUrl += `&${queryParams.toString()}`;
+                            }
+                            window.location.href = newUrl;
                         }
 
                     </script>
 
+
+
                 </div>
                 <style>
+                    input[type="checkbox"] {
+                        /* Define your desired color */
+                        accent-color: #e97730;
+                    }
+
+                    .text-left {
+                        padding-left: 14px;
+                        font-weight: 600;
+                    }
+
+                    .applybtn {
+                        margin-left: 52px;
+                        background-color: #e97730;
+                        border: none;
+                        padding: 10px 15px 10px;
+                        margin-top: 14;
+
+                    }
+
+                    .applybtn:hover {
+                        background-color: #b64d0c;
+
+                    }
+
                     .sidebar {
                         border: 1px solid #ccc;
                         /* Add a 1px solid border with a color of #ccc */
                         padding: 10px;
+                        margin-left: -126px;
+                        margin-right: 40px;
                         /* Add some padding to create space between the border and content */
                     }
-                </style>
-                <style>
+
                     /* Style for the checkbox list */
                     .checkbox-list {
                         list-style: none;
@@ -116,6 +217,8 @@
                     /* Style for the category label */
                     .checkbox-container label {
                         font-weight: normal;
+                        width: 726px;
+
                     }
                 </style>
                 <div class="col-lg-10">
@@ -124,26 +227,38 @@
                             <div class="shop-topbar-wrapper mb-40" id="shopContent">
                                 <div class="shop-topbar-left">
                                     <div class="showing-item">
-                                        <% const startItem=(currentPage - 1) * perPage + 1; %>
-                                            <% const endItem=Math.min(currentPage * perPage, totalCount); %>
-                                                <span>Showing <%= startItem %>–<%= endItem %> of <%= totalCount %>
-                                                                results</span>
+                                        <% if(allItems.length>0) {%>
+                                            <% const startItem=(currentPage - 1) * perPage + 1; %>
+                                                <% const endItem=Math.min(currentPage * perPage, totalCount); %>
+                                                    <span>Showing <%= startItem %>–<%= endItem %> of <%= totalCount %>
+                                                                    results</span>
+                                                    <% } else { %>
+                                                        <span>No results found</span>
+                                                        <% } %>
+
                                     </div>
 
                                 </div>
                                 <div class="shop-topbar-right">
-                                    <!-- <div class="shop-sorting-area">
+                                    <div class="shop-sorting-area">
                                         <form action="/shop" method="GET">
-                                            <select class="nice-select nice-select-style-1" name="sortBy" onchange="this.form.submit()">
-                                                <option value="default" <%= sortBy === 'default' ? 'selected' : '' %>>Default Sorting</option>
-                                                <option value="A-Z" <%= sortBy === 'A-Z' ? 'selected' : '' %>>Sort by A-Z</option>
-                                                <option value="Z-A" <%= sortBy === 'Z-A' ? 'selected' : '' %>>Sort by Z-A</option>
-                                                <option value="Price high to low" <%= sortBy === 'Price high to low' ? 'selected' : '' %>>Price high to low</option>
-                                                <option value="Price low to high" <%= sortBy === 'Price low to high' ? 'selected' : '' %>>Price low to high</option>
-                                                <option value="latest" <%= sortBy === 'latest' ? 'selected' : '' %>>Sort by latest</option>
+                                            <select class="nice-select nice-select-style-1" name="sortBy"
+                                                onchange="this.form.submit()">
+                                                <option value="default" <%=sortBy==='default' ? 'selected' : '' %>
+                                                    >Default Sorting</option>
+                                                <option value="A-Z" <%=sortBy==='A-Z' ? 'selected' : '' %>>Sort by A-Z
+                                                </option>
+                                                <option value="Z-A" <%=sortBy==='Z-A' ? 'selected' : '' %>>Sort by Z-A
+                                                </option>
+                                                <option value="Price high to low" <%=sortBy==='Price high to low'
+                                                    ? 'selected' : '' %>>Price high to low</option>
+                                                <option value="Price low to high" <%=sortBy==='Price low to high'
+                                                    ? 'selected' : '' %>>Price low to high</option>
+                                                <option value="latest" <%=sortBy==='latest' ? 'selected' : '' %>>Sort by
+                                                    latest</option>
                                             </select>
                                         </form>
-                                    </div> -->
+                                    </div>
 
                                     <div class="shop-view-mode nav">
                                         <a class="active" href="#shop-1" data-bs-toggle="tab"><i
@@ -227,7 +342,10 @@
 
                                                             fetch('/add-to-cart?user=<%=userId%>', {
                                                                 method: 'POST',
-                                                                body: JSON.stringify({ productId: productId, userId: "<%=userId%>" }),
+                                                                body: JSON.stringify({
+                                                                    productId: productId,
+                                                                    userId: "<%=userId%>"
+                                                                }),
                                                                 headers: {
                                                                     'Content-Type': 'application/json',
                                                                 }
@@ -289,26 +407,27 @@
                                                         function updateCartQuantity() {
                                                             document.getElementById('cartItemCount').textContent = cartQuantity;
                                                         }
-
                                                     </script>
                                         </div>
-                                        <div class="pagination-style-1" data-aos="fade-up" data-aos-delay="200">
-                                            <ul>
-                                                <% for (let i=1; i <=totalPages; i++) { %>
-                                                    <li><a class="<%= currentPage === i ? 'active' : '' %>"
-                                                            href="/shop?page=<%= i %>&sortBy=<%= sortBy %>">
-                                                            <%= i %>
-                                                        </a></li>
-                                                    <% } %>
-                                                        <li><a class="next"
-                                                                href="/shop?page=<%= currentPage + 1 %>&sortBy=<%= sortBy %>"><i
-                                                                    class="ti-angle-double-right"
-                                                                    style="line-height: 2"></i></a></li>
-                                            </ul>
-                                        </div>
-                                        <script></script>
+                                        <% if(allItems.length>0) { %>
+                                            <div class="pagination-style-1" data-aos="fade-up" data-aos-delay="200">
+                                                <ul>
+                                                    <% for (let i=1; i <=totalPages; i++) { %>
+                                                        <li><a class="<%= currentPage === i ? 'active' : '' %>"
+                                                                href="/shop?page=<%= i %>&sortBy=<%= sortBy %>">
+                                                                <%= i %>
+                                                            </a></li>
+                                                        <% } %>
+                                                            <li><a class="next"
+                                                                    href="/shop?page=<%= currentPage + 1 %>&sortBy=<%= sortBy %>"><i
+                                                                        class="ti-angle-double-right"
+                                                                        style="line-height: 2"></i></a></li>
+                                                </ul>
+                                                <% } %>
+                                            </div>
+                                            <script></script>
                                     </div>
-                                    <div id="shop-2" class="tab-pane">
+                                    <!-- <div id="shop-2" class="tab-pane">
                                         <div class="shop-list-wrap mb-30">
                                             <div class="row">
                                                 <div class="col-lg-4 col-sm-5">
@@ -368,7 +487,7 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -377,4 +496,6 @@
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nouislider/14.6.3/nouislider.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nouislider/14.6.3/nouislider.min.css" />
     <%- include('../layouts/footer.ejs') %>

@@ -1,3 +1,4 @@
+const Userdb = require("../models/userModel")
 const Productsdb = require("../models/productsModel")
 const Categoriesdb = require("../models/categoriesModel");
 const sharp = require('sharp'); // Import sharp for image cropping
@@ -7,30 +8,30 @@ const sharp = require('sharp'); // Import sharp for image cropping
 
 const loadAdminProducts = async (req, res) => {
   try {
-    const products = await Productsdb.find({}).sort({_id:-1})
+    const products = await Productsdb.find({}).sort({ _id: -1 })
     // .populate({
     //   path: 'categories',
     //   select: 'name',
     //   match: { categoryStatus: 0 }, // Only populate categories with categoryStatus: 0
     // });;
-    if(!products){
+    if (!products) {
       return res.status(404).send("Product Not Found")
     }
     res.render("viewProducts", { products: products });
   } catch (error) {
     console.log(error.message);
-    console.log("Error loading Product List page: ",error.message);
+    console.log("Error loading Product List page: ", error.message);
 
     res.status(500).send("Error loading Product List page");
   }
 };
 
-const getCategories = async (req,res) => {
+const getCategories = async (req, res) => {
   try {
-    const categories = await Categoriesdb.find({}, "categoryName").sort({categoryName:1});
+    const categories = await Categoriesdb.find({}, "categoryName").sort({ categoryName: 1 });
     return categories;
   } catch (error) {
-    console.error("Get category from database failed: ",error);
+    console.error("Get category from database failed: ", error);
     throw error;
   }
 };
@@ -39,9 +40,9 @@ const loadAddProduct = async (req, res) => {
   try {
     const categories = await getCategories();
     console.log("Add product page loadedd...");
-    res.render("addProduct",{ categories });
+    res.render("addProduct", { categories });
   } catch (error) {
-    console.log("Error loading Product Add page: ",error.message);
+    console.log("Error loading Product Add page: ", error.message);
   }
 };
 
@@ -51,10 +52,10 @@ const addProduct = async (req, res) => {
   try {
     const uploadedImages = req.files.map((file) => file.filename);
 
-const removedImages = req.body.removeImage || [];
+    const removedImages = req.body.removeImage || [];
 
     const imagesToKeep = uploadedImages.filter((image) => !removedImages.includes(image));
-   
+
     let productTags;
     if (req.body.productTags) {
       productTags = req.body.productTags.split(",").map((tag) => tag.trim());
@@ -80,26 +81,26 @@ const removedImages = req.body.removeImage || [];
     console.log("New Product Added..........");
     res.redirect("/admin/products");
   } catch (error) {
-    console.error("Error Saving Product Data: ",error);
+    console.error("Error Saving Product Data: ", error);
     res.status(500).send("Error Saving Product Data");
   }
 };
 
 
-const editProduct = async (req,res)=>{
+const editProduct = async (req, res) => {
   try {
     console.log("Edit Product Page Loaded");
-    const id =req.query.id
-    const product = await Productsdb.findOne({_id:id}).populate("category");
-    
-    
-    if(!product){
+    const id = req.query.id
+    const product = await Productsdb.findOne({ _id: id }).populate("category");
+
+
+    if (!product) {
       return res.status(404).send("Product Not Found");
     }
-    console.log("Product fetched using id...",id);
+    console.log("Product fetched using id...", id);
     const categories = await getCategories();
 
-    res.render("editProduct",{product,categories})  
+    res.render("editProduct", { product, categories })
 
   } catch (error) {
     console.log(error)
@@ -146,31 +147,31 @@ const updateProduct = async (req, res) => {
   }
 };
 
-const archiveProduct = async(req,res) => {
+const archiveProduct = async (req, res) => {
   try {
-    const id= req.query.id;
-    const product = await Productsdb.findByIdAndUpdate(id,{
-      status:1
+    const id = req.query.id;
+    const product = await Productsdb.findByIdAndUpdate(id, {
+      status: 1
     })
-    const products = await Productsdb.find({}).sort({productName:1});
+    const products = await Productsdb.find({}).sort({ productName: 1 });
     console.log(`Product Archived: ${product.productName}`);
-    res.render("viewProducts",{products});
-   } catch (error) {
+    res.render("viewProducts", { products });
+  } catch (error) {
     console.log(error);
     res.status(500).send("Archive Product Failed");
   }
 }
 
-const unarchiveProduct = async(req,res) => {
+const unarchiveProduct = async (req, res) => {
   try {
-    const id= req.query.id;
-    const product = await Productsdb.findByIdAndUpdate(id,{
-      status:0
+    const id = req.query.id;
+    const product = await Productsdb.findByIdAndUpdate(id, {
+      status: 0
     })
-    const products = await Productsdb.find({}).sort({productName:1});
+    const products = await Productsdb.find({}).sort({ productName: 1 });
     console.log(`Product Unarchived: ${product.productName}`);
-    res.render("viewProducts",{products});
-   } catch (error) {
+    res.render("viewProducts", { products });
+  } catch (error) {
     console.log(error);
     res.status(500).send("Unarchive Product Failed");
   }
@@ -181,63 +182,153 @@ const unarchiveProduct = async(req,res) => {
 
 //--------------------------------------User Side---------------------------------
 
+// const loadShop = async (req, res) => {
+//   try {
+//     const userId = res.locals.currentUserId;
+//     console.log("userId in shoppage:---- ", userId);
+//     const perPage = 12; // Number of items per page
+//     const page = parseInt(req.query.page) || 1; // Extract page number from query parameters
+//     const skip = (page - 1) * perPage;
+//     const limit = perPage;
+
+//     // Retrieve total count of all items
+//     const totalCount = await Productsdb.countDocuments();
+
+//     // Retrieve total pages based on total count and per page limit
+//     const totalPages = Math.ceil(totalCount / perPage);
+
+//     // Retrieve sorting criteria from query parameters
+//     const sortBy = req.query.sortBy || 'default'; // Default sorting criteria
+
+//     // Retrieve filter criteria from query parameters
+//     const filterByCategory = req.query.category || null; // Filter by category, if provided
+
+//     // Construct filter object based on filter criteria
+//     const filter = filterByCategory ? { "category.categoryName": filterByCategory } : {};
+
+//     // Perform database query based on sorting criteria and filter
+//     let query;
+//     switch (sortBy) {
+//       case 'A-Z':
+//         query = Productsdb.find(filter).sort({ productName: 1 }).skip(skip).limit(limit).populate("category");
+//         break;
+//       case 'Z-A':
+//         query = Productsdb.find(filter).sort({ productName: -1 }).skip(skip).limit(limit).populate("category");
+//         break;
+//       case 'Price high to low':
+//         query = Productsdb.find(filter).sort({ productPrice: -1 }).skip(skip).limit(limit).populate("category");
+//         break;
+//       case 'Price low to high':
+//         query = Productsdb.find(filter).sort({ productPrice: 1 }).skip(skip).limit(limit).populate("category");
+//         break;
+//       case 'latest':
+//         query = Productsdb.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("category");
+//         break;
+//       default:
+//         query = Productsdb.find(filter).skip(skip).limit(limit).populate("category");
+//     }
+
+//     // Execute the query to retrieve paginated items
+//     const allItems = await query;
+
+//     // Render view with paginated items, pagination metadata, and filter criteria
+//     res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy, filterByCategory, userId });
+//   } catch (error) {
+//     console.error("Failed to load shop page: ", error);
+//     res.status(500).json({ error: `Failed to load shop page: ${error.message}` });
+//   }
+// } just before editttaaaaaaaaaaaa
+
+
 const loadShop = async (req, res) => {
   try {
-    const userId = res.locals.currentUserId;
-    console.log("userId in shoppage:---- ", userId);
-    const perPage = 12; // Number of items per page
-    const page = parseInt(req.query.page) || 1; // Extract page number from query parameters
-    const skip = (page - 1) * perPage;
-    const limit = perPage;
+    const userId = res.locals.currentUserId ? res.locals.currentUserId._id : null;
+    const perPage = 12;
+    const page = parseInt(req.query.page) || 1;
+    const currentUser = await Userdb.findById(userId);
 
-    // Retrieve total count of all items
-    const totalCount = await Productsdb.countDocuments();
-
-    // Retrieve total pages based on total count and per page limit
-    const totalPages = Math.ceil(totalCount / perPage);
-
-    // Retrieve sorting criteria from query parameters
-    const sortBy = req.query.sortBy || 'default'; // Default sorting criteria
-
-    // Retrieve filter criteria from query parameters
-    const filterByCategory = req.query.category || null; // Filter by category, if provided
+    // Extract filter criteria from query parameters
+    const filterByCategories = req.query.category ? req.query.category.split(',') : null;
+    const filterByPrice = req.query.price ? req.query.price.split(',') : null;
+    const filterByOutOfStock = req.query.outOfStock === 'true'; // Check if 'outOfStock' is true
 
     // Construct filter object based on filter criteria
-    const filter ={};
-    if (filterByCategory) {
-      filter.category.categoryame = filterByCategory;
+    const filter = {};
+    if (filterByCategories) {
+      filter["category"] = { $in: filterByCategories };
+    }
+    if (filterByPrice) {
+      const [minPrice, maxPrice] = filterByPrice;
+      filter.productPrice = { $gte: parseFloat(minPrice), $lte: parseFloat(maxPrice) };
+    }
+    if (filterByOutOfStock) {
+      filter.stock = { $gt: 0 }; // Filter for out of stock products
+    }
+    
+    // Adding search criteria to the filter object
+    const searchQuery = req.query.search ? req.query.search.trim() : null;
+    if (searchQuery) {
+      filter.$or = [
+        { productName: { $regex: new RegExp(searchQuery, 'i') } },
+        { productDescription: { $regex: new RegExp(searchQuery, 'i') } },
+        { "category.categoryName": { $regex: new RegExp(searchQuery, 'i') } },
+      ];
     }
 
-    // Perform database query based on sorting criteria and filter
-    let query;
+    // Retrieve sorting criteria from query parameters
+    const sortBy = req.query.sortBy || 'default';
+    let sort;
     switch (sortBy) {
       case 'A-Z':
-        query = Productsdb.find(filter).sort({ productName: 1 }).skip(skip).limit(limit).populate("category");
+        sort = { productName: 1 };
         break;
       case 'Z-A':
-        query = Productsdb.find(filter).sort({ productName: -1 }).skip(skip).limit(limit).populate("category");
+        sort = { productName: -1 };
         break;
       case 'Price high to low':
-        query = Productsdb.find(filter).sort({ productPrice: -1 }).skip(skip).limit(limit).populate("category");
+        sort = { productPrice: -1 };
         break;
       case 'Price low to high':
-        query = Productsdb.find(filter).sort({ productPrice: 1 }).skip(skip).limit(limit).populate("category");
+        sort = { productPrice: 1 };
         break;
       case 'latest':
-        query = Productsdb.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("category");
+        sort = { createdAt: -1 };
         break;
       default:
-        query = Productsdb.find(filter).skip(skip).limit(limit).populate("category");
+        sort = null;
     }
 
-    // Execute the query to retrieve paginated items
+    // Perform database query with server-side pagination, filtering, and sorting
+    const query = Productsdb.find(filter)
+      .populate({ path: 'category', select: 'categoryName' })
+      .sort(sort)
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+
     const allItems = await query;
+    const totalCount = await Productsdb.countDocuments(filter);
+    const totalPages = Math.ceil(totalCount / perPage);
+    const allCategories = await Categoriesdb.find();
 
     // Render view with paginated items, pagination metadata, and filter criteria
-    res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy, filterByCategory, userId });
+    res.render("shop", {
+      currentUser,
+      allItems,
+      totalPages,
+      currentPage: page,
+      totalCount,
+      allCategories,
+      perPage,
+      sortBy,
+      filterByCategories,
+      filterByPrice,
+      userId,
+      filterByOutOfStock,
+      searchQuery // Add search query to pass it to the view
+    });
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Products page render failed");
+    console.error("Failed to load shop page: ", error);
+    res.status(500).json({ error: `Failed to load shop page: ${error.message}` });
   }
 }
 
@@ -245,19 +336,18 @@ const loadShop = async (req, res) => {
 
 
 
-
-const loadProductDetails = async (req,res) => {
+const loadProductDetails = async (req, res) => {
   try {
     const userId = res.locals.currentUserId;
 
-    const id= req.query.id
-    const relatedProducts = await Productsdb.find({_id:{$ne:id}}).populate("category").limit(4)
+    const id = req.query.id
+    const relatedProducts = await Productsdb.find({ _id: { $ne: id } }).populate("category").limit(4)
 
     const product = await Productsdb.findById(id).populate("category");
     if (!product) {
       return res.status(404).send("Product not found");
     }
-    res.render("productDetails",{product,relatedProducts,userId})
+    res.render("productDetails", { product, relatedProducts, userId })
   } catch (error) {
     console.log(error.message)
     res.status(500).send("Internal Server Error");
@@ -270,22 +360,22 @@ const loadProductDetails = async (req,res) => {
 
 const getSearchSuggestions = async (req, res) => {
   try {
-      const partialQuery = req.query.query;
-      if (!partialQuery) {
-          return res.status(400).json({ error: 'Missing search query' });
-      }
+    const partialQuery = req.query.query;
+    if (!partialQuery) {
+      return res.status(400).json({ error: 'Missing search query' });
+    }
 
-      // Query the database for suggestions based on the partial query
-      const regex = new RegExp(partialQuery, 'i');
-      const suggestions = await Productsdb.find({ productName: { $regex: regex } }).limit(5);
+    // Query the database for suggestions based on the partial query
+    const regex = new RegExp(partialQuery, 'i');
+    const suggestions = await Productsdb.find({ productName: { $regex: regex } }).limit(5);
 
-      // Extract the product names from the suggestions
-      const suggestionNames = suggestions.map(product => product.productName);
+    // Extract the product names from the suggestions
+    const suggestionNames = suggestions.map(product => product.productName);
 
-      res.json(suggestionNames);
+    res.json(suggestionNames);
   } catch (error) {
-      console.error('Error fetching search suggestions:', error);
-      res.status(500).json({ error: 'An error occurred while fetching search suggestions' });
+    console.error('Error fetching search suggestions:', error);
+    res.status(500).json({ error: 'An error occurred while fetching search suggestions' });
   }
 };
 

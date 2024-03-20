@@ -27,11 +27,13 @@ const securePassword = async (password) => {
 
 const loadRegister = async (req, res) => {
   try {
+    const userId = res.locals.currentUserId ? res.locals.currentUserId._id : null;
+
     const jwtcookie = req.cookies.jwt;
     if (jwtcookie) {
       return res.redirect("/")
     }
-    res.render('register', { layout: false, currentPage: 'register' })
+    res.render('register', { layout: false, currentPage: 'register' ,userId})
   } catch (error) {
     console.log(error.message)
   }
@@ -166,6 +168,8 @@ const registerUser = async (req, res) => {
 
 const loadLogin = async (req, res) => {
   try {
+    const userId = res.locals.currentUserId ? res.locals.currentUserId._id : null;
+
     const jwtcookie = req.cookies.jwt;
     if (jwtcookie) {
       return res.redirect("/")
@@ -188,9 +192,9 @@ const loadLogin = async (req, res) => {
     }
 
 
-    return res.render('login', { error, errorMessage });
+    return res.render('login', { error, errorMessage ,userId});
   } catch (error) {
-    console.log(error.message);
+    console.log(error.message);T
   }
 }
 
@@ -230,6 +234,7 @@ const loginUser = async (req, res) => {
 
 const loadHomePage = async (req, res) => {
   try {
+    
     const userId = req.query.userId
     const token = req.cookies.jwt ? true : false;
     const tokenId = req.cookies.jwt
@@ -290,6 +295,7 @@ const loadProfile = async (req, res) => {
 
 const updateDetails = async (req, res) => {
   try {
+    
     const newName = req.body.name;
     const newMobile = req.body.newMobile
     const id = req.query.id

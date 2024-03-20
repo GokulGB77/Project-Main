@@ -54,9 +54,6 @@
     max-width: 1200px;
   }
 }
-#addBtn {
-  
-}
 
 .container {
   padding-left: 1px;
@@ -777,6 +774,7 @@ textarea {
 .slider-bg-color-3 {
   background-color: #E6F2F2;
 }
+
 
 .slider-bg-color-4 {
   background-color: #474747;
