@@ -53,6 +53,10 @@ userRoute.get("/home",auth.isLogin,userController.loadHomePage)
 
 userRoute.get("/cart/count",auth.isLogin,cartController.cartCount)
 
+userRoute.get('/contact-us',userController.loadContactUs);
+userRoute.get('/about-us',userController.loadAboutUs);
+userRoute.get('/wishlist',userController.loadwishlist);
+
 userRoute.get('/shop', productsController.loadShop);
 userRoute.get('/shop/:page', productsController.loadShop);
 userRoute.get('/product-details',productsController.loadProductDetails);
@@ -67,7 +71,8 @@ userRoute.get("/cart/remove-all-products",auth.isLogin,cartController.removeAllC
 userRoute.get("/checkout",auth.isLogin,cartController.loadCheckout)
 userRoute.post("/checkout/add-address",auth.isLogin,addressController.addAddressFrmCart)
 
-userRoute.post("/checkout/place-order",auth.isLogin,ordersController.placeOrder)
+userRoute.post("/payment",auth.isLogin,ordersController.paymentOption)
+userRoute.get("/place-order",auth.isLogin,ordersController.placeOrder)
 userRoute.get("/order-success",auth.isLogin,ordersController.orderSuccess)
 userRoute.post("/cancel-order",auth.isLogin,ordersController.cancelOrder)
 
@@ -98,12 +103,8 @@ userRoute.get('/logout', userController.logoutUser);
 
 
 
-// userRoute.get('/about-us',userController.loadAboutUs);
-// userRoute.get('/contact-us',userController.loadContactUs);
-// userRoute.get('/cart',userController.loadCart);
-// userRoute.get('/checkout',userController.loadCheckout);
+
 // userRoute.get('/compare',userController.loadcompare);
-// userRoute.get('/wishlist',userController.loadwishlist);
 
 
 

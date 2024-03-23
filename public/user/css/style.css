@@ -11153,6 +11153,9 @@ textarea {
   margin: 0;
 }
 
+
+
+
 @media only screen and (max-width: 767px) {
   .compare-table .table tbody tr td.first-column {
     min-width: 120px;
@@ -11296,9 +11299,9 @@ textarea {
   display: inline-block;
   position: absolute;
   font-family: 'themify';
-  left: 15px;
-  top: 15px;
-  font-size: 18px;
+  left: 19px;
+  top: 13px;
+  font-size: 22px;
 }
 
 .checkout-login-info {
@@ -11797,6 +11800,11 @@ textarea {
   .your-order-area .your-order-wrap .payment-method .sin-payment label {
     display: block;
   }
+}
+
+.your-order-area{
+  width: 113%;
+
 }
 
 .your-order-area .your-order-wrap .payment-method .sin-payment label img {

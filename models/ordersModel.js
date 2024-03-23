@@ -5,7 +5,7 @@ const  mongoose = require("mongoose");
 
 const ordersSchema = new mongoose.Schema({
   user:{ type: mongoose.Schema.Types.ObjectId, ref: "Userdb", required: true },
-  orderId:{type:Number,required:true},
+  orderId:{type:String,required:true},
   orderProducts:[{
     product:{type:mongoose.Types.ObjectId,ref:'Productsdb',required: true},
     quantity:{type:Number,required:true,default:1},

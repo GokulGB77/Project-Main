@@ -21,7 +21,7 @@
     <div class="checkout-main-area pb-100 pt-100">
         <div class="container">
 
-            <!-- <div class="customer-zone mb-20">
+            <div class="customer-zone mb-20">
                 <p class="cart-page-title">Have a coupon? <a class="checkout-click3" href="#">Click here to enter your
                         code</a></p>
                 <div class="checkout-login-info3">
@@ -30,7 +30,7 @@
                         <input type="submit" value="Apply Coupon">
                     </form>
                 </div>
-            </div> -->
+            </div>
             <div class="checkout-wrap pt-30">
                 <div class="row">
                     <div class="col-lg-7">
@@ -44,8 +44,9 @@
                                     </option>
                                     <% addresslist.forEach(function(address, index) { %>
 
-                                        <option value="" disabled></option>
-                                        <option value="<%= address._id %>" <%=address.setDefault ? 'selected' : '' %>>
+                                        <option class="option" value="" disabled></option>
+                                        <option class="option" value="<%= address._id %>" <%=address.setDefault
+                                            ? 'selected' : '' %>>
                                             <strong>Address <%= index + 1 %></strong>
                                             <%= address.type %> : <%= address.name %>, <%= address.house %>, <%=
                                                             address.street %>, <%= address.city %> , <%= address.state
@@ -57,7 +58,15 @@
 
 
                             </div>
-
+                            <style>
+                                #selectedAddress option {
+                                    width: 100px;
+                                    padding-right: 20px;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                }
+                            </style>
                             <br>
                             <% if (addresslist.length < 4) { %>
                                 <div class="row">
@@ -209,14 +218,30 @@
                                     <div class="your-order-middle">
                                         <ul>
                                             <% cart.cartProducts.forEach(product=> { %>
-                                                <li>
-                                                    <%= product.product.productName %> x <%= product.quantity %> <span>₹
-                                                                <%= (product.price*product.quantity).toLocaleString() %>
-                                                            </span>
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <div class="product-info">
+
+                                                        <%= product.product.productName %> x <%= product.quantity %>
+                                                    </div>
+                                                    <span class="product-price">₹ <%=
+                                                            (product.price*product.quantity).toLocaleString() %>
+                                                    </span>
                                                 </li>
                                                 <% }); %>
                                         </ul>
                                     </div>
+                                    <style>
+                                        .product-info {
+                                            flex: 1;
+                                            padding-right: 15px;
+                                            /* Add some space between product info and price */
+                                        }
+
+                                        .product-price {
+                                            white-space: nowrap;
+                                            /* Prevent price from wrapping */
+                                        }
+                                    </style>
                                     <div class="your-order-info order-subtotal">
                                         <ul>
                                             <li>Subtotal:<span>₹ <%= (cart.cartTotal).toLocaleString() %> </span></li>
@@ -247,12 +272,11 @@
                                         </div>
                                     </div>
                                     <div class="pay-top sin-payment">
-                                        <input id="payment_method_1" class="input-radio" type="radio"
-                                            value="bankTransfer" name="payment_method">
-                                        <label for="payment_method_1"> Direct Bank Transfer </label>
+                                        <input id="razorPay" class="input-radio" type="radio" value="razorPay"
+                                            name="payment_method">
+                                        <label for="razorPay"> Razor Pay </label>
                                         <div class="payment-box payment_method_bacs">
-                                            <p>Make your payment directly into our bank account. Please use your Order
-                                                ID as the payment reference.</p>
+                                            <p>Make your payment directly into our bank account.</p>
                                         </div>
                                     </div>
                                     <!-- <div class="pay-top sin-payment">
@@ -277,7 +301,7 @@
                                 </div>
                             </div>
                             <div class="Place-order btn-hover">
-                                <a href="/checkout/place-order">Place Order</a>
+                                <a href="/place-order">Place Order</a>
                             </div>
                         </div>
                     </div>
@@ -288,49 +312,190 @@
 
     <script>
         // JavaScript code to send the selected address value to the server
-        document.querySelector('.Place-order a').addEventListener('click', function (event) {
-            event.preventDefault(); // Prevent default action of the anchor tag
+        // document.querySelector('.Place-order a').addEventListener('click', function (event) {
+        //     event.preventDefault(); // Prevent default action of the anchor tag
 
 
-            const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+        //     const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
 
-            // Get the selected address value from the dropdown
-            const selectedAddress = document.getElementById('selectedAddress').value;
-            const deliveryNotes = document.getElementById('order-notes').value || null;
-            const cartId = "<%=cart._id%>";
-            // Make a fetch request to the server
-            fetch('/checkout/place-order?', {
-                method: 'POST', // Or 'GET', 'PUT', etc., depending on your server-side route configuration
-                headers: {
-                    'Content-Type': 'application/json' // Specify the content type as JSON
-                },
-                body: JSON.stringify({
-                    selectedAddress: selectedAddress,
-                    selectedPaymentMethod: selectedPaymentMethod,
-                    deliveryNotes: deliveryNotes,
-                    cartId: cartId
-                }) // Convert the data to JSON format
-            })
-                .then(response => {
-                    // Handle the response from the server (if needed)
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                   return response.json()
-                })
-                .then(data=>{
-                    const orderDataId = data.orderDetailsId
-                    console.log("orderDataFrnt",orderDataId)
-                    // Optionally, you can redirect the user to another page after successful response
-                    window.location.href = `/order-success?orderId=${orderDataId}&cartId=${cartId}`;
-                })
-                .catch(error => {
-                    // Handle errors here
-                    console.error('There was an error!', error);
-                });
-        });
+        //     // Get the selected address value from the dropdown
+        //     const selectedAddress = document.getElementById('selectedAddress').value;
+        //     const deliveryNotes = document.getElementById('order-notes').value || null;
+        //     const cartId = "<%=cart._id%>";
+        //     // Make a fetch request to the server
+        //     fetch('/checkout/payment?', {
+        //         method: 'POST', // Or 'GET', 'PUT', etc., depending on your server-side route configuration
+        //         headers: {
+        //             'Content-Type': 'application/json' // Specify the content type as JSON
+        //         },
+        //         body: JSON.stringify({
+        //             selectedAddress: selectedAddress,
+        //             selectedPaymentMethod: selectedPaymentMethod,
+        //             deliveryNotes: deliveryNotes,
+        //             cartId: cartId
+        //         }) // Convert the data to JSON format
+        //     })
+        //         .then(response => {
+        //             // Handle the response from the server (if needed)
+        //             if (!response.ok) {
+        //                 throw new Error('Network response was not ok');
+        //                 alert(res.msg)
+        //             }
+        //             return response.json()
+        //         })
+        //         .then(data => {
 
+        //             // console.log(data)
+        //             const razpayorderId = data.razpayorderId;
+        //             const key_id = data.key_id;
+        //             const cartDetails = data.cartDetails;
+        //             const selectedAddress = data.selectedAddress;
 
+        //             // Perform any further actions with the received data
+        //             console.log("razpayorderIdFrnt:", razpayorderId);
+        //             console.log("key_id:", key_id);
+        //             console.log("cartDetails:", cartDetails);
+        //             console.log("selectedAddress:", selectedAddress);
+
+        //             let options = {
+        //                 "key": "" + res.key_id + "",
+        //                 "amount": "" + res.cartDetails.cartTotal + "",
+        //                 "currency": "INR",
+        //                 "name": "" + res.cartDetails.cartProducts + "",
+        //                 "image": "",
+        //                 "order_id": "" + res.order_id + "",
+        //                 "handler": function (response) {
+        //                     alert("Payment Successful")
+        //                 },
+        //                 "prefill": {
+        //                     "contact": "" + res.mobile + "",
+        //                     "name": "" + res.name + "",
+        //                     "email": "" + res.email + "",
+        //                 },
+        //                 "notes": {
+        //                     "description": "" + res.cartDetails + "",
+        //                 },
+        //                 "theme": {
+        //                     "color": "#2300a3"
+        //                 }
+
+        //             }
+
+        //             let razorPayObject = new Razorpay(options);
+        //             razorPayObject.on('payment.failed', function (response) {
+        //                 alert("Payment Failed");
+        //             })
+        //             razorPayObject.open()
+
+        //             // const orderDataId = data.orderDetailsId
+        //             // console.log("orderDataFrnt", orderDataId)
+        //             // Optionally, you can redirect the user to another page after successful response
+        //             // window.location.href = `/order-success?orderId=${orderDataId}&cartId=${cartId}`;
+        //             // window.location.href = `/order-success?cartId=${cartId}`;
+        //         })
+        //         .catch(error => {
+        //             // Handle errors here
+        //             console.error('There was an error!', error);
+        //         });
+        // });
 
     </script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.Place-order a').addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent default action of the anchor tag
+
+
+                const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+                const selectedAddress = document.getElementById('selectedAddress').value;
+                const deliveryNotes = document.getElementById('order-notes').value || null;
+                const cartId = "<%=cart._id%>";
+
+                fetch('/payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        selectedAddress: selectedAddress,
+                        selectedPaymentMethod: selectedPaymentMethod,
+                        deliveryNotes: deliveryNotes,
+                        cartId: cartId
+                    }) // Convert the data to JSON format
+                })
+                    .then(response => response.json())
+                    .then(data => {
+
+                        console.log("Server Response:", data);
+                        if (data.success) {
+                            const razpayorderId = data.razpayorderId;
+                            const key_id = data.key_id;
+                            const cartDetails = data.cartDetails;
+                            const selectedAddress = data.selectedAddress;
+
+                            // Perform any further actions with the received data
+                            console.log("razpayorderIdFrnt:", razpayorderId);
+                            console.log("key_id:", key_id);
+                            console.log("cartDetails:", cartDetails);
+                            console.log("selectedAddress:", selectedAddress);
+
+                            let options = {
+                                "key":  data.key_id ,
+                                "amount": data.cartDetails.cartTotal,
+                                "currency": "INR",
+                                "name":  data.cartDetails.cartProducts,
+                                "image": "https://dummyimage.com/600x400/000/fff",
+                                "order_id": data.order_id,
+                                "handler": function (response) {
+                                    alert("Payment Successful")
+                                    window.location.href = "/place-order"
+                                },
+                                "prefill": {
+                                    "contact": data.mobile,
+                                    "name": data.name ,
+                                    "email": data.email ,
+                                },
+                                "notes": {
+                                    "description": data.cartDetails,
+                                },
+                                "theme": {
+                                    "color": "#2300a3"
+                                }
+
+                            }
+
+                            let razorPayObject = new Razorpay(options)
+
+                            razorPayObject.on('payment.failed', function (response) {
+                                alert("Payment Failed");
+                            })
+                            razorPayObject.open()
+                        } else {
+                            if (data.redirectURL) {
+                                window.location.href = data.redirectURL;
+                            } else {
+
+                                alert("Order creation failed. Check console for details.");
+                                console.error(data);
+                            }
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error('There was an error!', error);
+                        if (error.message === 'Network response was not ok') {
+                            alert('An error occurred while processing the request. Please try again.');
+                        } else {
+                            alert('An unexpected error occurred. Please check the console for more details.');
+                        }
+                    });
+            });
+
+        })
+    </script>
+
+
+
+
     <%- include('../layouts/footer.ejs',) %>

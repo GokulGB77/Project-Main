@@ -260,6 +260,30 @@ const loadHomePage = async (req, res) => {
   }
 }
 
+const loadAboutUs = async (req,res)=>{
+  try {
+    res.render("about-us")
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const loadContactUs = async (req,res)=>{
+  try {
+    res.render("contact-us")
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+const loadwishlist = async (req,res)=>{
+  try {
+    res.render("wishlist")  
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 const loadProfile = async (req, res) => {
   
   try {
@@ -391,11 +415,15 @@ module.exports = {
   logoutUser,
   updateDetails,
   changePassword,
-
-
-
-
+  loadAboutUs,
+  loadContactUs,
+  loadwishlist,
 }
+
+
+
+
+
 
 
 
@@ -440,13 +468,21 @@ module.exports = {
 //   }
 // }
 
+// const loadContactUs = async (req,res)=>{
+//   try {
+//     res.render("contact-us")
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
 
-
-// loadContactUs,
-// loadCart,
-// loadCheckout,
-// loadcompare,
-// loadwishlist,
+// const loadwishlist = async (req,res)=>{
+//   try {
+//     res.render("wishlist")  
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
 
 // const loadContactUs = async (req,res)=>{
 //   try {
@@ -456,25 +492,17 @@ module.exports = {
 //   }
 // }
 
-// const loadCart = async (req,res)=>{
+// const loadwishlist = async (req,res)=>{
 //   try {
-//     res.render("cart")
+//     res.render("wishlist")  
 //   } catch (error) {
 //     console.log(error.message);
 //   }
 // }
 
-// const loadCheckout = async (req,res)=>{
+// const loadContactUs = async (req,res)=>{
 //   try {
-//     res.render("checkout")
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
-
-// const loadcompare = async (req,res)=>{
-//   try {
-//     res.render("compare")
+//     res.render("contact-us")
 //   } catch (error) {
 //     console.log(error.message);
 //   }
@@ -483,6 +511,28 @@ module.exports = {
 // const loadwishlist = async (req,res)=>{
 //   try {
 //     res.render("wishlist")  
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
+
+
+
+
+// const loadwishlist = async (req,res)=>{
+//   try {
+//     res.render("wishlist")  
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
+
+
+
+
+// const loadcompare = async (req,res)=>{
+//   try {
+//     res.render("compare")
 //   } catch (error) {
 //     console.log(error.message);
 //   }
