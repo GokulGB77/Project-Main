@@ -7,6 +7,7 @@ const dashboardController = require('../controllers/dashboardController');
 const productsController = require('../controllers/productsController');
 const categoriesController = require('../controllers/categoriesController');
 const ordersController = require('../controllers/ordersController');
+const couponsController = require('../controllers/couponsController');
 const multer = require("multer")
 const sharp = require('sharp'); // Import sharp for image cropping
 
@@ -76,6 +77,7 @@ adminRoute.get("/orders",ordersController.loadOrders)
 adminRoute.get("/orders/order-details",ordersController.loadOrdersDetails)
 adminRoute.post("/orders/order-details/save-notes",ordersController.adminCancel)
 
+adminRoute.get("/coupons",couponsController.loadCoupons)
 
 
 adminRoute.get("/logout", adminController.adminLogout);

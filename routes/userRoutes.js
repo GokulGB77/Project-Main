@@ -19,6 +19,28 @@ userRoute.use(cookieParser());
 // userRoute.use(auth.attachTokenToLocals); // Use the middleware
 userRoute.use(bodyParser.json());
 
+
+// userRoute.get('/', (req, res) => { 
+//   res.send("<button><a href='/auth'>Login With Google</a></button>") 
+// }); 
+// Auth  
+
+
+
+const passport = require('passport'); 
+const cookieSession = require('cookie-session'); 
+require("../services/passport"); 
+userRoute.use(cookieSession({ 
+  name: 'google-auth-session', 
+  keys: ['key1', 'key2'] 
+})); 
+userRoute.use(passport.initialize());
+
+
+
+
+
+
 userRoute.use(session({
   secret: uuidv4(),
   resave: false,
@@ -41,6 +63,26 @@ userRoute.set('views','./views/users')
 userRoute.get("*",auth.isUser)
 
 userRoute.get('/',userController.loadHomePage);
+
+userRoute.get('/auth' , passport.authenticate('google', { scope: 
+  [ 'email', 'profile' ] 
+}));
+// Auth Callback 
+userRoute.get( '/auth/callback', 
+  passport.authenticate( 'google', { 
+      successRedirect: '/auth/callback/success', 
+      failureRedirect: '/auth/callback/failure'
+})); 
+// Success  
+userRoute.get('/auth/callback/success' , (req , res) => { 
+  if(!req.user) 
+      res.redirect('/auth/callback/failure'); 
+  res.send("Welcome " + req.user.email); 
+}); 
+
+// failure 
+userRoute.get('/auth/callback/failure' ,userController.registerUserGoogle) 
+
 userRoute.get('/register', userController.loadRegister);
 userRoute.post('/register' ,userController.intialRegisterUser);
 

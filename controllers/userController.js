@@ -33,7 +33,7 @@ const loadRegister = async (req, res) => {
     if (jwtcookie) {
       return res.redirect("/")
     }
-    res.render('register', { layout: false, currentPage: 'register' ,userId})
+    res.render('register', { layout: false, currentPage: 'register', userId })
   } catch (error) {
     console.log(error.message)
   }
@@ -131,7 +131,7 @@ const resendOtp = async (req, res) => {
 
 const registerUser = async (req, res) => {
   try {
-    
+
 
     if (req.body.otp === req.session.tempUserDetails.otp) {
 
@@ -156,7 +156,7 @@ const registerUser = async (req, res) => {
 
       console.log("userId is :", userData._id);
       console.log("token :", token);
-      res.status(200).json({userId: userID});
+      res.status(200).json({ userId: userID });
     } else {
       res.status(400).json({});
     }
@@ -166,6 +166,13 @@ const registerUser = async (req, res) => {
   }
 };
 
+const registerUserGoogle = async (req,res) => {
+  try {
+    res.render("homepage")
+  } catch (error) {
+    console.log(error.message); 
+  }
+}
 const loadLogin = async (req, res) => {
   try {
     const userId = res.locals.currentUserId ? res.locals.currentUserId._id : null;
@@ -192,9 +199,9 @@ const loadLogin = async (req, res) => {
     }
 
 
-    return res.render('login', { error, errorMessage ,userId});
+    return res.render('login', { error, errorMessage, userId });
   } catch (error) {
-    console.log(error.message);T
+    console.log(error.message); 
   }
 }
 
@@ -203,6 +210,7 @@ const loginUser = async (req, res) => {
 
   try {
     const userData = await Userdb.findOne({ email });
+
     if (!userData) {
       return res.redirect('/login?error=usernotfound');
     }
@@ -218,6 +226,10 @@ const loginUser = async (req, res) => {
     }
 
     const userID = userData._id;
+    res.locals.currentUser = userID
+    console.log("res.locals.currentUser saved",userID)
+    
+
     const token = auth.createToken(userID);
     res.cookie("jwt", token, {
       httpOnly: true,
@@ -234,11 +246,14 @@ const loginUser = async (req, res) => {
 
 const loadHomePage = async (req, res) => {
   try {
-    
-    const userId = req.query.userId
+
+    const userId =  res.locals.currentUser
+    const currentUser = res.locals.currentUser
+    console.log("Userid:", userId);
+    console.log("currentUser:", currentUser);
     const token = req.cookies.jwt ? true : false;
     const tokenId = req.cookies.jwt
-    res.locals.token = tokenId,
+    res.locals.token = tokenId;
       console.log("User logged in:", tokenId);
     try {
       // const categoryLiving = await Productsdb.find({category:"Living Room Furniture"}).populate("category")
@@ -247,7 +262,7 @@ const loadHomePage = async (req, res) => {
       const newArrivals = await Productsdb.find({ status: 1 }).populate("category").sort({ _id: -1 }).limit(16);
       const bestSellers = await Productsdb.find({ status: 1 }).populate("category").sort({ productName: 1 }).limit(16);
       const saleItems = await Productsdb.find({ status: 1 }).populate("category").sort({ productName: -1 }).limit(16);
-      res.render('homepage', { tokenId, newArrivals, allItems, bestSellers, saleItems, products,userId })
+      res.render('homepage', { tokenId, newArrivals, allItems, bestSellers, saleItems, products, userId, currentUser })
 
     } catch (error) {
       console.log("Error getting product data from db:", error)
@@ -260,7 +275,7 @@ const loadHomePage = async (req, res) => {
   }
 }
 
-const loadAboutUs = async (req,res)=>{
+const loadAboutUs = async (req, res) => {
   try {
     res.render("about-us")
   } catch (error) {
@@ -268,16 +283,16 @@ const loadAboutUs = async (req,res)=>{
   }
 }
 
-const loadContactUs = async (req,res)=>{
+const loadContactUs = async (req, res) => {
   try {
     res.render("contact-us")
   } catch (error) {
     console.log(error.message);
   }
 }
-const loadwishlist = async (req,res)=>{
+const loadwishlist = async (req, res) => {
   try {
-    res.render("wishlist")  
+    res.render("wishlist")
   } catch (error) {
     console.log(error.message);
   }
@@ -285,7 +300,7 @@ const loadwishlist = async (req,res)=>{
 
 
 const loadProfile = async (req, res) => {
-  
+
   try {
     // console.log("User entered User profile");
     const token = req.cookies.jwt;
@@ -294,18 +309,18 @@ const loadProfile = async (req, res) => {
     // console.log("Current User: ", currentUser.name);
     // console.log("userId:", res.locals.currentUserId)
 
-  //Order related
-    const orderDetails =  await Ordersdb.find({user:userId}).sort({orderDate:-1,orderTime:-1})
-    console.log("orderDetails",orderDetails);
+    //Order related
+    const orderDetails = await Ordersdb.find({ user: userId }).sort({ orderDate: -1, orderTime: -1 })
+    console.log("orderDetails", orderDetails);
 
     // Use findOne to retrieve a single user document
     const user = await Userdb.findOne({ _id: currentUser._id }).populate('addresses');
-    const addressDocument = await Addressdb.findOne({ user: currentUser._id }).sort({_id:1});
+    const addressDocument = await Addressdb.findOne({ user: currentUser._id }).sort({ _id: 1 });
     let addresses = addressDocument ? addressDocument.addresses : [];
-       // Reorder addresses to show the last added address as the first one
-       addresses = addresses.reverse();
+    // Reorder addresses to show the last added address as the first one
+    addresses = addresses.reverse();
     if (token) {
-      res.render("profile", { token, currentUser, addresslist: addresses, user,userId,orderDetails });
+      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails });
     } else {
       res.redirect("/login");
     }
@@ -319,7 +334,7 @@ const loadProfile = async (req, res) => {
 
 const updateDetails = async (req, res) => {
   try {
-    
+
     const newName = req.body.name;
     const newMobile = req.body.newMobile
     const id = req.query.id
@@ -342,41 +357,41 @@ const updateDetails = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-      const { currentPwd, newPwd, user1 } = req.body;
-      const currentUser = user1; // Assuming currentUser is the username or ID of the current user
-      const isUser = await Userdb.findById(currentUser);
-      console.log("currentPwd:",currentPwd);
-      console.log("currentUser:",user1);
-      console.log("isUser:",true);
-      
-      if (!isUser) {
-        return res.status(404).send("User not found");
-      }
-      const samePassword = await argon2.verify(isUser.password,newPwd)
-      if(samePassword){
-        return res.redirect("/profile?selected=change-password&samepass=true")
-        
-      }
-      // Verify if the current password matches the user's password
-      const isPasswordMatch = await argon2.verify(isUser.password, currentPwd);
-      console.log("Passwrod matched with existing password:");
-      
-      if (!isPasswordMatch) {
-        return res.redirect("/profile?selected=change-password&currentpwd=false")
-      }
+    const { currentPwd, newPwd, user1 } = req.body;
+    const currentUser = user1; // Assuming currentUser is the username or ID of the current user
+    const isUser = await Userdb.findById(currentUser);
+    console.log("currentPwd:", currentPwd);
+    console.log("currentUser:", user1);
+    console.log("isUser:", true);
 
-      // Hash the new password
-      const hashedNewPwd = await securePassword(newPwd);
-      console.log("hashedNewPwd",hashedNewPwd)
-      // Update the user's password
-      isUser.password = hashedNewPwd;
-      await isUser.save();
+    if (!isUser) {
+      return res.status(404).send("User not found");
+    }
+    const samePassword = await argon2.verify(isUser.password, newPwd)
+    if (samePassword) {
+      return res.redirect("/profile?selected=change-password&samepass=true")
 
-      console.log("Password Updated Successfully");
-      return res.redirect("/profile?updated=true")
-    } catch (error) {
-      console.log(error);
-      res.redirect("/profile?window=change-password&updated=false")
+    }
+    // Verify if the current password matches the user's password
+    const isPasswordMatch = await argon2.verify(isUser.password, currentPwd);
+    console.log("Passwrod matched with existing password:");
+
+    if (!isPasswordMatch) {
+      return res.redirect("/profile?selected=change-password&currentpwd=false")
+    }
+
+    // Hash the new password
+    const hashedNewPwd = await securePassword(newPwd);
+    console.log("hashedNewPwd", hashedNewPwd)
+    // Update the user's password
+    isUser.password = hashedNewPwd;
+    await isUser.save();
+
+    console.log("Password Updated Successfully");
+    return res.redirect("/profile?updated=true")
+  } catch (error) {
+    console.log(error);
+    res.redirect("/profile?window=change-password&updated=false")
   }
 };
 
@@ -408,6 +423,7 @@ module.exports = {
   loadLogin,
   loadHomePage,
   intialRegisterUser,
+  registerUserGoogle,
   registerUser,
   loginUser,
   loadProfile,
@@ -478,7 +494,7 @@ module.exports = {
 
 // const loadwishlist = async (req,res)=>{
 //   try {
-//     res.render("wishlist")  
+//     res.render("wishlist")
 //   } catch (error) {
 //     console.log(error.message);
 //   }
@@ -494,7 +510,7 @@ module.exports = {
 
 // const loadwishlist = async (req,res)=>{
 //   try {
-//     res.render("wishlist")  
+//     res.render("wishlist")
 //   } catch (error) {
 //     console.log(error.message);
 //   }
@@ -510,7 +526,7 @@ module.exports = {
 
 // const loadwishlist = async (req,res)=>{
 //   try {
-//     res.render("wishlist")  
+//     res.render("wishlist")
 //   } catch (error) {
 //     console.log(error.message);
 //   }
@@ -521,7 +537,7 @@ module.exports = {
 
 // const loadwishlist = async (req,res)=>{
 //   try {
-//     res.render("wishlist")  
+//     res.render("wishlist")
 //   } catch (error) {
 //     console.log(error.message);
 //   }
