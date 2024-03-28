@@ -26,7 +26,7 @@
         </div>
         <nav>
             <ul class="menu-aside">
-                <li class="menu-item active">
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
@@ -56,7 +56,7 @@
                     </a>
 
                 </li>
-                <li class="menu-item ">
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/coupons?page=1"> <i
                             class="icon material-icons material-icons md-speaker_notes"></i>
                         <span class="text">Coupons</span>
@@ -64,7 +64,7 @@
 
                 </li>
 
-                <li class="menu-item has-submenu">
+                <!-- <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
                         <span class="text">Sales</span>
                     </a>
@@ -94,7 +94,7 @@
                         <a href="page-form-product-3.html">Add product 3</a>
                         <a href="page-form-product-4.html">Add product 4</a>
                     </div>
-                </li>
+                </li> -->
 
             </ul>
             <hr>
@@ -191,7 +191,7 @@
                                             </thead>
                                             <tbody>
                                                 <% coupons.forEach((item, index)=> { %>
-                                                    <tr>
+                                                    <tr data-coupon-id="<%= item._id%>">
 
                                                         <td style="vertical-align: middle;" class="text-center">
                                                             <%= index + 1 %>
@@ -235,16 +235,20 @@
                                                                         <% } %>
                                                             </div>
                                                         </td>
+                                                        <td class="text-left" style="margin-left: -20px;">
+                                                            <div style="margin-bottom: 10px;">
+                                                                <a onclick="deleteCoupon('<%= item._id %>')"
+                                                                    class="btn btn-sm font-sm rounded btn-danger">
+                                                                    Delete
+                                                                </a>
+                                                            </div>
+
+                                                        </td>
                                                     </tr>
                                     </div>
                                 </div>
-
-
-
                                 <% }); %>
-
                                     </tbody>
-
                                     </table>
                             </div>
                         </div> <!-- .col// -->
@@ -296,7 +300,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="couponForm" onsubmit="handleCouponFormSubmit(event)">
+                        <form id="couponForm" action="/admin/coupons" method="post">
+                            <!-- <form id="couponForm" onsubmit="handleCouponFormSubmit(event)"> -->
 
                             <div class="mb-3">
                                 <label for="couponName" class="form-label">Coupon Name</label>
@@ -416,7 +421,7 @@
                                 <div class="mb-3">
                                     <label for="expiryDate" class="form-label">Expiry Date</label>
                                     <input type="date" class="form-control" id="expiryDate" name="expiryDate"
-                                    value="<%= item.expiryDate.toISOString().split('T')[0] %>">
+                                        value="<%= item.expiryDate.toISOString().split('T ')[0] %>">
                                     <p id="expiryDate-error" class="error-message" style="color: red;"></p>
                                 </div>
 
@@ -470,7 +475,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
 
 
-    <script>
+    <!-- <script>
         // Add event listener to the form's submit event
         document.getElementById('couponForm').addEventListener('submit', handleCouponFormSubmit);
 
@@ -506,8 +511,22 @@
 
                         // Add the new coupon to the top of the list
                         const couponList = document.querySelector('tbody');
-                        const newCouponElement = createCouponElement(coupon);
-                        couponList.prepend(newCouponElement);
+                        const { row, editButton, activateDeactivateButton } = createCouponElement(coupon);
+                        couponList.prepend(row);
+
+                        // Add event listeners for action buttons
+                        editButton.addEventListener('click', () => {
+                            // Handle edit button click
+                        });
+
+                        activateDeactivateButton.addEventListener('click', () => {
+                            const couponId = coupon._id;
+                            if (coupon.status === 'active') {
+                                deactivateCoupon(couponId);
+                            } else {
+                                activateCoupon(couponId);
+                            }
+                        });
                     } else {
                         console.error('Failed to create coupon');
                     }
@@ -567,16 +586,19 @@
             const activateDeactivateDiv = document.createElement('div');
             const activateDeactivateButton = document.createElement('a');
             activateDeactivateButton.classList.add('btn', 'btn-sm', 'font-sm', 'rounded', 'btn-brand');
-            activateDeactivateButton.setAttribute('onclick', couponData.status === 'active' ? `deactivateCoupon('${couponData._id}')` : `activateCoupon('${couponData._id}')`);
             activateDeactivateButton.textContent = couponData.status === 'active' ? 'Deactivate' : 'Activate';
             activateDeactivateDiv.appendChild(activateDeactivateButton);
             actionCell.appendChild(activateDeactivateDiv);
 
             row.appendChild(actionCell);
 
-            return row;
+            return {
+                row,
+                editButton,
+                activateDeactivateButton,
+            };
         }
-    </script>
+    </script> -->
 
     <script>
         $(document).ready(function () {
@@ -621,9 +643,10 @@
                 couponStatusTd.textContent = newStatus;
 
                 // Update the action button
-                const couponActionTd = document.querySelector(`td[data-coupon-id="${couponId}"] div:last-child`);
-                const buttonHtml = `<a onclick="deactivateCoupon('${couponId}')" class="btn btn-sm font-sm rounded btn-brand">Deactivate</a>`;
-                couponActionTd.innerHTML = buttonHtml;
+                const couponActionTd = document.querySelector(`td[data-coupon-id="${couponId}"] div:last-child a`);
+                couponActionTd.textContent = 'Deactivate';
+                couponActionTd.removeEventListener('click', activateCoupon);
+                couponActionTd.addEventListener('click', () => deactivateCoupon(couponId));
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -654,13 +677,35 @@
                 couponStatusTd.textContent = newStatus;
 
                 // Update the action button
-                const couponActionTd = document.querySelector(`td[data-coupon-id="${couponId}"] div:last-child`);
-                const buttonHtml = `<a onclick="activateCoupon('${couponId}')" class="btn btn-sm font-sm rounded btn-brand">Activate</a>`;
-                couponActionTd.innerHTML = buttonHtml;
+                const couponActionTd = document.querySelector(`td[data-coupon-id="${couponId}"] div:last-child a`);
+                couponActionTd.textContent = 'Activate';
+                couponActionTd.removeEventListener('click', deactivateCoupon);
+                couponActionTd.addEventListener('click', () => activateCoupon(couponId));
             } catch (error) {
                 console.error('Error:', error);
             }
         };
+        const deleteCoupon = async (couponId) => {
+            try {
+                const response = await fetch(`/admin/coupons/delete-coupon?id=${couponId}`, {
+                    method: 'DELETE', // Change method to DELETE
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Remove the coupon row from the table
+                const couponRow = document.querySelector(`tr[data-coupon-id="${couponId}"]`);
+                couponRow.remove();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
     </script>
     <!-- <script>
         function validateCouponForm() {

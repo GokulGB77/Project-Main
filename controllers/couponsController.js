@@ -31,15 +31,15 @@ const loadCoupons = async (req, res) => {
 }
 
 // Server-side code
-const getCouponList = async (req, res) => {
-  try {
-      const coupons = await Couponsdb.find({});
-      res.json(coupons);
-  } catch (error) {
-      res.status(500).send("Internal Server Error");
-      console.log("Error fetching coupon list", error);
-  }
-};
+// const getCouponList = async (req, res) => {
+//   try {
+//       const coupons = await Couponsdb.find({});
+//       res.json(coupons);
+//   } catch (error) {
+//       res.status(500).send("Internal Server Error");
+//       console.log("Error fetching coupon list", error);
+//   }
+// };
 
 const addCoupon = async (req, res) => {
   try {
@@ -56,8 +56,11 @@ const addCoupon = async (req, res) => {
       maximumOffer,
       status: 'active',
     });
-
-    res.status(200).json({ success: true, coupon });
+    console.log("coupon added succesfullyy...")
+    req.session.toastMessage = "Coupon added successfully"; 
+    req.session.save()
+    // res.status(200).json({ success: true, coupon });
+    res.redirect("/admin/coupons")
   } catch (error) {
     res.status(500).send("Internal Server Error");
     console.log("Coupon load error", error);
@@ -91,7 +94,7 @@ const updateCoupon = async (req, res) => {
     })
     console.log("coupon updated succesfullyy...")
     req.session.toastMessage = "Coupon details updated successfully"; 
-
+    req.session.save()
     res.redirect("/admin/coupons")
   } catch (error) {
     res.status(500).send("Internal Server Error")
@@ -140,11 +143,35 @@ const deactivateCoupon = async (req, res) => {
   }
 };
 
+const deleteCoupon = async (req, res) => {
+  try {
+    const couponId = req.query.id;
+    if (!couponId) {
+      return res.status(400).json({ error: "Coupon ID is required" });
+    }
+
+    const coupon = await Couponsdb.findByIdAndDelete(couponId);
+    if (!coupon) {
+      return res.status(404).json({ error: "Coupon not found" });
+    }
+
+    console.log("Coupon deleted");
+    req.session.toastMessageDelete = "Coupon Deleted..."
+    req.session.save()
+    return res.status(200)
+  } catch (error) {
+    console.error("Error deleting coupon:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
 module.exports = {
   loadCoupons,
-  getCouponList,
+  // getCouponList,
   addCoupon,
   updateCoupon,
   activateCoupon,
   deactivateCoupon,
+  deleteCoupon,
 }
