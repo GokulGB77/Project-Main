@@ -28,12 +28,12 @@ userRoute.use(bodyParser.json());
 
 
 const passport = require('passport'); 
-const cookieSession = require('cookie-session'); 
-require("../services/passport"); 
-userRoute.use(cookieSession({ 
-  name: 'google-auth-session', 
-  keys: ['key1', 'key2'] 
-})); 
+// const cookieSession = require('cookie-session'); 
+// require("../services/passport"); 
+// userRoute.use(cookieSession({ 
+//   name: 'google-auth-session', 
+//   keys: ['key1', 'key2'] 
+// })); 
 userRoute.use(passport.initialize());
 
 

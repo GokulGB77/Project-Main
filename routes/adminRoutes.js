@@ -78,6 +78,11 @@ adminRoute.get("/orders/order-details",ordersController.loadOrdersDetails)
 adminRoute.post("/orders/order-details/save-notes",ordersController.adminCancel)
 
 adminRoute.get("/coupons",couponsController.loadCoupons)
+adminRoute.get("/admin/coupons/list",couponsController.getCouponList)
+adminRoute.post("/coupons",couponsController.addCoupon)
+adminRoute.post("/coupons/update",couponsController.updateCoupon)
+adminRoute.get("/coupons/activate-coupon",couponsController.activateCoupon)
+adminRoute.get("/coupons/deactivate-coupon",couponsController.deactivateCoupon)
 
 
 adminRoute.get("/logout", adminController.adminLogout);
