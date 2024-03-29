@@ -374,7 +374,7 @@
     /*--- checkout toggle function ----*/
     $('.checkout-click3').on('click', function(e) {
         e.preventDefault();
-        $('.checkout-login-info3').slideToggle(1000);
+        $('.checkout-login-info3').slideToggle();
     });
     
     /*-------------------------
@@ -557,7 +557,7 @@
     --------------------------*/
     AOS.init({
         once: true,
-        duration: 1000,
+        duration: 500,
     });
     
 })(jQuery);

@@ -1,4 +1,5 @@
 <%- include('../layouts/header.ejs',{userId:userId}) %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nouislider/14.6.3/nouislider.min.css" />
 
     <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1">
         <div class="container">
@@ -91,72 +92,6 @@
                     </div>
 
 
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function () {
-                            const applyFiltersBtn = document.getElementById('applyFiltersBtn');
-                            if (applyFiltersBtn) {
-                                applyFiltersBtn.addEventListener('click', applyFilters);
-                            }
-
-                            // Set initial values for the price slider based on the current URL parameters
-                            const urlParams = new URLSearchParams(window.location.search);
-                            const priceParam = urlParams.get('price');
-                            if (priceParam) {
-                                const [minPrice, maxPrice] = priceParam.split(',');
-                                document.getElementById('input-left').value = minPrice;
-                                document.getElementById('input-right').value = maxPrice;
-                                updatePriceRangeLabels(minPrice, maxPrice);
-                            }
-
-                            const searchForm = document.getElementById('searchForm');
-                            if (searchForm) {
-                                searchForm.addEventListener('submit', function (event) {
-                                    event.preventDefault();
-                                    const searchInput = document.getElementById('searchInput').value.trim();
-                                    const queryParams = new URLSearchParams(window.location.search);
-                                    queryParams.set('search', searchInput);
-                                    window.location.href = `/shop?page=1&sortBy=${document.querySelector('select[name="sortBy"]').value}&${queryParams}`;
-                                });
-                            }
-                        });
-
-                        function applyFilters() {
-                            const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(checkbox => checkbox.value);
-                            const queryParams = new URLSearchParams(window.location.search);
-
-                            // Add search query parameter if it exists
-                            const searchInput = document.getElementById('searchInput').value.trim();
-                            if (searchInput) {
-                                queryParams.set('search', searchInput);
-                            }
-
-                            if (selectedCategories.length > 0) {
-                                queryParams.set('category', selectedCategories.join(','));
-                            } else {
-                                queryParams.delete('category');
-                            }
-
-                            // Check if the "Out Of Stock" checkbox is checked
-                            const outOfStockCheckbox = document.getElementById('outofstock');
-                            if (outOfStockCheckbox.checked) {
-                                queryParams.set('outOfStock', true);
-                            } else {
-                                queryParams.delete('outOfStock');
-                            }
-
-                            const minPrice = document.getElementById('input-left').value;
-                            const maxPrice = document.getElementById('input-right').value;
-                            queryParams.set('price', `${minPrice},${maxPrice}`);
-
-                            // Construct the new URL with the search query and applied filters
-                            let newUrl = `/shop?page=1&sortBy=${document.querySelector('select[name="sortBy"]').value}`;
-                            if (queryParams.toString()) {
-                                newUrl += `&${queryParams.toString()}`;
-                            }
-                            window.location.href = newUrl;
-                        }
-
-                    </script>
 
 
 
@@ -328,86 +263,7 @@
 
                                                 <% }); %>
 
-                                                    <script>
-                                                        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-                                                            button.addEventListener('click', function () {
-                                                                const productId = this.getAttribute('data-product-id');
-                                                                addToCart(productId);
-                                                            });
-                                                        });
 
-                                                        function addToCart(productId) {
-                                                            // Here you can implement your logic to add the product to the cart
-                                                            console.log('Adding product to cart:', productId);
-
-                                                            fetch('/add-to-cart?user=<%=userId%>', {
-                                                                method: 'POST',
-                                                                body: JSON.stringify({
-                                                                    productId: productId,
-                                                                    userId: "<%=userId%>"
-                                                                }),
-                                                                headers: {
-                                                                    'Content-Type': 'application/json',
-                                                                }
-                                                            }).then(response => {
-                                                                if (response.ok) {
-                                                                    $.toast({
-                                                                        heading: 'Success',
-                                                                        text: 'Product added to cart successfully',
-                                                                        position: 'top-center',
-                                                                        showHideTransition: 'slide',
-                                                                        icon: 'success'
-                                                                    })
-                                                                } else if (response.status === 401) {
-                                                                    $.toast({
-                                                                        heading: 'Error',
-                                                                        text: 'Maximum Quantity Per Order Reached',
-                                                                        showHideTransition: 'fade',
-                                                                        position: 'top-center',
-                                                                        icon: 'error'
-                                                                    })
-
-                                                                } else if (response.status === 405) {
-                                                                    $.toast({
-                                                                        heading: 'Error',
-                                                                        text: 'Insufficient stock available',
-                                                                        showHideTransition: 'fade',
-                                                                        position: 'top-center',
-                                                                        icon: 'error'
-                                                                    })
-                                                                } else {
-                                                                    $.toast({
-                                                                        heading: 'Error',
-                                                                        text: 'Error adding product to cart',
-                                                                        showHideTransition: 'fade',
-                                                                        position: 'top-center',
-                                                                        icon: 'error'
-                                                                    })
-
-                                                                    showToast("Error adding product to cart");
-                                                                }
-                                                            }).then(data => {
-                                                                cartQuantity = data.cartQty;
-                                                                updateCartQuantity()
-                                                            }).catch(error => {
-                                                                console.error("Error adding product to cart:", error);
-                                                                showToast("Error adding product to cart");
-                                                                $.toast({
-                                                                    heading: 'Error',
-                                                                    text: 'Error adding product to cart',
-                                                                    showHideTransition: 'fade',
-                                                                    position: 'top-center',
-                                                                    icon: 'error'
-                                                                })
-                                                            });
-                                                        }
-                                                        let cartQuantity = 0;
-
-                                                        // Function to update the cart quantity element
-                                                        function updateCartQuantity() {
-                                                            document.getElementById('cartItemCount').textContent = cartQuantity;
-                                                        }
-                                                    </script>
                                         </div>
                                         <% if(allItems.length>0) { %>
                                             <div class="pagination-style-1" data-aos="fade-up" data-aos-delay="200">
@@ -425,7 +281,6 @@
                                                 </ul>
                                                 <% } %>
                                             </div>
-                                            <script></script>
                                     </div>
                                     <!-- <div id="shop-2" class="tab-pane">
                                         <div class="shop-list-wrap mb-30">
@@ -497,5 +352,151 @@
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nouislider/14.6.3/nouislider.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nouislider/14.6.3/nouislider.min.css" />
+    <script>
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = this.getAttribute('data-product-id');
+                addToCart(productId);
+            });
+        });
+
+        function addToCart(productId) {
+            // Here you can implement your logic to add the product to the cart
+            console.log('Adding product to cart:', productId);
+
+            fetch('/add-to-cart?user=<%=userId%>', {
+                method: 'POST',
+                body: JSON.stringify({
+                    productId: productId,
+                    userId: "<%=userId%>"
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => {
+                if (response.ok) {
+                    $.toast({
+                        heading: 'Success',
+                        text: 'Product added to cart successfully',
+                        position: 'top-center',
+                        showHideTransition: 'slide',
+                        icon: 'success'
+                    })
+                } else if (response.status === 401) {
+                    $.toast({
+                        heading: 'Error',
+                        text: 'Maximum Quantity Per Order Reached',
+                        showHideTransition: 'fade',
+                        position: 'top-center',
+                        icon: 'error'
+                    })
+
+                } else if (response.status === 405) {
+                    $.toast({
+                        heading: 'Error',
+                        text: 'Insufficient stock available',
+                        showHideTransition: 'fade',
+                        position: 'top-center',
+                        icon: 'error'
+                    })
+                } else {
+                    $.toast({
+                        heading: 'Error',
+                        text: 'Error adding product to cart',
+                        showHideTransition: 'fade',
+                        position: 'top-center',
+                        icon: 'error'
+                    })
+
+                    showToast("Error adding product to cart");
+                }
+            }).then(data => {
+                cartQuantity = data.cartQty;
+                updateCartQuantity()
+            }).catch(error => {
+                console.error("Error adding product to cart:", error);
+                showToast("Error adding product to cart");
+                $.toast({
+                    heading: 'Error',
+                    text: 'Error adding product to cart',
+                    showHideTransition: 'fade',
+                    position: 'top-center',
+                    icon: 'error'
+                })
+            });
+        }
+        let cartQuantity = 0;
+
+        // Function to update the cart quantity element
+        function updateCartQuantity() {
+            document.getElementById('cartItemCount').textContent = cartQuantity;
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+            if (applyFiltersBtn) {
+                applyFiltersBtn.addEventListener('click', applyFilters);
+            }
+
+            // Set initial values for the price slider based on the current URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const priceParam = urlParams.get('price');
+            if (priceParam) {
+                const [minPrice, maxPrice] = priceParam.split(',');
+                document.getElementById('input-left').value = minPrice;
+                document.getElementById('input-right').value = maxPrice;
+                updatePriceRangeLabels(minPrice, maxPrice);
+            }
+
+            const searchForm = document.getElementById('searchForm');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    const searchInput = document.getElementById('searchInput').value.trim();
+                    const queryParams = new URLSearchParams(window.location.search);
+                    queryParams.set('search', searchInput);
+                    window.location.href = `/shop?page=1&sortBy=${document.querySelector('select[name="sortBy"]').value}&${queryParams}`;
+                });
+            }
+        });
+
+        function applyFilters() {
+            const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(checkbox => checkbox.value);
+            const queryParams = new URLSearchParams(window.location.search);
+
+            // Add search query parameter if it exists
+            const searchInput = document.getElementById('searchInput').value.trim();
+            if (searchInput) {
+                queryParams.set('search', searchInput);
+            }
+
+            if (selectedCategories.length > 0) {
+                queryParams.set('category', selectedCategories.join(','));
+            } else {
+                queryParams.delete('category');
+            }
+
+            // Check if the "Out Of Stock" checkbox is checked
+            const outOfStockCheckbox = document.getElementById('outofstock');
+            if (outOfStockCheckbox.checked) {
+                queryParams.set('outOfStock', true);
+            } else {
+                queryParams.delete('outOfStock');
+            }
+
+            const minPrice = document.getElementById('input-left').value;
+            const maxPrice = document.getElementById('input-right').value;
+            queryParams.set('price', `${minPrice},${maxPrice}`);
+
+            // Construct the new URL with the search query and applied filters
+            let newUrl = `/shop?page=1&sortBy=${document.querySelector('select[name="sortBy"]').value}`;
+            if (queryParams.toString()) {
+                newUrl += `&${queryParams.toString()}`;
+            }
+            window.location.href = newUrl;
+        }
+
+    </script>
     <%- include('../layouts/footer.ejs') %>

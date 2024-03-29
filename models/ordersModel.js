@@ -21,7 +21,9 @@ const ordersSchema = new mongoose.Schema({
   deliveryNotes:{type:String,required:false},
   orderCancelReason: {type:String,required:false},
   additionalReason:{type:String,required:false},
-  adminNotes:{type:String,required:false,}
+  adminNotes:{type:String,required:false,},
+  couponApplied:{type:mongoose.Types.ObjectId,ref:'Couponsdb',},
+  couponDiscount:{type:Number,},
 })
 
 module.exports = mongoose.model("Ordersdb", ordersSchema);

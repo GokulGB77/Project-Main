@@ -11707,7 +11707,6 @@ textarea {
 
 .your-order-area .your-order-wrap .your-order-info ul li {
   font-size: 14px;
-  padding: 0 0 7px;
   text-transform: capitalize;
   font-weight: 500;
 }
@@ -11718,7 +11717,9 @@ textarea {
 }
 
 .your-order-area .your-order-wrap .your-order-info.order-subtotal {
-  padding: 15px 0 10px;
+  padding: 4px 0 2px;
+  height: 150px;
+
 }
 
 .your-order-area .your-order-wrap .your-order-info.order-subtotal ul li span {
@@ -11749,7 +11750,7 @@ textarea {
 
 .your-order-area .your-order-wrap .your-order-middle {
   border-bottom: 1px solid #e8e8e8;
-  padding: 24px 0 23px;
+  padding: 6px 0 6px;
 }
 
 .your-order-area .your-order-wrap .your-order-middle ul li {

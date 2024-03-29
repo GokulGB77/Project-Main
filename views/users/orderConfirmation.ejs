@@ -10,6 +10,7 @@
 
                 <ul>
                     <li><strong>Order ID: <%= orderDetails.orderId %></strong></li>
+                    <li><strong>Total Amount:₹ <%= orderDetails.orderTotal %></strong></li>
                     <li><strong>Date: <%= orderDetails.orderDate %></strong> </li>
                     <hr>
                     <li> <strong>Shipping to <%= orderDetails.address.name %></strong>,<%= orderDetails.address.house %>
@@ -28,21 +29,26 @@
                 <!-- Display ordered products -->
                 <h5>Ordered Products :</h5>
                 <% orderProducts.forEach(product=> { %>
-                    <div class="col-md-4">
-                        <div class="product">
-                            <img src="/productAssets/<%= product.product.images[0] %>" alt="Product Image"
+                    <div class="col-md-4 " >
+                        <div class="product row"  >
+                            <div class="col-md-4">
+                                <img src="/productAssets/<%= product.product.images[0] %>" alt="Product Image"
                                 class="img-fluid" style="max-height: 100px;">
 
-                            <h6 class="product-title">
-                                <%= product.product.productName %>
-                            </h6>
-                            <span class="product-price">Rs:<%= product.price.toFixed(2).toLocaleString() %> </span>- /
-                            <span class="Quantity">
-                                <%= product.quantity %> units
-                            </span>
+                            </div>
+                            <div class="col-md-8">
+                                <h6 class="product-title">
+                                    <%= product.product.productName %>
+                                </h6>
+                                <span class="product-price">Rs:<%= product.price.toFixed(2).toLocaleString() %> </span>- /
+                                <span class="Quantity">
+                                    <%= product.quantity %> units
+                                </span>
+                            </div>
 
                         </div>
                     </div>
+                    <hr>
                     <% }); %>
                         <br>
                         <div class="button-container">

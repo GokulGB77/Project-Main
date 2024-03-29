@@ -10,7 +10,9 @@ const cartSchema = new mongoose.Schema({
     price:{type:Number,required:true},
     totalPrice:{type:Number,required:true},
   }],
-  cartTotal:{type:Number,required:true,default:0}
+  cartTotal:{type:Number,required:true,default:0},
+  couponApplied:{type:String},
+  couponDiscount:{type:Number,default:0},
 })
 
 module.exports = mongoose.model("Cartdb", cartSchema);

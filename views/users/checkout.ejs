@@ -1,6 +1,6 @@
 <%- include('../layouts/header.ejs',{userId:userId}) %>
 
-    <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1">
+    <!-- <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1">
         <div class="container">
             <div class="breadcrumb-content text-center">
                 <h2>Checkout </h2>
@@ -17,20 +17,21 @@
         <div class="breadcrumb-img-2">
             <img src="/user/images/banner/breadcrumb-2.png" alt="">
         </div>
-    </div>
+    </div> -->
     <div class="checkout-main-area pb-100 pt-100">
         <div class="container">
 
-            <div class="customer-zone mb-20">
+            <!-- <div class="customer-zone mb-20">
                 <p class="cart-page-title">Have a coupon? <a class="checkout-click3" href="#">Click here to enter your
                         code</a></p>
                 <div class="checkout-login-info3">
-                    <form action="#">
-                        <input type="text" placeholder="Coupon code">
-                        <input type="submit" value="Apply Coupon">
+                    <form id="couponForm" action="checkout/apply-coupon" method="post">
+                        <input type="text" name="coupon" id="coupon" placeholder="Coupon code">
+                        <input type="submit" id="applyButton" value="Apply Coupon">
                     </form>
                 </div>
-            </div>
+
+            </div> -->
             <div class="checkout-wrap pt-30">
                 <div class="row">
                     <div class="col-lg-7">
@@ -246,20 +247,76 @@
                                         <ul>
                                             <li>Subtotal:<span>₹ <%= (cart.cartTotal).toLocaleString() %> </span></li>
                                         </ul>
+                                        <ul id="shipping">
+                                            <li>Shipping: <span>₹ <%= deliveryCharge %> </span></li>
+                                        </ul>
+
                                     </div>
-                                    <div class="your-order-info order-shipping">
+                                    <!-- <div class="your-order-info order-shipping">
                                         <ul>
                                             <li>Shipping: <span>₹ <%= deliveryCharge %> </span></li>
-
+                                        </ul>
+                                    </div> -->
+                                    <div class="your-order-info order-total">
+                                        <ul id="orderTotalUl">
+                                            <li style="font-size: 20px; font-weight: bold;">Order Total: <span
+                                                    id="orderTotal">₹ <%= (cart.cartTotal + deliveryCharge -
+                                                        cart.couponDiscount ).toLocaleString() %> </span>
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="your-order-info order-total">
-                                        <ul>
-                                            <li style="font-size: 20px; font-weight: bold;">Order Total: <span>₹ <%=
-                                                        (cart.cartTotal + deliveryCharge).toLocaleString() %> </span>
-                                            </li>
-                                        </ul>
+                                    <div class="coupon-code-section">
+                                        <p>Have a coupon code?</p>
+                                        <form class="coupon-code-input" id="couponForm" action="checkout/apply-coupon"
+                                            method="post">
+                                            <input type="text" id="coupon" placeholder="Enter coupon code">
+                                            <button type="submit" id="applyButton" class="coupon-button">Apply
+                                                Coupon</button>
+                                            <button onclick="" id="removeCouponBtn" style="display: none;"
+                                                class="coupon-button">Remove
+                                                Coupon</button>
+
+                                        </form>
+                                        <div id="couponCodeMessage" class="coupon-code-message" style="height: 15px;"></div>
+                                        <style>
+                                            .coupon-button {
+                                                width: 170px;
+                                                /* Adjust the width as needed */
+                                            }
+
+                                            .coupon-code-section {
+                                                margin-top: 20px;
+                                            }
+
+                                            .coupon-code-input {
+                                                display: flex;
+                                                margin-bottom: 10px;
+                                            }
+
+                                            .coupon-code-input input {
+                                                flex: 1;
+                                                padding: 5px;
+                                            }
+
+                                            .coupon-code-input button {
+                                                margin-left: 10px;
+                                                background-color: #e97730;
+                                                color: white;
+                                                padding: 5px 10px;
+                                                border: none;
+                                                cursor: pointer;
+                                            }
+
+                                            .coupon-code-input button:hover {
+                                                background-color: black;
+                                            }
+
+                                            .coupon-code-message {
+                                                color: green;
+                                                font-weight: bold;
+                                                font-size: 13px;
+                                            }
+                                        </style>
                                     </div>
                                 </div>
                                 <div class="payment-method">
@@ -267,17 +324,13 @@
                                         <input id="payment-method-3" class="input-radio" type="radio" value="cod"
                                             checked="checked" name="payment_method">
                                         <label for="payment-method-3">Cash on delivery </label>
-                                        <div class="payment-box payment_method_bacs">
-                                            <p>Cash, UPI and Cards accepted.</p>
-                                        </div>
+
                                     </div>
                                     <div class="pay-top sin-payment">
                                         <input id="razorPay" class="input-radio" type="radio" value="razorPay"
                                             name="payment_method">
                                         <label for="razorPay"> Razor Pay </label>
-                                        <div class="payment-box payment_method_bacs">
-                                            <p>Make your payment directly into our bank account.</p>
-                                        </div>
+
                                     </div>
                                     <!-- <div class="pay-top sin-payment">
                                         <input id="payment-method-2" class="input-radio" type="radio" value="cheque" name="payment_method">
@@ -310,98 +363,8 @@
         </div>
     </div>
 
+    <!-- Razorpay Script -->
     <script>
-        // JavaScript code to send the selected address value to the server
-        // document.querySelector('.Place-order a').addEventListener('click', function (event) {
-        //     event.preventDefault(); // Prevent default action of the anchor tag
-
-
-        //     const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-
-        //     // Get the selected address value from the dropdown
-        //     const selectedAddress = document.getElementById('selectedAddress').value;
-        //     const deliveryNotes = document.getElementById('order-notes').value || null;
-        //     const cartId = "<%=cart._id%>";
-        //     // Make a fetch request to the server
-        //     fetch('/checkout/payment?', {
-        //         method: 'POST', // Or 'GET', 'PUT', etc., depending on your server-side route configuration
-        //         headers: {
-        //             'Content-Type': 'application/json' // Specify the content type as JSON
-        //         },
-        //         body: JSON.stringify({
-        //             selectedAddress: selectedAddress,
-        //             selectedPaymentMethod: selectedPaymentMethod,
-        //             deliveryNotes: deliveryNotes,
-        //             cartId: cartId
-        //         }) // Convert the data to JSON format
-        //     })
-        //         .then(response => {
-        //             // Handle the response from the server (if needed)
-        //             if (!response.ok) {
-        //                 throw new Error('Network response was not ok');
-        //                 alert(res.msg)
-        //             }
-        //             return response.json()
-        //         })
-        //         .then(data => {
-
-        //             // console.log(data)
-        //             const razpayorderId = data.razpayorderId;
-        //             const key_id = data.key_id;
-        //             const cartDetails = data.cartDetails;
-        //             const selectedAddress = data.selectedAddress;
-
-        //             // Perform any further actions with the received data
-        //             console.log("razpayorderIdFrnt:", razpayorderId);
-        //             console.log("key_id:", key_id);
-        //             console.log("cartDetails:", cartDetails);
-        //             console.log("selectedAddress:", selectedAddress);
-
-        //             let options = {
-        //                 "key": "" + res.key_id + "",
-        //                 "amount": "" + res.cartDetails.cartTotal + "",
-        //                 "currency": "INR",
-        //                 "name": "" + res.cartDetails.cartProducts + "",
-        //                 "image": "",
-        //                 "order_id": "" + res.order_id + "",
-        //                 "handler": function (response) {
-        //                     alert("Payment Successful")
-        //                 },
-        //                 "prefill": {
-        //                     "contact": "" + res.mobile + "",
-        //                     "name": "" + res.name + "",
-        //                     "email": "" + res.email + "",
-        //                 },
-        //                 "notes": {
-        //                     "description": "" + res.cartDetails + "",
-        //                 },
-        //                 "theme": {
-        //                     "color": "#2300a3"
-        //                 }
-
-        //             }
-
-        //             let razorPayObject = new Razorpay(options);
-        //             razorPayObject.on('payment.failed', function (response) {
-        //                 alert("Payment Failed");
-        //             })
-        //             razorPayObject.open()
-
-        //             // const orderDataId = data.orderDetailsId
-        //             // console.log("orderDataFrnt", orderDataId)
-        //             // Optionally, you can redirect the user to another page after successful response
-        //             // window.location.href = `/order-success?orderId=${orderDataId}&cartId=${cartId}`;
-        //             // window.location.href = `/order-success?cartId=${cartId}`;
-        //         })
-        //         .catch(error => {
-        //             // Handle errors here
-        //             console.error('There was an error!', error);
-        //         });
-        // });
-
-    </script>
-    <script>
-
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.Place-order a').addEventListener('click', function (event) {
                 event.preventDefault(); // Prevent default action of the anchor tag
@@ -441,10 +404,10 @@
                             console.log("selectedAddress:", selectedAddress);
 
                             let options = {
-                                "key":  data.key_id ,
+                                "key": data.key_id,
                                 "amount": data.cartDetails.cartTotal,
                                 "currency": "INR",
-                                "name":  data.cartDetails.cartProducts,
+                                "name": data.cartDetails.cartProducts,
                                 "image": "https://dummyimage.com/600x400/000/fff",
                                 "order_id": data.order_id,
                                 "handler": function (response) {
@@ -453,8 +416,8 @@
                                 },
                                 "prefill": {
                                     "contact": data.mobile,
-                                    "name": data.name ,
-                                    "email": data.email ,
+                                    "name": data.name,
+                                    "email": data.email,
                                 },
                                 "notes": {
                                     "description": data.cartDetails,
@@ -495,6 +458,167 @@
         })
     </script>
 
+    <!-- Apply Coupon Fetch -->
+
+    <script>
+        document.getElementById("applyButton").addEventListener("click", function (event) {
+            // event.preventDefault();
+            const couponInput = document.getElementById("coupon");
+            const couponCodeMessage = document.getElementById("couponCodeMessage");
+            const applyButton = document.getElementById("applyButton");
+            const removeCouponBtn = document.getElementById("removeCouponBtn");
+
+            const couponCode = couponInput.value;
+            const cartId = "<%= cart._id %>";
+
+            couponCodeMessage.textContent = "";
+
+            fetch("/checkout/apply-coupon", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    couponCode,
+                    cartId
+                })
+            })
+                .then(response => response.json())
+                .then(responseData => {
+                    const {
+                        message,
+                        totalAmount,
+                        couponCode,
+                        discountAmount
+                    } = responseData.responseData;
+                    couponCodeMessage.textContent = message
+                    setTimeout(() => {
+                        couponCodeMessage.textContent = ""
+                    }, 3000)
+
+                    if (message === "Coupon applied successfully") {
+                        // Remove existing coupon ul
+                        const existingCouponUl = document.querySelector('.coupon-ul');
+                        if (existingCouponUl) {
+                            existingCouponUl.remove();
+                        }
+                        // Remove existing discount ul
+                        const existingDiscountUl = document.querySelector('.discount-ul');
+                        if (existingDiscountUl) {
+                            existingDiscountUl.remove();
+                        }
+
+                        // Create HTML for the new coupon ul
+                        const couponHTML = `<ul class="coupon-ul">
+                        <li>Coupon Applied: <span>${couponCode}</span></li>
+                         </ul>`;
+                        // Create HTML for the new discount ul
+                        const discountHTML = `<ul class="discount-ul">
+                        <li>Discount Applied: <span>- ₹ ${discountAmount}</span></li>
+                         </ul>`;
+                        // Insert the new coupon ul below the ul with id="shipping"
+                        const shippingUl = document.getElementById('shipping');
+                        if (shippingUl) {
+                            shippingUl.insertAdjacentHTML('afterend', discountHTML);
+                            shippingUl.insertAdjacentHTML('afterend', couponHTML);
+
+                        }
+                        // Update the order total ul element
+                        const orderTotalUl = document.getElementById('orderTotalUl');
+                        if (orderTotalUl) {
+                            const orderTotalHTML = `<li style="font-size: 20px; font-weight: bold;"> Order Total: <span>₹ ${totalAmount.toLocaleString()}</span></li>`;
+                            orderTotalUl.innerHTML = orderTotalHTML;
+                        }
+
+                        // Show the "Remove Coupon" button
+                        removeCouponBtn.style.display = "block";
+                        applyButton.style.display = "none";
+
+                    }
+                })
+
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        });
+
+
+
+
+        // Event listener for the coupon form submission
+        document.getElementById("couponForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            const couponInput = document.getElementById("coupon");
+            const couponCode = couponInput.value;
+            const cartId = "<%= cart._id %>"; // Replace with your actual cartId value
+
+            applyCoupon(couponCode, cartId);
+        });
+
+
+        function removeCoupon() {
+            const couponInput = document.getElementById("coupon");
+            const couponCodeMessage = document.getElementById("couponCodeMessage");
+            const applyButton = document.getElementById("applyButton");
+            const removeCouponBtn = document.getElementById("removeCouponBtn");
+
+            const couponCode = couponInput.value;
+            const cartId = "<%= cart._id %>";
+
+
+            fetch("/checkout/remove-coupon", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    couponCode,
+                    cartId
+                })
+            })
+                .then(response => response.json())
+                .then(responseData => {
+                    const {
+                        message,
+                        totalAmount,
+                    } = responseData.responseData;
+                    if (message === "Coupon removed") {
+                        // Remove existing coupon ul
+                        const existingCouponUl = document.querySelector('.coupon-ul');
+                        if (existingCouponUl) {
+                            existingCouponUl.remove();
+                        }
+                        // Remove existing discount ul
+                        const existingDiscountUl = document.querySelector('.discount-ul');
+                        if (existingDiscountUl) {
+                            existingDiscountUl.remove();
+                        }
+
+                        // Store the coupon code and discount amount in localStorage
+                        localStorage.removeItem('couponCode');
+                        localStorage.removeItem('discountAmount');
+                        // Update the order total ul element
+                        const orderTotalUl = document.getElementById('orderTotalUl');
+                        if (orderTotalUl) {
+                            const orderTotalHTML = `<li style="font-size: 20px; font-weight: bold;"> Order Total: <span>₹ ${totalAmount.toLocaleString()}</span></li>`;
+                            orderTotalUl.innerHTML = orderTotalHTML;
+                        }
+
+                        // Show the "Remove Coupon" button
+                        removeCouponBtn.style.display = "none";
+                        applyButton.style.display = "block";
+
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        }
+
+        document.getElementById("removeCouponBtn").addEventListener("click", removeCoupon);
+
+        window.onload = removeCoupon()
+    </script>
 
 
 

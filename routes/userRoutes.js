@@ -19,14 +19,6 @@ userRoute.use(cookieParser());
 // userRoute.use(auth.attachTokenToLocals); // Use the middleware
 userRoute.use(bodyParser.json());
 
-
-// userRoute.get('/', (req, res) => { 
-//   res.send("<button><a href='/auth'>Login With Google</a></button>") 
-// }); 
-// Auth  
-
-
-
 const passport = require('passport'); 
 // const cookieSession = require('cookie-session'); 
 // require("../services/passport"); 
@@ -35,8 +27,6 @@ const passport = require('passport');
 //   keys: ['key1', 'key2'] 
 // })); 
 userRoute.use(passport.initialize());
-
-
 
 
 
@@ -112,6 +102,8 @@ userRoute.get("/cart/remove-all-products",auth.isLogin,cartController.removeAllC
 
 userRoute.get("/checkout",auth.isLogin,cartController.loadCheckout)
 userRoute.post("/checkout/add-address",auth.isLogin,addressController.addAddressFrmCart)
+userRoute.post("/checkout/apply-coupon",auth.isLogin,cartController.applyCoupon)
+userRoute.post("/checkout/remove-coupon",auth.isLogin,cartController.removeCoupon)
 
 userRoute.post("/payment",auth.isLogin,ordersController.paymentOption)
 userRoute.get("/place-order",auth.isLogin,ordersController.placeOrder)

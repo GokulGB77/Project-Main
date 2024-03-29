@@ -266,8 +266,10 @@ const placeOrder = async (req, res) => {
     const deliveryNotes = req.session.deliveryNotes;
     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
     const orderAddress = req.session.orderAddress;
-    const orderTotal = cart.cartTotal
+    const orderTotal = (cart.cartTotal-cart.couponDiscount+500)
     const orderProducts = cart.cartProducts
+    const couponApplied = cart.couponApplied
+    const couponDiscount = cart.couponDiscount
     // const couponApplied = req.session.couponApplied;
 
     for (const cartProduct of cart.cartProducts) {
@@ -293,7 +295,9 @@ const placeOrder = async (req, res) => {
       orderTime: currentTime,
       orderStatus: orderStatus,
       paymentMethod: selectedPaymentMethod,
-      deliveryNotes: deliveryNotes
+      deliveryNotes: deliveryNotes,
+      couponApplied:couponApplied,
+      couponDiscount:couponDiscount
     });
 
     const orderDetails = await order.save();
@@ -302,6 +306,8 @@ const placeOrder = async (req, res) => {
     const orderDetailsId = orderDetails.orderId;
     cart.cartProducts = [];
     cart.cartTotal = 0;
+    cart.couponApplied = null
+    cart.couponDiscount = 0
     await cart.save();
     console.log("placeOrder(fn):Cart data emptied", );
     console.log("placeOrder(fn):Rendering order confirmation");

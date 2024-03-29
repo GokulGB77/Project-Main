@@ -1,4 +1,5 @@
 const Categoriesdb = require("../models/categoriesModel");
+const Couponsdb = require("../models/couponsModel");
 const Productsdb = require("../models/productsModel")
 const Userdb = require("../models/userModel")
 const Cartdb = require("../models/cartModel")
@@ -13,7 +14,7 @@ const addToCart = async (req, res) => {
 
     const userDetails = await Userdb.findById(userId);
     const productDetails = await Productsdb.findById(productId).populate("category");
-    const currentStock = productDetails.stock; 
+    const currentStock = productDetails.stock;
     const pPrice = productDetails.productPrice;
 
     let cart = await Cartdb.findOne({ user: userId });
@@ -23,7 +24,8 @@ const addToCart = async (req, res) => {
       cart = await Cartdb.create({
         user: userId,
         cartProducts: [],
-        cartTotal: 0
+        cartTotal: 0,
+       
       });
     }
 
@@ -81,39 +83,38 @@ const addToCart = async (req, res) => {
     // Save the updated cart to the database
     await cart.save();
 
-    const Qty = await Cartdb.findOne({user:userId})
+    const Qty = await Cartdb.findOne({ user: userId })
     const cartQty = Qty.cartProducts.length
 
-    res.status(200).json({cartQty, message: "Product added to cart successfully" });
+    res.status(200).json({ cartQty, message: "Product added to cart successfully" });
   } catch (error) {
     console.error("Error Adding Product To Cart: ", error);
     res.status(500).json({ error: "Error adding product to cart" });
   }
 }
 
-
-
 const loadCart = async (req, res) => {
   try {
     const userId = req.session.userId;
-    console.log("userId:req.session.userId:--",userId)
+    console.log("userId:req.session.userId:--", userId)
     const addressDocument = await Addressdb.findOne({ user: userId });
     const addresses = addressDocument ? addressDocument.addresses : [];
     if (!userId) {
       // Handle case where userId is missing in the query parameters
       return res.status(400).json({ error: "User ID is required." });
     }
-    
+
     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
     cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
     let deliveryCharge = 500
-      const Total = cart.cartTotal + deliveryCharge;
+    const Total = cart.cartTotal + deliveryCharge;
 
     if (!cart) {
       // Handle case where cart is not found for the provided userId
-      return res.render("cart", { userId, cart: { cartProducts: [] }, index: 0 });    }
-    
-    return res.render("cart", { userId,Total,addresses, cart, index: 0 });
+      return res.render("cart", { userId, cart: { cartProducts: [] }, index: 0 });
+    }
+
+    return res.render("cart", { userId, Total, addresses, cart, index: 0 });
   } catch (error) {
     console.error("Error Loading Cart: ", error);
     res.status(500).json({ error: "Error Loading Cart." });
@@ -124,50 +125,50 @@ const updateCartQuantity = async (req, res) => {
   const { productId, cartId, quantity } = req.body;
 
   try {
-      // Find the cart by its ID
-      const cart = await Cartdb.findById(cartId);
-    
-      // Find the index of the product in the cartProducts array
-      const productIndex = cart.cartProducts.findIndex(item => item.product.toString() === productId);
+    // Find the cart by its ID
+    const cart = await Cartdb.findById(cartId);
 
-      if (productIndex !== -1) {
-          // If the product is found in the cartProducts array, update its quantity
-          cart.cartProducts[productIndex].quantity = quantity;
-          // Update totalPrice based on the new quantity
-          cart.cartProducts[productIndex].totalPrice = cart.cartProducts[productIndex].price * quantity;
-      } else {
-          // If the product is not found in the cartProducts array, push a new item
-          // Assuming you have access to product price here
-          const product = await Productsdb.findById(productId);
-          cart.cartProducts.push({
-              product: productId,
-              quantity: quantity,
-              price: product.productPrice,
-              totalPrice: product.productPrice * quantity,
-          });
-      }
+    // Find the index of the product in the cartProducts array
+    const productIndex = cart.cartProducts.findIndex(item => item.product.toString() === productId);
 
-      // Update the totalPrice for all products in the cart
-      cart.cartProducts.forEach(item => {
-        item.totalPrice = item.price * item.quantity;
+    if (productIndex !== -1) {
+      // If the product is found in the cartProducts array, update its quantity
+      cart.cartProducts[productIndex].quantity = quantity;
+      // Update totalPrice based on the new quantity
+      cart.cartProducts[productIndex].totalPrice = cart.cartProducts[productIndex].price * quantity;
+    } else {
+      // If the product is not found in the cartProducts array, push a new item
+      // Assuming you have access to product price here
+      const product = await Productsdb.findById(productId);
+      cart.cartProducts.push({
+        product: productId,
+        quantity: quantity,
+        price: product.productPrice,
+        totalPrice: product.productPrice * quantity,
       });
+    }
 
-      // Calculate the new cartTotal based on the updated cartProducts array
-      cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
+    // Update the totalPrice for all products in the cart
+    cart.cartProducts.forEach(item => {
+      item.totalPrice = item.price * item.quantity;
+    });
 
-      // Save the updated cart to the database
-      await cart.save();
+    // Calculate the new cartTotal based on the updated cartProducts array
+    cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
 
-      // Prepare the response with updated subtotal and total values
-      const productSubtotal = cart.cartProducts.find(item => item.product.toString() === productId).totalPrice;
-      const cartTotal = cart.cartTotal;
-      let deliveryCharge = 500
-      const Total = cart.cartTotal + deliveryCharge;
+    // Save the updated cart to the database
+    await cart.save();
 
-      res.status(200).json({ message: 'Cart updated successfully', productSubtotal, cartTotal, Total });
+    // Prepare the response with updated subtotal and total values
+    const productSubtotal = cart.cartProducts.find(item => item.product.toString() === productId).totalPrice;
+    const cartTotal = cart.cartTotal;
+    let deliveryCharge = 500
+    const Total = cart.cartTotal + deliveryCharge;
+
+    res.status(200).json({ message: 'Cart updated successfully', productSubtotal, cartTotal, Total });
   } catch (error) {
-      console.error('Error updating cart:', error);
-      res.status(500).json({ message: 'Internal server error' });
+    console.error('Error updating cart:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -175,18 +176,18 @@ const checkProductStock = async (req, res) => {
   const { productId, quantity } = req.body;
 
   try {
-      // Find the product by ID
-      const product = await Productsdb.findById(productId);
+    // Find the product by ID
+    const product = await Productsdb.findById(productId);
 
-      // Check if product exists and has enough stock
-      if (product && product.stock >= quantity) {
-          res.json({ enoughStock: true });
-      } else {
-          res.json({ enoughStock: false });
-      }
+    // Check if product exists and has enough stock
+    if (product && product.stock >= quantity) {
+      res.json({ enoughStock: true });
+    } else {
+      res.json({ enoughStock: false });
+    }
   } catch (error) {
-      console.error('Error checking product stock:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error checking product stock:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
@@ -204,14 +205,14 @@ const removeCartProduct = async (req, res) => {
 
     // Find the index of the product in the cartProducts array
     const productIndex = cart.cartProducts.findIndex(item => item.product.toString() === productId);
-    
+
     if (productIndex !== -1) {
       // If the product is found in the cartProducts array, remove it
       cart.cartProducts.splice(productIndex, 1);
-      
+
       // Recalculate the cart total based on the updated cartProducts array
       cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
-      
+
       // Save the updated cart to the database
       await cart.save();
 
@@ -242,7 +243,7 @@ const removeAllCartProducts = async (req, res) => {
 
     // Set cartProducts array to empty
     cart.cartProducts = [];
-    
+
     // Reset cart total to 0
     cart.cartTotal = 0;
 
@@ -260,50 +261,162 @@ const removeAllCartProducts = async (req, res) => {
 
 const cartCount = async (req, res) => {
   try {
-      const userId = req.query.user; 
-      // Assuming Cartdb is your Mongoose model for the cart
-      const cart = await Cartdb.findOne({ user: userId });
-      
-      if (!cart) {
-          // If cart is not found, return 0 as the count
-          res.json({ count: 0 });
-          return;
-      }
-      
-      // Assuming cartProducts is an array field in your Cart schema
-      const cartCount = cart.cartProducts.length;
-      // console.log("cart count is:", cartCount);
-      
-      // Send the cart count as a JSON response
-      res.json({ count: cartCount });
+    const userId = req.query.user;
+    // Assuming Cartdb is your Mongoose model for the cart
+    const cart = await Cartdb.findOne({ user: userId });
+
+    if (!cart) {
+      // If cart is not found, return 0 as the count
+      res.json({ count: 0 });
+      return;
+    }
+
+    // Assuming cartProducts is an array field in your Cart schema
+    const cartCount = cart.cartProducts.length;
+    // console.log("cart count is:", cartCount);
+
+    // Send the cart count as a JSON response
+    res.json({ count: cartCount });
   } catch (error) {
-      console.error('Error fetching cart count:', error);
-      // Send an error response if there's an error fetching the cart count
-      res.status(500).json({ error: 'Failed to fetch cart count' });
+    console.error('Error fetching cart count:', error);
+    // Send an error response if there's an error fetching the cart count
+    res.status(500).json({ error: 'Failed to fetch cart count' });
   }
 };
 
-const loadCheckout = async(req,res) => {
+const loadCheckout = async (req, res) => {
   try {
-   const userId = req.session.userId;
-   const addresses = await Addressdb.findOne({ user: userId });
-   let addresslist = addresses.addresses.reverse();
-   const cardId = req.query.id;
-   const cart = await Cartdb.findById(cardId).populate("cartProducts.product");
-   const deliveryCharge = 500
-  //  console.log("Cart with populated products:", cart); // Log the cart to see if products are populated correctly
- 
-   if(!cart) {
-     return res.status(400).send("Error getting cart details");
-   }
- 
-   return res.render("checkout", { cart, userId, addresslist, deliveryCharge,cardId });
+    const userId = req.session.userId;
+    const addresses = await Addressdb.findOne({ user: userId });
+    let addresslist = addresses.addresses.reverse();
+    const cardId = req.query.id;
+    const cart = await Cartdb.findById(cardId).populate("cartProducts.product");
+    const deliveryCharge = 500
+    //  console.log("Cart with populated products:", cart); // Log the cart to see if products are populated correctly
+
+    if (!cart) {
+      return res.status(400).send("Error getting cart details");
+    }
+
+      const couponCodeId = cart.couponApplied
+      const coupon = await Couponsdb.findById(couponCodeId)
+    return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon });
   } catch (error) {
-   console.error('Error Loading CheckoutPage', error);
-   return res.status(500).json({ message: 'Internal server error' });
+    console.error('Error Loading CheckoutPage', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
- }
- 
+}
+
+const applyCoupon = async (req, res) => {
+  try {
+    const { cartId, couponCode } = req.body; // Destructuring assignment to extract properties
+    const deliveryCharge = 500
+    console.log("cartId:", cartId);
+    console.log("couponCode:", couponCode);
+
+    // Fetch cart details from the database
+    const cart = await Cartdb.findById(cartId).populate("cartProducts.product");
+
+    // Check if cart exists
+    if (!cart) {
+      throw new Error("Cart Not Found");
+    }
+    // Fetch coupon details from the database
+    const coupon = await Couponsdb.findOne({ code: couponCode });
+    if (!coupon) {
+      let responseData  = {message:"Invalid Coupon Code"}
+      console.log("Invalid Coupon Code");
+      return res.status(200).json({responseData});
+    }
+    cart.couponApplied = coupon._id;
+
+    // Handle coupon application logic here...
+    const couponType = coupon.discountType;
+    const couponValue = coupon.discountValue;
+    const couponMinAmt = coupon.minimumOffer;
+    const couponMaxAmt = coupon.maximumOffer;
+    const cartTotal = cart.cartTotal;
+
+    if (couponType == "percentage") {
+      if (cartTotal >= couponMinAmt) {
+        const couponDiscount = cartTotal * (couponValue / 100);
+        if (couponDiscount <= couponMaxAmt) {
+          cart.couponDiscount = couponDiscount;
+        } else {
+          cart.couponDiscount = couponMaxAmt;
+        }
+      }
+    } else {
+      const couponDiscount = couponValue;
+      if (couponDiscount <= couponMaxAmt) {
+        cart.couponDiscount = couponDiscount;
+      } else {
+        cart.couponDiscount = couponMaxAmt;
+      }
+    }
+    responseData = {
+      message: "Coupon applied successfully",
+      couponCode: coupon.code,
+      discountAmount: cart.couponDiscount,
+      totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
+    };
+    await cart.save();
+    console.log("Coupon code:", coupon.code);
+    req.session.couponApplied = coupon.code;
+    console.log("Coupon applied to session:", req.session.couponApplied);
+    // Save the session
+    req.session.save((err) => {
+      if (err) {
+        console.error("Error saving session:", err);
+      } else {
+        console.log("Session saved successfully");
+      }
+    });
+
+
+    // Respond with success message if coupon applied successfully
+    res.status(200).json({ responseData });
+  } catch (error) {
+    console.error('Error Applying Coupon:', error.message); // Log error message only
+    res.status(500).json({ message: 'Internal server error' }); // Respond with generic error message
+  }
+};
+
+const removeCoupon = async (req, res) => {
+  try {
+    const { cartId, couponCode } = req.body; // Destructuring assignment to extract properties
+    const deliveryCharge = 500
+    console.log("cartId:", cartId);
+    console.log("couponCode:", couponCode);
+
+    // Fetch cart details from the database
+    const cart = await Cartdb.findById(cartId).populate("cartProducts.product");
+
+    // Check if cart exists
+    if (!cart) {
+      throw new Error("Cart Not Found");
+    }
+    cart.couponApplied = null;
+    cart.couponDiscount = 0;       
+    responseData = {
+      message: "Coupon removed",
+      totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
+    };
+    await cart.save();
+
+    delete req.session.couponApplied;
+    console.log("Coupon deleted from session:");
+
+
+    // Respond with success message if coupon applied successfully
+    res.status(200).json({ responseData });
+  } catch (error) {
+    console.error('Error Applying Coupon:', error.message); // Log error message only
+    res.status(500).json({ message: 'Internal server error' }); // Respond with generic error message
+  }
+};
+
+
 module.exports = {
   addToCart,
   cartCount,
@@ -313,4 +426,6 @@ module.exports = {
   removeCartProduct,
   removeAllCartProducts,
   loadCheckout,
+  applyCoupon,
+  removeCoupon,
 }
