@@ -277,7 +277,8 @@
                                                 Coupon</button>
 
                                         </form>
-                                        <div id="couponCodeMessage" class="coupon-code-message" style="height: 15px;"></div>
+                                        <div id="couponCodeMessage" class="coupon-code-message" style="height: 15px;">
+                                        </div>
                                         <style>
                                             .coupon-button {
                                                 width: 170px;
@@ -467,6 +468,7 @@
             const couponCodeMessage = document.getElementById("couponCodeMessage");
             const applyButton = document.getElementById("applyButton");
             const removeCouponBtn = document.getElementById("removeCouponBtn");
+            const couponInputField = document.getElementById("coupon")
 
             const couponCode = couponInput.value;
             const cartId = "<%= cart._id %>";
@@ -497,6 +499,11 @@
                     }, 3000)
 
                     if (message === "Coupon applied successfully") {
+
+                        //Form field disabling with value
+                        couponInputField.disabled = true;
+                        couponInputField.value = couponCode;
+
                         // Remove existing coupon ul
                         const existingCouponUl = document.querySelector('.coupon-ul');
                         if (existingCouponUl) {
@@ -561,6 +568,8 @@
             const couponCodeMessage = document.getElementById("couponCodeMessage");
             const applyButton = document.getElementById("applyButton");
             const removeCouponBtn = document.getElementById("removeCouponBtn");
+            const couponInputField = document.getElementById("coupon")
+
 
             const couponCode = couponInput.value;
             const cartId = "<%= cart._id %>";
@@ -583,6 +592,11 @@
                         totalAmount,
                     } = responseData.responseData;
                     if (message === "Coupon removed") {
+
+                        //Form field disabling with value
+                        couponInputField.disabled = false;
+                        couponInputField.value = "";                        
+                        
                         // Remove existing coupon ul
                         const existingCouponUl = document.querySelector('.coupon-ul');
                         if (existingCouponUl) {
