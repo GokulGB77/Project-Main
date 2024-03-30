@@ -1,6 +1,6 @@
 <%- include('../layouts/header.ejs') %>
 
-    <div class="breadcrumb-area bg-gray-4 "> <!--addd to class for padding - "breadcrumb-padding-1"-->
+    <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1"> <!--addd to class for padding - "breadcrumb-padding-1"-->
         <div class="container">
             <div class="breadcrumb-content text-center">
                 <h2>Cart</h2>
@@ -27,8 +27,8 @@
                             <div class="table-content table-responsive">
                                 <table>
                                     <% if (cart.cartProducts.length===0) { %>
-                                        <tr>
-                                            <td colspan="6" style="text-align: center;">The cart is empty</td>
+                                        <tr style="height: 300px;">
+                                            <td colspan="6" style="text-align: center;"><h3>Your cart is empty</h3></td>
                                         </tr>
                                         <% } else { %>
                                             <thead>

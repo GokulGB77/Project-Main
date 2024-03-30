@@ -146,14 +146,24 @@ const registerUser = async (req, res) => {
 
       const userData = await user.save();
 
-
+      
       const userID = userData._id;
       const token = auth.createToken(userID);
       res.cookie("jwt", token, {
         httpOnly: true,
         tokenExpiry: auth.tokenExpiry * 1000,
       });
-
+      let cart = await Cartdb.findOne({ user: userId });
+      console.log("Cart Found");
+      if (!cart) {
+        // If cart doesn't exist, create a new one
+        cart = await Cartdb.create({
+          user: userId,
+          cartProducts: [],
+          cartTotal: 0,
+         
+        });
+      }
       console.log("userId is :", userData._id);
       console.log("token :", token);
       res.status(200).json({ userId: userID });
@@ -235,7 +245,17 @@ const loginUser = async (req, res) => {
       httpOnly: true,
       tokenExpiry: auth.tokenExpiry * 1000,
     });
-
+    let cart = await Cartdb.findOne({ user: userId });
+    console.log("Cart Found");
+    if (!cart) {
+      // If cart doesn't exist, create a new one
+      cart = await Cartdb.create({
+        user: userId,
+        cartProducts: [],
+        cartTotal: 0,
+       
+      });
+    }
     console.log("User logged in...", "User Name: ", userData.name);
     return res.redirect('/home');
   } catch (error) {
@@ -290,13 +310,7 @@ const loadContactUs = async (req, res) => {
     console.log(error.message);
   }
 }
-const loadwishlist = async (req, res) => {
-  try {
-    res.render("wishlist")
-  } catch (error) {
-    console.log(error.message);
-  }
-}
+
 
 
 const loadProfile = async (req, res) => {
@@ -433,7 +447,6 @@ module.exports = {
   changePassword,
   loadAboutUs,
   loadContactUs,
-  loadwishlist,
 }
 
 

@@ -7,6 +7,7 @@ const productsController = require('../controllers/productsController');
 const addressController = require('../controllers/addressController');
 const cartController = require('../controllers/cartController');
 const ordersController = require('../controllers/ordersController');
+const wishlistController = require('../controllers/wishlistController');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 const cookieParser = require('cookie-parser');
@@ -87,7 +88,11 @@ userRoute.get("/cart/count",auth.isLogin,cartController.cartCount)
 
 userRoute.get('/contact-us',userController.loadContactUs);
 userRoute.get('/about-us',userController.loadAboutUs);
-userRoute.get('/wishlist',userController.loadwishlist);
+
+userRoute.post("/add-to-wishlist",auth.isLogin,wishlistController.addToWishlist)
+userRoute.get('/wishlist',wishlistController.loadwishlist);
+userRoute.post("/add-to-cart-from-wishlist",auth.isLogin,wishlistController.addToCart)
+userRoute.post("/remove-from-wishlist",auth.isLogin,wishlistController.removeWishlistItem)
 
 userRoute.get('/shop', productsController.loadShop);
 userRoute.get('/shop/:page', productsController.loadShop);

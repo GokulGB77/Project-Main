@@ -224,7 +224,7 @@
                                                                 class="form-control" id="product" name="product">
 
                                                             <div class="product-action-wrap">
-                                                                <button class="product-action-btn-1"
+                                                                <button class="product-action-btn-1 add-to-wishlist-btn"
                                                                     data-product-id="<%= product._id %>"
                                                                     title="Wishlist"><i class="pe-7s-like"></i></button>
                                                                 <button class="product-action-btn-1" title="Quick View"
@@ -411,7 +411,7 @@
                     showToast("Error adding product to cart");
                 }
             }).then(data => {
-                cartQuantity = data.cartQty;
+                let cartQuantity = data.cartQty;
                 updateCartQuantity()
             }).catch(error => {
                 console.error("Error adding product to cart:", error);
@@ -432,6 +432,65 @@
             document.getElementById('cartItemCount').textContent = cartQuantity;
         }
     </script>
+   <script>
+    document.querySelectorAll('.add-to-wishlist-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const productId = this.getAttribute('data-product-id');
+            addToWishlist(productId);
+        });
+    });
+
+    function addToWishlist(productId) {
+    // Here you can implement your logic to add the product to the wishlist
+    console.log('Adding product to wishlist:', productId);
+
+    fetch('/add-to-wishlist', {
+        method: 'POST',
+        body: JSON.stringify({
+            productId: productId
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            $.toast({
+                heading: 'Added Successfully',
+                text: 'Product added to wishlist',
+                position: 'top-center',
+                showHideTransition: 'slide',
+                icon: 'success'
+            });
+        } else {
+            return response.json().then(data => {
+                if (data.message && data.message === "Product already exists in the wishlist") {
+                    $.toast({
+                        heading: 'Failed to Add ',
+                        text: 'Product already exists in the wishlist',
+                        position: 'top-center',
+                        showHideTransition: 'slide',
+                        icon: 'error'
+                    });
+                } else {
+                    throw new Error('Failed to add product to wishlist');
+                }
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Error adding product to wishlist:", error);
+        $.toast({
+            heading: 'Error',
+            text: 'Error adding product to wishlist',
+            showHideTransition: 'fade',
+            position: 'top-center',
+            icon: 'error'
+        });
+    });
+}
+
+</script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

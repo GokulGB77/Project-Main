@@ -9,7 +9,7 @@ const MAX_CART_QUANTITY = 10;
 
 const addToCart = async (req, res) => {
   try {
-    const productId = req.body.productId;
+    const productId = req.body.productId.trim();
     const userId = req.session.userId;
 
     const userDetails = await Userdb.findById(userId);
