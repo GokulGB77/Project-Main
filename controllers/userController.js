@@ -2,6 +2,7 @@ const Userdb = require("../models/userModel")
 const Productsdb = require("../models/productsModel")
 const Addressdb = require("../models/addressModel")
 const Ordersdb = require("../models/ordersModel")
+const Walletdb = require("../models/walletModel")
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 
@@ -153,17 +154,7 @@ const registerUser = async (req, res) => {
         httpOnly: true,
         tokenExpiry: auth.tokenExpiry * 1000,
       });
-      let cart = await Cartdb.findOne({ user: userId });
-      console.log("Cart Found");
-      if (!cart) {
-        // If cart doesn't exist, create a new one
-        cart = await Cartdb.create({
-          user: userId,
-          cartProducts: [],
-          cartTotal: 0,
-         
-        });
-      }
+     
       console.log("userId is :", userData._id);
       console.log("token :", token);
       res.status(200).json({ userId: userID });
@@ -333,8 +324,14 @@ const loadProfile = async (req, res) => {
     let addresses = addressDocument ? addressDocument.addresses : [];
     // Reorder addresses to show the last added address as the first one
     addresses = addresses.reverse();
+
+    const wallet = await Walletdb.findOne({user:userId})
+    const transactions = wallet.transactions 
+
+
+
     if (token) {
-      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails });
+      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails,wallet ,transactions});
     } else {
       res.redirect("/login");
     }

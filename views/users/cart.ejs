@@ -27,7 +27,7 @@
                         <div class="cart-table-content">
                             <div class="table-content table-responsive">
                                 <table>
-                                    <% if (cart.cartProducts.length===0) { %>
+                                    <% if (!cart || cart.cartProducts.length===0) { %>
                                         <tr style="height: 300px;">
                                             <td colspan="6" style="text-align: center;">
                                                 <h3>Your cart is empty</h3>

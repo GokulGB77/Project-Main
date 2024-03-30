@@ -25,7 +25,7 @@ const addToCart = async (req, res) => {
         user: userId,
         cartProducts: [],
         cartTotal: 0,
-       
+
       });
     }
 
@@ -105,10 +105,12 @@ const loadCart = async (req, res) => {
     }
 
     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
-    cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
-    let deliveryCharge = 500
-    const Total = cart.cartTotal + deliveryCharge;
+    if (cart) {
+      cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
+      let deliveryCharge = 500
+      const Total = cart.cartTotal + deliveryCharge;
 
+    }
     if (!cart) {
       // Handle case where cart is not found for the provided userId
       return res.render("cart", { userId, cart: { cartProducts: [] }, index: 0 });
@@ -217,7 +219,7 @@ const removeCartProduct = async (req, res) => {
       await cart.save();
 
       // Redirect the user to a specified page
-      res.status(200).json({message:"Product Removed From Cart",cartProductsCount: cart.cartProducts.length}); // Change '/cart' to the desired page URL
+      res.status(200).json({ message: "Product Removed From Cart", cartProductsCount: cart.cartProducts.length }); // Change '/cart' to the desired page URL
     } else {
       // If the product is not found in the cartProducts array, send an error response
       res.status(404).json({ message: 'Product not found in the cart' });
@@ -298,8 +300,8 @@ const loadCheckout = async (req, res) => {
       return res.status(400).send("Error getting cart details");
     }
 
-      const couponCodeId = cart.couponApplied
-      const coupon = await Couponsdb.findById(couponCodeId)
+    const couponCodeId = cart.couponApplied
+    const coupon = await Couponsdb.findById(couponCodeId)
     return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon });
   } catch (error) {
     console.error('Error Loading CheckoutPage', error);
@@ -324,9 +326,9 @@ const applyCoupon = async (req, res) => {
     // Fetch coupon details from the database
     const coupon = await Couponsdb.findOne({ code: couponCode });
     if (!coupon) {
-      let responseData  = {message:"Invalid Coupon Code"}
+      let responseData = { message: "Invalid Coupon Code" }
       console.log("Invalid Coupon Code");
-      return res.status(200).json({responseData});
+      return res.status(200).json({ responseData });
     }
     cart.couponApplied = coupon._id;
 
@@ -397,7 +399,7 @@ const removeCoupon = async (req, res) => {
       throw new Error("Cart Not Found");
     }
     cart.couponApplied = null;
-    cart.couponDiscount = 0;       
+    cart.couponDiscount = 0;
     responseData = {
       message: "Coupon removed",
       totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge

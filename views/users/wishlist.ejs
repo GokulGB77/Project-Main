@@ -26,12 +26,14 @@
                         <div class="wishlist-table-content">
                             <div class="table-content table-responsive">
                                 <table>
-                                    <% if (wishlist.wishlistItems.length===0) { %>
+
+                                    <% if (!wishlist || wishlist.wishlistItems.length===0) { %>
                                         <tr style="height: 300px;">
                                             <td colspan="6" style="text-align: center;">
                                                 <h3>Your wishlist is empty.</h3>
                                             </td>
                                         </tr>
+                                        
                                         <% } else { %>
                                             <thead>
                                                 <tr>
