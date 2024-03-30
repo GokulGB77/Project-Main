@@ -217,7 +217,7 @@ const removeCartProduct = async (req, res) => {
       await cart.save();
 
       // Redirect the user to a specified page
-      res.redirect('/cart'); // Change '/cart' to the desired page URL
+      res.status(200).json({message:"Product Removed From Cart",cartProductsCount: cart.cartProducts.length}); // Change '/cart' to the desired page URL
     } else {
       // If the product is not found in the cartProducts array, send an error response
       res.status(404).json({ message: 'Product not found in the cart' });

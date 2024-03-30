@@ -1,6 +1,7 @@
 <%- include('../layouts/header.ejs') %>
 
-    <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1"> <!--addd to class for padding - "breadcrumb-padding-1"-->
+    <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1">
+        <!--addd to class for padding - "breadcrumb-padding-1"-->
         <div class="container">
             <div class="breadcrumb-content text-center">
                 <h2>Cart</h2>
@@ -28,7 +29,9 @@
                                 <table>
                                     <% if (cart.cartProducts.length===0) { %>
                                         <tr style="height: 300px;">
-                                            <td colspan="6" style="text-align: center;"><h3>Your cart is empty</h3></td>
+                                            <td colspan="6" style="text-align: center;">
+                                                <h3>Your cart is empty</h3>
+                                            </td>
                                         </tr>
                                         <% } else { %>
                                             <thead>
@@ -45,20 +48,23 @@
 
 
                                                 <% cart.cartProducts.forEach(product=> { %>
-                                                    <tr id="">
+                                                    <tr id="product_<%=product.product._id%>">
                                                         <div id="'product_' + <%= product.product._id %>">
 
                                                             <td class="product-thumbnail">
-                                                                <% if (product.product.images && product.product.images.length > 0) { %>
+                                                                <% if (product.product.images &&
+                                                                    product.product.images.length> 0) { %>
                                                                     <a href="/product-details?id=<%= product._id %>">
-                                                                        <img src="/productAssets/<%= product.product.images[0] %>" alt="product.product.productName">
+                                                                        <img src="/productAssets/<%= product.product.images[0] %>"
+                                                                            alt="product.product.productName">
                                                                     </a>
-                                                                <% } else { %>
-                                                                    <!-- Provide a default image or handle the absence of images -->
-                                                                    <img src="/path/to/default/image.jpg" alt="Default Image">
-                                                                <% } %>
+                                                                    <% } else { %>
+                                                                        <!-- Provide a default image or handle the absence of images -->
+                                                                        <img src="/path/to/default/image.jpg"
+                                                                            alt="Default Image">
+                                                                        <% } %>
                                                             </td>
-                                                            
+
                                                             <td class="product-name">
                                                                 <h5><a href="/product-details?id=<%=product._id %>">
                                                                         <%= product.product.productName %>
@@ -93,11 +99,10 @@
                                                                 <button
                                                                     style="border: none; background: none; padding: 0; cursor: pointer;"
                                                                     onclick="removeProduct('<%= product.product._id %>','<%=cart._id%>')"><lord-icon
-                                                                    src="https://cdn.lordicon.com/skkahier.json"
-                                                                    trigger="hover"
-                                                                    delay="1000"
-                                                                    style="width:30px;height:30px">
-                                                                </lord-icon></button>
+                                                                        src="https://cdn.lordicon.com/skkahier.json"
+                                                                        trigger="hover" delay="1000"
+                                                                        style="width:30px;height:30px">
+                                                                    </lord-icon></button>
                                                             </td>
                                                         </div>
                                                     </tr>
@@ -307,13 +312,30 @@
                                                     })
                                                         .then(response => {
                                                             if (response.ok) {
+                                                                // Product removed successfully
+                                                                $.toast({
+                                                                    heading: 'Product Removed',
+                                                                    text: 'Product Removed From Cart',
+                                                                    position: 'top-center',
+                                                                    showHideTransition: 'slide',
+                                                                    icon: 'info'
+                                                                });
                                                                 // If removal is successful, remove the product from the DOM
-                                                                var productElement = document.getElementById('product_' + productId);
+                                                                var productElement = document.querySelector(`tr[id="product_${productId}"]`)
                                                                 if (productElement) {
                                                                     productElement.remove();
 
                                                                     // Update subtotal and cart total
                                                                     updateCartTotals();
+                                                                    response.json().then(data => {
+                                                                        if (data.cartProductsCount === 0) {
+                                                                            let clearCartButton = document.querySelector('.cart-clear');
+                                                                            if (clearCartButton) {
+                                                                                clearCartButton.click();
+                                                                            }
+                                                                        }
+                                                                    })
+
                                                                 }
                                                             }
                                                         })
@@ -336,10 +358,10 @@
                                                             return response.json();
                                                         })
                                                         .then(data => {
-                                                           
+
                                                             var cartTotalValue = document.getElementById('cart-total-value');
                                                             cartTotalValue.textContent = '₹ ' + data.cartTotal.toLocaleString();
-                                                            
+
                                                             var totalValue = document.getElementById('total-value');
                                                             totalValue.textContent = '₹ ' + data.Total.toLocaleString();
 
@@ -362,29 +384,29 @@
                                 </table>
                             </div>
                         </div>
-                       
-                    <% if (cart.cartProducts.length===0) { %>
-                        
-                        <% } else { %>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="cart-shiping-update-wrapper">
-                                        <div class="cart-shiping-update btn-hover">
-                                            <a href="shop/:1">Continue Shopping</a>
-                                        </div>
-                                        <div class="cart-clear-wrap">
-                                            <!--   -->
-                                            <div class="cart-clear btn-hover">
-                                                <a href="/cart/remove-all-products?id=<%=cart._id%>">Clear Cart</a>
+
+                        <% if (cart.cartProducts.length===0) { %>
+
+                            <% } else { %>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="cart-shiping-update-wrapper">
+                                            <div class="cart-shiping-update btn-hover">
+                                                <a href="shop/:1">Continue Shopping</a>
+                                            </div>
+                                            <div class="cart-clear-wrap">
+                                                <!--   -->
+                                                <div class="cart-clear btn-hover">
+                                                    <a href="/cart/remove-all-products?id=<%=cart._id%>">Clear Cart</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
-                    </div>
+                    </form>
                 </div>
-                <!-- <div class="row">
+            </div>
+            <!-- <div class="row">
                     <div class="col-lg-4 col-md-6 col-12">
                         <div class="cart-calculate-discount-wrap mb-40">
                             <h4>Calculate shipping </h4>
@@ -400,7 +422,7 @@
                             </div>
                         </div>
                     </div> -->
-                <!-- <div class="col-lg-4 col-md-6 col-12">
+            <!-- <div class="col-lg-4 col-md-6 col-12">
                         <div class="cart-calculate-discount-wrap mb-40">
                             <h4>Coupon Discount </h4>
                             <div class="calculate-discount-content">
@@ -414,16 +436,17 @@
                             </div>
                         </div>
                     </div> -->
-                <div class="col-lg-4 col-md-12 col-12 offset-lg-8">
-                    <div class="grand-total-wrap">
-                            <div class="grand-total-content">
+            <div class="col-lg-4 col-md-12 col-12 offset-lg-8">
+                <div class="grand-total-wrap">
+                    <div class="grand-total-content">
                         <h3 id="cart-total">Subtotal: <span id="cart-total-value">₹ <%=cart.cartTotal.toLocaleString()%>
                             </span></h3>
 
                         <div class="grand-shipping">
                             <span>Shipping</span>
                             <ul>
-                                <li><input type="radio" name="shipping" value="info" checked="checked"><label>Shipping: ₹ 500</label></li>
+                                <li><input type="radio" name="shipping" value="info" checked="checked"><label>Shipping:
+                                        ₹ 500</label></li>
                                 <!-- <li><input type="radio" name="shipping" value="info" checked="checked"><label>Flat rate: <span>$100.00</span></label></li>
                                     <li><input type="radio" name="shipping" value="info" checked="checked"><label>Local pickup: <span>$120.00</span></label></li> -->
                             </ul>
@@ -431,16 +454,16 @@
                         <!-- <div class="shipping-country">
                                 <p>Shipping to Bangladesh</p>
                             </div> -->
-                            <div class="grand-total">
-                                <h3 id="total">Total: <span id="total-value">₹ <%=Total.toLocaleString()%></span></h3>
-                            </div>
-                            
+                        <div class="grand-total">
+                            <h3 id="total">Total: <span id="total-value">₹ <%=Total.toLocaleString()%></span></h3>
                         </div>
-                        <div class="grand-total-btn btn-hover">
-                            <a class="btn theme-color" href="/checkout?id=<%=cart._id%>">Proceed to checkout</a>
-                        </div>
+
                     </div>
-                    <% } %>
+                    <div class="grand-total-btn btn-hover">
+                        <a class="btn theme-color" href="/checkout?id=<%=cart._id%>">Proceed to checkout</a>
+                    </div>
+                </div>
+                <% } %>
             </div>
         </div>
     </div>

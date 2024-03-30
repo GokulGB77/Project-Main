@@ -175,7 +175,7 @@ const removeWishlistItem = async (req, res) => {
           await wishlist.save();
 
           // Successful removal
-          return res.status(200).json({ message: 'Product removed from wishlist successfully' });
+          return res.status(200).json({ message: 'Product removed from wishlist successfully',wishlistCount: wishlist.wishlistItems.length });
       } else {
           // Product not found in the wishlist
           return res.status(404).json({ message: 'Product not found in the wishlist' });
