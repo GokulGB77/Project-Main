@@ -110,13 +110,16 @@ const loadCart = async (req, res) => {
       let deliveryCharge = 500
       const Total = cart.cartTotal + deliveryCharge;
 
-    }
+    
     if (!cart) {
       // Handle case where cart is not found for the provided userId
       return res.render("cart", { userId, cart: { cartProducts: [] }, index: 0 });
     }
 
     return res.render("cart", { userId, Total, addresses, cart, index: 0 });
+  }
+  return res.render("cart", { userId,  addresses, cart, index: 0 });
+
   } catch (error) {
     console.error("Error Loading Cart: ", error);
     res.status(500).json({ error: "Error Loading Cart." });

@@ -63,15 +63,15 @@
                                 <div class="payment-info">
                                     <h5 style="font-weight: 700; font-size: 14px; line-height: 20px;">Payment Methods
                                     </h5>
-                                    <% if ( orderDetails.paymentMethod==="cod" ) { %>
+                                    <% if ( orderDetails.paymentMethod=="cod" ) { %>
                                         <h6
                                             style="list-style: none; color: #000; word-wrap: break-word;margin: 0; font-size: 14px">
                                             Pay on Delivery</h6>
-                                        <% } else if (orderDetails.paymentMethod==="netbanking" ) { %>
-                                            <h6
-                                                style="list-style: none; color: #000; word-wrap: break-word;margin: 0; font-size: 14px">
-                                                Net Banking</h6>
-                                            <% } %>
+                                    
+                                            <% } else { %>
+                                                <h6 style="list-style: none; color: #000; word-wrap: break-word;margin: 0; font-size: 14px">
+                                                Razorpay</h6>
+                                                <% } %>
                                 </div>
 
 
@@ -206,14 +206,13 @@
                                                         <div class="actions ">
                                                             <div class="button-container">
 
-                                                                <% if( orderDetails.orderStatus==="delivered" ) {%>
+                                                                <% if( orderDetails.orderStatus=="delivered" ) {%>
                                                                     <button>Leave product Review</button>
                                                                     <button>Archive order</button>
                                                                     <% } %>
-                                                                        <% if( orderDetails.orderStatus==="canelled" )
-                                                                            {%>
-                                                                            <button>Archive order</button>
-                                                                            <% } %>
+                                                                <% if( orderDetails.orderStatus=="cancelled" ) {%>
+                                                                    <button>Archive order</button>
+                                                                    <% } %>
 
                                                             </div>
                                                         </div>
@@ -305,7 +304,7 @@
                             icon: 'success'
                         })
                     }
-                    if (response.status===404) {
+                    if (response.status === 404) {
                         $.toast({
                             heading: 'Missing orderId details.',
                             position: 'top-center',
@@ -313,7 +312,7 @@
                             icon: 'error'
                         })
                     }
-                    if (response.status===405) {
+                    if (response.status === 405) {
                         $.toast({
                             heading: 'Missing orderId details.',
                             position: 'top-center',
@@ -321,7 +320,7 @@
                             icon: 'error'
                         })
                     }
-                    if (response.status===406) {
+                    if (response.status === 406) {
                         $.toast({
                             heading: 'Missing order cancellation reason.',
                             position: 'top-center',

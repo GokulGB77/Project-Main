@@ -76,6 +76,8 @@ adminRoute.get("/categories/enable",categoriesController.enableCategory)
 adminRoute.get("/orders",ordersController.loadOrders)
 adminRoute.get("/orders/order-details",ordersController.loadOrdersDetails)
 adminRoute.post("/orders/order-details/save-notes",ordersController.adminCancel)
+adminRoute.post("/approve-refund", ordersController.approveRefund);
+
 
 adminRoute.get("/coupons",couponsController.loadCoupons)
 // adminRoute.get("/admin/coupons/list",couponsController.getCouponList)

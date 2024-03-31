@@ -3,6 +3,7 @@ const Cartdb = require("../models/cartModel")
 const Addressdb = require("../models/addressModel")
 const Ordersdb = require("../models/ordersModel")
 const Productsdb = require("../models/productsModel")
+const Walletdb = require("../models/walletModel")
 // const instance = require("../services/razorpay");
 const session = require("express-session")
 
@@ -622,6 +623,57 @@ const adminCancel = async (req, res) => {
   }
 };
 
+const approveRefund = async (req, res) => {
+  try {
+    const orderId = req.body.orderId;
+    console.log("OrderID:", orderId);
+    const orderDetails = await Ordersdb.findById(orderId)
+      .populate("orderProducts.product")
+      .populate("user");
+
+    if (!orderDetails) {
+      return res.status(400).json({ message: "Order not found" });
+    }
+    console.log("OrderDetails:", orderDetails);
+    const userId = orderDetails.user._id;
+    const refundAmount = orderDetails.orderTotal - orderDetails.couponDiscount
+    const orderType =  orderDetails.paymentMethod + "(" + orderDetails.orderStatus + ")"
+    const orderID = orderDetails.orderId 
+    console.log("refundAmount:",refundAmount)
+    const wallet = await Walletdb.findOne({user:userId}).populate("transactions")
+
+    if(orderDetails.paymentMethod==="razorPay" && (orderDetails.orderStatus==="cancelled" || orderDetails.orderStatus==="return-requested")){
+      wallet.balance += refundAmount;
+      wallet.transactions.push({
+        amount: refundAmount,
+        description: "Payment for Order " + orderID,
+        type: orderType,
+      });
+
+      await wallet.save() 
+
+      orderDetails.orderStatus = "returned"
+      await orderDetails.save()
+    }
+    if(orderDetails.paymentMethod==="cod" &&  orderDetails.orderStatus==="return-requested"){
+      wallet.balance += refundAmount;
+      wallet.transactions.push({
+        amount: refundAmount,
+        description: "Payment for Order " + orderID,
+        type: orderType,
+      });
+
+      await wallet.save() 
+
+      orderDetails.orderStatus = "returned"
+      await orderDetails.save()
+    }
+    res.status(200).json({ message: "Refund approved. Fund added to user's wallet",orderDetails });
+  } catch (error) {
+    console.log("Error in approving refund:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   paymentOption,
@@ -631,5 +683,6 @@ module.exports = {
   cancelOrder,
   loadOrders,
   loadOrdersDetails,
-  adminCancel
+  adminCancel,
+  approveRefund,
 }

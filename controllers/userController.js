@@ -311,9 +311,18 @@ const loadProfile = async (req, res) => {
     const token = req.cookies.jwt;
     const currentUser = res.locals.currentUser;
     const userId = currentUser._id
-    // console.log("Current User: ", currentUser.name);
-    // console.log("userId:", res.locals.currentUserId)
+  
+      // Check if the user has a wallet, if not, create one
+      let wallet = await Walletdb.findOne({ user: userId });
 
+      if (!wallet) {
+        // Create a wallet for the user
+        wallet = await Walletdb.create({
+          user: userId,
+          balance: 0,
+          transactions: []
+        });
+      }
     //Order related
     const orderDetails = await Ordersdb.find({ user: userId }).sort({ orderDate: -1, orderTime: -1 })
     console.log("orderDetails", orderDetails);
@@ -325,13 +334,41 @@ const loadProfile = async (req, res) => {
     // Reorder addresses to show the last added address as the first one
     addresses = addresses.reverse();
 
-    const wallet = await Walletdb.findOne({user:userId})
-    const transactions = wallet.transactions 
 
 
 
     if (token) {
-      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails,wallet ,transactions});
+      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails,wallet });
+    } else {
+      res.redirect("/login");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("LoadProfile failed");
+  }
+};
+
+
+const loadOrders = async (req, res) => {
+
+  try {
+    // console.log("User entered User profile");
+    const token = req.cookies.jwt;
+    const currentUser = res.locals.currentUser;
+    const userId = currentUser._id
+  
+     
+    const allOrders  = await Ordersdb.find({ user: userId }).sort({ orderDate: -1, orderTime: -1 })
+    console.log("orderDetails", allOrders );
+
+    const user = await Userdb.findOne({ _id: currentUser._id }).populate('addresses');
+   
+
+
+
+
+    if (token) {
+      res.render("viewUserOrders", { token, currentUser,  user, userId, allOrders  });
     } else {
       res.redirect("/login");
     }
@@ -438,6 +475,7 @@ module.exports = {
   registerUser,
   loginUser,
   loadProfile,
+  loadOrders,
   resendOtp,
   logoutUser,
   updateDetails,

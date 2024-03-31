@@ -16,7 +16,7 @@ const ordersSchema = new mongoose.Schema({
   orderTotal:{type:Number,required:true,default:0},
   orderDate:{type:String,required:true},
   orderTime:{type:String,required:true},
-  orderStatus:{type:String,enum: ["pending","shipped","delivered", "cancelled","returned", ],default:"pending",required:true},
+  orderStatus:{type:String,enum: ["pending","shipped","delivered", "cancelled",,"return-requested","returned", ],default:"pending",required:true},
   paymentMethod:{type:String,required:true},
   deliveryNotes:{type:String,required:false},
   orderCancelReason: {type:String,required:false},
