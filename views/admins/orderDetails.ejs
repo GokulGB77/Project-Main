@@ -468,10 +468,8 @@
                                         console.log('Refund approved successfully');
                                         response.json().then(data => {
                                             // Check the condition again with updated orderDetails
-                                            checkCondition(data.orderDetails);
-                                            updatePaymentBadge(data.orderDetails);
-                                            updateOrderStatusBadge(data.orderDetails);
-                                        });
+                                           
+                                       
                                         var myToast = $.toast({
                                             heading: 'Approving Refund.Please Wait..',
                                             text: "Approving Refund. The Amount will be added to user wallet",
@@ -490,8 +488,11 @@
                                                 hideAfter: 7000, 
                                                 position: 'top-center',
                                             });
+                                            checkCondition(data.orderDetails);
+                                            updatePaymentBadge(data.orderDetails);
+                                            updateOrderStatusBadge(data.orderDetails);
                                         }, 3000)
-
+                                    });
                                     } else {
                                         // Refund approval failed
                                         console.error('Failed to approve refund');

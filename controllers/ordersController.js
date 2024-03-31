@@ -102,6 +102,7 @@ const instance = new Razorpay({
 // }
 const paymentOption = async (req, res) => {
   try {
+    const deliveryCharge =500
     console.log("in paymentOption(fn)");
     const userId = req.session.userId;
     if (!userId) {
@@ -164,7 +165,7 @@ const paymentOption = async (req, res) => {
 
     if (selectedPaymentMethod === "razorPay") {
       console.log("paymentOption(fn):entered razorpay");
-      const total = cart.cartTotal
+      const total = cart.cartTotal - cart.couponDiscount + deliveryCharge
       let options = {
         amount: total * 100,
         currency: "INR",
