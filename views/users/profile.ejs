@@ -170,16 +170,25 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr>
-                                                                <td>03/28/2024</td>
-                                                                <td>Payment for Order #12345</td>
-                                                                <td>-$50.00</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>03/25/2024</td>
-                                                                <td>Funds Added</td>
-                                                                <td>+$100.00</td>
-                                                            </tr>
+                                                            <% wallet.transactions.forEach(transaction => { %>
+                                                                        <% 
+                                                                        const dateStr = transaction.createdAt
+                                                                        const date = new Date(dateStr);
+                                                                        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                                                                        const formattedTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+                                                                        const showPlusSign = transaction.type.includes('return-requested') || transaction.type.includes('cancelled');
+                                                                        const amountWithSign = showPlusSign ? `+ ₹ ${transaction.amount}` : `- ₹ ${transaction.amount}`;
+                                                                        %>
+                                                                <tr>
+                                                                    <td><%= formattedDate %></td>
+                                                                    <td><%= transaction.description %></td>
+                                                                    <td> <%= amountWithSign %></td>
+
+
+                                                                </tr>
+
+                                                            <% }) %> 
+                                                           
                                                         </tbody>
                                                     </table>
                                                 </div>

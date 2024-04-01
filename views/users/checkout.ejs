@@ -266,7 +266,228 @@
                                         </ul>
                                     </div>
                                     <div class="coupon-code-section">
-                                        <p>Have a coupon code?</p>
+                                        <p><a href="#" id="viewCoupons" style="color: chocolate;">View Available
+                                                Coupons</a></p>
+
+                                        <div id="myModal" class="modal" style="z-index: 100;">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h2 class="modal-title">Available Coupons</h2>
+                                                    <button id="cls-btn" class="close">&times;</button>
+                                                </div>
+                                                <div
+                                                    class="coupons-container d-flex justify-content-center align-items-center container">
+                                                    <% coupons.forEach(coupon=> { %>
+                                                        <div class="coupon-card card text-center <%= coupon.couponAppliedUsers.includes(currentUserId) ? 'coupon-used' : '' %>"
+                                                            data-coupon-code="<%= coupon.code %>"
+                                                            data-coupon-used="<%= coupon.couponAppliedUsers.includes(currentUserId) %>">
+                                                            <div class="image-container">
+                                                                <img class="image" src="https://i.imgur.com/DC94rZe.png"
+                                                                    width="150" alt="Coupon Image">
+                                                            </div>
+                                                            <h5 class="discount">
+                                                                <%= coupon.name %>
+                                                            </h5>
+                                                            <small class="description">Min Order Amount: <%=
+                                                                    coupon.minimumFffer %></small>
+                                                            
+                                                            <small class="description">Valid Till: <%=
+                                                                    coupon.expiryDate.toDateString() %></small>
+                                                            <div class="code mt-4">
+                                                                <small>With Code: <%= coupon.code %></small>
+                                                            </div>
+                                                            <button
+                                                                class="copy-code-btn btn btn-dark mt-2 <%= coupon.couponAppliedUsers.includes(currentUserId) ? 'disabled' : '' %>">
+                                                                <%= coupon.couponAppliedUsers.includes(currentUserId)
+                                                                    ? 'Already Used' : 'Copy Code' %>
+                                                            </button>
+                                                           
+                                                        </div>
+                                                        <% }); %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            document.querySelectorAll('.copy-code-btn').forEach(button => {
+                                                var modal = document.getElementById("myModal");
+
+                                                button.addEventListener('click', () => {
+                                                    const couponCode = button.closest('.coupon-card').dataset.couponCode;
+                                                    navigator.clipboard.writeText(couponCode)
+                                                        .then(() => {
+
+                                                           
+                                                            modal.style.display = "none";
+                                                        })
+                                                        .catch(err => {
+                                                            console.error('Failed to copy: ', err);
+                                                        });
+                                                });
+                                            });
+                                            document.querySelectorAll('.card').forEach(card => {
+                                                var modal = document.getElementById("myModal");
+                                                card.addEventListener('click', () => {
+                                                    const couponCard = card.closest('.coupon-card');
+                                                    const couponCode = couponCard.dataset.couponCode;
+                                                    const couponUsed = couponCard.dataset.couponUsed === 'true';
+
+                                                    if (!couponUsed) {
+                                                        navigator.clipboard.writeText(couponCode)
+                                                            .then(() => {
+                                                                $.toast({
+                                                                    heading: 'Coupon Copied',
+                                                                    showHideTransition: 'slide',
+                                                                    position: 'top-center',
+                                                                    icon: 'success',
+                                                                    stack:0
+                                                                });
+                                                                modal.style.display = "none";
+                                                            })
+                                                            .catch(err => {
+                                                                console.error('Failed to copy: ', err);
+                                                            });
+                                                    } else {
+                                                        // Coupon already used, show an error message or perform any other desired action
+                                                        $.toast({
+                                                            heading: 'Coupon Already Used',
+                                                            showHideTransition: 'slide',
+                                                            position: 'top-center',
+                                                            icon: 'error',
+                                                            stack:0
+                                                        });
+                                                    }
+                                                });
+                                            });
+
+                                        </script>
+                                        <script>
+
+
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                var modal = document.getElementById("myModal");
+                                                var viewCouponsLink = document.getElementById("viewCoupons");
+
+                                                viewCouponsLink.addEventListener("click", function () {
+                                                    modal.style.display = "block";
+                                                });
+
+
+
+                                                window.addEventListener("click", function (event) {
+                                                    if (event.target == modal) {
+                                                        modal.style.display = "none";
+                                                    }
+                                                });
+                                            });
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                var modal = document.getElementById("myModal");
+                                                var closeBtn = document.getElementById("cls-btn");
+                                                closeBtn.addEventListener("click", function () {
+                                                    modal.style.display = "none";
+                                                });
+
+
+                                            });
+
+                                        </script>
+                                        <style>
+                                            .coupons-container {
+                                                display: flex;
+                                                flex-wrap: wrap;
+                                                justify-content: center;
+                                            }
+
+                                            .coupon-card {
+                                                margin: 10px;
+                                            }
+
+                                            .discount {
+                                                font-weight: 700;
+                                            }
+
+                                            .modal-header {
+                                                background-color: #ffffff;
+                                                padding: 10px;
+                                                display: flex;
+                                                justify-content: space-between;
+                                                align-items: center;
+                                                width: 100%;
+                                            }
+
+                                            .card {
+                                                margin-top: 30px;
+                                            }
+
+                                            .card {
+                                                width: 180px;
+                                                height: 230px;
+                                                padding: 10px;
+                                                border-radius: 20px;
+                                                background: orange;
+                                                border: none;
+                                                color: #fff;
+                                                display: flex;
+                                                position: relative;
+                                                align-items: center;
+                                                justify-content: center;
+                                            }
+
+                                            .image {
+                                                position: absolute;
+                                                opacity: .1;
+                                                left: 15px;
+                                                top: 55px;
+                                            }
+
+                                            .image2 {
+                                                position: absolute;
+                                                bottom: 0;
+                                                right: 0;
+                                                opacity: .1;
+                                            }
+
+                                            .modal {
+                                                display: none;
+                                                position: fixed;
+                                                z-index: 100;
+                                                left: 0;
+                                                top: 0;
+                                                width: 100%;
+                                                height: 100%;
+                                                overflow: auto;
+                                                background-color: rgba(0, 0, 0, 0.4);
+                                            }
+
+                                            .modal-content {
+                                                background-color: #fefefe;
+                                                margin: 9% auto;
+                                                padding: 33px;
+                                                border: 1px solid #888;
+                                                width: 80%;
+                                                display: flex;
+                                                flex-wrap: wrap;
+                                                justify-content: center;
+                                                align-items: flex-start;
+                                            }
+
+                                            .close {
+                                                color: #aaa;
+                                                float: left;
+                                                font-size: 28px;
+                                                font-weight: bold;
+                                            }
+
+                                            .close:hover,
+                                            .close:focus {
+                                                color: black;
+                                                text-decoration: none;
+                                                cursor: pointer;
+                                            }
+                                        </style>
+                                        <style>
+
+                                        </style>
+
                                         <form class="coupon-code-input" id="couponForm" action="checkout/apply-coupon"
                                             method="post">
                                             <input type="text" id="coupon" placeholder="Enter coupon code">
@@ -486,17 +707,29 @@
                 })
             })
                 .then(response => response.json())
+                
                 .then(responseData => {
                     const {
                         message,
+                        errMessage,
                         totalAmount,
                         couponCode,
                         discountAmount
                     } = responseData.responseData;
-                    couponCodeMessage.textContent = message
-                    setTimeout(() => {
-                        couponCodeMessage.textContent = ""
-                    }, 3000)
+
+                    if(errMessage){
+                        couponCodeMessage.textContent = errMessage
+                        couponCodeMessage.classList.add("text-danger"); // Add the class
+                   
+
+                    } else { 
+                        couponCodeMessage.textContent = message
+                        couponCodeMessage.classList.add("text-success"); // Add the class
+
+                        setTimeout(() => {
+                            couponCodeMessage.textContent = ""
+                        }, 3000)
+                    }
 
                     if (message === "Coupon applied successfully") {
 
@@ -595,7 +828,7 @@
 
                         //Form field disabling with value
                         couponInputField.disabled = false;
-                        
+
                         // Remove existing coupon ul
                         const existingCouponUl = document.querySelector('.coupon-ul');
                         if (existingCouponUl) {

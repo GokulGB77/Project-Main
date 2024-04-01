@@ -4,6 +4,7 @@ const Addressdb = require("../models/addressModel")
 const Ordersdb = require("../models/ordersModel")
 const Productsdb = require("../models/productsModel")
 const Walletdb = require("../models/walletModel")
+const Couponsdb = require("../models/couponsModel")
 // const instance = require("../services/razorpay");
 const session = require("express-session")
 
@@ -304,6 +305,11 @@ const placeOrder = async (req, res) => {
 
     const orderDetails = await order.save();
     console.log("placeOrder(fn):Order Created and saved to db",orderDetails.orderId);
+    
+    const coupon = await Couponsdb.findById(couponApplied)
+    coupon.couponAppliedUsers.push(userId)
+
+    coupon.save()
     
     const orderDetailsId = orderDetails.orderId;
     cart.cartProducts = [];

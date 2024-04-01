@@ -10,6 +10,7 @@ const couponsSchema = new mongoose.Schema({
   minimumOffer: { type: Number, default: 500, },
   maximumOffer: { type: Number },
   status: { type: String, enum: ["active", "blocked"], default: "active" },
+  couponAppliedUsers:[{type: mongoose.Schema.Types.ObjectId, ref: "Usersdb" }]
 
 },
 { timestamps: true,}

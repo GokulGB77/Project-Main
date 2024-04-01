@@ -302,10 +302,11 @@ const loadCheckout = async (req, res) => {
     if (!cart) {
       return res.status(400).send("Error getting cart details");
     }
+    const coupons = await Couponsdb.find()
 
     const couponCodeId = cart.couponApplied
     const coupon = await Couponsdb.findById(couponCodeId)
-    return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon });
+    return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon,coupons});
   } catch (error) {
     console.error('Error Loading CheckoutPage', error);
     return res.status(500).json({ message: 'Internal server error' });
@@ -332,6 +333,11 @@ const applyCoupon = async (req, res) => {
       let responseData = { message: "Invalid Coupon Code" }
       console.log("Invalid Coupon Code");
       return res.status(200).json({ responseData });
+    }
+    if (coupon.couponAppliedUsers.includes(cart.user)) {
+      let responseData = { errMessage: "Already used. Enter a Valid Coupon." };
+      console.log("Coupon already used");
+      return res.status(400).json({ responseData });
     }
     cart.couponApplied = coupon._id;
 

@@ -95,7 +95,7 @@
                                         Promotion Applied: &#8377;500</h6>
                                     <h6
                                         style="list-style: none; color: #000; font-weight: 700; word-wrap: break-word;margin-top: 10px; font-size: 14px">
-                                        Grand Total: &#8377; <%= (orderDetails.orderTotal - 500).toLocaleString() %>
+                                        Grand Total: &#8377; <%= (orderDetails.orderTotal - orderDetails.couponDiscount).toLocaleString() %>
                                     </h6>
                                 </div>
                             </div>
@@ -116,7 +116,7 @@
                                     <!-- <button>Track package</button> -->
                                     <button onclick="showPopup()" class="cancel-button-button">Cancel this
                                         delivery</button>
-                                    <div id="popup" class="popup">
+                                    <div id="popup" class="popup" style="z-index: 150;">
                                         <div class="popup-content">
                                             <div class="main-pcontent">
 

@@ -325,7 +325,7 @@ const loadProfile = async (req, res) => {
         });
       }
     //Order related
-    const orderDetails = await Ordersdb.find({ user: userId }).sort({ orderDate: -1, orderTime: -1 })
+    const orderDetails = await Ordersdb.find({ user: userId }).sort({ orderDate: 1, orderTime: 1 })
     console.log("orderDetails", orderDetails);
 
     // Use findOne to retrieve a single user document
