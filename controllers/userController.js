@@ -3,6 +3,7 @@ const Productsdb = require("../models/productsModel")
 const Addressdb = require("../models/addressModel")
 const Ordersdb = require("../models/ordersModel")
 const Walletdb = require("../models/walletModel")
+const Cartdb = require("../models/cartModel")
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 
@@ -236,7 +237,7 @@ const loginUser = async (req, res) => {
       httpOnly: true,
       tokenExpiry: auth.tokenExpiry * 1000,
     });
-    let cart = await Cartdb.findOne({ user: userId });
+    let cart = await Cartdb.findOne({ user: userID });
     console.log("Cart Found");
     if (!cart) {
       // If cart doesn't exist, create a new one

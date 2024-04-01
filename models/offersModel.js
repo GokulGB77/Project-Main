@@ -6,14 +6,19 @@ const offerSchema = new mongoose.Schema(
     description: { type: String, required: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    isActive: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
     productOffer: {
       products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Productsdb" }],
       discountPercentage: { type: Number, default: 0 },
-      categoryOffer: {
-        category: { type: mongoose.Schema.Types.ObjectId, ref: "Categoriesdb", },
-        discountPercentage: { type: Number, default: 0, },
-      },
+    },
+    categoryOffer: {
+      category: { type: mongoose.Schema.Types.ObjectId, ref: "Categoriesdb", },
+      discountPercentage: { type: Number, default: 0, },
+    },
+    ReferralOffer: {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "Categoriesdb", },
+      forExistingUser: { type: Number, default: 0, },
+      forNewUser: { type: Number, default: 0, },
     },
   },
   {
@@ -21,3 +26,5 @@ const offerSchema = new mongoose.Schema(
     timestamps: true,
   }
 )
+
+module.exports = mongoose.model('Offersdb',offerSchema);

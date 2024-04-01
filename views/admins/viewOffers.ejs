@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE HTML>
 <html lang="en">
 
@@ -7,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard</title>
-  <!-- Favicon -->
+    <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/admin/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/admin/css/main.css" rel="stylesheet" type="text/css" />
@@ -23,7 +21,8 @@
                 <img src="/admin/imgs/theme/logo.png" class="logo" alt="Admin Dashboard">
             </a>
             <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
             </div>
         </div>
         <nav>
@@ -42,35 +41,37 @@
                     <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-category"></i>
                         <span class="text">Categories</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item active">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
-                  
+
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/coupons?page=1"> <i class="icon material-icons material-icons md-card_giftcard"></i>
+                    <a class="menu-link" href="/admin/coupons?page=1"> <i
+                            class="icon material-icons material-icons md-card_giftcard"></i>
                         <span class="text">Coupons</span>
                     </a>
-                  
+
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/offers?page=1"> <i class="icon material-icons material-icons md-local_offer"></i>
+                    <a class="menu-link" href="/admin/offers?page=1"> <i
+                            class="icon material-icons material-icons md-local_offer"></i>
                         <span class="text">Offers</span>
                     </a>
-                  
+
                 </li>
-<!--                 
+                <!--                 
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
                         <span class="text">Sales</span>
@@ -96,7 +97,7 @@
                   -->
             </ul>
             <hr>
-            <ul class="menu-aside">     
+            <ul class="menu-aside">
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/logout"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Logout</span>
@@ -139,137 +140,37 @@
             </div>
         </header>
         <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Offers</h2>
-                   
-                </div>
-                
-            </div>
+
             <div class="card mb-4">
-                <header class="card-header">
-                   
-                </header>
-
-
-
-<div class="card-body">
-    <!-- Category Offers -->
-    <% const categoryOffers=offers.filter(offer=> offer.categoryOffer && offer.categoryOffer.discountPercentage !== 0);
-        %>
-        <% if (categoryOffers.length> 0) { %>
-            <h2 class="m-3" style="text-decoration: underline;">Category Offers</h2>
-            <table class="table category-offers mb-4">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Discount Percentage</th>
-                        <th>Category</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% categoryOffers.forEach(offer=> { %>
-                        <tr>
-                            <td>
-                                <%= offer.title %>
-                            </td>
-                            <td>
-                                <%= offer.description %>
-                            </td>
-                            <td>
-                                <%= new Date(offer.startDate).toLocaleDateString() %>
-                            </td>
-                            <td>
-                                <%= new Date(offer.endDate).toLocaleDateString() %>
-                            </td>
-                            <td>
-                                <%= offer.categoryOffer.discountPercentage %>
-                            </td>
-                            <td>
-                                <%= offer.categoryOffer.category.cName %>
-                            </td>
-                        <td>
-                            <button onclick="toggleStatus('<%= offer._id %>')" class="btn btn-<%= offer.isActive ? 'danger' : 'success' %>">
-                                <%= offer.isActive ? 'Block' : 'Activate' %>
-                            </button>
-                        </td>
-
-                        </tr>
-                        <% }) %>
-                </tbody>
-            </table>
-            <% } %>
-
-                <!-- Product Offers -->
-                <% const productOffers=offers.filter(offer=> offer.productOffer && offer.productOffer.discountPercentage
-                    !== 0); %>
-                    <% if (productOffers.length> 0) { %>
-                        <h2 class="m-3" style="text-decoration: underline;">Product Offers</h2>
-                        <table class="table product-offers mb-4">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Discount Percentage</th>
-                                    <th>Products</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% productOffers.forEach(offer=> { %>
+                <div class="card-body">
+                    <!-- Category Offers -->
+                    <div style="border: 2px; border-color: black;">
+                        <% if (!categoryOffers || categoryOffers.length> 0 ) { %>
+                            <div class="content-header">
+                                <div>
+                                    <h3 class="content-title card-title">Categories Offer</h3>
+                                </div>
+                                <div>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#createCategoryModal"
+                                        class="btn btn-primary btn-sm rounded">Create
+                                        Category Offer</a>
+                                </div>
+                            </div>
+                            <table class="table category-offers mb-4">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <%= offer.title %>
-                                        </td>
-                                        <td>
-                                            <%= offer.description %>
-                                        </td>
-                                        <td>
-                                            <%= new Date(offer.startDate).toLocaleDateString() %>
-                                        </td>
-                                        <td>
-                                            <%= new Date(offer.endDate).toLocaleDateString() %>
-                                        </td>
-                                        <td>
-                                            <%= offer.productOffer.discountPercentage %>
-                                        </td>
-                                        <td>
-                                            <%= offer.productOffer.products.map(product=> product.pname).join(', ') %>
-                                        </td>
-                                    <td>
-                                        <button onclick="toggleStatus('<%= offer._id %>')" class="btn btn-<%= offer.isActive ? 'danger' : 'success' %>">
-                                            <%= offer.isActive ? 'Block' : 'Activate' %>
-                                        </button>
-                                    </td>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Discount Percentage</th>
+                                        <th>Category</th>
+                                        <th>Actions</th>
                                     </tr>
-                                    <% }) %>
-                            </tbody>
-                        </table>
-                        <% } %>
-
-                        
-                            <% if (referralOffers.length> 0) { %>
-                                <h2 class="m-3" style="text-decoration: underline;">Referral Offers</h2>
-                                <table class="table referral-offers mb-4">
-                                    <thead>
-                                        <tr>
-                                            <th>Title</th>
-                                            <th>Description</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                            <th>Referred User Reward</th>
-                                            <th>Referring User Reward</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% referralOffers.forEach(offer=> { %>
+                                </thead>
+                                <tbody>
+                                    <% if (offers) {%>
+                                        <% offers.forEach(offer=> { %>
                                             <tr>
                                                 <td>
                                                     <%= offer.title %>
@@ -284,57 +185,373 @@
                                                     <%= new Date(offer.endDate).toLocaleDateString() %>
                                                 </td>
                                                 <td>
-                                                    <%= offer.referredUserReward %>
+                                                    <%= offer.categoryOffer.discountPercentage %>
                                                 </td>
                                                 <td>
-                                                    <%= offer.referringUserReward %>
+                                                    <%= offer.categoryOffer.category.categoryName %>
                                                 </td>
                                                 <td>
-                                                    <button onclick="toggleReferalStatus('<%= offer._id %>')"
+                                                    <button onclick="toggleStatus('<%= offer._id %>')"
                                                         class="btn btn-<%= offer.isActive ? 'danger' : 'success' %>">
                                                         <%= offer.isActive ? 'Block' : 'Activate' %>
                                                     </button>
                                                 </td>
+
                                             </tr>
                                             <% }) %>
-                                    </tbody>
-                                </table>
-                                <% } else { %>
-                                    <p class="m-3">No referral offers available.</p>
-                                    <% } %>
-
-</div>
-
-
-
-
-
-
-                </section>
-                <footer class="main-footer font-xs">
-                    <div class="row pb-30 pt-15">
-                        <div class="col-sm-6">
-                            <script>
-                                document.write(new Date().getFullYear())
-                            </script> ©,
+                                                <% } %>
+                                </tbody>
+                            </table>
+                            <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="createCategoryModal" tabindex="-1" aria-labelledby="createCategoryModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createCategoryModalLabel">Create New Category Offer</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="text-sm-end">
-                                All rights reserved
-                            </div>
+                        <div class="modal-body">
+                            <form action="/add-category-offer" method="post">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Title:</label>
+                                    <input type="text" id="title" name="title" class="form-control"
+                                        style="max-width: 300px;" required>
+                                    <p id="title-error" class="error-message" style="color: red;"></p>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description:</label>
+                                    <textarea maxlength="20" id="description" name="description" class="form-control"
+                                        style="max-width: 500px;" required></textarea>
+                                    <p id="description-error" class="error-message" style="color: red;"></p>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="startDate" class="form-label">Start Date:</label>
+                                        <input type="date" id="startDate" name="startDate" class="form-control"
+                                            required>
+                                        <p id="startDate-error" class="error-message" style="color: red;"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="endDate" class="form-label">End Date:</label>
+                                        <input type="date" id="endDate" name="endDate" class="form-control" required>
+                                        <p id="endDate-error" class="error-message" style="color: red;"></p>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category:</label>
+                                    <select id="category" name="category" class="form-select" style="max-width: 350px;"
+                                        required>
+                                        <% categories.forEach(category=> { %>
+                                            <option value="<%= category._id %>">
+                                                <%= category.categoryName %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                    <p id="category-error" class="error-message" style="color: red;"></p>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="discountPercentage" class="form-label">Discount Percentage:</label>
+                                    <input type="number" id="discountPercentage" name="discountPercentage"
+                                        class="form-control" min="0" value="0" style="max-width: 150px;" required>
+                                    <p id="discountPercentage-error" class="error-message" style="color: red;"></p>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Category Offer</button>
+                            </form>
                         </div>
                     </div>
-                </footer>
-                </main>
-                <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
-                <script src="/admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
-                <script src="/admin-assets/js/vendors/select2.min.js"></script>
-                <script src="/admin-assets/js/vendors/perfect-scrollbar.js"></script>
-                <script src="/admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
-                <!-- Main Script -->
-                <script src="/admin-assets/js/main.js" type="text/javascript"></script>
+                </div>
+            </div>
+            <script>
+                document.querySelector('form[action="/add-category-offer"]').addEventListener('submit', async (e) => {
+                    e.preventDefault();
 
-                <!-- <script>
+                    const formData = new FormData(e.target);
+                    const requestData = {};
+
+                    for (const [key, value] of formData.entries()) {
+                        requestData[key] = value;
+                    }
+
+                    try {
+                        const response = await fetch('/admin/add-category-offer', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(requestData)
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            // Handle successful response
+                            console.log('Category offer created:', data);
+
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('createCategoryModal'));
+                            modal.hide();
+
+                            $.toast({
+                                heading: 'Success',
+                                text: "Category Offer Added",
+                                showHideTransition: 'slide',
+                                icon: 'success',
+                                position: 'top-center',
+                                hideAfter:4000
+
+                            });
+                        } else {
+                            // Handle error response
+                            console.error('Error creating category offer:', data);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            </script>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <!-- Produts Offers -->
+                    <div style="border: 2px; border-color: black;">
+                        <% if (!productOffers || productOffers.length> 0 ) { %>
+                            <div class="content-header">
+                                <div>
+                                    <h3 class="content-title card-title">Products Offer</h3>
+                                </div>
+                                <div>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#createProductModal"
+                                        class="btn btn-primary btn-sm rounded">Create
+                                        Product Offer</a>
+                                </div>
+                            </div>
+                            <table class="table category-offers mb-4">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Discount Percentage</th>
+                                        <th>Category</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (categoryOffers) {%>
+                                        <% categoryOffers.forEach(offer=> { %>
+                                            <tr>
+                                                <td>
+                                                    <%= offer.title %>
+                                                </td>
+                                                <td>
+                                                    <%= offer.description %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(offer.startDate).toLocaleDateString() %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(offer.endDate).toLocaleDateString() %>
+                                                </td>
+                                                <td>
+                                                    <%= offer.categoryOffer.discountPercentage %>
+                                                </td>
+                                                <td>
+                                                    <%= offer.categoryOffer.category.cName %>
+                                                </td>
+                                                <td>
+                                                    <button onclick="toggleStatus('<%= offer._id %>')"
+                                                        class="btn btn-<%= offer.isActive ? 'danger' : 'success' %>">
+                                                        <%= offer.isActive ? 'Block' : 'Activate' %>
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+                                            <% }) %>
+                                                <% } %>
+                                </tbody>
+                            </table>
+                            <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createProductModalLabel">Create New Product Offer</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/admin/productOffer" method="post">
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Title:</label>
+                                    <input type="text" class="form-control" id="title" name="title"
+                                        style="max-width: 300px;" required>
+                                    <p id="title-error" class="error-message" style="color: red;"></p>
+                                </div>
+                                <!-- <div class="mb-3">
+                                    <label for="description" class="form-label">Description:</label>
+                                    <textarea class="form-control" id="description" name="description" style="max-width: 500px;" required></textarea>
+                                    <p id="description-error" class="error-message" style="color: red;"></p>
+                                </div> -->
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="startDate" class="form-label">Start Date:</label>
+                                        <input type="date" class="form-control" id="startDate" name="startDate"
+                                            required>
+                                        <p id="startDate-error" class="error-message" style="color: red;"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="endDate" class="form-label">End Date:</label>
+                                        <input type="date" class="form-control" id="endDate" name="endDate" required>
+                                        <p id="endDate-error" class="error-message" style="color: red;"></p>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                <h2 class="mb-3">Product Offer Details</h2>
+                                <div class="mb-3">
+                                    <label for="selectedProducts" class="form-label">Select Products:</label>
+                                    <div class="selected-products-container">
+                                        <div class="selected-products">
+                                            <!-- Selected products will be displayed here -->
+                                        </div>
+                                    </div>
+                                    <div class="product-list">
+                                        <% products.forEach(product=> { %>
+                                            <div class="product-item">
+                                                <input type="checkbox" id="<%= product._id %>"
+                                                    value="<%= product._id %>" name="selectedProducts[]">
+                                                <label for="<%= product._id %>">
+                                                    <%= product.productName %>
+                                                </label>
+                                            </div>
+                                            <% }); %>
+                                    </div>
+                                    <p id="selectedProducts-error" class="error-message" style="color: red;"></p>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="discountPercentage" class="form-label">Discount Percentage:</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="discountPercentage"
+                                            name="discountPercentage" style="max-width: 150px;" required>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <p id="discountPercentage-error" class="error-message" style="color: red;"></p>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Create Product Offer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <!-- Category Offers -->
+                    <div style="border: 2px; border-color: black;">
+                        <% if (!categoryOffers || categoryOffers.length> 0 ) { %>
+                            <div class="content-header">
+                                <div>
+                                    <h3 class="content-title card-title">Referral Offer</h3>
+                                </div>
+                                <div>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#createReferralModal"
+                                        class="btn btn-primary btn-sm rounded">Create
+                                        Referel Offer</a>
+                                </div>
+                            </div>
+                            <table class="table category-offers mb-4">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Discount Percentage</th>
+                                        <th>Category</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (categoryOffers) {%>
+                                        <% categoryOffers.forEach(offer=> { %>
+                                            <tr>
+                                                <td>
+                                                    <%= offer.title %>
+                                                </td>
+                                                <td>
+                                                    <%= offer.description %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(offer.startDate).toLocaleDateString() %>
+                                                </td>
+                                                <td>
+                                                    <%= new Date(offer.endDate).toLocaleDateString() %>
+                                                </td>
+                                                <td>
+                                                    <%= offer.categoryOffer.discountPercentage %>
+                                                </td>
+                                                <td>
+                                                    <%= offer.categoryOffer.category.cName %>
+                                                </td>
+                                                <td>
+                                                    <button onclick="toggleStatus('<%= offer._id %>')"
+                                                        class="btn btn-<%= offer.isActive ? 'danger' : 'success' %>">
+                                                        <%= offer.isActive ? 'Block' : 'Activate' %>
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+                                            <% }) %>
+                                                <% } %>
+                                </tbody>
+                            </table>
+                            <% } %>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </section>
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script> ©,
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/admin/js/vendors/select2.min.js"></script>
+    <script src="/admin/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/admin/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/admin/js/vendors/chart.js"></script>
+    <!-- Main Script -->
+    <script src="/admin/js/main.js" type="text/javascript"></script>
+    <script src="/admin/js/custom-chart.js" type="text/javascript"></script>
+
+    <!-- $.toast plugins -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+
+    <!-- <script>
                     function toggleStatus(offerId) {
                         
                         fetch('/admin/toggleOfferStatus', {
@@ -360,9 +577,9 @@
                             });
                     }
                 </script> -->
-                
 
-                <!-- <script>
+
+    <!-- <script>
                     function toggleReferalStatus(offerId) {
                         fetch('/admin/toggleReferalStatus', {
                             method: 'POST',
@@ -385,8 +602,8 @@
                     }
                 </script> -->
 
-                </body>
-                
-                
-                
-                </html>
+</body>
+
+
+
+</html>

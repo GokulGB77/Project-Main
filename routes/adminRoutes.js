@@ -8,6 +8,7 @@ const productsController = require('../controllers/productsController');
 const categoriesController = require('../controllers/categoriesController');
 const ordersController = require('../controllers/ordersController');
 const couponsController = require('../controllers/couponsController');
+const offersController = require('../controllers/offersController');
 const multer = require("multer")
 const sharp = require('sharp'); // Import sharp for image cropping
 
@@ -87,6 +88,11 @@ adminRoute.get("/coupons/activate-coupon",couponsController.activateCoupon)
 adminRoute.get("/coupons/deactivate-coupon",couponsController.deactivateCoupon)
 adminRoute.delete("/coupons/delete-coupon",couponsController.deleteCoupon)
 
+adminRoute.get("/offers",offersController.loadOffers)
+// adminRoute.post("/add-category-offer",offersController.loadAddCategoryOffer)
+adminRoute.post("/add-category-offer",offersController.addCategoryOffer)
+adminRoute.get("/add-product-offer",offersController.loadAddProductOffer)
+adminRoute.get("/add-referral-offer",offersController.loadAddReferralOffer)
 
 adminRoute.get("/logout", adminController.adminLogout);
 
