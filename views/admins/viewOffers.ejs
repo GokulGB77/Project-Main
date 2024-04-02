@@ -208,21 +208,11 @@
                                                         <%= offer.isActive === false ? 'Inactive' : 'Active' %>
                                                     </span>
                                                 </td>
-                                                <td class="text-center" >
-                                                    <% if (offer.isActive === true ) { %>
-
+                                                <td class="text-center" td[data-offer-id="<%= offer._id %>" >
                                                         <button id="toggleButton"
-                                                            onclick="activateOffer('<%= offer._id %>')"
-                                                            class="btn rounded btn-sm font-sm btn-light"  >Activate
+                                                            onclick="toogleStatus('<%= offer._id %>')"
+                                                            class="btn rounded btn-sm font-sm btn-brand"  >Change Status
                                                         </button>
-                                                        <% } else { %>
-                                                            <button id="toggleButton"
-                                                                onclick="deactivateOffer('<%= offer._id %>')"
-                                                                class="btn rounded btn-sm font-sm btn-light">Deactivate
-                                                            </button>
-                                                            <% } %>
-
-
                                                 </td>
 
                                             </tr>
@@ -351,7 +341,7 @@
             
             <!-- Activate Category Offer Fetch Fn -->
             <script>
-                const activateOffer = async (offerId) => {
+                const toogleStatus = async (offerId) => {
                     try {
                         const response = await fetch(`/admin/toggle-category-offer?id=${offerId}`, {
                             method: 'GET',
@@ -376,7 +366,7 @@
                         offerStatusTd.textContent = newStatus;
 
                         // Update the action button
-                        const offerActionTd = document.querySelector(`td[data-offer-id="${offerId}"] div:last-child a`);
+                        const offerActionTd = document.querySelector(`td[data-offer-id="${offerId}"] div:last-child button`);
                         offerActionTd.textContent = data.isActive ? 'Deactivate' : 'Activate';
                         offerActionTd.removeEventListener('click', activateOffer);
                         offerActionTd.addEventListener('click', () => deactivateOffer(offerId));
@@ -385,39 +375,7 @@
                     }
                 };
 
-                const deactivateOffer = async (offerId) => {
-                    try {
-                        const response = await fetch(`/admin/toggle-category-offer?id=${offerId}`, {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        });
-
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-
-                        const data = await response.json();
-                        console.log(data);
-
-                        // Update the status badge
-                        const offerStatusTd = document.querySelector(`td[data-offer-id="${offerId}"] span.badge`);
-                        const newStatus = data.isActive ? 'Active' : 'Inactive';
-                        const badgeClass = data.isActive ? 'alert-success' : 'alert-danger';
-                        offerStatusTd.classList.remove('alert-danger');
-                        offerStatusTd.classList.add(badgeClass);
-                        offerStatusTd.textContent = newStatus;
-
-                        // Update the action button
-                        const offerActionTd = document.querySelector(`td[data-offer-id="${offerId}"] div:last-child a`);
-                        offerActionTd.textContent = data.isActive ? 'Deactivate' : 'Activate';
-                        offerActionTd.removeEventListener('click', deactivateOffer);
-                        offerActionTd.addEventListener('click', () => activateOffer(offerId));
-                    } catch (error) {
-                        console.error('Error:', error);
-                    }
-                };
+               
 
             </script>
 

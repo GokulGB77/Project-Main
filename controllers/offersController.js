@@ -131,8 +131,8 @@ const toggleCategoryOffer = async (req, res) => {
       const message = offerDoc.isActive ? 'Category Blocked' : 'Category Unblocked';
 
       // Send a response
-      res.json({ message: `${message}: ${offerDoc} offer toggled successfully`, isActive: offerDoc.isActive });
-  } catch (error) {
+      res.json({ message: `Category ${offerDoc.isActive ? 'Blocked' : 'Unblocked'} successfully`, isActive: offerDoc.isActive });
+      } catch (error) {
       console.error('Error toggling category offer:', error);
       return res.status(500).send("Category Toggle Failed");
   }
