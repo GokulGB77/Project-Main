@@ -176,9 +176,9 @@
                                         <th>Title</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
-                                        <th>Discount Percentage</th>
                                         <th>Category</th>
-                                        <th class="text-center">Status</th>
+                                        <th>Discount Percentage</th>
+                                        <th class="text-center" width="10%">Status</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
@@ -196,11 +196,11 @@
                                                 <td>
                                                     <%= new Date(offer.endDate).toLocaleDateString() %>
                                                 </td>
-                                                <td >
-                                                    <%= offer.categoryOffer.discountPercentage %> %
-                                                </td>
                                                 <td>
                                                     <%= offer.categoryOffer.category.categoryName %>
+                                                </td>
+                                                <td >
+                                                    <%= offer.categoryOffer.discountPercentage %> %
                                                 </td>
                                                 <td class="text-center" data-offer-id="<%= offer._id %>">
                                                     <span
