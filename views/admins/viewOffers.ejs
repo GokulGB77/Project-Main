@@ -199,20 +199,19 @@
                                                 <td>
                                                     <%= offer.categoryOffer.category.categoryName %>
                                                 </td>
-                                                <td >
+                                                <td>
                                                     <%= offer.categoryOffer.discountPercentage %> %
                                                 </td>
                                                 <td class="text-center" data-offer-id="<%= offer._id %>">
                                                     <span
                                                         class="badge  rounded-pill alert-<%= offer.isActive === true ? 'success' : 'danger' %>">
-                                                        <%= offer.isActive === false ? 'Inactive' : 'Active' %>
+                                                        <%= offer.isActive===false ? 'Inactive' : 'Active' %>
                                                     </span>
                                                 </td>
-                                                <td class="text-center" td[data-offer-id="<%= offer._id %>" >
-                                                        <button id="toggleButton"
-                                                            onclick="toogleStatus('<%= offer._id %>')"
-                                                            class="btn rounded btn-sm font-sm btn-brand"  >Change Status
-                                                        </button>
+                                                <td class="text-center" td[data-offer-id="<%= offer._id %>">
+                                                    <button id="toggleButton" onclick="toogleStatus('<%= offer._id %>')"
+                                                        class="btn rounded btn-sm font-sm btn-brand">Change Status
+                                                    </button>
                                                 </td>
 
                                             </tr>
@@ -338,7 +337,7 @@
                     }
                 });
             </script>
-            
+
             <!-- Activate Category Offer Fetch Fn -->
             <script>
                 const toogleStatus = async (offerId) => {
@@ -375,7 +374,7 @@
                     }
                 };
 
-               
+
 
             </script>
 
@@ -451,7 +450,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="/add-product-offer" method="post">
+                            <form action="/admin/add-product-offer" method="post">
                                 <div class="mb-3">
                                     <label for="title" class="form-label">Title:</label>
                                     <input type="text" class="form-control" id="title" name="title"
@@ -472,14 +471,11 @@
                                     </div>
                                 </div>
                                 <hr class="my-4">
-                                <h2 class="mb-3">Product Offer Details</h2>
+                                <h4 class="mb-3">Product Offer Details</h4>
+
                                 <div class="mb-3">
                                     <label for="selectedProducts" class="form-label">Select Products:</label>
-                                    <div class="selected-products-container">
-                                        <div class="selected-products">
-                                            <!-- Selected products will be displayed here -->
-                                        </div>
-                                    </div>
+
                                     <div class="product-list">
                                         <% products.forEach(product=> { %>
                                             <div class="product-item">
@@ -511,7 +507,7 @@
 
             <!-- Add Product Offer Fetch Fn -->
             <script>
-                document.querySelector('form[action="/add-product-offer"]').addEventListener('submit', async (e) => {
+                document.querySelector('form[action="/admin/add-product-offer"]').addEventListener('submit', async (e) => {
                     e.preventDefault();
 
                     const formData = new FormData(e.target);
@@ -546,7 +542,9 @@
                             const modal = bootstrap.Modal.getInstance(document.getElementById('createProductModal'));
                             modal.hide();
                             window.location.reload();
-                            req.session.toastMessage = "Product Offer Added";
+
+                            // Show success message to user
+                            showToastMessage("Product Offer Added");
                         } else {
                             // Handle error response
                             console.error('Error creating product offer:', data);
@@ -556,20 +554,17 @@
                     }
                 });
 
-                window.addEventListener('load', function () {
-                    const toastMessage = '<%= typeof session !== "undefined" ? session.toastMessage : "" %>';
-                    if (toastMessage) {
-                        $.toast({
-                            heading: 'Success',
-                            text: "Product Offer Added",
-                            showHideTransition: 'slide',
-                            icon: 'success',
-                            position: 'top-center',
-                            hideAfter: 4000
-                        });
-                        delete req.session.toastMessage;
-                    }
-                });
+                function showToastMessage(message) {
+                    $.toast({
+                        heading: 'Success',
+                        text: message,
+                        showHideTransition: 'slide',
+                        icon: 'success',
+                        position: 'top-center',
+                        hideAfter: 4000
+                    });
+                }
+
             </script>
 
             <!-- Referral Offers -->
@@ -599,7 +594,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+
                                 </tbody>
                             </table>
                             <% } %>
@@ -641,9 +636,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
 
-   
 
-   
+
+
 
 </body>
 

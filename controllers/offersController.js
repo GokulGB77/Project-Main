@@ -29,53 +29,7 @@ const loadOffers = async (req, res) => {
   }
 }
 
-const addProductOffer = async (req, res) => {
-  try {
-    const { title, description, startDate, endDate, productsList, discountPercentage } = req.body
-    // const categoryDocument = await Categoriesdb.findOne({ _id: category });
 
-
-    const products = await Productsdb.find({ _id: productsList })
-    if (!products) {
-      return res.status(404).json({ error: "Products not found" });
-    }
-    console.log('Products Offer Title:', title);
-
-
-    const productOffer = {
-      applicableProducts: productsList,
-      discountPercentage: discountPercentage
-    };
-    const newOffer = await Offersdb.create({
-      title: title,
-      startDate: startDate,
-      endDate: endDate,
-      productOffer: productOffer,
-      categoryOffer:{}
-    });
-
-    // Update prices of products in the category
-    products.forEach(async (product) => {
-      // const newProductPriceAfterDiscount = Math.round(product.productPrice * (1 - (discountPercentage / 100)));
-      // product.categoryOfferPrice = newProductPriceAfterDiscount;
-      if (!product.productOffer) {
-        product.productOffer = ""
-      }
-      product.productOffer = discountPercentage
-
-      await product.save();
-    });
-
-
-
-    // Send a response
-    res.json({ message: `${newOffer} offer created successfully` });
-
-  } catch (error) {
-    console.error('Error adding category offer:', error);
-    return res.status(500).send("Category offer adding failed");
-  }
-}
 const addCategoryOffer = async (req, res) => {
   try {
     const { title, description, startDate, endDate, category, discountPercentage } = req.body
@@ -144,6 +98,58 @@ const toggleCategoryOffer = async (req, res) => {
       return res.status(500).send("Category Toggle Failed");
   }
 };
+
+const addProductOffer = async (req, res) => {
+  try {
+    // Extract data from the request body
+    const { title, startDate, endDate, requestData, discountPercentage } = req.body;
+
+    // Query the database for the selected products
+    const products = await Productsdb.find({ _id: { $in: requestData.selectedProducts } });
+
+    // Check if products were found
+    if (!products || products.length === 0) {
+      return res.status(404).json({ error: "Products not found" });
+    }
+
+    // Log the title of the product offer
+    console.log('Products Offer Title:', title);
+
+    // Construct the product offer object
+    const productOffer = {
+      applicableProducts: requestData.selectedProducts, // Use selectedProducts array
+      discountPercentage: discountPercentage
+    };
+
+    // Create a new offer document
+    const newOffer = await Offersdb.create({
+      title: title,
+      startDate: startDate,
+      endDate: endDate,
+      productOffer: productOffer,
+      categoryOffer: {} // Assuming you have categoryOffer data, adjust as needed
+    });
+
+    // Update prices of products in the offer
+    await Promise.all(products.map(async (product) => {
+      // Update the product offer information
+      product.productOffer = {
+        applicableProducts: requestData.selectedProducts, // Use selectedProducts array
+        discountPercentage: discountPercentage
+      };
+
+      // Save the product changes
+      await product.save();
+    }));
+
+    // Send a response
+    res.json({ message: `${newOffer} offer created successfully` });
+
+  } catch (error) {
+    console.error('Error adding product offer:', error);
+    return res.status(500).send("Product offer adding failed");
+  }
+}
 
 
 
