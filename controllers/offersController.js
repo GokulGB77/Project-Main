@@ -8,17 +8,21 @@ const Offersdb = require("../models/offersModel")
 
 const loadOffers = async (req, res) => {
   try {
-    const offers = await Offersdb.find().populate("productOffer.products").populate("categoryOffer.category")
-    const categoryOffers = offers.categoryOffer
-    const productOffers = offers.productsOffer
-    const referralOffers = offers.referralOffer
+    const cOffers = await Offersdb.find({ "categoryOffer.discountPercentage": {  $ne: 0 } }).populate("productOffer.products").populate("categoryOffer.category")
+    const categoryOffers = cOffers.categoryOffer
+    
+    const pOffers = await Offersdb.find({ "productOffer.discountPercentage": {  $ne: 0 } }).populate("productOffer.products").populate("categoryOffer.category")
+    const productOffers = pOffers.productsOffer
+    
+    const rOffers = await Offersdb.find({ "productOffer.discountPercentage": {  $ne: 0 } }).populate("productOffer.products").populate("categoryOffer.category")
+    const referralOffers = rOffers.referralOffer
 
     const categories = await Categoriesdb.find()
     const products = await Productsdb.find().sort({ productName: 1 })
-    const referral = await Categoriesdb.find()
+    const referral = await Userdb.find()
 
 
-    res.render("viewOffers", { offers, categoryOffers, productOffers, referralOffers, categories, products })
+    res.render("viewOffers", { cOffers, pOffers, rOffers, categoryOffers, productOffers, referralOffers, categories, products })
   } catch (error) {
     console.error('Error Loading Offers:', error);
     return res.status(500).send("Internal Server Error");
@@ -28,7 +32,7 @@ const loadOffers = async (req, res) => {
 const addProductOffer = async (req, res) => {
   try {
     const { title, description, startDate, endDate, productsList, discountPercentage } = req.body
-    const categoryDocument = await Categoriesdb.findOne({ _id: category });
+    // const categoryDocument = await Categoriesdb.findOne({ _id: category });
 
 
     const products = await Productsdb.find({ _id: productsList })
@@ -46,7 +50,8 @@ const addProductOffer = async (req, res) => {
       title: title,
       startDate: startDate,
       endDate: endDate,
-      productOffer: productOffer
+      productOffer: productOffer,
+      categoryOffer:{}
     });
 
     // Update prices of products in the category
@@ -92,7 +97,9 @@ const addCategoryOffer = async (req, res) => {
       title: title,
       startDate: startDate,
       endDate: endDate,
-      categoryOffer: categoryOffer
+      categoryOffer: categoryOffer,
+      productOffer: {},
+
     });
 
     if (!categoryDocument.categoryOffer) {

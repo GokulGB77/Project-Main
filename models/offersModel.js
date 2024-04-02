@@ -7,7 +7,7 @@ const offerSchema = new mongoose.Schema(
     endDate: { type: Date, required: true },
     isActive: { type: Boolean, default: true },
     productOffer: {
-      products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Productsdb" }],
+      applicableProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Productsdb" }],
       discountPercentage: { type: Number, default: 0 },
     },
     categoryOffer: {
