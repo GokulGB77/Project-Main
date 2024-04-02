@@ -90,10 +90,10 @@ adminRoute.get("/coupons/deactivate-coupon",couponsController.deactivateCoupon)
 adminRoute.delete("/coupons/delete-coupon",couponsController.deleteCoupon)
 
 adminRoute.get("/offers",offersController.loadOffers)
-// adminRoute.post("/add-category-offer",offersController.loadAddCategoryOffer)
 adminRoute.post("/add-category-offer",offersController.addCategoryOffer)
-adminRoute.get("/add-product-offer",offersController.loadAddProductOffer)
-adminRoute.get("/add-referral-offer",offersController.loadAddReferralOffer)
+adminRoute.get("/toggle-category-offer",offersController.toggleCategoryOffer)
+adminRoute.post("/add-product-offer",offersController.addProductOffer)
+// adminRoute.get("/add-referral-offer",offersController.addReferralOffer)
 
 adminRoute.get("/logout", adminController.adminLogout);
 

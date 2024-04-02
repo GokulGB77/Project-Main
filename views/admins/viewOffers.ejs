@@ -51,7 +51,7 @@
 
                 </li>
 
-                <li class="menu-item active">
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
@@ -64,7 +64,7 @@
                     </a>
 
                 </li>
-                <li class="menu-item ">
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/offers?page=1"> <i
                             class="icon material-icons material-icons md-local_offer"></i>
                         <span class="text">Offers</span>
@@ -117,20 +117,34 @@
                         <button class="btn btn-light bg" type="button"> <i
                                 class="material-icons md-search"></i></button>
                     </div>
-
+                    <datalist id="search_terms">
+                        <option value="Products">
+                        <option value="New orders">
+                        <option value="Apple iphone">
+                        <option value="Ahmed Hassan">
+                    </datalist>
                 </form>
             </div>
             <div class="col-nav">
-
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
+                        class="material-icons md-apps"></i> </button>
                 <ul class="nav">
-
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
+                    </li>
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
                             aria-expanded="false"> <img class="img-xs rounded-circle"
-                                src="/admin-assets/imgs/people/User-logo.png" alt="User"></a>
+                                src="/admin/imgs/people/avatar2.jpg" alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Profile</a>
-
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
+                                Settings</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" href="/admin/logout"><i
                                     class="material-icons md-exit_to_app"></i>Logout</a>
@@ -141,9 +155,9 @@
         </header>
         <section class="content-main">
 
+            <!-- Category Offers -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <!-- Category Offers -->
                     <div style="border: 2px; border-color: black;">
                         <% if (!categoryOffers || categoryOffers.length> 0 ) { %>
                             <div class="content-header">
@@ -160,12 +174,12 @@
                                 <thead>
                                     <tr>
                                         <th>Title</th>
-                                        <th>Description</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
                                         <th>Discount Percentage</th>
                                         <th>Category</th>
-                                        <th>Actions</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -175,26 +189,40 @@
                                                 <td>
                                                     <%= offer.title %>
                                                 </td>
-                                                <td>
-                                                    <%= offer.description %>
-                                                </td>
+
                                                 <td>
                                                     <%= new Date(offer.startDate).toLocaleDateString() %>
                                                 </td>
                                                 <td>
                                                     <%= new Date(offer.endDate).toLocaleDateString() %>
                                                 </td>
-                                                <td>
-                                                    <%= offer.categoryOffer.discountPercentage %>
+                                                <td >
+                                                    <%= offer.categoryOffer.discountPercentage %> %
                                                 </td>
                                                 <td>
                                                     <%= offer.categoryOffer.category.categoryName %>
                                                 </td>
-                                                <td>
-                                                    <button onclick="toggleStatus('<%= offer._id %>')"
-                                                        class="btn btn-<%= offer.isActive ? 'danger' : 'success' %>">
-                                                        <%= offer.isActive ? 'Block' : 'Activate' %>
-                                                    </button>
+                                                <td class="text-center" data-offer-id="<%= offer._id %>">
+                                                    <span
+                                                        class="badge  rounded-pill alert-<%= offer.isActive === true ? 'success' : 'danger' %>">
+                                                        <%= offer.isActive === false ? 'Inactive' : 'Active' %>
+                                                    </span>
+                                                </td>
+                                                <td class="text-center" >
+                                                    <% if (offer.isActive === true ) { %>
+
+                                                        <button id="toggleButton"
+                                                            onclick="activateOffer('<%= offer._id %>')"
+                                                            class="btn rounded btn-sm font-sm btn-light"  >Activate
+                                                        </button>
+                                                        <% } else { %>
+                                                            <button id="toggleButton"
+                                                                onclick="deactivateOffer('<%= offer._id %>')"
+                                                                class="btn rounded btn-sm font-sm btn-light">Deactivate
+                                                            </button>
+                                                            <% } %>
+
+
                                                 </td>
 
                                             </tr>
@@ -206,6 +234,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Add Category Offer Modal -->
             <div class="modal fade" id="createCategoryModal" tabindex="-1" aria-labelledby="createCategoryModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog">
@@ -222,12 +251,7 @@
                                         style="max-width: 300px;" required>
                                     <p id="title-error" class="error-message" style="color: red;"></p>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Description:</label>
-                                    <textarea maxlength="20" id="description" name="description" class="form-control"
-                                        style="max-width: 500px;" required></textarea>
-                                    <p id="description-error" class="error-message" style="color: red;"></p>
-                                </div>
+
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label for="startDate" class="form-label">Start Date:</label>
@@ -265,6 +289,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Add Category Offer Fetch Fn -->
             <script>
                 document.querySelector('form[action="/add-category-offer"]').addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -293,16 +319,9 @@
 
                             const modal = bootstrap.Modal.getInstance(document.getElementById('createCategoryModal'));
                             modal.hide();
+                            window.location.reload()
+                            req.session.toastMessage = "Category Offer Added";
 
-                            $.toast({
-                                heading: 'Success',
-                                text: "Category Offer Added",
-                                showHideTransition: 'slide',
-                                icon: 'success',
-                                position: 'top-center',
-                                hideAfter:4000
-
-                            });
                         } else {
                             // Handle error response
                             console.error('Error creating category offer:', data);
@@ -311,11 +330,100 @@
                         console.error('Error:', error);
                     }
                 });
+
+                window.addEventListener('load', function () {
+                    const toastMessage = '<%= typeof session !== "undefined" ? session.toastMessage : "" %>';
+                    if (toastMessage) {
+                        $.toast({
+                            heading: 'Success',
+                            text: "Category Offer Added",
+                            showHideTransition: 'slide',
+                            icon: 'success',
+                            position: 'top-center',
+                            hideAfter: 4000
+
+                        });
+                        delete req.session.toastMessage;
+
+                    }
+                });
+            </script>
+            
+            <!-- Activate Category Offer Fetch Fn -->
+            <script>
+                const activateOffer = async (offerId) => {
+                    try {
+                        const response = await fetch(`/admin/toggle-category-offer?id=${offerId}`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        console.log(data);
+
+                        // Update the <td> element with the new status
+                        const offerStatusTd = document.querySelector(`td[data-offer-id="${offerId}"] span.badge`);
+                        const newStatus = data.isActive ? 'Active' : 'Inactive';
+                        const badgeClass = data.isActive ? 'alert-success' : 'alert-danger';
+                        offerStatusTd.classList.remove('alert-danger');
+                        offerStatusTd.classList.add(badgeClass);
+                        offerStatusTd.textContent = newStatus;
+
+                        // Update the action button
+                        const offerActionTd = document.querySelector(`td[data-offer-id="${offerId}"] div:last-child a`);
+                        offerActionTd.textContent = data.isActive ? 'Deactivate' : 'Activate';
+                        offerActionTd.removeEventListener('click', activateOffer);
+                        offerActionTd.addEventListener('click', () => deactivateOffer(offerId));
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                };
+
+                const deactivateOffer = async (offerId) => {
+                    try {
+                        const response = await fetch(`/admin/toggle-category-offer?id=${offerId}`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        console.log(data);
+
+                        // Update the status badge
+                        const offerStatusTd = document.querySelector(`td[data-offer-id="${offerId}"] span.badge`);
+                        const newStatus = data.isActive ? 'Active' : 'Inactive';
+                        const badgeClass = data.isActive ? 'alert-success' : 'alert-danger';
+                        offerStatusTd.classList.remove('alert-danger');
+                        offerStatusTd.classList.add(badgeClass);
+                        offerStatusTd.textContent = newStatus;
+
+                        // Update the action button
+                        const offerActionTd = document.querySelector(`td[data-offer-id="${offerId}"] div:last-child a`);
+                        offerActionTd.textContent = data.isActive ? 'Deactivate' : 'Activate';
+                        offerActionTd.removeEventListener('click', deactivateOffer);
+                        offerActionTd.addEventListener('click', () => activateOffer(offerId));
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                };
+
             </script>
 
+            <!-- Produts Offers -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <!-- Produts Offers -->
                     <div style="border: 2px; border-color: black;">
                         <% if (!productOffers || productOffers.length> 0 ) { %>
                             <div class="content-header">
@@ -332,7 +440,6 @@
                                 <thead>
                                     <tr>
                                         <th>Title</th>
-                                        <th>Description</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
                                         <th>Discount Percentage</th>
@@ -346,9 +453,6 @@
                                             <tr>
                                                 <td>
                                                     <%= offer.title %>
-                                                </td>
-                                                <td>
-                                                    <%= offer.description %>
                                                 </td>
                                                 <td>
                                                     <%= new Date(offer.startDate).toLocaleDateString() %>
@@ -378,6 +482,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Add Product Offer Modal -->
             <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -387,18 +493,13 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="/admin/productOffer" method="post">
+                            <form action="/add-product-offer" method="post">
                                 <div class="mb-3">
                                     <label for="title" class="form-label">Title:</label>
                                     <input type="text" class="form-control" id="title" name="title"
                                         style="max-width: 300px;" required>
                                     <p id="title-error" class="error-message" style="color: red;"></p>
                                 </div>
-                                <!-- <div class="mb-3">
-                                    <label for="description" class="form-label">Description:</label>
-                                    <textarea class="form-control" id="description" name="description" style="max-width: 500px;" required></textarea>
-                                    <p id="description-error" class="error-message" style="color: red;"></p>
-                                </div> -->
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label for="startDate" class="form-label">Start Date:</label>
@@ -450,10 +551,72 @@
                 </div>
             </div>
 
+            <!-- Add Product Offer Fetch Fn -->
+            <script>
+                document.querySelector('form[action="/add-product-offer"]').addEventListener('submit', async (e) => {
+                    e.preventDefault();
 
+                    const formData = new FormData(e.target);
+                    const requestData = {};
+
+                    for (const [key, value] of formData.entries()) {
+                        if (key === 'selectedProducts[]') {
+                            if (!requestData.selectedProducts) {
+                                requestData.selectedProducts = [];
+                            }
+                            requestData.selectedProducts.push(value);
+                        } else {
+                            requestData[key] = value;
+                        }
+                    }
+
+                    try {
+                        const response = await fetch('/admin/add-product-offer', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(requestData)
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            // Handle successful response
+                            console.log('Product offer created:', data);
+
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('createProductModal'));
+                            modal.hide();
+                            window.location.reload();
+                            req.session.toastMessage = "Product Offer Added";
+                        } else {
+                            // Handle error response
+                            console.error('Error creating product offer:', data);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                });
+
+                window.addEventListener('load', function () {
+                    const toastMessage = '<%= typeof session !== "undefined" ? session.toastMessage : "" %>';
+                    if (toastMessage) {
+                        $.toast({
+                            heading: 'Success',
+                            text: "Product Offer Added",
+                            showHideTransition: 'slide',
+                            icon: 'success',
+                            position: 'top-center',
+                            hideAfter: 4000
+                        });
+                        delete req.session.toastMessage;
+                    }
+                });
+            </script>
+
+            <!-- Referral Offers -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <!-- Category Offers -->
                     <div style="border: 2px; border-color: black;">
                         <% if (!categoryOffers || categoryOffers.length> 0 ) { %>
                             <div class="content-header">
@@ -463,14 +626,13 @@
                                 <div>
                                     <a href="#" data-bs-toggle="modal" data-bs-target="#createReferralModal"
                                         class="btn btn-primary btn-sm rounded">Create
-                                        Referel Offer</a>
+                                        Referral Offer</a>
                                 </div>
                             </div>
                             <table class="table category-offers mb-4">
                                 <thead>
                                     <tr>
                                         <th>Title</th>
-                                        <th>Description</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
                                         <th>Discount Percentage</th>
@@ -485,9 +647,7 @@
                                                 <td>
                                                     <%= offer.title %>
                                                 </td>
-                                                <td>
-                                                    <%= offer.description %>
-                                                </td>
+
                                                 <td>
                                                     <%= new Date(offer.startDate).toLocaleDateString() %>
                                                 </td>
