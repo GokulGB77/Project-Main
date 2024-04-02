@@ -81,21 +81,21 @@
                                     <h5 style="font-weight: 700; font-size: 14px; line-height: 20px;">Order Summary</h5>
                                     <h6
                                         style="list-style: none; color: #000; word-wrap: break-word;margin: 0; font-size: 14px">
-                                        Item(s) Subtotal: &#8377;<%=( orderDetails.orderTotal - 500).toLocaleString() %>
+                                        Item(s) Subtotal: &#8377;<%=( orderDetails.orderTotal).toLocaleString() %>
                                     </h6>
                                     <h6
                                         style="list-style: none; color: #000; word-wrap: break-word;margin-top: 5px; font-size: 14px">
                                         Shipping: &#8377;500</h6>
                                     <h6
                                         style="list-style: none; color: #000; word-wrap: break-word;margin-top: 5px; font-size: 14px">
-                                        Total: &#8377;<%= (orderDetails.orderTotal).toLocaleString() %>
+                                        Total: &#8377;<%= (orderDetails.orderTotal + 500).toLocaleString() %>
                                     </h6>
                                     <h6
                                         style="list-style: none; color: #000; word-wrap: break-word;margin-top: 5px; font-size: 14px">
-                                        Promotion Applied: &#8377;500</h6>
+                                        Promotion Applied: -&#8377; 500</h6>
                                     <h6
                                         style="list-style: none; color: #000; font-weight: 700; word-wrap: break-word;margin-top: 10px; font-size: 14px">
-                                        Grand Total: &#8377; <%= (orderDetails.orderTotal - orderDetails.couponDiscount).toLocaleString() %>
+                                        Grand Total: &#8377; <%= (orderDetails.orderTotal ).toLocaleString() %>
                                     </h6>
                                 </div>
                             </div>

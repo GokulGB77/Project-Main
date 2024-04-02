@@ -110,15 +110,15 @@ const loadCart = async (req, res) => {
       let deliveryCharge = 500
       const Total = cart.cartTotal + deliveryCharge;
 
-    
-    if (!cart) {
-      // Handle case where cart is not found for the provided userId
-      return res.render("cart", { userId, cart: { cartProducts: [] }, index: 0 });
-    }
 
-    return res.render("cart", { userId, Total, addresses, cart, index: 0 });
-  }
-  return res.render("cart", { userId,  addresses, cart, index: 0 });
+      if (!cart) {
+        // Handle case where cart is not found for the provided userId
+        return res.render("cart", { userId, cart: { cartProducts: [] }, index: 0 });
+      }
+
+      return res.render("cart", { userId, Total, addresses, cart, index: 0 });
+    }
+    return res.render("cart", { userId, addresses, cart, index: 0 });
 
   } catch (error) {
     console.error("Error Loading Cart: ", error);
@@ -306,7 +306,7 @@ const loadCheckout = async (req, res) => {
 
     const couponCodeId = cart.couponApplied
     const coupon = await Couponsdb.findById(couponCodeId)
-    return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon,coupons});
+    return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon, coupons });
   } catch (error) {
     console.error('Error Loading CheckoutPage', error);
     return res.status(500).json({ message: 'Internal server error' });
@@ -334,10 +334,12 @@ const applyCoupon = async (req, res) => {
       console.log("Invalid Coupon Code");
       return res.status(200).json({ responseData });
     }
-    if (coupon.couponAppliedUsers.includes(cart.user)) {
-      let responseData = { errMessage: "Already used. Enter a Valid Coupon." };
-      console.log("Coupon already used");
-      return res.status(400).json({ responseData });
+    if (coupon.couponAppliedUsers) {
+      if (coupon.couponAppliedUsers.includes(cart.user)) {
+        let responseData = { errMessage: "Already used. Enter a Valid Coupon." };
+        console.log("Coupon already used");
+        return res.status(400).json({ responseData });
+      }
     }
     cart.couponApplied = coupon._id;
 

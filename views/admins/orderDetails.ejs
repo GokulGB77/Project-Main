@@ -41,35 +41,37 @@
                     <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-category"></i>
                         <span class="text">Categories</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item active">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
-                  
+
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/coupons?page=1"> <i class="icon material-icons material-icons md-card_giftcard"></i>
+                    <a class="menu-link" href="/admin/coupons?page=1"> <i
+                            class="icon material-icons material-icons md-card_giftcard"></i>
                         <span class="text">Coupons</span>
                     </a>
-                  
+
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/offers?page=1"> <i class="icon material-icons material-icons md-local_offer"></i>
+                    <a class="menu-link" href="/admin/offers?page=1"> <i
+                            class="icon material-icons material-icons md-local_offer"></i>
                         <span class="text">Offers</span>
                     </a>
-                  
+
                 </li>
-<!--                 
+                <!--                 
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
                         <span class="text">Sales</span>
@@ -95,7 +97,7 @@
                   -->
             </ul>
             <hr>
-            <ul class="menu-aside">     
+            <ul class="menu-aside">
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/logout"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Logout</span>
@@ -178,26 +180,26 @@
                         </div>
                         <div class="col-lg-6 col-md-6 ms-auto text-md-end">
                             <% if (orderDetails.orderStatus==="pending" ){ %>
-                                <label for="form-select">Change status:</label>
                                 <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
-                                    <option>Order Shipped</option>
-                                    <option>Order Delivered</option>
+                                    <option disabled selected hidden><%=orderDetails.orderStatus  %></option>
+                                    <option>order-shipped</option>
+                                    <option>order-delivered</option>
                                 </select>
-                                <a class="btn btn-primary" href="#">Save</a>
-                                <% } else if (orderDetails.orderStatus==="Delivered" ){ %>
-                                    <label for="form-select">Change status:</label>
+                                <a class="btn btn-primary" href="#" id="changeOrderStatusBtn" >Save</a>
+                                <% } else if (orderDetails.orderStatus==="order-delivered" ){ %>
                                     <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
-                                        <option>Order Returned</option>
+                                        <option disabled selected hidden>Change Status</option>
+                                        <option>returned</option>
                                     </select>
-                                    <a class="btn btn-primary" href="#">Save</a>
-                                    <% } else if (orderDetails.orderStatus==="shipped" ){ %>
-                                        <label for="form-select">Change status:</label>
-                                        <select id="statusSelect"
-                                            class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
-                                            <option>Order Delivered</option>
+                                    <a class="btn btn-primary" href="#" id="changeOrderStatusBtn" >Save</a>
+                                    <% } else if (orderDetails.orderStatus==="order-shipped" ){ %>
+                                        <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
+                                            <option disabled selected hidden>Change Status</option>
+                                            <option>order-delivered</option>
                                         </select>
-                                        <a class="btn btn-primary" href="#">Save</a>
-                                        <% } %>
+                                        <a class="btn btn-primary" href="#" id="changeOrderStatusBtn" >Save</a>
+                                            <% } %>
+                                       
 
 
                                             <!-- <option>Order Pending</option>
@@ -206,9 +208,69 @@
                                         <option>Order Returned</option>
                                         <option>Cancel Order</option> -->
                                             <a class="btn btn-secondary print ms-2" href="#"><i
-                                                    class="icon material-icons md-print"></i></a>
+                                                    class="icon material-icons md-print"
+                                                    ></i></a>
                         </div>
 
+                        <script>
+                            // Select the button element
+                            const changeOrderStatusBtn = document.getElementById('changeOrderStatusBtn');
+
+                            // Add click event listener
+                            changeOrderStatusBtn.addEventListener('click', async (event) => {
+                                event.preventDefault(); // Prevent the default action of the button
+                                const statusSelect = document.getElementById('statusSelect');
+                                const selectedStatus = statusSelect.value;
+                                const orderId = "<%= orderDetails._id %>"
+                                // Make the fetch request to change the order status
+                                try {
+                                    const response = await fetch('/admin/change-order-status', {
+                                        method: 'POST', // or 'PUT', 'PATCH', etc.
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ orderId: orderId, selectedStatus: selectedStatus })
+                                    });
+
+                                    if (response.ok) {
+                                        console.log('Order status changed successfully');
+                                        response.json().then(data => {
+                                            $.toast({
+                                                text: `Order status changed to ${selectedStatus}`, 
+                                                heading: 'Order Status Change Succcessfull', 
+                                                icon: 'success', 
+                                                showHideTransition: 'fade', 
+                                                allowToastClose: true, 
+                                                hideAfter: 3000, 
+                                                stack: false, 
+                                                position: 'top-center', 
+                                                textAlign: 'left',  
+                                                loader: true,  
+                                                loaderBg: '#9EC600',  
+                                                beforeShow: function () {},
+                                                afterShown: function () {},
+                                                beforeHide: function () {}, 
+                                                afterHidden: function () {}  
+                                            });
+                                            if (data.orderDetails) {
+                                                window.location.reload()
+                                            } else {
+                                                console.error('Invalid response data:', data);
+                                            }
+                                        })
+                                    } else {
+                                        console.error('Failed to change order status');
+                                        // Handle error scenario
+                                    }
+                                } catch (error) {
+                                    console.error('Error occurred while changing order status:', error);
+                                    // Handle error scenario
+                                }
+                            });
+
+                            
+
+                        </script>
                     </div>
                 </header> <!-- card-header end// -->
                 <div class="card-body">
@@ -251,7 +313,11 @@
                                             <span style="font-size: 0.8rem;">Order Status:</span>
                                             <span class="badge rounded-pill alert-warning text-warning ms-2"
                                                 style="font-size: 0.8rem;">Delivery Pending</span>
-                                            <% } else if(orderDetails.orderStatus==="delivered" ) { %>
+                                        <% } else if (orderDetails.orderStatus==="order-shipped" ) { %>
+                                            <span style="font-size: 0.8rem;">Order Status:</span>
+                                            <span class="badge rounded-pill alert-primary text-primary ms-2"
+                                                style="font-size: 0.8rem;">Delivery Pending</span>
+                                            <% } else if(orderDetails.orderStatus==="order-delivered" ) { %>
                                                 <span style="font-size: 0.8rem;">Order Status:</span>
                                                 <span class="badge rounded-pill alert-success text-success ms-2"
                                                     style="font-size: 0.8rem;">Delivered</span>
@@ -354,29 +420,65 @@
                                                                 <!-- badges-------------------------->
 
                                                                 <dd id="payment-status-badge">
-                                                                    <% if (orderDetails.paymentMethod === "cod") { %>
-                                                                        <% if (orderDetails.orderStatus === "pending") { %>
-                                                                            <span class="badge rounded-pill alert-warning text-warning">Payment Pending</span>
-                                                                        <% } else if (orderDetails.orderStatus === "delivered") { %>
-                                                                            <span class="badge rounded-pill alert-success text-success">Payment Done</span>
-                                                                        <% } else if (orderDetails.orderStatus === "return-requested") { %>
-                                                                            <span class="badge rounded-pill alert-primary text-primary">Refund Initiated</span>
-                                                                        <% } else if (orderDetails.orderStatus === "returned") { %>
-                                                                            <span class="badge rounded-pill alert-primary text-dark">Refund Approved</span>
-                                                                        <% } else if (orderDetails.orderStatus === "cancelled") { %>
-                                                                            <span class="badge rounded-pill alert-info text-info">No Payment Done</span>
-                                                                        <% } %>
-                                                                    <% } else { %>
-                                                                        <% if (orderDetails.orderStatus === "pending" || orderDetails.orderStatus === "delivered") { %>
-                                                                            <span class="badge rounded-pill alert-success text-success">Payment Done</span>
-                                                                        <% } else if (orderDetails.orderStatus === "return-requested" || orderDetails.orderStatus === "cancelled") { %>
-                                                                            <span class="badge rounded-pill alert-primary text-primary">Refund Initiated</span>
-                                                                        <% } else if (orderDetails.orderStatus === "returned") { %>
-                                                                            <span class="badge rounded-pill alert-primary text-dark">Refund Approved</span>
-                                                                        <% } %>
-                                                                    <% } %>
+                                                                    <% if (orderDetails.paymentMethod==="cod" ) { %>
+                                                                        <% if (orderDetails.orderStatus==="pending" ) {
+                                                                            %>
+                                                                            <span
+                                                                                class="badge rounded-pill alert-warning text-warning">Payment
+                                                                                Pending</span>
+                                                                            <% } else if
+                                                                                (orderDetails.orderStatus==="order-delivered"
+                                                                                ) { %>
+                                                                                <span
+                                                                                    class="badge rounded-pill alert-success text-success">Payment
+                                                                                    Done</span>
+                                                                                <% } else if
+                                                                                    (orderDetails.orderStatus==="return-requested"
+                                                                                    ) { %>
+                                                                                    <span
+                                                                                        class="badge rounded-pill alert-primary text-primary">Refund
+                                                                                        Initiated</span>
+                                                                                    <% } else if
+                                                                                        (orderDetails.orderStatus==="returned"
+                                                                                        ) { %>
+                                                                                        <span
+                                                                                            class="badge rounded-pill alert-primary text-dark">Refund
+                                                                                            Approved</span>
+                                                                                        <% } else if
+                                                                                            (orderDetails.orderStatus==="cancelled"
+                                                                                            ) { %>
+                                                                                            <span
+                                                                                                class="badge rounded-pill alert-info text-info">No
+                                                                                                Payment Done</span>
+                                                                                            <% } %>
+                                                                                                <% } else { %>
+                                                                                                    <% if
+                                                                                                        (orderDetails.orderStatus==="pending"
+                                                                                                        ||
+                                                                                                        orderDetails.orderStatus==="order-delivered"
+                                                                                                        ) { %>
+                                                                                                        <span
+                                                                                                            class="badge rounded-pill alert-success text-success">Payment
+                                                                                                            Done</span>
+                                                                                                        <% } else if
+                                                                                                            (orderDetails.orderStatus==="return-requested"
+                                                                                                            ||
+                                                                                                            orderDetails.orderStatus==="cancelled"
+                                                                                                            ) { %>
+                                                                                                            <span
+                                                                                                                class="badge rounded-pill alert-primary text-primary">Refund
+                                                                                                                Initiated</span>
+                                                                                                            <% } else if
+                                                                                                                (orderDetails.orderStatus==="returned"
+                                                                                                                ) { %>
+                                                                                                                <span
+                                                                                                                    class="badge rounded-pill alert-primary text-dark">Refund
+                                                                                                                    Approved</span>
+                                                                                                                <% } %>
+                                                                                                                    <% }
+                                                                                                                        %>
                                                                 </dd>
-                                                                
+
 
                                                             </dl>
                                                         </article>
@@ -403,7 +505,8 @@
                             <div>
                                 <% if(orderDetails.orderStatus!=="cancelled" &&
                                     orderDetails.orderStatus!=="return-requested" &&
-                                    orderDetails.orderStatus!=="returned" ) { %>
+                                    orderDetails.orderStatus!=="returned" &&
+                                    orderDetails.orderStatus!=="order-delivered" ) { %>
                                     <div class="h-25 pt-4">
                                         <div class="mb-3">
                                             <label for="notes">Cancellation Reason</label>
@@ -425,10 +528,8 @@
                                     <div>
 
                                         <% if (orderDetails.paymentMethod==="razorPay" &&
-                                            (orderDetails.orderStatus==="return-requested" ||
-                                            orderDetails.orderStatus==="cancelled" ) ) { %>
-                                            <button id="refundApprove"
-                                                class="btn btn-primary">Approve Refund</button>
+                                            (orderDetails.orderStatus==="return-requested" ) ) { %>
+                                            <button id="refundApprove" class="btn btn-primary">Approve Refund</button>
                                             <% } %>
 
                                     </div>
@@ -464,31 +565,31 @@
                                         console.log('Refund approved successfully');
                                         response.json().then(data => {
                                             // Check the condition again with updated orderDetails
-                                           
-                                       
-                                        var myToast = $.toast({
-                                            heading: 'Approving Refund.Please Wait..',
-                                            text: "Approving Refund. The Amount will be added to user wallet",
-                                            icon: 'info',
-                                            hideAfter: 7000, 
-                                            position: 'top-center',
 
-                                        });
 
-                                        // Update the toast after three seconds.
-                                        window.setTimeout(function () {
-                                            myToast.update({
-                                                heading: "Success: Refunded to user wallet",
-                                                text: "Amount added to user wallet",
-                                                icon: 'success',
-                                                hideAfter: 7000, 
+                                            var myToast = $.toast({
+                                                heading: 'Approving Refund.Please Wait..',
+                                                text: "Approving Refund. The Amount will be added to user wallet",
+                                                icon: 'info',
+                                                hideAfter: 7000,
                                                 position: 'top-center',
+
                                             });
-                                            checkCondition(data.orderDetails);
-                                            updatePaymentBadge(data.orderDetails);
-                                            updateOrderStatusBadge(data.orderDetails);
-                                        }, 3000)
-                                    });
+
+                                            // Update the toast after three seconds.
+                                            window.setTimeout(function () {
+                                                myToast.update({
+                                                    heading: "Success: Refunded to user wallet",
+                                                    text: "Amount added to user wallet",
+                                                    icon: 'success',
+                                                    hideAfter: 7000,
+                                                    position: 'top-center',
+                                                });
+                                                checkCondition(data.orderDetails);
+                                                updatePaymentBadge(data.orderDetails);
+                                                updateOrderStatusBadge(data.orderDetails);
+                                            }, 3000)
+                                        });
                                     } else {
                                         // Refund approval failed
                                         console.error('Failed to approve refund');
@@ -496,7 +597,7 @@
                                             heading: 'Approving Refund.Please Wait..',
                                             text: "Approving Refund. The Amount will be added to user wallet",
                                             icon: 'info',
-                                            hideAfter: 7000, 
+                                            hideAfter: 7000,
                                             position: 'top-center',
 
                                         });
@@ -507,7 +608,7 @@
                                                 heading: "Error: Refund Approval Failed",
                                                 text: "Failed to approve refund to user wallet",
                                                 icon: 'success',
-                                                hideAfter: 7000, 
+                                                hideAfter: 7000,
                                                 position: 'top-center',
                                             });
                                         }, 3000)
@@ -537,8 +638,10 @@
                             if (orderDetails.paymentMethod === "cod") {
                                 if (orderDetails.orderStatus === "pending") {
                                     paymentBadge.innerHTML = '<span class="badge rounded-pill alert-warning text-warning">Payment Pending</span>';
-                                } else if (orderDetails.orderStatus === "delivered") {
+                                } else if (orderDetails.orderStatus === "order-delivered") {
                                     paymentBadge.innerHTML = '<span class="badge rounded-pill alert-success text-success">Payment Done</span>';
+                                } else if (orderDetails.orderStatus === "order-shipped") {
+                                    paymentBadge.innerHTML = '<span class="badge rounded-pill alert-warning text-warning">Payment Pending</span>';
                                 } else if (orderDetails.orderStatus === "return-requested") {
                                     paymentBadge.innerHTML = '<span class="badge rounded-pill alert-primary text-primary">Refund Initiated</span>';
                                 } else if (orderDetails.orderStatus === "returned") {
@@ -547,7 +650,7 @@
                                     paymentBadge.innerHTML = '<span class="badge rounded-pill alert-info text-info">No Payment Done</span>';
                                 }
                             } else {
-                                if (orderDetails.orderStatus === "pending" || orderDetails.orderStatus === "delivered") {
+                                if (orderDetails.orderStatus === "pending" || orderDetails.orderStatus === "order-delivered" || orderDetails.orderStatus === "order-shipped") {
                                     paymentBadge.innerHTML = '<span class="badge rounded-pill alert-success text-success">Payment Done</span>';
                                 } else if (orderDetails.orderStatus === "return-requested" || orderDetails.orderStatus === "cancelled") {
                                     paymentBadge.innerHTML = '<span class="badge rounded-pill alert-primary text-primary">Refund Initiated</span>';
@@ -563,9 +666,9 @@
                             if (orderDetails.orderStatus === "pending") {
                                 orderStatusBadge.innerHTML = '<span style="font-size: 0.8rem;">Order Status:</span>' +
                                     '<span class="badge rounded-pill alert-warning text-warning ms-2" style="font-size: 0.8rem;">Delivery Pending</span>';
-                            } else if (orderDetails.orderStatus === "delivered") {
+                            } else if (orderDetails.orderStatus === "order-delivered") {
                                 orderStatusBadge.innerHTML = '<span style="font-size: 0.8rem;">Order Status:</span>' +
-                                    '<span class="badge rounded-pill alert-success text-success ms-2" style="font-size: 0.8rem;">Delivered</span>';
+                                    '<span class="badge rounded-pill alert-success text-success ms-2" style="font-size: 0.8rem;">Order Delivered</span>';
                             } else if (orderDetails.orderStatus === "cancelled") {
                                 orderStatusBadge.innerHTML = '<span style="font-size: 0.8rem;">Order Status:</span>' +
                                     '<span class="badge rounded-pill alert-danger text-danger ms-2" style="font-size: 0.8rem;">Cancelled</span>';
