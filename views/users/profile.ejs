@@ -697,8 +697,131 @@
 
                                             </div>
                                         </div>
-                                    </div> 
-                                    <!-- Account Details End -->
+                                        <div class="myaccount-content " style="margin-top: 20; ">
+                                            <h5>Refer a friend</h5>
+                                            <hr class="referalHR">
+                                            <% if(!referralCode){ %>
+                                                <button class="generate-link-btn check-btn sqr-btn" id="generateBtn">GENERATE REFERRAL LINK</button>
+                                                <% } else {%>
+                                            <div class="referral-link">
+                                                <span>Your Referral Code: </span>
+                                                <span id="referralCodeSpan" style="color: #e97730; cursor: pointer;" onclick="copyReferralCode('<%= referralCode %>')"><%= referralCode %> 
+                                                    <i class='fas fa-copy'></i></span>
+                                                <a href="http://localhost:3000/register?referral-code=<%= referralCode%>" id="referralLink" target="_blank"></a>
+                                            </div>
+                                            
+                                            <button class="copy-link-btn check-btn sqr-btn" onclick="copyReferralLink()">COPY LINK <i class='fas fa-copy'></i></button>
+                                            <% } %>
+                                        </div>
+                                        <script>
+                                            function copyReferralCode(referralCode) {
+                                                var tempInput = document.createElement("input");
+                                                tempInput.value = referralCode;
+                                                document.body.appendChild(tempInput);
+                                                tempInput.select();
+                                                document.execCommand("copy");
+                                                document.body.removeChild(tempInput);
+                                                $.toast({
+                                                    heading: 'Referral Code Copied',
+                                                    icon: 'success',
+                                                    position:'top-center'
+                                                })                                            }
+                                        </script>
+                                        <script>
+                                            function copyReferralLink() {
+                                                var referralLink = document.getElementById("referralLink");
+                                                var tempInput = document.createElement("input");
+                                                tempInput.value = referralLink.href;
+                                                document.body.appendChild(tempInput);
+                                                tempInput.select();
+                                                document.execCommand("copy");
+                                                document.body.removeChild(tempInput);
+                                                $.toast({
+                                                    heading: 'Referral Link Copied',
+                                                    icon: 'success',
+                                                    position:'top-center'
+                                                })
+                                            }
+                                        </script>
+                                        <script>
+                                            document.getElementById("generateBtn").addEventListener("click", function() {
+                                                const userId = "<%= currentUser._id%>"
+                                                fetch('/admin/generate-referral-code', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                        // Add any other headers if required
+                                                    },
+                                                    // You can pass any necessary data to your backend
+                                                    body: JSON.stringify({ userId })
+                                                })
+                                                .then(response => {
+                                                    if (!response.ok) {
+                                                        throw new Error('Network response was not ok');
+                                                    }
+                                                    window.location.reload()
+                                                    return response.json();
+                                                })
+                                                
+                                                .catch(error => {
+                                                    console.error('There was a problem with the fetch operation:', error);
+                                                });
+                                            });
+                                            </script>
+                                        <style>
+                                            .referalHR {
+                                        
+                                                border: none;
+                                                border-top: 2px dotted rgb(0, 0, 0);
+                                                color: #fff;
+                                                background-color: #fff;
+                                                height: 1px;
+                                                width: 100%;
+                                        
+                                            }
+                                            .referral-link {
+                                                display: flex;
+                                                align-items: center;
+                                                background-color: #f2f2f2;
+                                                border-radius: 4px;
+                                                padding: 8px 12px;
+                                                font-family: Arial, sans-serif;
+                                            }
+
+                                            .referral-link span {
+                                                margin-right: 8px;
+                                                font-weight: bold;
+                                            }
+
+                                            .referral-link a {
+                                                color: #333;
+                                                text-decoration: none;
+                                                margin-right: 8px;
+                                            }
+
+                                            .generate-link-btn {
+                                                margin-top: 10px;
+                                                margin-left: 325px;
+                                                background-color: #e97730;
+                                                color: white;
+                                                border: none;
+                                                border-radius: 4px;
+                                                padding: 6px 12px;
+                                                cursor: pointer;
+                                            }
+                                            .copy-link-btn {
+                                                margin-top: 10px;
+                                                margin-left: 325px;
+                                                background-color: #e97730;
+                                                color: white;
+                                                border: none;
+                                                border-radius: 4px;
+                                                padding: 6px 12px;
+                                                cursor: pointer;
+                                            }
+                                        </style>
+                                        </div>
+                                        <!-- Account Details End -->
 
                                     <!-- Change Password Start -->
                                     <div class="tab-pane fade" id="change-password" role="tabpanel">
@@ -711,8 +834,7 @@
                                                             class="form-control" id="user1" name="user1">
 
                                                         <div class="single-input-item">
-                                                            <label for="current-pwd" class="required">Current
-                                                                Password</label>
+                                                            <label for="current-pwd" class="required">Current Password</label>
                                                             <input type="password" id="currentPwd" name="currentPwd" />
 
                                                         </div>

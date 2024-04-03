@@ -335,11 +335,11 @@ const loadProfile = async (req, res) => {
     // Reorder addresses to show the last added address as the first one
     addresses = addresses.reverse();
 
-
+    const referralCode = user.referralCode
 
 
     if (token) {
-      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails,wallet });
+      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails,wallet,referralCode });
     } else {
       res.redirect("/login");
     }

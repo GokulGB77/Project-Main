@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   password:{type:String,required:true},
   is_admin:{type:Number,default:0},
   is_verified:{type:Number,default:0},
+  is_google_auth:{type:Number,default:0},
+  referralCode:{type:String},
   status:{type:Number,default:1}
 });
 
