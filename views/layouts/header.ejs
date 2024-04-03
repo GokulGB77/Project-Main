@@ -66,7 +66,7 @@
 <body>
     <div class="main-wrapper main-wrapper-2">
         <header class="header-area header-responsive-padding header-height-1">
-            <div class="header-top d-none d-lg-block bg-gray">
+            <!-- <div class="header-top d-none d-lg-block bg-gray">
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-lg-6 col-6">
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <hr class="separator-line">
 
             <div class="header-bottom sticky-bar">
@@ -159,19 +159,24 @@
                                             </lord-icon>
                                         </a>
                                         <!-- Dropdown Menu -->
-                                        <ul class="dropdown-menu" aria-labelledby="loginDropdown">
-                                            <li><a class="dropdown-item" style="font-size: 14px;"
-                                                    href="/profile?userid=<%=userId%>">Account Settings</a>
+                                        <ul class="dropdown-menu"  aria-labelledby="loginDropdown">
+                                            <li><a class="dropdown-item" href="/profile">Account Settings</a>
                                             </li>
-                                            <!-- <li><a class="dropdown-item" style="font-size: 14px;"
-                                                    href="/profile/orders?selected=orders">Orders</a></li>
-                                            <li> -->
-                                                <hr class="dropdown-divider">
-                                            </li> <!-- Divider -->
-                                            <li><a class="dropdown-item" style="font-size: 14px;"
-                                                    href="/logout">Logout</a></li>
+                                            <li><a class="dropdown-item" href="/profile#change-password">Change Password</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="/profile#orders" >Orders</a></li>
+                                            <li>
+                                            <li><a class="dropdown-item" href="/profile#wallet" >Wallet</a></li>
+                                            <hr class="dropdown-divider">
+                                            <li><a class="dropdown-item"  href="/logout">Logout</a></li>
                                         </ul>
                                     </div>
+                                  
+                                    <style>
+                                        .dropdown-item{
+                                            line-height: 20px;
+                                        }
+                                    </style>
                                     <div class="header-action-style">
                                         <!-- Wishlist Icon -->
                                         <a title="Wishlist" href="/wishlist?user=<%=userId%>"><lord-icon

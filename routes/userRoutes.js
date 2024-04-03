@@ -118,7 +118,7 @@ userRoute.post("/cancel-order",auth.isLogin,ordersController.cancelOrder)
 
 userRoute.get("/profile",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)
 userRoute.get("/profile/orders",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)
-// userRoute.get("/profile/orders",auth.attachTokenToLocals,auth.isLogin,userController.loadOrders)
+userRoute.get("/profile/orders",auth.attachTokenToLocals,auth.isLogin,userController.loadOrders)
 userRoute.get("/order-details",auth.attachTokenToLocals,auth.isLogin,ordersController.loadOrderDetails)
 userRoute.post("/update-user-details",auth.attachTokenToLocals,auth.isLogin,userController.updateDetails)
 userRoute.post("/profile/add-address",auth.attachTokenToLocals,auth.isLogin,addressController.addNewAddress)

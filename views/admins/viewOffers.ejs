@@ -9,7 +9,6 @@
     <link rel="shortcut icon" type="image/x-icon" href="/admin/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/admin/css/main.css" rel="stylesheet" type="text/css" />
-    <link href="/admin/css1/main.css" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -475,20 +474,90 @@
 
                                 <div class="mb-3">
                                     <label for="selectedProducts" class="form-label">Select Products:</label>
-
-                                    <div class="product-list">
+                                    <div id="selectedPreview"></div>
+                                    <input type="text" id="searchProduct" class="form-control"
+                                        placeholder="Search products...">
+                                    <select class="form-control dropdown" id="selectedProducts" name="selectedProducts[]"
+                                        style="max-width: 900px;" multiple required>
                                         <% products.forEach(product=> { %>
-                                            <div class="product-item">
-                                                <input type="checkbox" id="<%= product._id %>"
-                                                    value="<%= product._id %>" name="selectedProducts[]">
-                                                <label for="<%= product._id %>">
-                                                    <%= product.productName %>
-                                                </label>
-                                            </div>
+                                            <option value="<%= product._id %>">
+                                                <%= product.productName %>
+                                            </option>
                                             <% }); %>
-                                    </div>
+                                    </select>
                                     <p id="selectedProducts-error" class="error-message" style="color: red;"></p>
                                 </div>
+
+                                <style>
+                                    .dropdown {
+                                        height: 100px;
+                                    }
+                                </style>
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const searchInput = document.getElementById('searchProduct');
+                                        const selectBox = document.getElementById('selectedProducts');
+                                        const selectedPreview = document.getElementById('selectedPreview');
+                                        const selectedOptions = [];
+
+                                        // Function to update selected options preview
+                                        function updateSelectedPreview() {
+                                            selectedPreview.innerHTML = '';
+                                            selectedOptions.forEach(function (optionText) {
+                                                const selectedOption = document.createElement('span');
+                                                selectedOption.textContent = optionText;
+                                                selectedOption.classList.add('selected-option');
+                                                selectedOption.addEventListener('click', function () {
+                                                    const index = selectedOptions.indexOf(optionText);
+                                                    if (index !== -1) {
+                                                        selectedOptions.splice(index, 1);
+                                                        updateSelectedPreview();
+                                                        selectBox.querySelectorAll('option').forEach(option => {
+                                                            if (option.textContent === optionText) {
+                                                                option.selected = false;
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                                selectedPreview.appendChild(selectedOption);
+                                            });
+                                        }
+
+                                        // Event listener for search input
+                                        searchInput.addEventListener('input', function () {
+                                            const searchValue = this.value.toLowerCase();
+                                            Array.from(selectBox.options).forEach(function (option) {
+                                                const text = option.textContent.toLowerCase();
+                                                const matches = text.includes(searchValue);
+                                                option.style.display = matches ? 'block' : 'none';
+                                            });
+                                        });
+
+                                        // Event listener for select box change
+                                        selectBox.addEventListener('change', function () {
+                                            const selectedValues = Array.from(this.selectedOptions).map(option => option.textContent);
+                                            selectedOptions.splice(0, selectedOptions.length, ...selectedValues);
+                                            updateSelectedPreview();
+                                        });
+
+                                        // Initial update of selected preview
+                                        updateSelectedPreview();
+                                    });
+
+
+                                </script>
+                                <!-- jQuery -->
+                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                                <!-- Select2 CSS -->
+                                <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/css/select2.min.css"
+                                    rel="stylesheet" />
+
+                                <!-- Select2 JS -->
+                                <script
+                                    src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
+
                                 <div class="mb-3">
                                     <label for="discountPercentage" class="form-label">Discount Percentage:</label>
                                     <div class="input-group">

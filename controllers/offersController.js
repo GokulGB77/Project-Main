@@ -102,11 +102,12 @@ const toggleCategoryOffer = async (req, res) => {
 const addProductOffer = async (req, res) => {
   try {
     // Extract data from the request body
-    const { title, startDate, endDate, requestData, discountPercentage } = req.body;
-
+    const { title, startDate, endDate, selectedProducts, discountPercentage } = req.body;
+    console.log("discountPercentage:",discountPercentage)
+    console.log("Type:",typeof(discountPercentage))
     // Query the database for the selected products
-    const products = await Productsdb.find({ _id: { $in: requestData.selectedProducts } });
-
+    const products = await Productsdb.find({ _id: { $in: selectedProducts } });
+    const discountPercentageInt =  parseFloat(discountPercentage)
     // Check if products were found
     if (!products || products.length === 0) {
       return res.status(404).json({ error: "Products not found" });
@@ -117,8 +118,8 @@ const addProductOffer = async (req, res) => {
 
     // Construct the product offer object
     const productOffer = {
-      applicableProducts: requestData.selectedProducts, // Use selectedProducts array
-      discountPercentage: discountPercentage
+      applicableProducts: selectedProducts, // Use selectedProducts array
+      discountPercentage: discountPercentageInt
     };
 
     // Create a new offer document
@@ -133,16 +134,15 @@ const addProductOffer = async (req, res) => {
     // Update prices of products in the offer
     await Promise.all(products.map(async (product) => {
       // Update the product offer information
-      product.productOffer = {
-        applicableProducts: requestData.selectedProducts, // Use selectedProducts array
-        discountPercentage: discountPercentage
-      };
+      product.productOffer = discountPercentageInt
+     
 
       // Save the product changes
       await product.save();
     }));
 
     // Send a response
+
     res.json({ message: `${newOffer} offer created successfully` });
 
   } catch (error) {
