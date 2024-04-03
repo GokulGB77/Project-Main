@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const ReferralOfferSchema = new mongoose.Schema(
   {
-      // user: { type: mongoose.Schema.Types.ObjectId, ref: "Userdb", },
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "Userdb", },
+      referredUsersId: [{ type: String, }],
       forExistingUser: { type: Number, default: 0, },
       forNewUser: { type: Number, default: 0, },
    

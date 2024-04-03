@@ -62,23 +62,28 @@
                                         <div class="button-box btn-hover text-center">
                                             <button type="submit">GENERATE OTP</button>
                                         </div>
-
-                                    </form>
-                                        <div class="mb-3">
+                                        
+                                       <div class="row" style="height: 100px;">
+                                        <div class="mb-3  col-md-5">
                                             <label for="referralCode" class="form-label">Referral Code</label>
                                             <div class="referral-input">
                                                 <input type="text" class="form-control" id="referralCode"
                                                     name="referralCode" oninput="showValidateBtn()">
+                                                    <span id="referralCodeErrorMessage" style="color: red; "></span>
                                             </div>
-                                            <span id="referralCodeErrorMessage" style="color: red;"></span>
                                         </div>
-                                        <div class="button-box btn-hover text-center" style="height: 30px;">
-                                            <button id="validateButton" style="display: none;"
+                                        <div class="button-box btn-hover text-center col-md-4" style=" height: 30px;margin-top: 40px;">
+                                            <button id="validateButton" style="display: none; "
                                                 onclick="validateReferral()">Validate</button>
                                         </div>
+                                       </div>
+                                       
 
+                                </form>
+                                        
                                         <script>
-                                            document.getElementById("validateButton").addEventListener("click", function () {
+                                            document.getElementById("validateButton").addEventListener("click", function (e) {
+                                                e.preventDefault()
                                                 const referralCode = document.getElementById("referralCode").value;
                                                 fetch('/admin/validate-referral-code', {
                                                     method: 'POST',
@@ -91,13 +96,19 @@
                                                     if (!response.ok) {
                                                         throw new Error('Network response was not ok');
                                                     }
+                                                   
+
                                                     return response.json();
                                                 })
                                                 .then(data => {
                                                     // Update the content of the span element with the message received from the server
                                                     const errorMessageSpan = document.getElementById("referralCodeErrorMessage");
                                                     errorMessageSpan.textContent = data.message;
-                                                    errorMessageSpan.style.color = data.valid ? "green" : "red"; // Optionally, change color based on validity
+                                                    errorMessageSpan.style.color = data.valid ? "green" : "red";
+                                                    if(data.message=="Referral code is valid"){
+                                                        var validateButton = document.getElementById("validateButton");
+                                                        validateButton.style.display = "none";
+                                                    }
                                                 })
                                                 .catch(error => {
                                                     console.error('There was a problem with the fetch operation:', error);

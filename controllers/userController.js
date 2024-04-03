@@ -65,10 +65,11 @@ const intialRegisterUser = async (req, res) => {
       status: 0,
       otp: OTP,
       // Adding expiration time
-      otpExpiration: otpExpirationTime
+      otpExpiration: otpExpirationTime,
+      referralCode:referralCode
 
     };
-
+    concole.log(referralCode)
     req.session.save()
     if (req.session.tempUserDetails) {
       const subject = "Verify Your CouchCart. Account"
