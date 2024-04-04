@@ -82,6 +82,9 @@ userRoute.get('/resend-otp' ,userController.resendOtp);
 
 userRoute.get('/login',userController.loadLogin);
 userRoute.post('/login',userController.loginUser)
+userRoute.get('/reset-password',userController.loadResetPass);
+userRoute.post('/reset-password',userController.verifyEmail);
+userRoute.post('reset-password-otp',userController.verifyPassOtp);
 userRoute.get("/home",auth.isLogin,userController.loadHomePage)
 
 userRoute.get("/cart/count",auth.isLogin,cartController.cartCount)

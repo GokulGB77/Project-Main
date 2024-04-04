@@ -425,7 +425,7 @@
                                                             style="font-size: 14px; padding: 5px 10px; background-color: #e97730;">Add
                                                             Address</button>
 
-                                                        <a href="/profile?selected=Address" class="btn btn-secondary"
+                                                        <a href="/profile#address" class="btn btn-secondary"
                                                             style=" font-size: 14px; padding: 5px 10px;background-color: #e97730;">Back</a>
                                                     </form>
                                                 </div>
@@ -1008,7 +1008,7 @@
     </div>\
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const hash = window.location.hash.substring(1); // Get the hash portion of the URL (excluding the '#')
+            const hash = window.location.hash.substring(1); 
 
             if (hash === 'orders') {
                 // Activate the desired tab
@@ -1054,6 +1054,21 @@
                 // Add active classes to the desired tab
                 changePasswordTab.classList.add('show', 'active');
                 changePasswordMenu.classList.add('active');
+            }
+            if (hash === 'address') {
+                // // Activate the desired tab
+                const addressTab = document.getElementById('address-edit');
+                const addressMenu = document.getElementById('address-menu');
+                const accountInfo = document.getElementById('account-info');
+                const myProfileMenu = document.getElementById('myprofile-menu');
+
+                // Remove active classes from other tabs
+                accountInfo.classList.remove('show', 'active');
+                myProfileMenu.classList.remove('active');
+
+                // Add active classes to the desired tab
+                addressTab.classList.add('show', 'active');
+                addressMenu.classList.add('active');
             }
         });
     </script>

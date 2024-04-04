@@ -35,7 +35,7 @@ const addNewAddress = async (req, res) => {
       if (existingAddress.addresses.length >= 4) {
         // Redirect with message if the user has reached the maximum allowed addresses
         req.flash('error', 'You have reached the maximum allowed addresses.');
-        return res.redirect("/profile?selected=Address&SizeLimit=true");
+        return res.redirect("/profile?&SizeLimit=true#address");
       }
 
       // If the user already has an address document, add the new address to it
@@ -60,12 +60,12 @@ const addNewAddress = async (req, res) => {
 
     // Redirect back to the profile page after adding the address
     req.flash('success', 'New address added successfully.');
-    res.redirect("/profile?selected=Address&added=true");
+    res.redirect("/profile?added=true#address");
   } catch (error) {
     // Handle errors
     req.flash('error', 'Error adding new address.');
     console.error('Error adding address:', error);
-    res.redirect("/profile?selected=Address&notadded=true");
+    res.redirect("/profile?notadded=true#address");
   }
 };
 
@@ -154,16 +154,17 @@ const editAddress = async (req, res) => {
     if (!addressDetails) {
       return res.status(404).send('Address not found');
     }
-    
+  
+    const userId = addressDetails.user
     
     // Find the specific address object within the addresses array
     const addressObject = addressDetails.addresses.find(address => address._id == addressId);
     const setDefaultVal = addressObject.setDefault
     // Render the editAddress template with the found address object
-    res.render('editAddress', { addressObject,setDefaultVal });
+    res.render('editAddress', { userId, addressObject, setDefaultVal });
   } catch (error) {
     console.error('Error fetching address details:', error);
-    res.redirect('/profile/editAddress');
+    res.redirect('/profile#address');
   }
 };
 
@@ -220,7 +221,7 @@ const updateAddress = async (req, res) => {
     if (!existingAddress) {
       // Redirect with message if the address to edit is not found
       req.flash('error', 'Address not found.');
-      return res.redirect("/profile?selected=Address&notfound=true",{});
+      return res.redirect("/profile?notfound=true#address",{});
     }
 
     // If setDefault is true, update other addresses to set setDefault as false
@@ -233,7 +234,7 @@ const updateAddress = async (req, res) => {
 
     // Redirect back to the profile page after editing the address
     req.flash('success', 'Address updated successfully.');
-    res.redirect("/profile?selected=Address&edited=true");
+    res.redirect("/profile?&edited=true#address");
   } catch (error) {
     // Handle errors
     req.flash('error', 'Error editing address.');
@@ -266,13 +267,13 @@ const deleteAddress = async (req, res) => {
     // Redirect back to the profile page after deleting the address
     req.flash('success', 'Address deleted successfully.');
 
-    res.redirect("/profile?selected=Address&deleted=true");
+    res.redirect("/profile?deleted=#address");
   } catch (error) {
     // Handle errors
     req.flash('error', 'Error deleting address.');
 
     console.error('Error deleting address:', error);
-    res.redirect("/profile?selected=Address&notdeleted=true");
+    res.redirect("/profile&notdeleted=true#address");
   }
 };
 

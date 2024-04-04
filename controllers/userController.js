@@ -325,6 +325,39 @@ const loginUser = async (req, res) => {
   }
 }
 
+const loadResetPass = async (req, res) => {
+  try {
+    const userId = res.locals.currentUserId ? res.locals.currentUserId._id : null;
+    return res.render('resetPassword', {userId });
+  } catch (error) {
+    console.error("Reset password load Error:", error);
+    return res.status(500).json({ message: 'Reset password load Error' });  }
+}
+
+const verifyEmail = async (req,res) => {
+  try {
+    const email = req.body.email;
+    console.log("Email:",email)
+    const user = await Userdb.findOne({email:email});
+    if(!user){
+      return res.status(404).json({errorMessage:"User Not Found"})
+    } 
+    return res.status(200).json({errorMessage:"User Found",user})
+  } catch (error) {
+    console.error("Email Verification Error:", error);
+    return res.status(500).json({ message: 'Email Verification Error' });
+  }
+}
+
+const verifyPassOtp = async (req,res) => {
+  try {
+    
+  } catch (error) {
+    console.error("Email Verification Error:", error);
+    return res.status(500).json({ message: 'Email Verification Error' });
+  }
+}
+
 const loadHomePage = async (req, res) => {
   try {
 
@@ -539,6 +572,9 @@ module.exports = {
   securePassword,
   loadRegister,
   loadLogin,
+  loadResetPass,
+  verifyEmail,
+  verifyPassOtp,
   loadHomePage,
   intialRegisterUser,
   registerUserGoogle,
