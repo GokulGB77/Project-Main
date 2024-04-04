@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   is_verified:{type:Number,default:0},
   is_google_auth:{type:Number,default:0},
   referralCode:{type:String},
+  is_referred:{type:Number,default:0},
   status:{type:Number,default:1}
 });
 

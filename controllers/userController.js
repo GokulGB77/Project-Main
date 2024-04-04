@@ -4,6 +4,7 @@ const Addressdb = require("../models/addressModel")
 const Ordersdb = require("../models/ordersModel")
 const Walletdb = require("../models/walletModel")
 const Cartdb = require("../models/cartModel")
+const Referraldb = require("../models/referralModel")
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 
@@ -45,7 +46,7 @@ const intialRegisterUser = async (req, res) => {
   try {
 
     const spassword = await securePassword(req.body.password);
-
+    const referralCode = req.body.referralCode
     //Check if the email or mobile number already exists in the database
     const existingUser = await Userdb.findOne({ $or: [{ email: req.body.email }, { mobile: req.body.mobile }] });
     if (existingUser) {
@@ -69,7 +70,7 @@ const intialRegisterUser = async (req, res) => {
       referralCode:referralCode
 
     };
-    concole.log(referralCode)
+    console.log(referralCode)
     req.session.save()
     if (req.session.tempUserDetails) {
       const subject = "Verify Your CouchCart. Account"
@@ -134,8 +135,6 @@ const resendOtp = async (req, res) => {
 
 const registerUser = async (req, res) => {
   try {
-
-
     if (req.body.otp === req.session.tempUserDetails.otp) {
 
       const user = new Userdb({
@@ -146,9 +145,78 @@ const registerUser = async (req, res) => {
         is_admin: 0,
         is_verified: 1,
       });
-
       const userData = await user.save();
+      console.log("new userData saved to db")
+      //Verifying referral code
+      const referralCode = req.session.tempUserDetails.referralCode;
+      const referredByUser = await Userdb.findOne({referralCode:referralCode})
+      console.log("referredByUser:",referredByUser)
+      if(referredByUser){
+        console.log("Referal code exist",referralCode)
+        userData.is_referred = 1
+        userData.save()
+        
+        
+        const referralOfferDoc = "660d56e89e4bab2266e5b138"
+        const referralOffer = await Referraldb.findById(referralOfferDoc)
+        console.log("referralOfferDoc found")
+        const forExistingUser = referralOffer.forExistingUser
+        const forNewUser = referralOffer.forNewUser
+        
+        const newUserWallet = await Walletdb.create({
+          user: userData._id,
+          balance: 0,
+          transactions: []
+        });
+        console.log("newUser wallet created",newUserWallet)
+        
+        const existingUserWallet = await Walletdb.findOne({ user: referredByUser._id });
+        // const newUserWallet = await Walletdb.findById(userData._id)
+        console.log("existingUserWallet id",referredByUser._id)
+        console.log("existingUserWallet accessed",existingUserWallet)
 
+        
+        if (typeof forExistingUser === 'number' && !isNaN(forExistingUser)) {
+          existingUserWallet.balance += forExistingUser;
+          existingUserWallet.transactions.push({
+            amount: forExistingUser,
+            description: "Referral Bonus For Referring " + userData.name,
+            type: "Referral Credit"
+          });
+        } else {
+          throw new Error('Invalid value for forExistingUser');
+        }
+        
+        if (typeof forNewUser === 'number' && !isNaN(forNewUser)) {
+          newUserWallet.balance += forNewUser;
+          newUserWallet.transactions.push({
+            amount: forNewUser,
+            description: "Referral Bonus From " + referredByUser.name,
+            type: "Referral Credit"
+          });
+        } else {
+          throw new Error('Invalid value for forNewUser');
+        }
+
+        await existingUserWallet.save()
+        await newUserWallet.save()
+        console.log("both wallets updated")
+
+        const referralDataDoc = await Referraldb.findOne({user: referredByUser._id})
+        if(!referralDataDoc){
+          const referralDataDoc = await Referraldb.create({
+            user: referredByUser._id,
+            referredUsersIds:[]
+          })
+        }
+        referralDataDoc.referredUsersIds.push(userData._id)
+        await referralDataDoc.save();
+
+      }
+      
+      
+      
+      
       
       const userID = userData._id;
       const token = auth.createToken(userID);
