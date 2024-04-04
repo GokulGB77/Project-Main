@@ -77,11 +77,17 @@
                                                                                     <%= item.product.productName %>
                                                                                 </a></h5>
                                                                         </td>
-                                                                        <td class="product-wishlist-price"><span
-                                                                                class="amount">
-                                                                                ₹
-                                                                                <%= item.product.productPrice %>
-                                                                            </span></td>
+                                                                        <td class="product-wishlist-price">
+                                                                            <% if(item.product.productOffer !==0 || item.product.categoryOffer !==0){ %>
+                                                                                <span class="amount">
+                                                                                    ₹ <%= item.product.offerPrice %>
+                                                                                </span>
+                                                                                <% } else { %>
+                                                                                    <span class="amount">
+                                                                                        ₹ <%= item.product.productPrice %>
+                                                                                    </span>
+                                                                                    <% } %>
+                                                                        </td>
                                                                         <% if (item.product.stock>0) {%>
                                                                             <td class="stock-status text-center">
                                                                                 <span class="badge bg-success"><i
@@ -110,64 +116,8 @@
 
                                                     </tr>
                                                     <% }) %>
-                                                        <script>
-                                                            document.querySelectorAll('.remove-btn').forEach(btn => {
-                                                                btn.addEventListener('click', function () {
-                                                                    const productId = this.getAttribute('id').split('-')[2];
-                                                                    removeProduct(productId, "<%= wishlist._id %>");
-                                                                });
-                                                            });
 
-                                                            function removeProduct(productId, wishlistId) {
-                                                                fetch('/remove-from-wishlist', {
-                                                                    method: 'POST',
-                                                                    headers: {
-                                                                        'Content-Type': 'application/json'
-                                                                    },
-                                                                    body: JSON.stringify({
-                                                                        productId: productId,
-                                                                        wishlistId: wishlistId
-                                                                    })
-                                                                })
-                                                                    .then(response => {
-                                                                        if (response.ok) {
-                                                                            // Product removed successfully
-                                                                            $.toast({
-                                                                                heading: 'Product Removed',
-                                                                                text: 'Product Removed From Wishlist',
-                                                                                position: 'top-center',
-                                                                                showHideTransition: 'slide',
-                                                                                icon: 'info'
-                                                                            });
-                                                                            const productRow = document.querySelector(`tr[id="product_${productId}"]`);
-                                                                            if (productRow) {
-                                                                                productRow.remove(); // Remove the entire row from the DOM
-                                                                                response.json().then(data => {
-                                                                                    if (data.wishlistCount === 0) {
-                                                                                        // let clearCartButton = document.querySelector('.cart-clear');
-                                                                                        // if (clearCartButton) {
-                                                                                        //     clearCartButton.click();
-                                                                                        // }
-                                                                                        window.location.reload();
-                                                                                    }
-                                                                                })
-
-                                                                            } else {
-                                                                                console.warn(`Could not find product row with ID: product_${productId}`)
-                                                                            }
-                                                                        } else {
-                                                                            $.toast({
-                                                                                heading: 'Error',
-                                                                                text: 'Failed to remove product',
-                                                                                position: 'top-center',
-                                                                                showHideTransition: 'slide',
-                                                                                icon: 'error'
-                                                                            });
-                                                                        }
-                                                                    })
-                                                                    .catch(error => console.error('Error removing product:', error));
-                                                            }
-                                                        </script>
+                                                    
 
 
                                             </tbody>
@@ -180,7 +130,97 @@
             </div>
         </div>
     </div>
+    <script>
 
+        window.onload = function () {
+            wishlist.wishlistItems.forEach(item => {
+                if (item.product.productOffer !== 0 || item.product.categoryOffer !== 0) {
+                    if (item.price !== item.product.offerPrice) {
+                        $.toast({
+                            heading: 'Alert',
+                            text: 'Some Products have new prices',
+                            icon: 'warning',
+                            allowToastClose: true,
+                            hideAfter: false,
+                            stack: 0,
+                            position: 'top-left'
+                        });
+                    }
+                } else {
+                    if (item.price !== item.product.productPrice) {
+                        $.toast({
+                            heading: 'Alert',
+                            text: 'Some Products have new prices',
+                            icon: 'warning',
+                            allowToastClose: true,
+                            hideAfter: false,
+                            stack: 0,
+                            position: 'top-left'
+                        });
+                    }
+                }
+            });
+        };
+
+    </script>
+    <script>
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const productId = this.getAttribute('id').split('-')[2];
+                removeProduct(productId, "<%= wishlist._id %>");
+            });
+        });
+
+        function removeProduct(productId, wishlistId) {
+            fetch('/remove-from-wishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    wishlistId: wishlistId
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Product removed successfully
+                        $.toast({
+                            heading: 'Product Removed',
+                            text: 'Product Removed From Wishlist',
+                            position: 'top-center',
+                            showHideTransition: 'slide',
+                            icon: 'info'
+                        });
+                        const productRow = document.querySelector(`tr[id="product_${productId}"]`);
+                        if (productRow) {
+                            productRow.remove(); // Remove the entire row from the DOM
+                            response.json().then(data => {
+                                if (data.wishlistCount === 0) {
+                                    // let clearCartButton = document.querySelector('.cart-clear');
+                                    // if (clearCartButton) {
+                                    //     clearCartButton.click();
+                                    // }
+                                    window.location.reload();
+                                }
+                            })
+
+                        } else {
+                            console.warn(`Could not find product row with ID: product_${productId}`)
+                        }
+                    } else {
+                        $.toast({
+                            heading: 'Error',
+                            text: 'Failed to remove product',
+                            position: 'top-center',
+                            showHideTransition: 'slide',
+                            icon: 'error'
+                        });
+                    }
+                })
+                .catch(error => console.error('Error removing product:', error));
+        }
+    </script>
     <script>
         document.querySelectorAll('.add-to-cart-btn').forEach(button => {
             button.addEventListener('click', function () {

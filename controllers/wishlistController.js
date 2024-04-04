@@ -13,7 +13,12 @@ const addToWishlist = async (req, res) => {
     const userDetails = await Userdb.findById(userId);
     const productDetails = await Productsdb.findById(productId).populate("category");
     const currentStock = productDetails.stock;
-    const pPrice = productDetails.productPrice;
+    let pPrice;
+    if(productDetails.productOffer !==0 || productDetails.categoryOffer !==0  ){
+       pPrice = productDetails.offerPrice;
+    } else {
+       pPrice =  productDetails.productPrice;
+    }
 
     let wishlist = await Wishlistdb.findOne({ user: userId });
     console.log("Wishlist Found");
