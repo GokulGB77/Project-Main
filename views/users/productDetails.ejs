@@ -97,10 +97,15 @@
                         <h2>
                             <%=product.productName %>
                         </h2>
+                        
                         <div class="product-details-price">
-                            <span class="old-price">&#8377; <%=( product.productPrice +(product.productPrice*(10/100))
-                                    ).toFixed(0)%></span>
-                            <span class="new-price">&#8377; <%=product.productPrice %></span>
+                            <% if(product.productOffer !== 0 || product.categoryOffer !==0){ %>
+                                <span class="old-price">₹ <%=( product.productPrice)%></span>
+                                <span class="new-price">₹ <%= product.offerPrice %></span>
+                                <% } else { %>
+                                    <span class="old-price"></span>
+                                    <span class="new-price">₹ <%= product.productPrice %></span>
+                                    <% } %>
                         </div>
                         <div class="product-details-review">
                             <div class="product-rating">
