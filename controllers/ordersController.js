@@ -2,6 +2,7 @@ const Userdb = require("../models/userModel")
 const Cartdb = require("../models/cartModel")
 const Addressdb = require("../models/addressModel")
 const Ordersdb = require("../models/ordersModel")
+const Categoriesdb = require("../models/categoriesModel")
 const Productsdb = require("../models/productsModel")
 const Walletdb = require("../models/walletModel")
 const Couponsdb = require("../models/couponsModel")
@@ -532,12 +533,16 @@ const cancelOrder = async (req, res) => {
 
 const loadOrders = async (req, res) => {
   try {
-    const allOrders = await Ordersdb.find().populate("orderProducts.product").populate("user", "name");
+    const allCategories = await Categoriesdb.find()
+    const statuses = await Ordersdb.distinct('orderStatus');
+
+
+    const allOrders = await Ordersdb.find().sort({orderDate:-1}).populate("orderProducts.product").populate("user", "name");
     if (!allOrders) {
       return res.status(404).send({ message: "No orders found." });
     }
     console.log("allOrders.length:", allOrders.length);
-    res.render("viewOrders", { allOrders });
+    res.render("viewOrders", { allOrders,allCategories,statuses });
   } catch (error) {
     console.error("Error loading orders:", error);
     res.status(500).send({ message: "Internal Server Error" });

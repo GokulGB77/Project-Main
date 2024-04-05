@@ -34,6 +34,11 @@
                     </a>
                 </li>
                 <li class="menu-item ">
+                    <a class="menu-link" href="/admin/sales-report"> <i class="icon material-icons md-assignment"></i>
+                        <span class="text">Sales Report</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/user-details"> <i class="icon material-icons md-person"></i>
                         <span class="text">User Details</span>
                     </a>
@@ -163,7 +168,35 @@
             </div>
         </header>
         <section class="content-main">
-            
+            <!-- <header class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                        <div class="custom_select">
+                            <select class="form-select select-nice">
+                                <option selected>All Categories</option>
+                                <% allCategories.forEach(category => { %>
+                                    <option><%= category.categoryName %></option>
+                                    <% }) %>
+                               
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <input type="date" value="02.05.2022" class="form-control">
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <div class="custom_select">
+                            <select class="form-select select-nice" id="status-select">
+                                <option hidden selected>All Status</option>
+                                <% statuses.forEach(status => { %>
+                                    <option><%= status %></option>
+                                <% }) %>
+                                
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                </header> -->
             <div class="card mb-4">
                 <div class="content-header" style="padding-left: 3%; padding-top: 3%;">
                     <div>
@@ -198,6 +231,7 @@
                         </div>
                     </div>
                 </header> card-header end// -->
+                
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover">
@@ -230,7 +264,7 @@
                                             <td class="text-center"><span
                                                     class="badge rounded-pill  alert-warning ">Pending</span>
                                             </td>
-                                            <% } else if (order.orderStatus==="order-delivered" ) { %>
+                                            <% } else if (order.orderStatus==="delivered" ) { %>
                                                 <td class="text-center"><span
                                                         class="badge rounded-pill  alert-success">Delivered</span>
                                                 </td>

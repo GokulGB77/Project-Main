@@ -44,8 +44,9 @@ adminRoute.set('view engine','ejs');
 adminRoute.set('views','./views/admins')
 
 adminRoute.get('/',adminController.loadAdminLogin);
-adminRoute.get('/dashboard',dashboardController.loadAdminDashoard);
 adminRoute.post('/dashboard',adminController.verifyAdminLogin);
+adminRoute.get('/dashboard',dashboardController.loadAdminDashoard);
+adminRoute.get('/sales-report',dashboardController.loadSalesReport);
 
 
 adminRoute.get('/user-details',adminController.userDetails)

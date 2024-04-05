@@ -33,6 +33,11 @@
                     </a>
                 </li>
                 <li class="menu-item ">
+                    <a class="menu-link" href="/admin/sales-report"> <i class="icon material-icons md-assignment"></i>
+                        <span class="text">Sales Report</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/user-details"> <i class="icon material-icons md-person"></i>
                         <span class="text">User Details</span>
                     </a>
@@ -183,7 +188,7 @@
                                 <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
                                     <option disabled selected hidden><%=orderDetails.orderStatus  %></option>
                                     <option>order-shipped</option>
-                                    <option>order-delivered</option>
+                                    <option>delivered</option>
                                 </select>
                                 <a class="btn btn-primary" href="#" id="changeOrderStatusBtn" >Save</a>
                                 <% } else if (orderDetails.orderStatus==="order-delivered" ){ %>
@@ -195,7 +200,7 @@
                                     <% } else if (orderDetails.orderStatus==="order-shipped" ){ %>
                                         <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
                                             <option disabled selected hidden>Change Status</option>
-                                            <option>order-delivered</option>
+                                            <option>delivered</option>
                                         </select>
                                         <a class="btn btn-primary" href="#" id="changeOrderStatusBtn" >Save</a>
                                             <% } %>
@@ -506,7 +511,7 @@
                                 <% if(orderDetails.orderStatus!=="cancelled" &&
                                     orderDetails.orderStatus!=="return-requested" &&
                                     orderDetails.orderStatus!=="returned" &&
-                                    orderDetails.orderStatus!=="order-delivered" ) { %>
+                                    orderDetails.orderStatus!=="delivered" ) { %>
                                     <div class="h-25 pt-4">
                                         <div class="mb-3">
                                             <label for="notes">Cancellation Reason</label>
