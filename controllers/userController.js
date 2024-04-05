@@ -67,7 +67,7 @@ const intialRegisterUser = async (req, res) => {
       otp: OTP,
       // Adding expiration time
       otpExpiration: otpExpirationTime,
-      referralCode:referralCode
+      referralCode: referralCode
 
     };
     console.log(referralCode)
@@ -149,33 +149,33 @@ const registerUser = async (req, res) => {
       console.log("new userData saved to db")
       //Verifying referral code
       const referralCode = req.session.tempUserDetails.referralCode;
-      const referredByUser = await Userdb.findOne({referralCode:referralCode})
-      console.log("referredByUser:",referredByUser)
-      if(referredByUser){
-        console.log("Referal code exist",referralCode)
+      const referredByUser = await Userdb.findOne({ referralCode: referralCode })
+      console.log("referredByUser:", referredByUser)
+      if (referredByUser) {
+        console.log("Referal code exist", referralCode)
         userData.is_referred = 1
         userData.save()
-        
-        
+
+
         const referralOfferDoc = "660d56e89e4bab2266e5b138"
         const referralOffer = await Referraldb.findById(referralOfferDoc)
         console.log("referralOfferDoc found")
         const forExistingUser = referralOffer.forExistingUser
         const forNewUser = referralOffer.forNewUser
-        
+
         const newUserWallet = await Walletdb.create({
           user: userData._id,
           balance: 0,
           transactions: []
         });
-        console.log("newUser wallet created",newUserWallet)
-        
+        console.log("newUser wallet created", newUserWallet)
+
         const existingUserWallet = await Walletdb.findOne({ user: referredByUser._id });
         // const newUserWallet = await Walletdb.findById(userData._id)
-        console.log("existingUserWallet id",referredByUser._id)
-        console.log("existingUserWallet accessed",existingUserWallet)
+        console.log("existingUserWallet id", referredByUser._id)
+        console.log("existingUserWallet accessed", existingUserWallet)
 
-        
+
         if (typeof forExistingUser === 'number' && !isNaN(forExistingUser)) {
           existingUserWallet.balance += forExistingUser;
           existingUserWallet.transactions.push({
@@ -186,7 +186,7 @@ const registerUser = async (req, res) => {
         } else {
           throw new Error('Invalid value for forExistingUser');
         }
-        
+
         if (typeof forNewUser === 'number' && !isNaN(forNewUser)) {
           newUserWallet.balance += forNewUser;
           newUserWallet.transactions.push({
@@ -202,29 +202,29 @@ const registerUser = async (req, res) => {
         await newUserWallet.save()
         console.log("both wallets updated")
 
-        const referralDataDoc = await Referraldb.findOne({user: referredByUser._id})
-        if(!referralDataDoc){
+        const referralDataDoc = await Referraldb.findOne({ user: referredByUser._id })
+        if (!referralDataDoc) {
           const referralDataDoc = await Referraldb.create({
             user: referredByUser._id,
-            referredUsersIds:[]
+            referredUsersIds: []
           })
         }
         referralDataDoc.referredUsersIds.push(userData._id)
         await referralDataDoc.save();
 
       }
-      
-      
-      
-      
-      
+
+
+
+
+
       const userID = userData._id;
       const token = auth.createToken(userID);
       res.cookie("jwt", token, {
         httpOnly: true,
         tokenExpiry: auth.tokenExpiry * 1000,
       });
-     
+
       console.log("userId is :", userData._id);
       console.log("token :", token);
       res.status(200).json({ userId: userID });
@@ -237,11 +237,11 @@ const registerUser = async (req, res) => {
   }
 };
 
-const registerUserGoogle = async (req,res) => {
+const registerUserGoogle = async (req, res) => {
   try {
     res.render("homepage")
   } catch (error) {
-    console.log(error.message); 
+    console.log(error.message);
   }
 }
 const loadLogin = async (req, res) => {
@@ -272,7 +272,7 @@ const loadLogin = async (req, res) => {
 
     return res.render('login', { error, errorMessage, userId });
   } catch (error) {
-    console.log(error.message); 
+    console.log(error.message);
   }
 }
 
@@ -298,8 +298,8 @@ const loginUser = async (req, res) => {
 
     const userID = userData._id;
     res.locals.currentUser = userID
-    console.log("res.locals.currentUser saved",userID)
-    
+    console.log("res.locals.currentUser saved", userID)
+
 
     const token = auth.createToken(userID);
     res.cookie("jwt", token, {
@@ -314,7 +314,7 @@ const loginUser = async (req, res) => {
         user: userId,
         cartProducts: [],
         cartTotal: 0,
-       
+
       });
     }
     console.log("User logged in...", "User Name: ", userData.name);
@@ -328,47 +328,120 @@ const loginUser = async (req, res) => {
 const loadResetPass = async (req, res) => {
   try {
     const userId = res.locals.currentUserId ? res.locals.currentUserId._id : null;
-    return res.render('resetPassword', {userId });
+    return res.render('resetPassword', { userId });
   } catch (error) {
     console.error("Reset password load Error:", error);
-    return res.status(500).json({ message: 'Reset password load Error' });  }
+    return res.status(500).json({ message: 'Reset password load Error' });
+  }
 }
 
-const verifyEmail = async (req,res) => {
+const verifyEmailAndSendOtp = async (req, res) => {
   try {
     const email = req.body.email;
-    console.log("Email:",email)
-    const user = await Userdb.findOne({email:email});
-    if(!user){
-      return res.status(404).json({errorMessage:"User Not Found"})
-    } 
-    return res.status(200).json({errorMessage:"User Found",user})
+    console.log("Email:", email)
+    const user = await Userdb.findOne({ email: email });
+    if (!user) {
+      throw new Error("User Not Found")
+      // return res.status(404).json({errorMessage:"User Not Found"})
+    }
+    console.log("User Found:", user)
+
+    const OTP = generateOTP()
+    const otpExpirationTime = 30000;
+    console.log("Otp generated:", OTP)
+
+    req.session.tempDetails = {
+      email: req.body.email,
+      otp: OTP,
+      otpExpiration: otpExpirationTime,
+    }
+    req.session.save()
+    console.log("tempDetails:", req.session.tempDetails)
+    if (!req.session.tempDetails) {
+      throw new Error("Saving to session failed")
+    }
+
+    const subject = "Reset Password OTP For Your CouchCart. Account"
+
+    console.log(OTP);
+    const html = `<p> Your verification code is: ${OTP} </p>`
+    await sendEmailOtp(req.body.email, subject, html);
+    console.log("Reset first otp is: " + OTP);
+    // setTimeout(() => {
+    //   req.session.tempDetails.otp = null;
+    //   req.session.tempDetails.otpExpiration = null;
+    //   req.session.save()
+    //   console.log('First OTP expired');
+    // }, otpExpirationTime);
+
+    return res.status(200).json({ errorMessage: "User Found", user })
+
+
   } catch (error) {
     console.error("Email Verification Error:", error);
-    return res.status(500).json({ message: 'Email Verification Error' });
+    if (!res.headersSent) {
+      return res.status(500).json({ errorMessage: error.message });
+    }
+    // If a response has already been sent, log the error and let the request end
+    console.error("Error occurred after response sent to client:", error);
   }
 }
 
-const verifyPassOtp = async (req,res) => {
+const verifyOtpAndLoadPassInput = async (req, res) => {
   try {
-    
+    console.log("Loading password input...");
+    const otp = req.body.otp;
+    const tempDetails = req.session.tempDetails;
+    const sessionOtp = tempDetails.otp;
+    console.log(tempDetails);
+    if (otp !== sessionOtp) {
+      throw new Error("Invalid OTP");
+    }
+    console.log("Rendering password field...");
+    return res.status(200).json({ message: "OTP verified, render password input field" });
   } catch (error) {
     console.error("Email Verification Error:", error);
-    return res.status(500).json({ message: 'Email Verification Error' });
+    return res.status(500).json({ message: 'Invalid OTP' });
   }
-}
+};
+
+
+const submitNewPass = async (req, res) => {
+  try {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    // Hash the password
+    const spassword = await securePassword(password);
+    console.log("Password hashed successfully");
+
+    // Update user's password in the database
+    const user = await Userdb.findOneAndUpdate({ email: email }, { $set: { password: spassword } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return a success response
+    return res.redirect("/login");
+  } catch (error) {
+    console.error("Error submitting new password:", error.message);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 
 const loadHomePage = async (req, res) => {
   try {
 
-    const userId =  res.locals.currentUser
+    const userId = res.locals.currentUser
     const currentUser = res.locals.currentUser
     console.log("Userid:", userId);
     console.log("currentUser:", currentUser);
     const token = req.cookies.jwt ? true : false;
     const tokenId = req.cookies.jwt
     res.locals.token = tokenId;
-      console.log("User logged in:", tokenId);
+    console.log("User logged in:", tokenId);
     try {
       // const categoryLiving = await Productsdb.find({category:"Living Room Furniture"}).populate("category")
       const products = await Productsdb.find({ status: 1 }).populate("category")
@@ -414,20 +487,20 @@ const loadProfile = async (req, res) => {
     const token = req.cookies.jwt;
     const currentUser = res.locals.currentUser;
     const userId = currentUser._id
-  
-      // Check if the user has a wallet, if not, create one
-      let wallet = await Walletdb.findOne({ user: userId });
 
-      if (!wallet) {
-        // Create a wallet for the user
-        wallet = await Walletdb.create({
-          user: userId,
-          balance: 0,
-          transactions: []
-        });
-      }
+    // Check if the user has a wallet, if not, create one
+    let wallet = await Walletdb.findOne({ user: userId });
+
+    if (!wallet) {
+      // Create a wallet for the user
+      wallet = await Walletdb.create({
+        user: userId,
+        balance: 0,
+        transactions: []
+      });
+    }
     //Order related
-    const orderDetails = await Ordersdb.find({ user: userId }).sort({ orderDate: -1})
+    const orderDetails = await Ordersdb.find({ user: userId }).sort({ orderDate: -1 })
     console.log("orderDetails", orderDetails);
 
     // Use findOne to retrieve a single user document
@@ -441,7 +514,7 @@ const loadProfile = async (req, res) => {
 
 
     if (token) {
-      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails,wallet,referralCode });
+      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails, wallet, referralCode });
     } else {
       res.redirect("/login");
     }
@@ -459,19 +532,19 @@ const loadOrders = async (req, res) => {
     const token = req.cookies.jwt;
     const currentUser = res.locals.currentUser;
     const userId = currentUser._id
-  
-     
-    const allOrders  = await Ordersdb.find({ user: userId }).sort({ orderDate: -1, orderTime: -1 })
-    console.log("orderDetails", allOrders );
+
+
+    const allOrders = await Ordersdb.find({ user: userId }).sort({ orderDate: -1, orderTime: -1 })
+    console.log("orderDetails", allOrders);
 
     const user = await Userdb.findOne({ _id: currentUser._id }).populate('addresses');
-   
+
 
 
 
 
     if (token) {
-      res.render("viewUserOrders", { token, currentUser,  user, userId, allOrders  });
+      res.render("viewUserOrders", { token, currentUser, user, userId, allOrders });
     } else {
       res.redirect("/login");
     }
@@ -573,8 +646,9 @@ module.exports = {
   loadRegister,
   loadLogin,
   loadResetPass,
-  verifyEmail,
-  verifyPassOtp,
+  verifyEmailAndSendOtp,
+  verifyOtpAndLoadPassInput,
+  submitNewPass,
   loadHomePage,
   intialRegisterUser,
   registerUserGoogle,
@@ -700,10 +774,3 @@ module.exports = {
 
 
 
-// const loadcompare = async (req,res)=>{
-//   try {
-//     res.render("compare")
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }

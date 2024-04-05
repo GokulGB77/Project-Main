@@ -1,6 +1,11 @@
+// In your global JavaScript file (e.g., main.js)
+import swal from 'sweetalert';
+
+// Define global functions or configure libraries
+
 (function ($) {
     "use strict";
-    
+
     /*--
     currency active
     -----------------------------------*/
@@ -26,6 +31,7 @@
             }
         });
     }
+    
     
     /*--
     language active

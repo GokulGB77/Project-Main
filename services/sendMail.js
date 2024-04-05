@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer")
-const generateOTP = require("../services/genereateOtp")
 require('dotenv').config();
 
 const sendEmailOtp = async (email, subject, html
