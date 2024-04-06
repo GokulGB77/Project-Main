@@ -270,7 +270,7 @@
                                         <p><a href="#" id="viewCoupons" style="color: chocolate;">View Available
                                                 Coupons</a></p>
 
-                                        <div id="myModal" class="modal" style="z-index: 1000;">
+                                        <div id="myModal" class="modal" style="z-index: 100;">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h2 class="modal-title">Available Coupons</h2>
@@ -310,13 +310,13 @@
                                         </div>
                                         <script>
                                             document.querySelectorAll('.copy-code-btn').forEach(button => {
-                                                var couponModal = document.getElementById("myModal");
+                                                var modal = document.getElementById("myModal");
 
                                                 button.addEventListener('click', () => {
                                                     const couponCode = button.closest('.coupon-card').dataset.couponCode;
                                                     navigator.clipboard.writeText(couponCode)
                                                         .then(() => {
-                                                            couponModal.style.display = "none";
+                                                            modal.style.display = "none";
                                                         })
                                                         .catch(err => {
                                                             console.error('Failed to copy: ', err);
@@ -324,7 +324,7 @@
                                                 });
                                             });
                                             document.querySelectorAll('.card').forEach(card => {
-                                                var couponModal = document.getElementById("myModal");
+                                                var modal = document.getElementById("myModal");
                                                 card.addEventListener('click', () => {
                                                     const couponCard = card.closest('.coupon-card');
                                                     const couponCode = couponCard.dataset.couponCode;
@@ -340,7 +340,7 @@
                                                                     icon: 'success',
                                                                     stack:0
                                                                 });
-                                                                couponModal.style.display = "none";
+                                                                modal.style.display = "none";
                                                             })
                                                             .catch(err => {
                                                                 console.error('Failed to copy: ', err);
@@ -643,7 +643,7 @@
                                 "image": "https://dummyimage.com/600x400/000/fff",
                                 "order_id": data.order_id,
                                 "handler": function (response) {
-                                    alert("Payment Successful")
+                                    // alert("Payment Successful")
                                     window.location.href = "/place-order"
                                 },
                                 "prefill": {
