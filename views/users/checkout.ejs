@@ -261,8 +261,7 @@
                                     <div class="your-order-info order-total">
                                         <ul id="orderTotalUl">
                                             <li style="font-size: 20px; font-weight: bold;">Order Total: <span
-                                                    id="orderTotal">₹ <%= (cart.cartTotal  -
-                                                        cart.couponDiscount ).toLocaleString() %> </span>
+                                                    id="orderTotal">₹ <%= (cart.cartTotal  - cart.couponDiscount ).toLocaleString() %> </span>
                                             </li>
                                         </ul>
                                     </div>
@@ -692,189 +691,144 @@
 
     <!-- Apply Coupon Fetch -->
 
-    <script>
-        document.getElementById("applyButton").addEventListener("click", function (event) {
-            // event.preventDefault();
-            const couponInput = document.getElementById("coupon");
-            const couponCodeMessage = document.getElementById("couponCodeMessage");
-            const applyButton = document.getElementById("applyButton");
-            const removeCouponBtn = document.getElementById("removeCouponBtn");
-            const couponInputField = document.getElementById("coupon")
+   <script>
+    document.getElementById("applyButton").addEventListener("click", function (event) {
+  event.preventDefault();
+  const couponInput = document.getElementById("coupon");
+  const couponCodeMessage = document.getElementById("couponCodeMessage");
+  const applyButton = document.getElementById("applyButton");
+  const removeCouponBtn = document.getElementById("removeCouponBtn");
+  const couponInputField = document.getElementById("coupon");
+  const orderTotalSpan = document.getElementById("orderTotal");
 
-            const couponCode = couponInput.value;
-            const cartId = "<%= cart._id %>";
+  const couponCode = couponInput.value;
+  const cartId = "<%= cart._id %>";
 
-            couponCodeMessage.textContent = "";
+  couponCodeMessage.textContent = "";
 
-            fetch("/checkout/apply-coupon", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    couponCode,
-                    cartId
-                })
-            })
-                .then(response => response.json())
-                
-                .then(responseData => {
-                    const {
-                        message,
-                        errMessage,
-                        totalAmount,
-                        couponCode,
-                        discountAmount
-                    } = responseData.responseData;
+  fetch("/checkout/apply-coupon", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      couponCode,
+      cartId,
+    }),
+  })
+    .then((response) => response.json())
+    .then((responseData) => {
+      const { message, errMessage, totalAmount, couponCode, discountAmount } =
+        responseData.responseData;
 
-                    if(errMessage){
-                        couponCodeMessage.textContent = errMessage
-                        couponCodeMessage.classList.add("text-danger"); // Add the class
-                   
+      if (errMessage) {
+        couponCodeMessage.textContent = errMessage;
+        couponCodeMessage.classList.add("text-danger");
+      } else {
+        couponCodeMessage.textContent = message;
+        couponCodeMessage.classList.add("text-success");
 
-                    } else { 
-                        couponCodeMessage.textContent = message
-                        couponCodeMessage.classList.add("text-success"); // Add the class
+        setTimeout(() => {
+          couponCodeMessage.textContent = "";
+        }, 3000);
 
-                        setTimeout(() => {
-                            couponCodeMessage.textContent = ""
-                        }, 3000)
-                    }
+        if (message === "Coupon applied successfully") {
+          // Disable the coupon input field and set the value
+          couponInputField.disabled = true;
+          couponInputField.value = couponCode;
 
-                    if (message === "Coupon applied successfully") {
+          // Update the order total span
+          orderTotalSpan.textContent = `₹ ${totalAmount.toLocaleString()}`;
 
-                        //Form field disabling with value
-                        couponInputField.disabled = true;
-                        couponInputField.value = couponCode;
+          // Update the coupon and discount information
+          const couponHtml = `<ul class="coupon-ul">
+            <li>Coupon Applied: <span>${couponCode}</span></li>
+          </ul>`;
+          const discountHtml = `<ul class="discount-ul">
+            <li>Discount Applied: <span>- ₹ ${discountAmount.toLocaleString()}</span></li>
+          </ul>`;
 
-                        // Remove existing coupon ul
-                        const existingCouponUl = document.querySelector('.coupon-ul');
-                        if (existingCouponUl) {
-                            existingCouponUl.remove();
-                        }
-                        // Remove existing discount ul
-                        const existingDiscountUl = document.querySelector('.discount-ul');
-                        if (existingDiscountUl) {
-                            existingDiscountUl.remove();
-                        }
+          // Insert the coupon and discount HTML elements
+          const orderTotalElement = document.getElementById("orderTotalUl");
+          orderTotalElement.insertAdjacentHTML("beforebegin", discountHtml);
+          orderTotalElement.insertAdjacentHTML("beforebegin", couponHtml);
 
-                        // Create HTML for the new coupon ul
-                        const couponHTML = `<ul class="coupon-ul">
-                        <li>Coupon Applied: <span>${couponCode}</span></li>
-                         </ul>`;
-                        // Create HTML for the new discount ul
-                        const discountHTML = `<ul class="discount-ul">
-                        <li>Discount Applied: <span>- ₹ ${discountAmount}</span></li>
-                         </ul>`;
-                        // Insert the new coupon ul below the ul with id="shipping"
-                        const shippingUl = document.getElementById('shipping');
-                        if (shippingUl) {
-                            shippingUl.insertAdjacentHTML('afterend', discountHTML);
-                            shippingUl.insertAdjacentHTML('afterend', couponHTML);
+          // Show the "Remove Coupon" button
+          removeCouponBtn.style.display = "block";
+          applyButton.style.display = "none";
+        }
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+});
 
-                        }
-                        // Update the order total ul element
-                        const orderTotalUl = document.getElementById('orderTotalUl');
-                        if (orderTotalUl) {
-                            const orderTotalHTML = `<li style="font-size: 20px; font-weight: bold;"> Order Total: <span>₹ ${totalAmount.toLocaleString()}</span></li>`;
-                            orderTotalUl.innerHTML = orderTotalHTML;
-                        }
+// Event listener for the coupon form submission
+document.getElementById("couponForm").addEventListener("submit", function (event) {
+  event.preventDefault();
+  const couponInput = document.getElementById("coupon");
+  const couponCode = couponInput.value;
+  const cartId = "<%= cart._id %>";
 
-                        // Show the "Remove Coupon" button
-                        removeCouponBtn.style.display = "block";
-                        applyButton.style.display = "none";
+  applyCoupon(couponCode, cartId);
+});
 
-                    }
-                })
+function removeCoupon() {
+  const couponInput = document.getElementById("coupon");
+  const couponCodeMessage = document.getElementById("couponCodeMessage");
+  const applyButton = document.getElementById("applyButton");
+  const removeCouponBtn = document.getElementById("removeCouponBtn");
+  const couponInputField = document.getElementById("coupon");
+  const orderTotalSpan = document.getElementById("orderTotal");
 
-                .catch(error => {
-                    console.error("Error:", error);
-                });
-        });
+  const couponCode = couponInput.value;
+  const cartId = "<%= cart._id %>";
 
+  fetch("/checkout/remove-coupon", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      couponCode,
+      cartId,
+    }),
+  })
+    .then((response) => response.json())
+    .then((responseData) => {
+      const { message, totalAmount } = responseData.responseData;
+      if (message === "Coupon removed") {
+        // Enable the coupon input field
+        couponInputField.disabled = false;
 
-
-
-        // Event listener for the coupon form submission
-        document.getElementById("couponForm").addEventListener("submit", function (event) {
-            event.preventDefault();
-            const couponInput = document.getElementById("coupon");
-            const couponCode = couponInput.value;
-            const cartId = "<%= cart._id %>"; // Replace with your actual cartId value
-
-            applyCoupon(couponCode, cartId);
-        });
-
-
-        function removeCoupon() {
-            const couponInput = document.getElementById("coupon");
-            const couponCodeMessage = document.getElementById("couponCodeMessage");
-            const applyButton = document.getElementById("applyButton");
-            const removeCouponBtn = document.getElementById("removeCouponBtn");
-            const couponInputField = document.getElementById("coupon")
-
-
-            const couponCode = couponInput.value;
-            const cartId = "<%= cart._id %>";
-
-
-            fetch("/checkout/remove-coupon", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    couponCode,
-                    cartId
-                })
-            })
-                .then(response => response.json())
-                .then(responseData => {
-                    const {
-                        message,
-                        totalAmount,
-                    } = responseData.responseData;
-                    if (message === "Coupon removed") {
-
-                        //Form field disabling with value
-                        couponInputField.disabled = false;
-
-                        // Remove existing coupon ul
-                        const existingCouponUl = document.querySelector('.coupon-ul');
-                        if (existingCouponUl) {
-                            existingCouponUl.remove();
-                        }
-                        // Remove existing discount ul
-                        const existingDiscountUl = document.querySelector('.discount-ul');
-                        if (existingDiscountUl) {
-                            existingDiscountUl.remove();
-                        }
-
-                        // Store the coupon code and discount amount in localStorage
-                        localStorage.removeItem('couponCode');
-                        localStorage.removeItem('discountAmount');
-                        // Update the order total ul element
-                        const orderTotalUl = document.getElementById('orderTotalUl');
-                        if (orderTotalUl) {
-                            const orderTotalHTML = `<li style="font-size: 20px; font-weight: bold;"> Order Total: <span>₹ ${totalAmount.toLocaleString()}</span></li>`;
-                            orderTotalUl.innerHTML = orderTotalHTML;
-                        }
-
-                        // Show the "Remove Coupon" button
-                        removeCouponBtn.style.display = "none";
-                        applyButton.style.display = "block";
-
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
+        // Remove the coupon and discount information
+        const existingCouponUl = document.querySelector(".coupon-ul");
+        if (existingCouponUl) {
+          existingCouponUl.remove();
+        }
+        const existingDiscountUl = document.querySelector(".discount-ul");
+        if (existingDiscountUl) {
+          existingDiscountUl.remove();
         }
 
-        document.getElementById("removeCouponBtn").addEventListener("click", removeCoupon);
+        // Update the order total span
+        orderTotalSpan.textContent = `₹ ${totalAmount.toLocaleString()}`;
 
-        window.onload = removeCoupon()
-    </script>
+        // Hide the "Remove Coupon" button and show the "Apply Coupon" button
+        removeCouponBtn.style.display = "none";
+        applyButton.style.display = "block";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+document.getElementById("removeCouponBtn").addEventListener("click", removeCoupon);
+
+window.onload = removeCoupon();
+   </script>
 
 
 
