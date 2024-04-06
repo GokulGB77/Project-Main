@@ -104,7 +104,7 @@ const instance = new Razorpay({
 // }
 const paymentOption = async (req, res) => {
   try {
-    const deliveryCharge = 500
+    // const deliveryCharge = 500
     console.log("in paymentOption(fn)");
     const userId = req.session.userId;
     if (!userId) {
@@ -167,7 +167,8 @@ const paymentOption = async (req, res) => {
 
     if (selectedPaymentMethod === "razorPay") {
       console.log("paymentOption(fn):entered razorpay");
-      const total = cart.cartTotal - cart.couponDiscount + deliveryCharge
+      const total = cart.cartTotal - cart.couponDiscount //delivery charge replaced
+      // const total = cart.cartTotal - cart.couponDiscount + deliveryCharge
       let options = {
         amount: total * 100,
         currency: "INR",
@@ -270,7 +271,8 @@ const placeOrder = async (req, res) => {
     const deliveryNotes = req.session.deliveryNotes;
     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
     const orderAddress = req.session.orderAddress;
-    const orderTotal = (cart.cartTotal - cart.couponDiscount + 500)
+    const orderTotal = (cart.cartTotal - cart.couponDiscount ) //delivery charge replaced
+    // const orderTotal = (cart.cartTotal - cart.couponDiscount + 500)
     const orderProducts = cart.cartProducts
     const couponApplied = cart.couponApplied
     const couponDiscount = cart.couponDiscount
@@ -537,7 +539,7 @@ const loadOrders = async (req, res) => {
     const statuses = await Ordersdb.distinct('orderStatus');
 
 
-    const allOrders = await Ordersdb.find().sort({orderDate:-1}).populate("orderProducts.product").populate("user", "name");
+    const allOrders = await Ordersdb.find().sort({orderDate:-1,orderTime:-1}).populate("orderProducts.product").populate("user", "name");
     if (!allOrders) {
       return res.status(404).send({ message: "No orders found." });
     }
@@ -554,7 +556,7 @@ const loadOrdersDetails = async (req, res) => {
   try {
     const orderId = req.query.orderId;
     const orderDetails = await Ordersdb.findOne({ orderId: orderId }).populate("orderProducts.product").populate("user");
-    const deliveryCharge = 500;
+    // const deliveryCharge = 500;
     if (!orderDetails) {
       return res.status(404).send({ message: "Order not found" });
     }
@@ -566,7 +568,8 @@ const loadOrdersDetails = async (req, res) => {
     const formattedTime = formatTime(orderTime);
 
     console.log("orderId:", orderId);
-    res.render("orderDetails", { orderDetails, formattedDate, formattedTime, deliveryCharge });
+    res.render("orderDetails", { orderDetails, formattedDate, formattedTime,  });//delivery charge replaced
+    // res.render("orderDetails", { orderDetails, formattedDate, formattedTime, deliveryCharge });
   } catch (error) {
     console.log(error.message);
     res.status(500).send({ message: "Internal Server Error" });
