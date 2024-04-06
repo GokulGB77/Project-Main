@@ -174,7 +174,7 @@
                             <span class="icon icon-sm rounded-circle bg-primary-light">₹
                             </span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Revenue</h6>
+                                <h6 class="mb-1 card-title">Total Revenue</h6>
                                 <span>&#8377 <%= revenue.toLocaleString() %></span>
                                 <span class="text-sm">
                                     Shipping fees are not included
@@ -188,7 +188,7 @@
                         <article class="icontext">
                             <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Orders</h6> <span><%= allOrders.length%></span>
+                                <h6 class="mb-1 card-title">Delivered Orders</h6> <span><%= allOrders.length%></span>
                                 <span class="text-sm">
                                     Excluding orders in transit
                                 </span>
@@ -275,13 +275,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% salesDetails.forEach(sale => { %>
+                                    <% salesDetails.forEach((sale,index) => { %>
                                         <tr>
-                                            <td><%= sale %></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td><%= index +1 %></td>
+                                            <td><%= sale.productName %></td>
+                                            <td><%= sale.totalOrders %></td>
+                                            <td>&#8377 <%= sale.totalAmount.toLocaleString() %></td>
+                                            <td><%= sale.totalCouponAmount %></td>
                                             <td></td>
                                         </tr>
                                     <% }) %>
