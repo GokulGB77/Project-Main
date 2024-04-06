@@ -70,8 +70,18 @@
                                                                         <%= product.product.productName %>
                                                                     </a></h5>
                                                             </td>
-                                                            <td class="product-cart-price"><span class="amount">₹ <%=
-                                                                        product.product.productPrice %></span></td>
+                                                            <td class="product-cart-price">
+                                                                <% if(product.product.productOffer !==0 || product.product.categoryOffer !==0){ %>
+                                                                    <span class="amount">
+                                                                        ₹ <%= product.product.offerPrice %>
+                                                                    </span>
+                                                                    <% } else { %>
+                                                                        <span class="amount">
+                                                                            ₹ <%= product.product.productPrice %>
+                                                                        </span>
+                                                                        <% } %>
+                                                            </td>
+                                                           
                                                             <td class="cart-quality">
 
 
@@ -90,11 +100,16 @@
 
 
                                                             </td>
-                                                            <td class="product-total"
-                                                                id="subtotal_<%=product.product._id%>"><span>₹ <%=
-                                                                        ((product.product.productPrice *
-                                                                        product.quantity).toFixed(2)) %></span></td>
 
+                                                            <td class="product-total" id="subtotal_<%= product.product._id %>">
+                                                                <% if (product.product.productOffer !== 0 || product.product.categoryOffer !== 0) { %>
+                                                                    <span>₹ <%= (product.product.offerPrice * product.quantity).toFixed(2) %></span>
+                                                                <% } else { %>
+                                                                    <span>₹ <%= (product.product.productPrice * product.quantity).toFixed(2) %></span>
+                                                                <% } %>
+                                                            </td>
+                                                            
+                                                           
                                                             <td class="product-remove">
                                                                 <button
                                                                     style="border: none; background: none; padding: 0; cursor: pointer;"

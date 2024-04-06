@@ -276,6 +276,9 @@ const placeOrder = async (req, res) => {
     const orderProducts = cart.cartProducts
     const couponApplied = cart.couponApplied
     const couponDiscount = cart.couponDiscount
+    const priceWithoutOffer = cart.priceWithoutOffer
+    const totalPriceWithoutOffer = cart.totalPriceWithoutOffer
+
     // const couponApplied = req.session.couponApplied;
 
     for (const cartProduct of cart.cartProducts) {

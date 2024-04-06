@@ -64,7 +64,8 @@ const loadSalesReport = async (req, res) => {
           $group: {
               _id: "$orderProducts.product",
               totalOrders: { $sum: 1 },
-              totalAmount: { $sum: "$orderProducts.totalPrice" }
+              totalAmount: { $sum: "$orderProducts.totalPrice" },
+              // discountApplied:{$sum:"$"}
           }
       },
       {

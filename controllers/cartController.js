@@ -15,8 +15,13 @@ const addToCart = async (req, res) => {
     const userDetails = await Userdb.findById(userId);
     const productDetails = await Productsdb.findById(productId).populate("category");
     const currentStock = productDetails.stock;
-    const pPrice = productDetails.productPrice;
-
+    let priceWithoutOffer = productDetails.productPrice
+    let pPrice;
+    if(productDetails.productOffer !==0 || productDetails.categoryOffer !==0  ){
+       pPrice = productDetails.offerPrice;
+    } else {
+       pPrice =  productDetails.productPrice;
+    }
     let cart = await Cartdb.findOne({ user: userId });
     console.log("Cart Found");
     if (!cart) {
@@ -61,6 +66,7 @@ const addToCart = async (req, res) => {
       // Update total price if quantity is more than 1
       if (cart.cartProducts[existingProductIndex].quantity > 1) {
         cart.cartProducts[existingProductIndex].totalPrice = cart.cartProducts[existingProductIndex].price * cart.cartProducts[existingProductIndex].quantity;
+        cart.cartProducts[existingProductIndex].totalPriceWithoutOffer = cart.cartProducts[existingProductIndex].priceWithoutOffer * cart.cartProducts[existingProductIndex].quantity;
       }
     } else {
       // If the product doesn't exist, add it to the cart with quantity 1
@@ -68,7 +74,9 @@ const addToCart = async (req, res) => {
         product: productDetails,
         quantity: 1, // Initialize quantity to 1
         price: pPrice,
+        priceWithoutOffer:priceWithoutOffer,
         totalPrice: pPrice, // Initialize total price to price of a single product
+        totalPriceWithoutOffer:priceWithoutOffer,
       });
     }
 

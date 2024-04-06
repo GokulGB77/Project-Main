@@ -10,7 +10,10 @@ const ordersSchema = new mongoose.Schema({
     product:{type:mongoose.Types.ObjectId,ref:'Productsdb',required: true},
     quantity:{type:Number,required:true,default:1},
     price:{type:Number,required:true},
+    priceWithoutOffer:{type:Number,required:true},
     totalPrice:{type:Number,required:true},
+    totalPriceWithoutOffer:{type:Number,required:true},
+
   }],
   address:{type:Object},
   orderTotal:{type:Number,required:true,default:0},
