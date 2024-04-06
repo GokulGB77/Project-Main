@@ -107,8 +107,9 @@ const loadCart = async (req, res) => {
     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
     if (cart) {
       cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
-      let deliveryCharge = 500
-      const Total = cart.cartTotal + deliveryCharge;
+      // let deliveryCharge = 500
+      const Total = cart.cartTotal ;
+      // const Total = cart.cartTotal + deliveryCharge; //delivery charge replaced
 
 
       if (!cart) {
@@ -167,8 +168,9 @@ const updateCartQuantity = async (req, res) => {
     // Prepare the response with updated subtotal and total values
     const productSubtotal = cart.cartProducts.find(item => item.product.toString() === productId).totalPrice;
     const cartTotal = cart.cartTotal;
-    let deliveryCharge = 500
-    const Total = cart.cartTotal + deliveryCharge;
+    // let deliveryCharge = 500
+    const Total = cart.cartTotal ;
+    // const Total = cart.cartTotal + deliveryCharge; //delivery charge replaced
 
     res.status(200).json({ message: 'Cart updated successfully', productSubtotal, cartTotal, Total });
   } catch (error) {
@@ -296,17 +298,18 @@ const loadCheckout = async (req, res) => {
     let addresslist = addresses.addresses.reverse();
     const cardId = req.query.id;
     const cart = await Cartdb.findById(cardId).populate("cartProducts.product");
-    const deliveryCharge = 500
+    // const deliveryCharge = 500
     //  console.log("Cart with populated products:", cart); // Log the cart to see if products are populated correctly
 
     if (!cart) {
       return res.status(400).send("Error getting cart details");
     }
-    const coupons = await Couponsdb.find()
+    const coupons = await Couponsdb.find({status:"active"})
 
     const couponCodeId = cart.couponApplied
     const coupon = await Couponsdb.findById(couponCodeId)
-    return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon, coupons });
+    return res.render("checkout", { cart, userId, addresslist, cardId, coupon, coupons }); //delivery charge replaced
+    // return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon, coupons });
   } catch (error) {
     console.error('Error Loading CheckoutPage', error);
     return res.status(500).json({ message: 'Internal server error' });
@@ -316,7 +319,7 @@ const loadCheckout = async (req, res) => {
 const applyCoupon = async (req, res) => {
   try {
     const { cartId, couponCode } = req.body; // Destructuring assignment to extract properties
-    const deliveryCharge = 500
+    // const deliveryCharge = 500
     console.log("cartId:", cartId);
     console.log("couponCode:", couponCode);
 
@@ -334,14 +337,14 @@ const applyCoupon = async (req, res) => {
       console.log("Invalid Coupon Code");
       return res.status(200).json({ responseData });
     }
-    if (coupon.couponAppliedUsers) {
-      if (coupon.couponAppliedUsers.includes(cart.user)) {
-        let responseData = { errMessage: "Already used. Enter a Valid Coupon." };
-        console.log("Coupon already used");
-        return res.status(400).json({ responseData });
-      }
-    }
-    cart.couponApplied = coupon._id;
+    // if (coupon.couponAppliedUsers) {
+    //   if (coupon.couponAppliedUsers.includes(cart.user)) {
+    //     let responseData = { errMessage: "Already used. Enter a Valid Coupon." };
+    //     console.log("Coupon already used");
+    //     return res.status(400).json({ responseData });
+    //   }
+    // }
+    // cart.couponApplied = coupon._id;
 
     // Handle coupon application logic here...
     const couponType = coupon.discountType;
@@ -371,8 +374,10 @@ const applyCoupon = async (req, res) => {
       message: "Coupon applied successfully",
       couponCode: coupon.code,
       discountAmount: cart.couponDiscount,
-      totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
+      totalAmount: cart.cartTotal - cart.couponDiscount //delivery charge replaced
+      // totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
     };
+
     await cart.save();
     console.log("Coupon code:", coupon.code);
     req.session.couponApplied = coupon.code;
@@ -398,7 +403,7 @@ const applyCoupon = async (req, res) => {
 const removeCoupon = async (req, res) => {
   try {
     const { cartId, couponCode } = req.body; // Destructuring assignment to extract properties
-    const deliveryCharge = 500
+    // const deliveryCharge = 500
     console.log("cartId:", cartId);
     console.log("couponCode:", couponCode);
 
@@ -413,7 +418,8 @@ const removeCoupon = async (req, res) => {
     cart.couponDiscount = 0;
     responseData = {
       message: "Coupon removed",
-      totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
+      totalAmount: cart.cartTotal - cart.couponDiscount //delivery charge replaced
+      // totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
     };
     await cart.save();
 
