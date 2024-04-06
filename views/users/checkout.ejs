@@ -82,17 +82,18 @@
                                             $('#addAddressModal').modal('show');
                                         });
                                     </script>
-                                    <div id="addAddressModal" class="modal">
+                                    <div id="addAddressModal" class="modal" style="z-index: 2000;">
                                         <div class="modal-dialog">
-                                            <div class="modal-content">
+                                            
+                                            <div class="address-modal-content">
                                                 <!-- Modal Header -->
                                                 <div class="modal-header">
                                                     <h4 class="modal-title">Add New Address</h4>
-                                                    <button type="button" class="close"
+                                                    <button type="button" id="cls-btn" class="close"
                                                         data-dismiss="modal">&times;</button>
                                                 </div>
                                                 <!-- Modal Body -->
-                                                <div class="modal-body">
+                                                <div class="modal-body" >
                                                     <!-- Form for adding a new address -->
                                                     <form id="addAddressForm" action="/checkout/add-address"
                                                         method="post">
@@ -247,20 +248,20 @@
                                         <ul>
                                             <li>Subtotal:<span>₹ <%= (cart.cartTotal).toLocaleString() %> </span></li>
                                         </ul>
-                                        <ul id="shipping">
-                                            <li>Shipping: <span>₹ <%= deliveryCharge %> </span></li>
-                                        </ul>
+                                        <!-- <ul id="shipping">
+                                            <li>Shipping: <span>₹  deliveryCharge  </span></li>
+                                        </ul> -->
 
                                     </div>
                                     <!-- <div class="your-order-info order-shipping">
                                         <ul>
-                                            <li>Shipping: <span>₹ <%= deliveryCharge %> </span></li>
+                                            <li>Shipping: <span>₹  deliveryCharge  </span></li>
                                         </ul>
                                     </div> -->
                                     <div class="your-order-info order-total">
                                         <ul id="orderTotalUl">
                                             <li style="font-size: 20px; font-weight: bold;">Order Total: <span
-                                                    id="orderTotal">₹ <%= (cart.cartTotal + deliveryCharge -
+                                                    id="orderTotal">₹ <%= (cart.cartTotal  -
                                                         cart.couponDiscount ).toLocaleString() %> </span>
                                             </li>
                                         </ul>
@@ -269,7 +270,7 @@
                                         <p><a href="#" id="viewCoupons" style="color: chocolate;">View Available
                                                 Coupons</a></p>
 
-                                        <div id="myModal" class="modal" style="z-index: 100;">
+                                        <div id="myModal" class="modal" style="z-index: 1000;">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h2 class="modal-title">Available Coupons</h2>
@@ -309,15 +310,13 @@
                                         </div>
                                         <script>
                                             document.querySelectorAll('.copy-code-btn').forEach(button => {
-                                                var modal = document.getElementById("myModal");
+                                                var couponModal = document.getElementById("myModal");
 
                                                 button.addEventListener('click', () => {
                                                     const couponCode = button.closest('.coupon-card').dataset.couponCode;
                                                     navigator.clipboard.writeText(couponCode)
                                                         .then(() => {
-
-                                                           
-                                                            modal.style.display = "none";
+                                                            couponModal.style.display = "none";
                                                         })
                                                         .catch(err => {
                                                             console.error('Failed to copy: ', err);
@@ -325,7 +324,7 @@
                                                 });
                                             });
                                             document.querySelectorAll('.card').forEach(card => {
-                                                var modal = document.getElementById("myModal");
+                                                var couponModal = document.getElementById("myModal");
                                                 card.addEventListener('click', () => {
                                                     const couponCard = card.closest('.coupon-card');
                                                     const couponCode = couponCard.dataset.couponCode;
@@ -341,7 +340,7 @@
                                                                     icon: 'success',
                                                                     stack:0
                                                                 });
-                                                                modal.style.display = "none";
+                                                                couponModal.style.display = "none";
                                                             })
                                                             .catch(err => {
                                                                 console.error('Failed to copy: ', err);
@@ -459,6 +458,17 @@
                                             }
 
                                             .modal-content {
+                                                background-color: #fefefe;
+                                                margin: 9% auto;
+                                                padding: 33px;
+                                                border: 1px solid #888;
+                                                width: 80%;
+                                                display: flex;
+                                                flex-wrap: wrap;
+                                                justify-content: center;
+                                                align-items: flex-start;
+                                            }
+                                            .address-modal-content {
                                                 background-color: #fefefe;
                                                 margin: 9% auto;
                                                 padding: 33px;
