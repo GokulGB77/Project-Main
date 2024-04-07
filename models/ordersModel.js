@@ -27,6 +27,19 @@ const ordersSchema = new mongoose.Schema({
   adminNotes:{type:String,required:false,},
   couponApplied:{type:mongoose.Types.ObjectId,ref:'Couponsdb',},
   couponDiscount:{type:Number,},
+  totalOrderPriceWithoutOffer: { type: Number } // New field for total order price without offer
+
+},
+{
+  timestamps:true
 })
 
+ordersSchema.pre('save', function(next) {
+  let totalOrderPriceWithoutOffer = 0;
+  this.orderProducts.forEach(product => {
+    totalOrderPriceWithoutOffer += product.totalPriceWithoutOffer;
+  });
+  this.totalOrderPriceWithoutOffer = totalOrderPriceWithoutOffer;
+  next();
+});
 module.exports = mongoose.model("Ordersdb", ordersSchema);

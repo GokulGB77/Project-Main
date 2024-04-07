@@ -10,6 +10,7 @@
         integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 
     <link href="/admin/css/styles.css" rel="stylesheet" type="text/css" />
+    <link href="/admin/css/pdfstyles.css" rel="stylesheet" type="text/css" />
 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,35 +21,66 @@
 <body>
 
     <section id="invoice">
-        <div class="container my-5 py-5">
+
+        
+        <div class="container my-2 py-2">
+           
             <div class="text-center">
-                <img src="images/logo_dark.png" alt="">
+                <img src="/admin/imgs/theme/logo.png" alt="">
             </div>
             <div class="text-center border-top border-bottom my-5 py-3">
-                <h2 class="display-5 fw-bold">Invoice V1 </h2>
-                <p class="m-0">Invoice No: 12345</p>
-                <p class="m-0">Invoice Date: 20 May, 2024</p>
+                <h2 class="display-5 fw-bold">Sales Report </h2>
+                <p class="m-0">Report Duration: <%= startDate%> - <%= endDate %> </p>
             </div>
 
-            <div class="d-md-flex justify-content-between">
-                <div>
-                    <p class="text-primary">Invoice To</p>
-                    <h4>Roger Y. Will</h4>
-                    <ul class="list-unstyled">
-                        <li>XYZ Company</li>
-                        <li>info@xyzcompany.com</li>
-                        <li>123 Main Street</li>
-                    </ul>
+            <div class="d-md-flex justify-content-between" style="width: 80%;">
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-success-light"><i
+                                    class="text-success material-icons md-local_shipping"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Delivered Orders</h6> <span>67
+                                </span>
+                                <span class="text-sm">
+                                    Excluding orders in transit
+                                </span>
+                            </div>
+                        </article>
+                    </div>
                 </div>
-                <div class="mt-5 mt-md-0">
-                    <p class="text-primary">Invoice From</p>
-                    <h4>William Peter</h4>
-                    <ul class="list-unstyled">
-                        <li>ABC Company</li>
-                        <li>info@abccompany.com</li>
-                        <li>456 Main Street</li>
-                    </ul>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-success-light"><i
+                                    class="text-success material-icons md-local_shipping"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Delivered Orders</h6> <span>67
+                                </span>
+                                <span class="text-sm">
+                                    Excluding orders in transit
+                                </span>
+                            </div>
+                        </article>
+                    </div>
                 </div>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-success-light"><i
+                                    class="text-success material-icons md-local_shipping"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">Delivered Orders</h6> <span>67
+                                </span>
+                                <span class="text-sm">
+                                    Excluding orders in transit
+                                </span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                
+                
             </div>
 
             <table class="table border my-5">

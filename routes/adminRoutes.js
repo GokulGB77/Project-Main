@@ -47,6 +47,9 @@ adminRoute.get('/',adminController.loadAdminLogin);
 adminRoute.post('/dashboard',adminController.verifyAdminLogin);
 adminRoute.get('/dashboard',dashboardController.loadAdminDashoard);
 adminRoute.get('/sales-report',dashboardController.loadSalesReport);
+adminRoute.post('/generate-sales-report',dashboardController.generateSalesReport);
+adminRoute.post('/generate-pdf',dashboardController.generateSalesReportPDF);
+adminRoute.get('/generate-pdf',dashboardController.generateSalesReportPdf);
 
 
 adminRoute.get('/user-details',adminController.userDetails)
