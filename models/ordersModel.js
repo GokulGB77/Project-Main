@@ -25,7 +25,7 @@ const ordersSchema = new mongoose.Schema({
   orderCancelReason: {type:String,required:false},
   additionalReason:{type:String,required:false},
   adminNotes:{type:String,required:false,},
-  couponApplied:{type:mongoose.Types.ObjectId,ref:'Couponsdb',},
+  couponApplied:{type:String,},
   couponDiscount:{type:Number,},
   totalOrderPriceWithoutOffer: { type: Number } // New field for total order price without offer
 

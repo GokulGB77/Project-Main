@@ -705,7 +705,7 @@
   const cartId = "<%= cart._id %>";
 
   couponCodeMessage.textContent = "";
-
+  
   fetch("/checkout/apply-coupon", {
     method: "POST",
     headers: {
@@ -724,7 +724,7 @@
       if (errMessage) {
         couponCodeMessage.textContent = errMessage;
         couponCodeMessage.classList.add("text-danger");
-      } else {
+    } else {
         couponCodeMessage.textContent = message;
         couponCodeMessage.classList.add("text-success");
 

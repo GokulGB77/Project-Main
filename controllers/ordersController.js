@@ -22,7 +22,7 @@ const instance = new Razorpay({
 
 //-----------------------------User Side---------------------------------------------
 
-// const paymentOption = async (req, res) => {
+const paymentOptionOld = async (req, res) => {
 //   try {
 //     console.log('paymentOption middleware called');
 //     console.log('req.session:', req.session);
@@ -101,7 +101,7 @@ const instance = new Razorpay({
 //     console.error('Error in paymentOption:', error);
 //     res.status(500).json({ message: 'Internal Server Error' });
 //   }
-// }
+}
 const paymentOption = async (req, res) => {
   try {
     // const deliveryCharge = 500
@@ -271,13 +271,13 @@ const placeOrder = async (req, res) => {
     const deliveryNotes = req.session.deliveryNotes;
     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
     const orderAddress = req.session.orderAddress;
-    const orderTotal = (cart.cartTotal - cart.couponDiscount ) //delivery charge replaced
+    const orderTotal = (cart.cartTotal - cart.couponDiscount) //delivery charge replaced
     // const orderTotal = (cart.cartTotal - cart.couponDiscount + 500)
     const orderProducts = cart.cartProducts
     const couponApplied = cart.couponApplied
     const couponDiscount = cart.couponDiscount
-    const priceWithoutOffer = cart.priceWithoutOffer
-    const totalPriceWithoutOffer = cart.totalPriceWithoutOffer
+    // const priceWithoutOffer = cart.priceWithoutOffer
+    // const totalPriceWithoutOffer = cart.totalPriceWithoutOffer
 
     // const couponApplied = req.session.couponApplied;
 
@@ -290,8 +290,8 @@ const placeOrder = async (req, res) => {
         return res.status(405).json({ error: `The requested quantity (${cartProduct.quantity}) for ${product.productName} exceeds the available stock (${product.stock}).` });
       }
     }
-    console.log("placeOrder(fn):Checked true for availability of stock");
-    console.log("placeOrder(fn):selectedPaymentMethod", selectedPaymentMethod);
+    // console.log("placeOrder(fn):Checked true for availability of stock");
+    // console.log("placeOrder(fn):selectedPaymentMethod", selectedPaymentMethod);
 
 
     const order = new Ordersdb({
@@ -312,7 +312,7 @@ const placeOrder = async (req, res) => {
     const orderDetails = await order.save();
     console.log("placeOrder(fn):Order Created and saved to db", orderDetails.orderId);
 
-    const coupon = await Couponsdb.findById(couponApplied);
+    const coupon = await Couponsdb.findOne({name:couponApplied});
     if (coupon) {
       if (!coupon.couponAppliedUsers.includes(userId)) {
         coupon.couponAppliedUsers.push(userId);
@@ -465,12 +465,12 @@ const cancelOrder = async (req, res) => {
   try {
     const orderId = req.query.orderId;
     if (!orderId) {
-      return res.status(405).send({ message: "Missing orderId parameter." });
+      throw new Error("Missing orderId parameter.");
     }
 
     const orderCancelReason = req.body.reason;
     if (!orderCancelReason) {
-      return res.status(406).send({ message: "Missing order cancellation reason." });
+      throw new Error("Missing order cancellation reason.");
     }
 
     const additionalReason = req.body.additionalReason || null;
@@ -532,6 +532,77 @@ const cancelOrder = async (req, res) => {
     res.status(500).send({ message: "Error cancelling order." });
   }
 };
+const returnOrder = async (req, res) => {
+  try {
+    const orderId = req.query.orderId;
+    if (!orderId) {
+      throw new Error("Missing orderId parameter.");
+    }
+
+    const orderReturnReason = req.body.reason;
+    if (!orderReturnReason) {
+      throw new Error("Missing order Return reason.");
+    }
+
+    const additionalReason = req.body.additionalReturnReason || null;
+
+    const orderDetails = await Ordersdb.findOneAndUpdate(
+      { _id: orderId },
+      {
+        $set: {
+          orderStatus: "return-requested",
+          orderCancelReason: orderReturnReason,
+          additionalReason: additionalReason,
+        },
+      },
+      { new: true } // Return the updated document
+    ).populate("user");
+
+    if (!orderDetails) {
+      return res.status(404).send({ message: "Order not found." });
+    }
+    // Add quantities back to product stock
+    for (const orderProduct of orderDetails.orderProducts) {
+      try {
+        const product = await Productsdb.findById(orderProduct.product);
+        if (product) {
+          product.stock += orderProduct.quantity;
+          await product.save();
+        } else {
+          throw new Error(`Product with ID ${orderProduct.product} not found.`);
+        }
+      } catch (error) {
+        console.log(`Error adding quantity back to product stock: ${error.message}`);
+        throw error;
+      }
+    }
+    const userId = orderDetails.user._id;
+    // const refundAmount = orderDetails.orderTotal
+    // const orderType = orderDetails.paymentMethod + "(" + orderDetails.orderStatus + ")"
+    // const orderID = orderDetails.orderId
+    // console.log("refundAmount:", refundAmount)
+    // // const wallet = await Walletdb.findOne({ user: userId }).populate("transactions")
+    // if (orderDetails.paymentMethod === "razorPay" && (orderDetails.orderStatus === "cancelled")) {
+    //   wallet.balance += refundAmount;
+    //   wallet.transactions.push({
+    //     amount: refundAmount,
+    //     description: "Payment for Order " + orderID,
+    //     type: orderType,
+    //   });
+
+    //   await wallet.save()
+
+    //   orderDetails.orderStatus = "cancelled"
+    //   await orderDetails.save()
+    // }
+
+
+    res.status(200).send({ message: "Order return initiated.", order: orderDetails });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send({ message: "Error returning order." });
+  }
+};
 
 
 //-----------------------------Admin Side---------------------------------------------
@@ -542,12 +613,12 @@ const loadOrders = async (req, res) => {
     const statuses = await Ordersdb.distinct('orderStatus');
 
 
-    const allOrders = await Ordersdb.find().sort({orderDate:-1,orderTime:-1}).populate("orderProducts.product").populate("user", "name");
+    const allOrders = await Ordersdb.find().sort({ orderDate: -1, orderTime: -1 }).populate("orderProducts.product").populate("user", "name");
     if (!allOrders) {
       return res.status(404).send({ message: "No orders found." });
     }
     console.log("allOrders.length:", allOrders.length);
-    res.render("viewOrders", { allOrders,allCategories,statuses });
+    res.render("viewOrders", { allOrders, allCategories, statuses });
   } catch (error) {
     console.error("Error loading orders:", error);
     res.status(500).send({ message: "Internal Server Error" });
@@ -558,7 +629,7 @@ const loadOrders = async (req, res) => {
 const loadOrdersDetails = async (req, res) => {
   try {
     const orderId = req.query.orderId;
-    const orderDetails = await Ordersdb.findOne({ orderId: orderId }).populate("orderProducts.product").populate("user");
+    const orderDetails = await Ordersdb.findOne({ orderId: orderId }).populate("orderProducts.product").populate("user")
     // const deliveryCharge = 500;
     if (!orderDetails) {
       return res.status(404).send({ message: "Order not found" });
@@ -571,7 +642,7 @@ const loadOrdersDetails = async (req, res) => {
     const formattedTime = formatTime(orderTime);
 
     console.log("orderId:", orderId);
-    res.render("orderDetails", { orderDetails, formattedDate, formattedTime,  });//delivery charge replaced
+    res.render("orderDetails", { orderDetails, formattedDate, formattedTime, });//delivery charge replaced
     // res.render("orderDetails", { orderDetails, formattedDate, formattedTime, deliveryCharge });
   } catch (error) {
     console.log(error.message);
@@ -701,7 +772,7 @@ const changeOrderStatus = async (req, res) => {
 
     if (order) {
       console.log('Order status updated successfully:', order);
-      const orderDetails = await Ordersdb.findOne({_id:orderId})
+      const orderDetails = await Ordersdb.findOne({ _id: orderId })
 
       const refundAmount = orderDetails.orderTotal - orderDetails.couponDiscount
       const orderType = orderDetails.paymentMethod + "(" + orderDetails.orderStatus + ")"
@@ -756,28 +827,22 @@ const approveRefund = async (req, res) => {
       wallet.balance += refundAmount;
       wallet.transactions.push({
         amount: refundAmount,
-        description: "Payment for Order " + orderID,
+        description: "Payment refund for Order  " + orderID,
         type: orderType,
       });
-
-      await wallet.save()
-
-      orderDetails.orderStatus = "returned"
-      await orderDetails.save()
     }
     if (orderDetails.paymentMethod === "cod" && orderDetails.orderStatus === "return-requested") {
       wallet.balance += refundAmount;
       wallet.transactions.push({
         amount: refundAmount,
-        description: "Payment for Order " + orderID,
+        description: "Payment refund for Order " + orderID,
         type: orderType,
       });
-
-      await wallet.save()
-
-      orderDetails.orderStatus = "returned"
-      await orderDetails.save()
     }
+    await wallet.save()
+
+    orderDetails.orderStatus = "returned"
+    await orderDetails.save()
     res.status(200).json({ message: "Refund approved. Fund added to user's wallet", orderDetails });
   } catch (error) {
     console.log("Error in approving refund:", error);
@@ -791,6 +856,7 @@ module.exports = {
   orderSuccess,
   loadOrderDetails,
   cancelOrder,
+  returnOrder,
   loadOrders,
   loadOrdersDetails,
   adminCancel,

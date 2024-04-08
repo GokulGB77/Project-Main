@@ -191,7 +191,18 @@
                                             <p>Already have an account? <a href="/login">Login</a></p>
 
                                             <p class="text-center small text-muted mb-15">or sign up with</p>
-                                            <div class="d-grid gap-3 mb-4">
+                                            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+                                            <script>
+                                                function onSignIn(googleUser) {
+                                                var profile = googleUser.getBasicProfile();
+                                                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+                                                console.log('Name: ' + profile.getName());
+                                                console.log('Image URL: ' + profile.getImageUrl());
+                                                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+                                                }
+                                            </script>
+                                            <!-- <div class="d-grid gap-3 mb-4">
                                                 <a href='/auth' class="btn w-100 btn-light font-sm">
                                                     <svg aria-hidden="true" class="icon-svg" width="20" height="20"
                                                         viewBox="0 0 20 20">
@@ -217,7 +228,7 @@
                                                             fill="#4167B2"></path>
                                                     </svg> Sign in using Facebook
                                                 </a>
-                                            </div>
+                                            </div> -->
 
                                 </div>
                             </div>

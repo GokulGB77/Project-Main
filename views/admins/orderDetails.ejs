@@ -536,6 +536,10 @@
                                             (orderDetails.orderStatus==="return-requested" ) ) { %>
                                             <button id="refundApprove" class="btn btn-primary">Approve Refund</button>
                                             <% } %>
+                                        <% if (orderDetails.paymentMethod==="cod" &&
+                                            (orderDetails.orderStatus==="return-requested" ) ) { %>
+                                            <button id="refundApprove" class="btn btn-primary">Approve Refund</button>
+                                            <% } %>
 
                                     </div>
                             </div>
@@ -543,15 +547,11 @@
                     </div>
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
-                            // Find the button element by its ID
                             var approveButton = document.getElementById('refundApprove');
 
-                            // Add click event listener to the button
                             approveButton.addEventListener('click', function () {
-                                // Get the order ID from the server-side data (assuming orderDetails._id is accessible)
                                 var orderId = '<%= orderDetails._id %>';
 
-                                // Call the approveRefund function with the order ID
                                 approveRefund(orderId);
                             });
                         });

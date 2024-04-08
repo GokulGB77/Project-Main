@@ -17,10 +17,10 @@ const addToCart = async (req, res) => {
     const currentStock = productDetails.stock;
     let priceWithoutOffer = productDetails.productPrice
     let pPrice;
-    if(productDetails.productOffer !==0 || productDetails.categoryOffer !==0  ){
-       pPrice = productDetails.offerPrice;
+    if (productDetails.productOffer !== 0 || productDetails.categoryOffer !== 0) {
+      pPrice = productDetails.offerPrice;
     } else {
-       pPrice =  productDetails.productPrice;
+      pPrice = productDetails.productPrice;
     }
     let cart = await Cartdb.findOne({ user: userId });
     console.log("Cart Found");
@@ -74,9 +74,9 @@ const addToCart = async (req, res) => {
         product: productDetails,
         quantity: 1, // Initialize quantity to 1
         price: pPrice,
-        priceWithoutOffer:priceWithoutOffer,
+        priceWithoutOffer: priceWithoutOffer,
         totalPrice: pPrice, // Initialize total price to price of a single product
-        totalPriceWithoutOffer:priceWithoutOffer,
+        totalPriceWithoutOffer: priceWithoutOffer,
       });
     }
 
@@ -116,7 +116,7 @@ const loadCart = async (req, res) => {
     if (cart) {
       cart.cartTotal = cart.cartProducts.reduce((total, item) => total + item.totalPrice, 0);
       // let deliveryCharge = 500
-      const Total = cart.cartTotal ;
+      const Total = cart.cartTotal;
       // const Total = cart.cartTotal + deliveryCharge; //delivery charge replaced
 
 
@@ -177,7 +177,7 @@ const updateCartQuantity = async (req, res) => {
     const productSubtotal = cart.cartProducts.find(item => item.product.toString() === productId).totalPrice;
     const cartTotal = cart.cartTotal;
     // let deliveryCharge = 500
-    const Total = cart.cartTotal ;
+    const Total = cart.cartTotal;
     // const Total = cart.cartTotal + deliveryCharge; //delivery charge replaced
 
     res.status(200).json({ message: 'Cart updated successfully', productSubtotal, cartTotal, Total });
@@ -312,10 +312,10 @@ const loadCheckout = async (req, res) => {
     if (!cart) {
       return res.status(400).send("Error getting cart details");
     }
-    const coupons = await Couponsdb.find({status:"active"})
+    const coupons = await Couponsdb.find({ status: "active" })
 
-    const couponCodeId = cart.couponApplied
-    const coupon = await Couponsdb.findById(couponCodeId)
+    const couponCode = cart.couponApplied
+    const coupon = await Couponsdb.findOne({name:couponCode})
     return res.render("checkout", { cart, userId, addresslist, cardId, coupon, coupons }); //delivery charge replaced
     // return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon, coupons });
   } catch (error) {
@@ -356,6 +356,7 @@ const applyCoupon = async (req, res) => {
 
     // Handle coupon application logic here...
     const couponType = coupon.discountType;
+    const couponId = coupon._id;
     const couponValue = coupon.discountValue;
     const couponMinAmt = coupon.minimumOffer;
     const couponMaxAmt = coupon.maximumOffer;
@@ -380,11 +381,13 @@ const applyCoupon = async (req, res) => {
     }
     responseData = {
       message: "Coupon applied successfully",
-      couponCode: coupon.code,
+      couponCode: couponCode,
+      couponId: couponId,
       discountAmount: cart.couponDiscount,
       totalAmount: cart.cartTotal - cart.couponDiscount //delivery charge replaced
       // totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
     };
+    cart.couponApplied = couponCode
 
     await cart.save();
     console.log("Coupon code:", coupon.code);
@@ -431,8 +434,7 @@ const removeCoupon = async (req, res) => {
     };
     await cart.save();
 
-    delete req.session.couponApplied;
-    console.log("Coupon deleted from session:");
+    // delete req.session.couponApplied;
 
 
     // Respond with success message if coupon applied successfully

@@ -37,7 +37,7 @@ userRoute.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }, // Set secure to true if using HTTPS
-  }));  
+}));  
 
 
   userRoute.use((req, res, next) => {
@@ -118,6 +118,7 @@ userRoute.post("/payment",auth.isLogin,ordersController.paymentOption)
 userRoute.get("/place-order",auth.isLogin,ordersController.placeOrder)
 userRoute.get("/order-success",auth.isLogin,ordersController.orderSuccess)
 userRoute.post("/cancel-order",auth.isLogin,ordersController.cancelOrder)
+userRoute.post("/return-order",auth.isLogin,ordersController.returnOrder)
 
 
 userRoute.get("/profile",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)

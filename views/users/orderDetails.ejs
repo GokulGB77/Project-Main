@@ -12,7 +12,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="shipping-info">
-                                    <h5 style="font-weight: 700; font-size: 14px; line-height: 20px;">Shipping Address
+                                    <h5 class="order-details-heading" >Shipping Address
                                     </h5>
 
                                     <h6
@@ -37,7 +37,7 @@
                                     </h6>
                                 </div>
                                 <div class="payment-info">
-                                    <h5 style="font-weight: 700; font-size: 14px; line-height: 20px; ">Order Status
+                                    <h5 class="order-details-heading" >Order Status
                                     </h5>
                                     <% if ( orderDetails.orderStatus==="pending" ) { %>
                                         <span class="delivery-status"
@@ -51,6 +51,10 @@
                                                 <span class="delivery-status"
                                                     style="background-color: #1bc83b; word-wrap: break-word;margin: 0; font-size: 14px">
                                                     Delivered</span>
+                                                <% } else if (orderDetails.orderStatus==="return-requested" ) { %>
+                                                    <span class="delivery-status"
+                                                        style="background-color: #7fcfe7; word-wrap: break-word;margin: 0; font-size: 14px">
+                                                        Return Intitated</span>
                                                 <% } else if (orderDetails.orderStatus==="returned" ) { %>
                                                     <span class="delivery-status"
                                                         style="background-color: #22acd6; word-wrap: break-word;margin: 0; font-size: 14px">
@@ -61,29 +65,54 @@
                             </div>
                             <div class="col-md-5">
                                 <div class="payment-info">
-                                    <h5 style="font-weight: 700; font-size: 14px; line-height: 20px;">Payment Method
+                                    <h5 class="order-details-heading" >Payment Methods
                                     </h5>
                                     <% if ( orderDetails.paymentMethod=="cod" ) { %>
                                         <h6
                                             style="list-style: none; color: #000; word-wrap: break-word;margin: 0; font-size: 14px">
                                             Pay on Delivery</h6>
-                                    
-                                            <% } else { %>
-                                                <h6 style="list-style: none; color: #000; word-wrap: break-word;margin: 0; font-size: 14px">
+
+                                        <% } else { %>
+                                            <h6
+                                                style="list-style: none; color: #000; word-wrap: break-word;margin: 0; font-size: 14px">
                                                 Razorpay</h6>
-                                                <% } %>
+                                            <% } %>
                                 </div>
 
 
                             </div>
+                            <style>
+                                .order-details-heading {
+                                    font-weight: 700; 
+                                    font-size: 14px; 
+                                    line-height: 20px;
+                                }
+                                .order-details-text{
+                                    list-style: none; 
+                                    color: #000; 
+                                    word-wrap: break-word;
+                                    margin-top: 5px;
+                                    margin-left: 0; 
+                                    margin-right: 0; 
+                                    margin-bottom: 0; 
+                                    font-size: 14px
+                                }
+                            </style>
                             <div class="col-md-3">
                                 <div class="order-summary">
-                                    <h5 style="font-weight: 700; font-size: 14px; line-height: 20px;">Order Summary</h5>
-                                    <h6
-                                        style="list-style: none; color: #000; word-wrap: break-word;margin: 0; font-size: 14px">
-                                        Item(s) Subtotal: &#8377;<%=( orderDetails.orderTotal).toLocaleString() %>
+                                    <h5 class="order-details-heading" >Order Summary</h5>
+                                    <h6 class="order-details-text">
+                                        Item(s) Subtotal: &#8377; <%=( orderDetails.orderTotal).toLocaleString() %>
                                     </h6>
-                                    <h6
+                                    <% if (orderDetails.couponDiscount!==0){%>
+                                    <h6 class="order-details-text">
+                                        Coupon Applied: <%= orderDetails.couponApplied %>
+                                    </h6>
+                                    <h6 class="order-details-text">
+                                        Coupon Discount: &#8377; <%=( orderDetails.couponDiscount).toLocaleString() %>
+                                    </h6>
+                                    <%}%>
+                                    <!-- <h6
                                         style="list-style: none; color: #000; word-wrap: break-word;margin-top: 5px; font-size: 14px">
                                         Shipping: &#8377;500</h6>
                                     <h6
@@ -92,8 +121,8 @@
                                     </h6>
                                     <h6
                                         style="list-style: none; color: #000; word-wrap: break-word;margin-top: 5px; font-size: 14px">
-                                        Promotion Applied: -&#8377; 500</h6>
-                                    <h6
+                                        Promotion Applied: -&#8377; 500</h6> -->
+                                    <h6 class="order-details-text"
                                         style="list-style: none; color: #000; font-weight: 700; word-wrap: break-word;margin-top: 10px; font-size: 14px">
                                         Grand Total: &#8377; <%= (orderDetails.orderTotal ).toLocaleString() %>
                                     </h6>
@@ -116,50 +145,13 @@
                                     <!-- <button>Track package</button> -->
                                     <button onclick="showPopup()" class="cancel-button-button">Cancel this
                                         delivery</button>
-                                    <div id="popup" class="popup" style="z-index: 150;">
-                                        <div class="popup-content">
-                                            <div class="main-pcontent">
 
-                                                <div class="reason" style="display: flex; flex-direction: column;">
-                                                    <p>Are you sure you want to cancel this delivery?
-                                                    </p>
-                                                    <div class="form-row">
-                                                        <div class="option-list">
-                                                            <select id="reason" name="reason" onchange="checkReason()">
-                                                                <option selected hidden disabled value="">Reason for
-                                                                    Cancellation
-                                                                </option>
-                                                                <option value="delay">Delayed delivery
-                                                                </option>
-                                                                <option value="wrong">Wrong item
-                                                                </option>
-                                                                <option value="changed">Changed mind
-                                                                </option>
-                                                                <option value="other">Other</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <label style="display: none;" id="additionalReasonLabel"
-                                                        for="additionalReason">Additional
-                                                        Reason:</label>
-                                                    <textarea style="display: none;" id="additionalReason"
-                                                        name="additionalReason" rows="4" cols="40"></textarea>
-                                                </div>
 
-                                            </div>
-                                            <br>
-                                            <br>
-                                            <div style="display: flex; justify-content:end; gap: 15px;">
-                                                <button class="confirm-button" style="width: 60px;"
-                                                    onclick="closePopup()">Close</button>
-                                                <button class="confirm-cancel" id="confirm-cancel"
-                                                    data-order-id="<%= orderDetails._id %>">Confirm
-                                                    Cancellation</button>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <% } else if(orderDetails.orderStatus==="delivered" ) { %>
-                                        <button class="cancel-button-button">Return this products</button>
+                                        <button onclick="showPopupForReturn()" class="cancel-button-button "
+                                            id="returnBtn">Return
+                                            this product</button>
+
                                         <% } %>
                             </div>
                         </div>
@@ -205,14 +197,28 @@
                                                         </div>
                                                         <div class="actions ">
                                                             <div class="button-container">
+                                                                <% if( orderDetails.orderStatus=="pending" ||
+                                                                    orderDetails.orderStatus=="order-shipped" ) {%>
+                                                                    <button onclick="showPopupForCancellation()"
+                                                                        class="cancel-button-button"
+                                                                        id="cancelBtn">Cancel this
+                                                                        delivery</button>
+                                                                    <% } %>
+                                                                        <% if( orderDetails.orderStatus=="delivered" )
+                                                                            {%>
+                                                                            <button onclick="showPopupForReturn()"
+                                                                                class="cancel-button-button "
+                                                                                id="returnBtn">Return
+                                                                                this product</button>
 
-                                                                <% if( orderDetails.orderStatus=="delivered" ) {%>
-                                                                    <button>Leave product Review</button>
-                                                                    <button>Archive order</button>
-                                                                    <% } %>
-                                                                <% if( orderDetails.orderStatus=="cancelled" ) {%>
-                                                                    <button>Archive order</button>
-                                                                    <% } %>
+                                                                            <button>Leave product Review</button>
+                                                                            <button>Archive order</button>
+                                                                            <% } %>
+                                                                                <% if(
+                                                                                    orderDetails.orderStatus=="cancelled"
+                                                                                    ) {%>
+                                                                                    <button>Archive order</button>
+                                                                                    <% } %>
 
                                                             </div>
                                                         </div>
@@ -229,6 +235,213 @@
         </div>
     </div>
 
+    <!-- Return all popup -->
+    <div id="popupReturn" class="popupReturn" style="z-index: 1500; display: none;">
+        <div class="popup-content">
+            <div class="main-pcontent">
+
+                <div class="returnReason" style="display: flex; flex-direction: column;">
+                    <p>Are you sure you want to Return this delivery?
+                    </p>
+                    <div class="form-row">
+                        <div class="option-list">
+                            <select id="returnReason" name="returnReason" onchange="checkReasonForReturn()"
+                                style="width:280px">
+                                <option selected hidden disabled value="">Reason for
+                                    Return
+                                </option>
+                                <option value="Item Defective">Item Defective
+                                </option>
+                                <option value="Wrong item Recieved">Wrong item Recieved
+                                </option>
+                                <option value="Size Incorrect">Size Incorrect
+                                </option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <label style="display: none;" id="additionalReturnReasonLabel"
+                        for="additionalReturnReason">Additional
+                        Reason:</label>
+                    <textarea style="display: none;" id="additionalReturnReason" name="additionalReturnReason" rows="4"
+                        cols="40"></textarea>
+                </div>
+
+            </div>
+            <br>
+            <br>
+            <div style="display: flex; justify-content:end; gap: 15px;">
+                <button class="confirm-button" style="width: 60px;" onclick="closePopupForReturn()">Close</button>
+                <button class="confirm-return" id="confirm-return" data-returnOrder-id="<%= orderDetails._id %>">Confirm
+                    Return</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Return all script -->
+    <script>
+        function showPopupForReturn() {
+            document.getElementById('popupReturn').style.display = 'block';
+
+        }
+
+        function closePopupForReturn() {
+            document.getElementById('popupReturn').style.display = 'none';
+        }
+
+        document.querySelectorAll('.confirm-return').forEach(button => {
+            button.addEventListener('click', function () {
+                const orderId = this.getAttribute('data-returnOrder-id');
+                confirmReturn(orderId);
+            });
+        });
+        
+        function checkReasonForReturn() {
+            var returnReasonSelected = document.getElementById("returnReason");
+            var additionalReturnReasonField = document.getElementById("additionalReturnReason");
+
+            if (returnReasonSelected.value === "Other") {
+                additionalReturnReasonField.style.display = "block";
+                additionalReturnReasonField.style.display = "block";
+                additionalReturnReasonField.required = true;
+            } else {
+                additionalReturnReasonField.style.display = "none";
+
+                additionalReturnReasonField.style.display = "none";
+                additionalReturnReasonField.required = false;
+            }
+        }
+
+        function confirmReturn() {
+            let returnReason = document.getElementById("returnReason").value;
+            additionalReason = document.getElementById("additionalReturnReason").value || "";
+            if (!reason) {
+                $.toast({
+                    heading: 'Select Reason for Return',
+                    position: 'top-center',
+                    showHideTransition: 'slide',
+                    icon: 'info'
+                })
+
+                // } else if (reason === "other") {
+                //     if (!additionalReason) {
+                //         $.toast({
+                //             heading: 'Explain Reason for Cancellation',
+                //             position: 'top-center',
+                //             showHideTransition: 'slide',
+                //             icon: 'info'
+                //         })
+                //     }
+            } else {
+                let orderId = document.getElementById("confirm-return").getAttribute("data-returnOrder-id");
+                console.log('Returning order:', orderId);
+
+                fetch('/return-order?orderId=<%=orderDetails._id %>', {
+                    method: 'POST',
+                    body: JSON.stringify({ orderId: orderId, reason: returnReason, additionalReason: additionalReturnReason }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then(response => {
+                    console.log("Order returned db and response came");
+                    if (response.ok) {
+
+                        window.location.reload();
+                        $.toast({
+                            heading: 'Order Returned',
+                            position: 'top-center',
+                            showHideTransition: 'slide',
+                            icon: 'success'
+                        })
+                    }
+                    if (response.status === 404) {
+                        $.toast({
+                            heading: 'Missing orderId details.',
+                            position: 'top-center',
+                            showHideTransition: 'slide',
+                            icon: 'error'
+                        })
+                    }
+                    if (response.status === 405) {
+                        $.toast({
+                            heading: 'Missing orderId details.',
+                            position: 'top-center',
+                            showHideTransition: 'slide',
+                            icon: 'error'
+                        })
+                    }
+                    if (response.status === 406) {
+                        $.toast({
+                            heading: 'Missing order return reason.',
+                            position: 'top-center',
+                            showHideTransition: 'slide',
+                            icon: 'error'
+                        })
+                    }
+
+                    if (!response.ok) {
+                        $.toast({
+                            heading: 'Order Return Failed',
+                            position: 'top-center',
+                            showHideTransition: 'slide',
+                            icon: 'error'
+                        })
+                    }
+                })
+
+                closePopupForReturn();
+
+            }
+        }
+
+
+
+    </script>
+
+
+
+    <!-- Popup for cancelliation all -->
+    <div id="popup" class="popup" style="z-index: 1500;">
+        <div class="popup-content">
+            <div class="main-pcontent">
+
+                <div class="reason" style="display: flex; flex-direction: column;">
+                    <p>Are you sure you want to cancel this delivery?
+                    </p>
+                    <div class="form-row">
+                        <div class="option-list">
+                            <select id="reason" name="reason" onchange="checkReason()" style="width:280px">
+                                <option selected hidden disabled value="">Reason for
+                                    Cancellation
+                                </option>
+                                <option value="delay">Delayed delivery
+                                </option>
+                                <option value="wrong">Wrong item
+                                </option>
+                                <option value="changed">Changed mind
+                                </option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <label style="display: none;" id="additionalReasonLabel" for="additionalReason">Additional
+                        Reason:</label>
+                    <textarea style="display: none;" id="additionalReason" name="additionalReason" rows="4"
+                        cols="40"></textarea>
+                </div>
+
+            </div>
+            <br>
+            <br>
+            <div style="display: flex; justify-content:end; gap: 15px;">
+                <button class="confirm-button" style="width: 60px;" onclick="closePopup()">Close</button>
+                <button class="confirm-cancel" id="confirm-cancel" data-order-id="<%= orderDetails._id %>">Confirm
+                    Cancellation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancellation All script -->
     <script>
         function checkReason() {
             var selectElement = document.getElementById("reason");
@@ -345,6 +558,8 @@
         }
 
     </script>
+
+
     <style>
         .product-info-actions-container {
             display: grid;
@@ -437,8 +652,9 @@
         }
 
         .cancel-button-button,
-        .confirm-button,
-        .confirm-cancel {
+        .confirm-return,
+        .confirm-cancel,
+        .confirm-button {
             background-color: #fff;
             color: #000000;
             border: 1px solid #606060;
@@ -452,10 +668,21 @@
 
         .actions button:hover,
         .cancel-button-button:hover,
-        .confirm-button:hover,
-        .confirm-cancel:hover {
+        .confirm-return:hover,
+        .confirm-cancel:hover,
+        .confirm-button:hover {
             background-color: #e97730;
             color: #fff;
+        }
+
+        .popupReturn {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
         .popup {
@@ -492,7 +719,7 @@
 
         }
 
-        .reason {
+        .reason,.returnReason {
             margin-left: 10px;
         }
 
