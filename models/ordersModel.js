@@ -13,6 +13,9 @@ const ordersSchema = new mongoose.Schema({
     priceWithoutOffer:{type:Number,required:true},
     totalPrice:{type:Number,required:true},
     totalPriceWithoutOffer:{type:Number,required:true},
+    orderStatus:{type:String,enum: ["pending","shipped","delivered", "cancelled",,"return-requested","returned", ],default:"pending",},
+    orderCancelReason: {type:String,},
+    additionalReason:{type:String,},
 
   }],
   address:{type:Object},
@@ -27,7 +30,7 @@ const ordersSchema = new mongoose.Schema({
   adminNotes:{type:String,required:false,},
   couponApplied:{type:String,},
   couponDiscount:{type:Number,},
-  totalOrderPriceWithoutOffer: { type: Number } // New field for total order price without offer
+  totalOrderPriceWithoutOffer: { type: Number } 
 
 },
 {
