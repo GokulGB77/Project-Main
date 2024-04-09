@@ -821,22 +821,78 @@ const returnOneOrder = async (req, res) => {
 
 const loadOrders = async (req, res) => {
   try {
-    const allCategories = await Categoriesdb.find()
+    const page = parseInt(req.query.page) || 1; // Get the current page from the query parameter, default to 1 if not provided
+    const limit = 5; // Number of orders to display per page
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const allCategories = await Categoriesdb.find();
     const statuses = await Ordersdb.distinct('orderStatus');
 
+    const allOrders = await Ordersdb.find()
+      .sort({ orderDate: -1, orderTime: -1 })
+      .populate("orderProducts.product")
+      .populate("user", "name")
+      .skip(startIndex)
+      .limit(limit);
 
-    const allOrders = await Ordersdb.find().sort({ orderDate: -1, orderTime: -1 }).populate("orderProducts.product").populate("user", "name");
+    const totalOrders = await Ordersdb.countDocuments();
+    const totalPages = Math.ceil(totalOrders / limit);
+
     if (!allOrders) {
       return res.status(404).send({ message: "No orders found." });
     }
+
     console.log("allOrders.length:", allOrders.length);
-    res.render("viewOrders", { allOrders, allCategories, statuses });
+
+    res.render("viewOrders", {
+      allOrders,
+      allCategories,
+      statuses,
+      currentPage: page, // Pass the current page to the view
+      totalPages: totalPages, // Pass the total number of pages to the view
+    });
   } catch (error) {
     console.error("Error loading orders:", error);
     res.status(500).send({ message: "Internal Server Error" });
   }
 };
+const loadOrders1 = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
 
+    const allCategories = await Categoriesdb.find();
+    const statuses = await Ordersdb.distinct('orderStatus');
+
+    const allOrders = await Ordersdb.find()
+      .sort({ orderDate: -1, orderTime: -1 })
+      .populate("orderProducts.product")
+      .populate("user", "name")
+      .skip(startIndex)
+      .limit(limit);
+
+    const totalOrders = await Ordersdb.countDocuments();
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    if (!allOrders) {
+      return res.status(404).json({ message: "No orders found." });
+    }
+
+    return res.json({
+      orders: allOrders,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+      },
+    });
+  } catch (error) {
+    console.error("Error loading orders:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 const loadOrdersDetails = async (req, res) => {
   try {
@@ -1072,6 +1128,7 @@ module.exports = {
   returnOrder,
   returnOneOrder,
   loadOrders,
+  loadOrders1,
   loadOrdersDetails,
   adminCancel,
   changeOrderStatus,

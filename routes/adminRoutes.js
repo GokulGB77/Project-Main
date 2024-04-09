@@ -79,6 +79,7 @@ adminRoute.get("/categories/enable",categoriesController.enableCategory)
 adminRoute.get("/categories/enable",categoriesController.enableCategory)
 
 adminRoute.get("/orders",ordersController.loadOrders)
+adminRoute.get("/orders1",ordersController.loadOrders1)
 adminRoute.get("/orders/order-details",ordersController.loadOrdersDetails)
 adminRoute.post("/change-order-status",ordersController.changeOrderStatus)
 adminRoute.post("/orders/order-details/save-notes",ordersController.adminCancel)

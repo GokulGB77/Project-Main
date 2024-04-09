@@ -232,9 +232,9 @@
                     </div>
                 </header> card-header end// -->
                 
-                <div class="card-body">
+                <div class="card-body" style="height: 430px;">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover orders-table" id="orders-table">
                             <thead>
                                 <tr>
                                     <th class="text-center">Sl No</th>
@@ -304,11 +304,7 @@
                                                             </td>
                                     </tr>
                                     <% }) %>
-                                        <style>
-                                            .text-center {
-                                                text-align: center;
-                                            }
-                                        </style>
+                                        
                             </tbody>
                         </table>
                     </div> <!-- table-responsive //end -->
@@ -316,32 +312,203 @@
             </div> <!-- card end// -->
             <div class="pagination-area mt-15 mb-50">
                 <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i
-                                    class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
+                  <ul class="pagination justify-content-start">
+                    <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                      <a class="page-link prev-page" href="#" data-page="<%= currentPage - 1 %>">
+                        <i class="material-icons md-chevron_left"></i>
+                      </a>
+                    </li>
+                    <% } %>
+              
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                      <a class="page-link page-number" href="#" data-page="<%= i %>"><%= i %></a>
+                    </li>
+                    <% } %>
+              
+                    <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                      <a class="page-link next-page" href="#" data-page="<%= currentPage + 1 %>">
+                        <i class="material-icons md-chevron_right"></i>
+                      </a>
+                    </li>
+                    <% } %>
+                  </ul>
                 </nav>
-            </div>
-        </section> <!-- content-main end// -->
-        <footer class="main-footer font-xs">
-            <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
-                        document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
+              </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+    const ordersTableBody = document.querySelector('#orders-table tbody');
+    const paginationArea = document.querySelector('.pagination-area');
+
+    const loadOrders = async (page = 1) => {
+        try {
+            const response = await fetch(`/admin/orders1?page=${page}`);
+            const { orders, pagination } = await response.json();
+
+            updateOrdersTable(orders);
+            updatePaginationArea(pagination.currentPage, pagination.totalPages);
+        } catch (error) {
+            console.error('Error loading orders:', error);
+        }
+    };
+
+    const updateOrdersTable = (orders) => {
+        ordersTableBody.innerHTML = '';
+
+        orders.forEach((order, index) => {
+            const row = createOrderRow(order, index + 1);
+            ordersTableBody.appendChild(row);
+        });
+    };
+
+    const updatePaginationArea = (currentPage, totalPages) => {
+        paginationArea.innerHTML = createPaginationHtml(currentPage, totalPages);
+        attachPaginationEventListeners();
+    };
+
+    const createPaginationHtml = (currentPage, totalPages) => {
+                        let html = '';
+                        html += `<nav aria-label="Page navigation example">`;
+                        html += `  <ul class="pagination justify-content-start">`;
+
+                        if (currentPage > 1) {
+                            html += `    <li class="page-item">`;
+                            html += `      <a class="page-link prev-page" href="#" data-page="${currentPage - 1}">`;
+                            html += `        <i class="material-icons md-chevron_left"></i>`;
+                            html += `      </a>`;
+                            html += `    </li>`;
+                        }
+
+                        for (let i = 1; i <= totalPages; i++) {
+                            html += `    <li class="page-item ${i === currentPage ? 'active' : ''}">`;
+                            html += `      <a class="page-link page-number" href="#" data-page="${i}">${i}</a>`;
+                            html += `    </li>`;
+                        }
+
+                        if (currentPage < totalPages) {
+                            html += `    <li class="page-item">`;
+                            html += `      <a class="page-link next-page" href="#" data-page="${currentPage + 1}">`;
+                            html += `        <i class="material-icons md-chevron_right"></i>`;
+                            html += `      </a>`;
+                            html += `    </li>`;
+                        }
+
+                        html += `  </ul>`;
+                        html += `</nav>`;
+
+                        return html;
+                    };
+
+                    const attachPaginationEventListeners = () => {
+        const paginationLinks = paginationArea.querySelectorAll('.page-number, .prev-page, .next-page');
+        paginationLinks.forEach((link) => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const page = event.target.dataset.page || event.currentTarget.dataset.page;
+                loadOrders(page);
+            });
+        });
+    };
+
+    const createOrderRow = (order, slNo) => {
+                        // Create a new table row element
+                        const row = document.createElement('tr');
+
+                        // Create and append the cells for each column
+                        const slNoCell = document.createElement('td');
+        slNoCell.classList.add('text-center');
+        slNoCell.textContent = slNo;
+        row.insertBefore(slNoCell, row.firstChild);
+
+                        const nameCell = document.createElement('td');
+                        const nameElement = document.createElement('b');
+                        nameElement.textContent = order.user?.name || 'Unknown';
+                        nameCell.appendChild(nameElement);
+                        row.appendChild(nameCell);
+
+                        const orderIdCell = document.createElement('td');
+                        orderIdCell.textContent = `#${order.orderId}`;
+                        row.appendChild(orderIdCell);
+
+                        const totalCell = document.createElement('td');
+                        totalCell.textContent = `₹ ${order.orderTotal.toLocaleString()}`;
+                        row.appendChild(totalCell);
+
+                        const statusCell = document.createElement('td');
+                        statusCell.classList.add('text-center');
+                        const statusElement = document.createElement('span');
+                        statusElement.classList.add('badge', 'rounded-pill');
+
+                        switch (order.orderStatus) {
+                            case 'pending':
+                                statusElement.classList.add('alert-warning');
+                                statusElement.textContent = 'Pending';
+                                break;
+                            case 'delivered':
+                                statusElement.classList.add('alert-success');
+                                statusElement.textContent = 'Delivered';
+                                break;
+                            case 'order-shipped':
+                                statusElement.classList.add('alert-primary');
+                                statusElement.textContent = 'Shipped';
+                                break;
+                            case 'cancelled':
+                                statusElement.classList.add('alert-danger');
+                                statusElement.textContent = 'Cancelled';
+                                break;
+                            case 'returned':
+                                statusElement.classList.add('alert-info');
+                                statusElement.textContent = 'Returned';
+                                break;
+                            default:
+                                statusElement.classList.add('alert-secondary');
+                                statusElement.textContent = order.orderStatus;
+                                break;
+                        }
+
+                        statusCell.appendChild(statusElement);
+                        row.appendChild(statusCell);
+
+                        const orderDateCell = document.createElement('td');
+                        orderDateCell.textContent = order.orderDate;
+                        row.appendChild(orderDateCell);
+
+                        const actionCell = document.createElement('td');
+                        const actionLink = document.createElement('a');
+                        actionLink.classList.add('btn', 'btn-md', 'rounded', 'font-sm');
+                        actionLink.href = `/admin/orders/order-details?orderId=${order.orderId}`;
+                        actionLink.textContent = 'Detail';
+                        actionCell.appendChild(actionLink);
+                        row.appendChild(actionCell);
+
+                        return row;
+                    };
+                    loadOrders();
+                });
+            </script>
+            <style>
+                .text-center {
+                    text-align: center;
+                }
+            </style>
+            </section> <!-- content-main end// -->
+            <footer class="main-footer font-xs">
+                <div class="row pb-30 pt-15">
+                    <div class="col-sm-6">
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script> ©, Evara - HTML Ecommerce Template .
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-sm-end">
+                            All rights reserved
+                        </div>
                     </div>
                 </div>
-            </div>
-        </footer>
+            </footer>
     </main>
     <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
