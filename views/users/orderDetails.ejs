@@ -254,7 +254,7 @@
                                 </div>
                                 <% }) %>
                             </div>
-    <!-- Cancel One Script and Popup -->
+    <!-- Cancel One  Popup -->
     <div id="popupCancelOne" class="popupCancelOne" style="z-index: 1500; ;">
         <div class="popup-content">
             <div class="main-pcontent">
@@ -296,6 +296,7 @@
         </div>
     </div>
     
+    <!-- Cancel One Script -->
     <script>
         function saveIdSession(productId, orderId) {
             localStorage.setItem('productId', productId);
@@ -387,13 +388,10 @@
                 }).then(response => {
                     if (response.ok) {
 
+                        sessionStorage.setItem('oneOrderCancelled', 'true');
+
                         window.location.reload();
-                        $.toast({
-                            heading: 'Order Cancelled',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'success'
-                        })
+
                     }
 
                 })
@@ -402,6 +400,17 @@
 
             }
         }
+        window.onload = function () {
+            if (sessionStorage.getItem('oneOrderCancelled') === 'true') {
+                $.toast({
+                    heading: 'One Order Cancelled',
+                    position: 'top-center',
+                    showHideTransition: 'slide',
+                    icon: 'success'
+                });
+                sessionStorage.removeItem('oneOrderCancelled');
+            }
+        };
 
     </script>
     
@@ -495,7 +504,7 @@
                     position: 'top-center',
                     showHideTransition: 'slide',
                     icon: 'info',
-                    stack:0
+                    stack: 0
                 })
 
                 // } else if (reason === "other") {
@@ -520,14 +529,9 @@
                 }).then(response => {
                     console.log("Order returned db and response came");
                     if (response.ok) {
+                        sessionStorage.setItem('orderReturn', 'true');
 
                         window.location.reload();
-                        $.toast({
-                            heading: 'Order Return Initiated',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'success'
-                        })
                     }
                 })
 
@@ -536,6 +540,17 @@
             }
         }
 
+        window.onload = function () {
+            if (sessionStorage.getItem('orderReturn') === 'true') {
+                $.toast({
+                            heading: 'Order Return Initiated',
+                            position: 'top-center',
+                            showHideTransition: 'slide',
+                            icon: 'success'
+                        })
+                sessionStorage.removeItem('orderReturn');
+            }
+        };
 
 
     </script>
@@ -659,14 +674,20 @@
                     }
                 }).then(response => {
                     if (response.ok) {
+                        sessionStorage.setItem('oneOrderReturn', 'true');
 
                         window.location.reload();
-                        $.toast({
-                            heading: 'Order Returned',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'success'
-                        })
+                        window.onload = function () {
+                        if (sessionStorage.getItem('oneOrderReturn') === 'true') {
+                            $.toast({
+                                heading: 'Order Returned',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'success'
+                            })
+                            sessionStorage.removeItem('oneOrderReturn');
+                        }
+                    };
                     }
 
                 })
@@ -675,11 +696,11 @@
 
             }
         }
+       
+
 
     </script>
-    
-    
-    <!-- Popup for cancelliation all  start-->
+    <!-- Popup for cancellation -->
     <div id="popup" class="popup" style="z-index: 1500;">
         <div class="popup-content">
             <div class="main-pcontent">
@@ -789,47 +810,9 @@
                 }).then(response => {
                     console.log("Order cancelled db and response came");
                     if (response.ok) {
+                        sessionStorage.setItem('OrderCancelled', 'true');
 
                         window.location.reload();
-                        $.toast({
-                            heading: 'Order Cancelled',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'success'
-                        })
-                    }
-                    if (response.status === 404) {
-                        $.toast({
-                            heading: 'Missing orderId details.',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-                    if (response.status === 405) {
-                        $.toast({
-                            heading: 'Missing orderId details.',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-                    if (response.status === 406) {
-                        $.toast({
-                            heading: 'Missing order cancellation reason.',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-
-                    if (!response.ok) {
-                        $.toast({
-                            heading: 'Order Cancellation Failed',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
                     }
                 })
 
@@ -837,9 +820,19 @@
 
             }
         }
+        window.onload = function () {
+            if (sessionStorage.getItem('OrderCancelled') === 'true') {
+                $.toast({
+                    heading: 'Order Cancelled',
+                    position: 'top-center',
+                    showHideTransition: 'slide',
+                    icon: 'success'
+                })
+                sessionStorage.removeItem('OrderCancelled');
+            }
+        };
 
     </script>
-    <!-- Popup for cancelliation all  end-->
     
     
     <style>
