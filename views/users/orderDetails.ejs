@@ -1,10 +1,11 @@
 <%- include('../layouts/header.ejs') %>
 
-    <div class="cart-area pt-100 pb-100">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-10">
-                    <h2 style="font-weight: 400; font-size: 28px; line-height: 36px;">Order Details</h2>
+<div >
+    <div class="cart-area pt-100 pb-100" >
+        <div class="container" >
+            <div class="row justify-content-center" style="margin-bottom:50px ;" >
+                <div class="col-md-10" >
+                    <h2  style="font-weight: 400; font-size: 28px; line-height: 36px;">Order Details</h2>
                     <span>Ordered on <%= orderDetails.orderDate %> |&nbsp; Order #<%= orderDetails.orderId %></span>
 
                     <div class="order-details-box" style="margin-top: 20px; padding-bottom: none;">
@@ -40,24 +41,19 @@
                                     <h5 class="order-details-heading" >Order Status
                                     </h5>
                                     <% if ( orderDetails.orderStatus==="pending" ) { %>
-                                        <span class="delivery-status"
-                                            style="background-color: #eebe20; word-wrap: break-word;margin: 0; font-size: 14px">
+                                        <span class="badge badge-pill badge-primary badge-sm" >
                                             Soon To Be Delivered</span>
                                         <% } else if (orderDetails.orderStatus==="cancelled" ) { %>
-                                            <span class="delivery-status"
-                                                style="background-color: #e4472f;color: #fff; word-wrap: break-word;margin: 0; font-size: 14px">
+                                            <span class="badge badge-pill badge-danger badge-sm">
                                                 Cancelled</span>
                                             <% } else if (orderDetails.orderStatus==="delivered" ) { %>
-                                                <span class="delivery-status"
-                                                    style="background-color: #1bc83b; word-wrap: break-word;margin: 0; font-size: 14px">
+                                                <span class="badge badge-pill badge-sm badge-success">                                                                               
                                                     Delivered</span>
                                                 <% } else if (orderDetails.orderStatus==="return-requested" ) { %>
-                                                    <span class="delivery-status"
-                                                        style="background-color: #7fcfe7; word-wrap: break-word;margin: 0; font-size: 14px">
+                                                    <span class="badge badge-pill badge-info badge-sm">
                                                         Return Intitated</span>
                                                 <% } else if (orderDetails.orderStatus==="returned" ) { %>
-                                                    <span class="delivery-status"
-                                                        style="background-color: #22acd6; word-wrap: break-word;margin: 0; font-size: 14px">
+                                                    <span class="badge badge-pill badge-info badge-sm">
                                                         Returned</span>
                                                     <% } %>
                                 </div>
@@ -156,7 +152,7 @@
                             </div>
                             
                         </div>
-                        <% orderDetails.orderProducts.forEach(item=> { %>
+                        <% orderDetails.orderProducts.forEach((item,index)=> { %>
                             <div class="ordered-products">
                                 <div class="shipment-item">
                                     <% if(item.ordeStatus) {%>
@@ -182,117 +178,183 @@
                                                                 <img src="/productAssets/<%=item.product.images[0] %>"
                                                                     alt="<%= item.product.productName %>">
                                                             </a>
-                                                            <div class="product-details col-lg-8">
-                                                                <h5>
-                                                                    <a style="color: 007185;"
+                                                            <div class="product-details col-lg-8" style="padding: -5%;">
+                                                                <h5 >
+                                                                    <a  style="color: 007185;"
                                                                         href="/product-details?id=<%=item.product._id %>">
-                                                                        <%= item.product.productName %>
+                                                                        <%= item.product.productName %> 
                                                                     </a>
+                                                                    
+                                                                
                                                                 </h5>
+                                                                
                                                                 <p>&#8377;<%= (item.price).toLocaleString() %> x <%=
                                                                             item.quantity%> qty
                                                                 </p>
                                                                 <p>Total Amount: &#8377;
                                                                     <%=(item.totalPrice).toLocaleString() %>
                                                                 </p>
+                                                                <div class="product-details " >
+                                                                    <% if ( item.orderStatus==="pending" ) { %>
+                                                                        <span class="badge badge-pill badge-primary badge-sm" >
+                                                                            Soon To Be Delivered</span>
+                                                                        <% } else if (item.orderStatus==="cancelled" ) { %>
+                                                                            <span class="badge badge-pill badge-danger badge-sm">
+                                                                                Cancelled</span>
+                                                                            <% } else if (item.orderStatus==="delivered" ) { %>
+                                                                                <span class="badge badge-pill badge-sm badge-success">                                                                               
+                                                                                    Delivered</span>
+                                                                                <% } else if (item.orderStatus==="return-requested" ) { %>
+                                                                                    <span class="badge badge-pill badge-info badge-sm">
+                                                                                        Return Intitated</span>
+                                                                                <% } else if (item.orderStatus==="returned" ) { %>
+                                                                                    <span class="badge badge-pill badge-info badge-sm">
+                                                                                        Returned</span>
+                                                                                    <% } %>
+                                                                </div>
+                                                                
                                                             </div>
                                                         </div>
                                                         <div class="actions ">
                                                             <div class="button-container">
                                                                 <% if( orderDetails.orderStatus=="pending" ||orderDetails.orderStatus=="order-shipped" ) {%>
                                                                     <% if(!item.orderStatus || item.orderStatus=="pending" || item.orderStatus=="order-shipped" ){ %>
-                                                                    <button onclick="showPopupForCancelOne(),saveIdSession('<%= item.product._id %>','<%= orderDetails._id %>')"
+                                                                    <button onclick="showPopupForCancelOne()"
+                                                                        data-value1="<%= item.product._id %>"
+                                                                        data-value2="<%= orderDetails._id %>"
                                                                         class="cancel-button-button cancelOneBtn"
                                                                         >Cancel this
                                                                         product</button>
                                                                         <% }%>
                                                                     <% } %>
-<!-- Cancel One Script and Popup -->
-                                                                        <div id="popupCancelOne" class="popupCancelOne" style="z-index: 1500; ;">
-                                                                            <div class="popup-content">
-                                                                              <div class="main-pcontent">
-                                                                                
-                                                                                <div class="cancelOneReason" style="display: flex; flex-direction: column;">
-                                                                                  <p>Are you sure you want to Return this delivery?
-                                                                                  </p>
-                                                                                  <div class="form-row">
-                                                                                    <div class="option-list">
-                                                                                      <select id="cancelOneReason" name="cancelOneReason" onchange="checkReasonForCancelOne()"
-                                                                                        style="width:280px">
-                                                                                        <option selected hidden disabled value="">Reason for
-                                                                                          Cancellation
-                                                                                        </option>
-                                                                                        <option value="Delayed delivery">Delayed delivery
-                                                                                        </option>
-                                                                                        <option value="Wrong item">Wrong item
-                                                                                        </option>
-                                                                                        <option value="Changed mind">Changed mind
-                                                                                        </option>
-                                                                                        <option value="Other">Other</option>
-                                                                                      </select>
-                                                                                    </div>
-                                                                                  </div>
-                                                                                  <label style="display: none;" id="cancelOneAddReasonLabel" for="cancelOneAddReason">Additional
-                                                                                    Reason:</label>
-                                                                                  <textarea style="display: none;" id="cancelOneAddReason" name="cancelOneAddReason" rows="4" cols="40"></textarea>
-                                                                                </div>
-                                                                          
-                                                                              </div>
-                                                                              <br>
-                                                                              <br>
-                                                                              <div style="display: flex; justify-content:end; gap: 15px;">
-                                                                                <button class="confirm-button" style="width: 60px;" data-cancelOneOrder-id="<%= orderDetails._id %>"  data-product-id="<%=item.product._id%>" onclick="closePopupCancelOne()">Close</button>
-                                                                                <button class="confirm-cancel-one" id="confirm-cancel-one" >Confirm
-                                                                                  Cancel</button>
-                                                                              </div>
-                                                                            </div>
-                                                                          </div>
-                                                                        
-<script>
-    function saveIdSession(productId,orderId) {
-        localStorage.setItem('productId', productId);
-        localStorage.setItem('orderId', orderId);
 
+                                                                        <% if( orderDetails.orderStatus=="delivered" ) {%>
+                                                                            <% if(item.orderStatus=="delivered" ){ %>
 
+                                                                            <button onclick="showPopupForReturnOne()" 
+                                                                                data-value1="<%= item.product._id %>"
+                                                                                data-value2="<%= orderDetails._id %>"
+                                                                                class="cancel-button-button returnOneBtn "
+                                                                                id="returnOneBtn">Return
+                                                                                this product</button>
 
-}
-    function showPopupForCancelOne(orderId, productId) {
-      document.getElementById('popupCancelOne').style.display = 'block';
-      var cancelButton = document.getElementById('cancelButtonId'); // Replace 'cancelButtonId' with the actual ID of the button
-        cancelButton.setAttribute('data-cancelOneOrder-id', orderId);
-        cancelButton.setAttribute('data-product-id', productId);
-    }
+                                                                            <button>Leave product Review</button>
+                                                                            <% }%>
 
-    function checkReasonForCancelOne() {
+                                                                            <% } %>
+                                                                                <!-- <% if(
+                                                                                    orderDetails.orderStatus=="cancelled"
+                                                                                    ) {%>
+                                                                                    <button>Archive order</button>
+                                                                                    <% } %> -->
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                </div>
+                                <% }) %>
+                            </div>
+    <!-- Cancel One Script and Popup -->
+    <div id="popupCancelOne" class="popupCancelOne" style="z-index: 1500; ;">
+        <div class="popup-content">
+            <div class="main-pcontent">
+    
+                <div class="cancelOneReason" style="display: flex; flex-direction: column;">
+                    <p>Are you sure you want to cancel this delivery?
+                    </p>
+                    <div class="form-row">
+                        <div class="option-list">
+                            <select id="cancelOneReason" name="cancelOneReason" onchange="checkReasonForCancelOne()"
+                                style="width:280px">
+                                <option selected hidden disabled value="">Reason for
+                                    Cancellation
+                                </option>
+                                <option value="Delayed delivery">Delayed delivery
+                                </option>
+                                <option value="Wrong item">Wrong item
+                                </option>
+                                <option value="Changed mind">Changed mind
+                                </option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <label style="display: none;" id="cancelOneAddReasonLabel" for="cancelOneAddReason">Additional
+                        Reason:</label>
+                    <textarea style="display: none;" id="cancelOneAddReason" name="cancelOneAddReason" rows="4"
+                        cols="40"></textarea>
+                </div>
+    
+            </div>
+            <br>
+            <br>
+            <div style="display: flex; justify-content:end; gap: 15px;">
+                <button class="confirm-button" style="width: 60px;" onclick="closePopupCancelOne()">Close</button>
+                <button class="confirm-cancel-one" id="confirm-cancel-one">Confirm
+                    Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function saveIdSession(productId, orderId) {
+            localStorage.setItem('productId', productId);
+            localStorage.setItem('orderId', orderId);
+    
+    
+    
+        }
+        function showPopupForCancelOne() {
+            document.getElementById('popupCancelOne').style.display = 'block';
+    
+            var cancelBtn = event.target; // Get the button element that triggered the event
+            var value1 = cancelBtn.dataset.value1;
+            var value2 = cancelBtn.dataset.value2;
+            // console.log("value1:", value1)
+            // console.log("value2:", value2)
+    
+            var confirmCancelButton = document.getElementById('confirm-cancel-one');
+            confirmCancelButton.dataset.productId = value1;
+            confirmCancelButton.dataset.orderId = value2;
+        }
+    
+        function checkReasonForCancelOne() {
             let selectElement2 = document.getElementById("cancelOneReason");
             let additionalReasonLabel2 = document.getElementById("cancelOneAddReasonLabel")
             let additionalReasonField2 = document.getElementById("cancelOneAddReason");
-
+    
             if (selectElement2.value === "Other") {
                 additionalReasonLabel2.style.display = "block";
                 additionalReasonField2.style.display = "block";
                 additionalReasonField2.required = true;
             } else {
                 additionalReasonLabel2.style.display = "none";
-
+    
                 additionalReasonField2.style.display = "none";
                 additionalReasonField2.required = false;
             }
         }
-  
-    function closePopupCancelOne() {
-      document.getElementById('popupCancelOne').style.display = 'none';
-    }
-  
-    document.querySelectorAll('#confirm-cancel-one').forEach(button => {
-      button.addEventListener('click', function () {
-        const orderId = this.getAttribute('data-cancelOneOrder-id');
-        const productId = this.getAttribute('data-product-id');
-        confirmCancelOne(orderId,productId);
-      });
-    });
-
-    async function confirmCancelOne(orderId,productId) {
+    
+        function closePopupCancelOne() {
+            document.getElementById('popupCancelOne').style.display = 'none';
+            var dropdown = document.getElementById('cancelOneReason');
+            dropdown.selectedIndex = 0; // Select the first option (hidden placeholder)
+    
+        }
+    
+        document.querySelectorAll('.confirm-cancel-one').forEach(button => {
+            button.addEventListener('click', function () {
+    
+                let cancelOneConfirmBtn = event.target
+                productId = cancelOneConfirmBtn.dataset.productId.trim()
+                orderId = cancelOneConfirmBtn.dataset.orderId.trim()
+                // console.log("value1:", productId)
+                // console.log("value2:", orderId)
+                confirmCancelOne(orderId, productId);
+            });
+        });
+    
+        async function confirmCancelOne(orderId, productId) {
             let reason = document.getElementById("cancelOneReason").value;
             additionalReason = document.getElementById("cancelOneAddReason").value || "";
             if (!reason) {
@@ -302,7 +364,7 @@
                     showHideTransition: 'slide',
                     icon: 'info'
                 })
-
+    
                 // if (reason === "other") {
                 //     if (!additionalReason) {
                 //         $.toast({
@@ -314,18 +376,17 @@
                 //     }
             } else {
                 // let orderId = document.getElementById("confirm-cancel").getAttribute("data-order-id");
-                console.log('Cancelling one orderorder:', orderId);
-
-                await fetch(`/cancel-one-order?orderId=${orderId}&productId=${productId}`, {
+                console.log('Cancelling one orderorder:', orderId,"product:",productId);
+    
+                await fetch(`/cancel-one-order`, {
                     method: 'POST',
-                    body: JSON.stringify({ orderId,productId, reason, additionalReason }),
+                    body: JSON.stringify({ orderId, productId, reason, additionalReason }),
                     headers: {
                         'Content-Type': 'application/json',
                     }
                 }).then(response => {
-                    console.log("Order cancelled db and response came");
                     if (response.ok) {
-
+    
                         window.location.reload();
                         $.toast({
                             heading: 'Order Cancelled',
@@ -334,579 +395,559 @@
                             icon: 'success'
                         })
                     }
-                  
+    
                 })
-
+    
                 closePopup();
-
+    
             }
         }
-
+    
     </script>
-  
-  
-
-
-
-                                                                        <% if( orderDetails.orderStatus=="delivered" ) {%>
-                                                                            <% if(item.orderStatus=="delivered" ){ %>
-
-                                                                            <button onclick="showPopupForReturnOne()"
-                                                                                class="cancel-button-button returnOneBtn "
-                                                                                id="returnOneBtn">Return
-                                                                                this product</button>
-
-                                                                            <button>Leave product Review</button>
-                                                                            <% }%>
-
-                                                                            <% } %>
-                                                                                <% if(
-                                                                                    orderDetails.orderStatus=="cancelled"
-                                                                                    ) {%>
-                                                                                    <button>Archive order</button>
-                                                                                    <% } %>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                </div>
-                                <% }) %>
+    
+    
+    
+        <!-- Return all popup start -->
+        <div id="popupReturn" class="popupReturn" style="z-index: 1500; display: none;">
+            <div class="popup-content">
+                <div class="main-pcontent">
+    
+                    <div class="returnReason" style="display: flex; flex-direction: column;">
+                        <p>Are you sure you want to Return this delivery?
+                        </p>
+                        <div class="form-row">
+                            <div class="option-list">
+                                <select id="returnReason" name="returnReason" onchange="checkReasonForReturn()"
+                                    style="width:280px">
+                                    <option selected hidden disabled value="">Reason for
+                                        Return
+                                    </option>
+                                    <option value="Item Defective">Item Defective
+                                    </option>
+                                    <option value="Wrong item Recieved">Wrong item Recieved
+                                    </option>
+                                    <option value="Size Incorrect">Size Incorrect
+                                    </option>
+                                    <option value="Other">Other</option>
+                                </select>
                             </div>
-
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Return all popup start -->
-    <div id="popupReturn" class="popupReturn" style="z-index: 1500; display: none;">
-        <div class="popup-content">
-            <div class="main-pcontent">
-
-                <div class="returnReason" style="display: flex; flex-direction: column;">
-                    <p>Are you sure you want to Return this delivery?
-                    </p>
-                    <div class="form-row">
-                        <div class="option-list">
-                            <select id="returnReason" name="returnReason" onchange="checkReasonForReturn()"
-                                style="width:280px">
-                                <option selected hidden disabled value="">Reason for
-                                    Return
-                                </option>
-                                <option value="Item Defective">Item Defective
-                                </option>
-                                <option value="Wrong item Recieved">Wrong item Recieved
-                                </option>
-                                <option value="Size Incorrect">Size Incorrect
-                                </option>
-                                <option value="Other">Other</option>
-                            </select>
                         </div>
+                        <label style="display: none;" id="additionalReturnReasonLabel"
+                            for="additionalReturnReason">Additional
+                            Reason:</label>
+                        <textarea style="display: none;" id="additionalReturnReason" name="additionalReturnReason" rows="4"
+                            cols="40"></textarea>
                     </div>
-                    <label style="display: none;" id="additionalReturnReasonLabel"
-                        for="additionalReturnReason">Additional
-                        Reason:</label>
-                    <textarea style="display: none;" id="additionalReturnReason" name="additionalReturnReason" rows="4"
-                        cols="40"></textarea>
+    
                 </div>
-
-            </div>
-            <br>
-            <br>
-            <div style="display: flex; justify-content:end; gap: 15px;">
-                <button class="confirm-button" style="width: 60px;" onclick="closePopupForReturn()">Close</button>
-                <button class="confirm-return" id="confirm-return" data-returnOrder-id="<%= orderDetails._id %>">Confirm
-                    Return</button>
+                <br>
+                <br>
+                <div style="display: flex; justify-content:end; gap: 15px;">
+                    <button class="confirm-button" style="width: 60px;" onclick="closePopupForReturn()">Close</button>
+                    <button class="confirm-return" id="confirm-return" data-returnOrder-id="<%= orderDetails._id %>">Confirm
+                        Return</button>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Return all script -->
-    <script>
-        function showPopupForReturn() {
-            document.getElementById('popupReturn').style.display = 'block';
-
-        }
-
-        function closePopupForReturn() {
-            document.getElementById('popupReturn').style.display = 'none';
-        }
-
-        document.querySelectorAll('.confirm-return').forEach(button => {
-            button.addEventListener('click', function () {
-                const orderId = this.getAttribute('data-returnOrder-id');
-                confirmReturn(orderId);
+    
+        <!-- Return all script -->
+        <script>
+            function showPopupForReturn() {
+                document.getElementById('popupReturn').style.display = 'block';
+    
+            }
+    
+            function closePopupForReturn() {
+                document.getElementById('popupReturn').style.display = 'none';
+                var dropdown = document.getElementById('returnReason');
+                dropdown.selectedIndex = 0; // Select the first option (hidden placeholder)
+            }
+    
+            document.querySelectorAll('.confirm-return').forEach(button => {
+                button.addEventListener('click', function () {
+                    const orderId = this.getAttribute('data-returnOrder-id');
+                    confirmReturn(orderId);
+                });
             });
-        });
-        
-        function checkReasonForReturn() {
-            let returnReasonSelected = document.getElementById("returnReason");
-            let additionalReasonLabel = document.getElementById("additionalReturnReasonLabel")
-
-            let additionalReturnReasonField = document.getElementById("additionalReturnReason");
-
-            if (returnReasonSelected.value === "Other") {
-                additionalReasonLabel.style.display = "block";
-                additionalReturnReasonField.style.display = "block";
-                additionalReturnReasonField.required = true;
-            } else {
-                additionalReasonLabel.style.display = "none";
-                additionalReturnReasonField.style.display = "none";
-                additionalReturnReasonField.required = false;
+            
+            function checkReasonForReturn() {
+                let returnReasonSelected = document.getElementById("returnReason");
+                let additionalReasonLabel = document.getElementById("additionalReturnReasonLabel")
+    
+                let additionalReturnReasonField = document.getElementById("additionalReturnReason");
+    
+                if (returnReasonSelected.value === "Other") {
+                    additionalReasonLabel.style.display = "block";
+                    additionalReturnReasonField.style.display = "block";
+                    additionalReturnReasonField.required = true;
+                } else {
+                    additionalReasonLabel.style.display = "none";
+                    additionalReturnReasonField.style.display = "none";
+                    additionalReturnReasonField.required = false;
+                }
             }
-        }
-
-        function confirmReturn() {
-            let returnReason = document.getElementById("returnReason").value;
-            additionalReason = document.getElementById("additionalReturnReason").value || "";
-            if (!reason) {
-                $.toast({
-                    heading: 'Select Reason for Return',
-                    position: 'top-center',
-                    showHideTransition: 'slide',
-                    icon: 'info'
-                })
-
-                // } else if (reason === "other") {
-                //     if (!additionalReason) {
-                //         $.toast({
-                //             heading: 'Explain Reason for Cancellation',
-                //             position: 'top-center',
-                //             showHideTransition: 'slide',
-                //             icon: 'info'
-                //         })
-                //     }
-            } else {
-                let orderId = document.getElementById("confirm-return").getAttribute("data-returnOrder-id");
-                console.log('Returning order:', orderId);
-
-                fetch('/return-order?orderId=<%=orderDetails._id %>', {
-                    method: 'POST',
-                    body: JSON.stringify({ orderId: orderId, reason: returnReason, additionalReason: additionalReturnReason }),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                }).then(response => {
-                    console.log("Order returned db and response came");
-                    if (response.ok) {
-
-                        window.location.reload();
-                        $.toast({
-                            heading: 'Order Returned',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'success'
-                        })
-                    }
-                    if (response.status === 404) {
-                        $.toast({
-                            heading: 'Missing orderId details.',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-                    if (response.status === 405) {
-                        $.toast({
-                            heading: 'Missing orderId details.',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-                    if (response.status === 406) {
-                        $.toast({
-                            heading: 'Missing order return reason.',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-
-                    if (!response.ok) {
-                        $.toast({
-                            heading: 'Order Return Failed',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-                })
-
-                closePopupForReturn();
-
+    
+            function confirmReturn() {
+                let returnReason = document.getElementById("returnReason").value;
+                additionalReason = document.getElementById("additionalReturnReason").value || "";
+                if (!reason) {
+                    $.toast({
+                        heading: 'Select Reason for Return',
+                        position: 'top-center',
+                        showHideTransition: 'slide',
+                        icon: 'info'
+                    })
+    
+                    // } else if (reason === "other") {
+                    //     if (!additionalReason) {
+                    //         $.toast({
+                    //             heading: 'Explain Reason for Cancellation',
+                    //             position: 'top-center',
+                    //             showHideTransition: 'slide',
+                    //             icon: 'info'
+                    //         })
+                    //     }
+                } else {
+                    let orderId = document.getElementById("confirm-return").getAttribute("data-returnOrder-id");
+                    console.log('Returning order:', orderId);
+    
+                    fetch('/return-order?orderId=<%=orderDetails._id %>', {
+                        method: 'POST',
+                        body: JSON.stringify({ orderId: orderId, reason: returnReason, additionalReason: additionalReturnReason }),
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    }).then(response => {
+                        console.log("Order returned db and response came");
+                        if (response.ok) {
+    
+                            window.location.reload();
+                            $.toast({
+                                heading: 'Order Returned',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'success'
+                            })
+                        }
+                        if (response.status === 404) {
+                            $.toast({
+                                heading: 'Missing orderId details.',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'error'
+                            })
+                        }
+                        if (response.status === 405) {
+                            $.toast({
+                                heading: 'Missing orderId details.',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'error'
+                            })
+                        }
+                        if (response.status === 406) {
+                            $.toast({
+                                heading: 'Missing order return reason.',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'error'
+                            })
+                        }
+    
+                        if (!response.ok) {
+                            $.toast({
+                                heading: 'Order Return Failed',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'error'
+                            })
+                        }
+                    })
+    
+                    closePopupForReturn();
+    
+                }
             }
-        }
-
-
-
-    </script>
-    <!-- Return all popup end -->
-
-
-
-    <!-- Popup for cancelliation all  start-->
-    <div id="popup" class="popup" style="z-index: 1500;">
-        <div class="popup-content">
-            <div class="main-pcontent">
-
-                <div class="reason" style="display: flex; flex-direction: column;">
-                    <p>Are you sure you want to cancel this delivery?
-                    </p>
-                    <div class="form-row">
-                        <div class="option-list">
-                            <select id="reason" name="reason" onchange="checkReason()" style="width:280px">
-                                <option selected hidden disabled value="">Reason for
-                                    Cancellation
-                                </option>
-                                <option value="delay">Delayed delivery
-                                </option>
-                                <option value="wrong">Wrong item
-                                </option>
-                                <option value="changed">Changed mind
-                                </option>
-                                <option value="other">Other</option>
-                            </select>
+    
+    
+    
+        </script>
+        <!-- Return all popup end -->
+    
+    
+    
+        <!-- Popup for cancelliation all  start-->
+        <div id="popup" class="popup" style="z-index: 1500;">
+            <div class="popup-content">
+                <div class="main-pcontent">
+    
+                    <div class="reason" style="display: flex; flex-direction: column;">
+                        <p>Are you sure you want to cancel this delivery?
+                        </p>
+                        <div class="form-row">
+                            <div class="option-list">
+                                <select id="reason" name="reason" onchange="checkReason()" style="width:280px">
+                                    <option selected hidden disabled value="">Reason for
+                                        Cancellation
+                                    </option>
+                                    <option value="delay">Delayed delivery
+                                    </option>
+                                    <option value="wrong">Wrong item
+                                    </option>
+                                    <option value="changed">Changed mind
+                                    </option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
                         </div>
+                        <label style="display: none;" id="additionalReasonLabel" for="additionalReason">Additional
+                            Reason:</label>
+                        <textarea style="display: none;" id="additionalReason" name="additionalReason" rows="4"
+                            cols="40"></textarea>
                     </div>
-                    <label style="display: none;" id="additionalReasonLabel" for="additionalReason">Additional
-                        Reason:</label>
-                    <textarea style="display: none;" id="additionalReason" name="additionalReason" rows="4"
-                        cols="40"></textarea>
+    
                 </div>
-
+                <br>
+                <br>
+                <div style="display: flex; justify-content:end; gap: 15px;">
+                    <button class="confirm-button" style="width: 60px;" onclick="closePopup()">Close</button>
+                    <button class="confirm-cancel" id="confirm-cancel" data-order-id="<%= orderDetails._id %>">Confirm
+                        Cancellation</button>
+                </div>
             </div>
-            <br>
-            <br>
-            <div style="display: flex; justify-content:end; gap: 15px;">
-                <button class="confirm-button" style="width: 60px;" onclick="closePopup()">Close</button>
-                <button class="confirm-cancel" id="confirm-cancel" data-order-id="<%= orderDetails._id %>">Confirm
-                    Cancellation</button>
+        </div>
+    
+        <!-- Cancellation All script -->
+        <script>
+            function checkReason() {
+                let selectElement = document.getElementById("reason");
+                let additionalReasonField = document.getElementById("additionalReason");
+    
+                if (selectElement.value === "other") {
+                    additionalReasonLabel.style.display = "block";
+                    additionalReasonField.style.display = "block";
+                    additionalReasonField.required = true;
+                } else {
+                    additionalReasonLabel.style.display = "none";
+    
+                    additionalReasonField.style.display = "none";
+                    additionalReasonField.required = false;
+                }
+            }
+    
+            function showPopup() {
+                document.getElementById('popup').style.display = 'block';
+            }
+    
+            function closePopup() {
+                document.getElementById('popup').style.display = 'none';
+                var dropdown = document.getElementById('reason');
+                dropdown.selectedIndex = 0; // Select the first option (hidden placeholder)
+            }
+    
+    
+            document.querySelectorAll('.confirm-cancel').forEach(button => {
+                button.addEventListener('click', function () {
+                    const orderId = this.getAttribute('data-order-id');
+                    confirmCancellation(orderId);
+                });
+            });
+    
+            function confirmCancellation() {
+                let reason = document.getElementById("reason").value;
+                additionalReason = document.getElementById("additionalReason").value || "";
+                if (!reason) {
+                    $.toast({
+                        heading: 'Select Reason for Cancellation',
+                        position: 'top-center',
+                        showHideTransition: 'slide',
+                        icon: 'info'
+                    })
+    
+                    // } else if (reason === "other") {
+                    //     if (!additionalReason) {
+                    //         $.toast({
+                    //             heading: 'Explain Reason for Cancellation',
+                    //             position: 'top-center',
+                    //             showHideTransition: 'slide',
+                    //             icon: 'info'
+                    //         })
+                    //     }
+                } else {
+                    let orderId = document.getElementById("confirm-cancel").getAttribute("data-order-id");
+                    console.log('Cancelling order:', orderId);
+    
+                    fetch('/cancel-order?orderId=<%=orderDetails._id %>', {
+                        method: 'POST',
+                        body: JSON.stringify({ orderId: orderId, reason: reason, additionalReason: additionalReason }),
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    }).then(response => {
+                        console.log("Order cancelled db and response came");
+                        if (response.ok) {
+    
+                            window.location.reload();
+                            $.toast({
+                                heading: 'Order Cancelled',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'success'
+                            })
+                        }
+                        if (response.status === 404) {
+                            $.toast({
+                                heading: 'Missing orderId details.',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'error'
+                            })
+                        }
+                        if (response.status === 405) {
+                            $.toast({
+                                heading: 'Missing orderId details.',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'error'
+                            })
+                        }
+                        if (response.status === 406) {
+                            $.toast({
+                                heading: 'Missing order cancellation reason.',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'error'
+                            })
+                        }
+    
+                        if (!response.ok) {
+                            $.toast({
+                                heading: 'Order Cancellation Failed',
+                                position: 'top-center',
+                                showHideTransition: 'slide',
+                                icon: 'error'
+                            })
+                        }
+                    })
+    
+                    closePopup();
+    
+                }
+            }
+    
+        </script>
+        <!-- Popup for cancelliation all  end-->
+    
+    
+        <style>
+            .product-info-actions-container {
+                display: grid;
+                grid-template-columns: 5fr 1fr;
+                /* Two columns with equal width */
+                gap: 10px;
+                /* Gap between the columns */
+            }
+    
+            .delivery-status {
+                display: inline-block;
+                padding: 5px 10px;
+                border-radius: 20px;
+                color: #000000;
+                font-size: 12px;
+                margin: 0;
+            }
+    
+            .button-container {
+                display: flex;
+                flex-direction: column;
+            }
+    
+            .button-container button {
+                margin-bottom: 5px;
+            }
+    
+            .order-details-box {
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                padding-top: 20px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+    
+            .order-details-box h1 {
+                margin-top: 0;
+            }
+    
+            .shipping-info,
+            .payment-info,
+            .order-summary {
+                margin-bottom: 20px;
+            }
+    
+            .ordered-products {
+                margin-top: 30px;
+            }
+    
+            .shipment-item {
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+    
+            .product-info {
+                display: flex;
+                align-items: center;
+            }
+    
+            .product-info img {
+                width: 80px;
+                height: 80px;
+                object-fit: contain;
+                margin-right: 20px;
+            }
+    
+            .product-details {
+                flex-grow: 1;
+            }
+    
+            .actions {
+                display: flex;
+                justify-content: space-between;
+            }
+    
+            .actions button {
+                background-color: #fff;
+                color: #000000;
+                border: 1px solid #606060;
+                padding: 5px 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                width: 210px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+            }
+    
+            .cancel-button-button,
+            .confirm-return,
+            .confirm-cancel,
+            .confirm-button,
+            .confirm-cancel-one {
+                background-color: #fff;
+                color: #000000;
+                border: 1px solid #606060;
+                padding: 5px 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                width: 210px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+            }
+    
+            .actions button:hover,
+            .cancel-button-button:hover,
+            .confirm-return:hover,
+            .confirm-cancel:hover,
+            .confirm-button:hover,
+            .confirm-cancel-one:hover {
+                background-color: #e97730;
+                color: #fff;
+            }
+    
+            .popupCancelOne {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+            .popupReturn {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+    
+            .popup {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+    
+            .popup-content {
+                background-color: white;
+                width: 400px;
+                padding: 20px;
+                border-radius: 10px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+    
+            .image-container {
+                display: flex;
+                justify-content: center;
+                /* Horizontally center the image */
+                align-items: center;
+                /* Vertically center the image */
+            }
+    
+            .main-pcontent {
+                display: flex;
+    
+            }
+    
+            .reason,.returnReason,.cancelOne ,.cancelOneReason{
+                margin-left: 10px;
+            }
+    
+            .form-row {
+                display: inline-block;
+                margin-bottom: 10px;
+                /* Adjust as needed */
+            }
+    
+    
+    
+            .option-list {
+                display: inline-block;
+                vertical-align: top;
+                /* Align select with the top of the label */
+            }
+    
+            .option-list select {
+                border: 1px solid #ccc;
+                /* Adjust border properties as needed */
+                padding: 5px;
+                /* Optional: Adjust padding for better visual appearance */
+                box-sizing: border-box;
+                /* Ensure padding is included in the width */
+            }
+        </style>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Cancellation All script -->
-    <script>
-        function checkReason() {
-            let selectElement = document.getElementById("reason");
-            let additionalReasonField = document.getElementById("additionalReason");
-
-            if (selectElement.value === "other") {
-                additionalReasonLabel.style.display = "block";
-                additionalReasonField.style.display = "block";
-                additionalReasonField.required = true;
-            } else {
-                additionalReasonLabel.style.display = "none";
-
-                additionalReasonField.style.display = "none";
-                additionalReasonField.required = false;
-            }
-        }
-
-        function showPopup() {
-            document.getElementById('popup').style.display = 'block';
-        }
-
-        function closePopup() {
-            document.getElementById('popup').style.display = 'none';
-        }
-
-
-        document.querySelectorAll('.confirm-cancel').forEach(button => {
-            button.addEventListener('click', function () {
-                const orderId = this.getAttribute('data-order-id');
-                confirmCancellation(orderId);
-            });
-        });
-
-        function confirmCancellation() {
-            let reason = document.getElementById("reason").value;
-            additionalReason = document.getElementById("additionalReason").value || "";
-            if (!reason) {
-                $.toast({
-                    heading: 'Select Reason for Cancellation',
-                    position: 'top-center',
-                    showHideTransition: 'slide',
-                    icon: 'info'
-                })
-
-                // } else if (reason === "other") {
-                //     if (!additionalReason) {
-                //         $.toast({
-                //             heading: 'Explain Reason for Cancellation',
-                //             position: 'top-center',
-                //             showHideTransition: 'slide',
-                //             icon: 'info'
-                //         })
-                //     }
-            } else {
-                let orderId = document.getElementById("confirm-cancel").getAttribute("data-order-id");
-                console.log('Cancelling order:', orderId);
-
-                fetch('/cancel-order?orderId=<%=orderDetails._id %>', {
-                    method: 'POST',
-                    body: JSON.stringify({ orderId: orderId, reason: reason, additionalReason: additionalReason }),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                }).then(response => {
-                    console.log("Order cancelled db and response came");
-                    if (response.ok) {
-
-                        window.location.reload();
-                        $.toast({
-                            heading: 'Order Cancelled',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'success'
-                        })
-                    }
-                    if (response.status === 404) {
-                        $.toast({
-                            heading: 'Missing orderId details.',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-                    if (response.status === 405) {
-                        $.toast({
-                            heading: 'Missing orderId details.',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-                    if (response.status === 406) {
-                        $.toast({
-                            heading: 'Missing order cancellation reason.',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-
-                    if (!response.ok) {
-                        $.toast({
-                            heading: 'Order Cancellation Failed',
-                            position: 'top-center',
-                            showHideTransition: 'slide',
-                            icon: 'error'
-                        })
-                    }
-                })
-
-                closePopup();
-
-            }
-        }
-
-    </script>
-    <!-- Popup for cancelliation all  end-->
-
-
-    <style>
-        .product-info-actions-container {
-            display: grid;
-            grid-template-columns: 5fr 1fr;
-            /* Two columns with equal width */
-            gap: 10px;
-            /* Gap between the columns */
-        }
-
-        .delivery-status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            color: #000000;
-            font-size: 12px;
-            margin: 0;
-        }
-
-        .button-container {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .button-container button {
-            margin-bottom: 5px;
-        }
-
-        .order-details-box {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-            padding-top: 20px;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-
-        .order-details-box h1 {
-            margin-top: 0;
-        }
-
-        .shipping-info,
-        .payment-info,
-        .order-summary {
-            margin-bottom: 20px;
-        }
-
-        .ordered-products {
-            margin-top: 30px;
-        }
-
-        .shipment-item {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .product-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .product-info img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-right: 20px;
-        }
-
-        .product-details {
-            flex-grow: 1;
-        }
-
-        .actions {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .actions button {
-            background-color: #fff;
-            color: #000000;
-            border: 1px solid #606060;
-            padding: 5px 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 210px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-        }
-
-        .cancel-button-button,
-        .confirm-return,
-        .confirm-cancel,
-        .confirm-button,
-        .confirm-cancel-one {
-            background-color: #fff;
-            color: #000000;
-            border: 1px solid #606060;
-            padding: 5px 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 210px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-        }
-
-        .actions button:hover,
-        .cancel-button-button:hover,
-        .confirm-return:hover,
-        .confirm-cancel:hover,
-        .confirm-button:hover,
-        .confirm-cancel-one:hover {
-            background-color: #e97730;
-            color: #fff;
-        }
-
-        .popupCancelOne {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        .popupReturn {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .popup-content {
-            background-color: white;
-            width: 400px;
-            padding: 20px;
-            border-radius: 10px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .image-container {
-            display: flex;
-            justify-content: center;
-            /* Horizontally center the image */
-            align-items: center;
-            /* Vertically center the image */
-        }
-
-        .main-pcontent {
-            display: flex;
-
-        }
-
-        .reason,.returnReason,.cancelOne ,.cancelOneReason{
-            margin-left: 10px;
-        }
-
-        .form-row {
-            display: inline-block;
-            margin-bottom: 10px;
-            /* Adjust as needed */
-        }
+</div>
+   
 
 
 
-        .option-list {
-            display: inline-block;
-            vertical-align: top;
-            /* Align select with the top of the label */
-        }
-
-        .option-list select {
-            border: 1px solid #ccc;
-            /* Adjust border properties as needed */
-            padding: 5px;
-            /* Optional: Adjust padding for better visual appearance */
-            box-sizing: border-box;
-            /* Ensure padding is included in the width */
-        }
-    </style>
 
 
-
-    <%- include('../layouts/footer.ejs') %>
+<%- include('../layouts/footer.ejs') %>

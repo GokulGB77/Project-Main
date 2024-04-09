@@ -118,6 +118,7 @@ userRoute.post("/payment",auth.isLogin,ordersController.paymentOption)
 userRoute.get("/place-order",auth.isLogin,ordersController.placeOrder)
 userRoute.get("/order-success",auth.isLogin,ordersController.orderSuccess)
 userRoute.post("/cancel-order",auth.isLogin,ordersController.cancelOrder)
+userRoute.post("/cancel-one-order",auth.isLogin,ordersController.cancelOneOrder)
 userRoute.post("/return-order",auth.isLogin,ordersController.returnOrder)
 
 

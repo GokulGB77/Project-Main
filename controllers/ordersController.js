@@ -8,6 +8,8 @@ const Walletdb = require("../models/walletModel")
 const Couponsdb = require("../models/couponsModel")
 // const instance = require("../services/razorpay");
 const session = require("express-session")
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 
 const Razorpay = require('razorpay');
@@ -23,84 +25,84 @@ const instance = new Razorpay({
 //-----------------------------User Side---------------------------------------------
 
 const paymentOptionOld = async (req, res) => {
-//   try {
-//     console.log('paymentOption middleware called');
-//     console.log('req.session:', req.session);
-//     console.log('req.session.userId:', req.session.userId);
+  //   try {
+  //     console.log('paymentOption middleware called');
+  //     console.log('req.session:', req.session);
+  //     console.log('req.session.userId:', req.session.userId);
 
-//     // const userDetails = res.locals.currentUser;
-//     const userId = req.session.userId;
-//     console.log(userId)
-//     if (!userId) {
-//       throw new Error("User not authenticated");
-//     }
+  //     // const userDetails = res.locals.currentUser;
+  //     const userId = req.session.userId;
+  //     console.log(userId)
+  //     if (!userId) {
+  //       throw new Error("User not authenticated");
+  //     }
 
-//     const userDetails = await Userdb.findById(userId)
-//     const userName = userDetails.name;
-//     const userEmail = userDetails.email;
-//     const userMobile = userDetails.mobile;
-//     const { selectedAddress, selectedPaymentMethod, deliveryNotes } = req.body;
+  //     const userDetails = await Userdb.findById(userId)
+  //     const userName = userDetails.name;
+  //     const userEmail = userDetails.email;
+  //     const userMobile = userDetails.mobile;
+  //     const { selectedAddress, selectedPaymentMethod, deliveryNotes } = req.body;
 
-//     if (!selectedAddress ) {
-//       throw new Error("Address is required");
-//     }
-//     if (!selectedPaymentMethod ) {
-//       throw new Error("Choose a Payment Method to Continue");
-//     }
-//     const address = await Addressdb.findOne({ "addresses._id": selectedAddress });
-//     if (!address) {
-//       throw new Error("Selected address not found");
-//     }
-//     const orderAddress = address.addresses.find(addr => addr._id == selectedAddress);
+  //     if (!selectedAddress ) {
+  //       throw new Error("Address is required");
+  //     }
+  //     if (!selectedPaymentMethod ) {
+  //       throw new Error("Choose a Payment Method to Continue");
+  //     }
+  //     const address = await Addressdb.findOne({ "addresses._id": selectedAddress });
+  //     if (!address) {
+  //       throw new Error("Selected address not found");
+  //     }
+  //     const orderAddress = address.addresses.find(addr => addr._id == selectedAddress);
 
-//     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
-//     if (!cart) {
-//       throw new Error("Cart not found for the user");
-//     }
+  //     const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
+  //     if (!cart) {
+  //       throw new Error("Cart not found for the user");
+  //     }
 
-//     if (cart.cartProducts.length === 0) {
-//       throw new Error("Cart is empty. Add products before placing an order");
-//     }
+  //     if (cart.cartProducts.length === 0) {
+  //       throw new Error("Cart is empty. Add products before placing an order");
+  //     }
 
-//     req.session.selectedAddress = selectedAddress;
-//     req.session.selectedPaymentMethod = selectedPaymentMethod;
-//     req.session.deliveryNotes = deliveryNotes;
-//     req.session.cart = cart;
-//     req.session.save()
+  //     req.session.selectedAddress = selectedAddress;
+  //     req.session.selectedPaymentMethod = selectedPaymentMethod;
+  //     req.session.deliveryNotes = deliveryNotes;
+  //     req.session.cart = cart;
+  //     req.session.save()
 
-//     if (selectedPaymentMethod === "razorPay"){
-//       let options = {
-//         amount: cart.cartTotal,  // amount in the smallest currency unit
-//         currency: "INR",
-//         receipt: "rpayorder_id"
-//       };
-//       instance.orders.create(options, (err, order) => {
-//         console.log(order);
-//         if(!err){
-//           res.status(200).json({
-//             success:true,
-//             msg:'Order created',
-//             razpayorderId:order.id,
-//             key_id:RAZORPAY_KEY_ID,
-//             cartDetails:cart,
-//             selectedAddress:selectedAddress,
-//             name:userName,
-//             email:userEmail,
-//             mobile:userMobile,
-//           })
-//         } else {
-//           res.status(400).send({success:false,msg:'Something went wrtong!'});
-//         }
-
-
-//       });
-//     } 
+  //     if (selectedPaymentMethod === "razorPay"){
+  //       let options = {
+  //         amount: cart.cartTotal,  // amount in the smallest currency unit
+  //         currency: "INR",
+  //         receipt: "rpayorder_id"
+  //       };
+  //       instance.orders.create(options, (err, order) => {
+  //         console.log(order);
+  //         if(!err){
+  //           res.status(200).json({
+  //             success:true,
+  //             msg:'Order created',
+  //             razpayorderId:order.id,
+  //             key_id:RAZORPAY_KEY_ID,
+  //             cartDetails:cart,
+  //             selectedAddress:selectedAddress,
+  //             name:userName,
+  //             email:userEmail,
+  //             mobile:userMobile,
+  //           })
+  //         } else {
+  //           res.status(400).send({success:false,msg:'Something went wrtong!'});
+  //         }
 
 
-//   } catch (error) {
-//     console.error('Error in paymentOption:', error);
-//     res.status(500).json({ message: 'Internal Server Error' });
-//   }
+  //       });
+  //     } 
+
+
+  //   } catch (error) {
+  //     console.error('Error in paymentOption:', error);
+  //     res.status(500).json({ message: 'Internal Server Error' });
+  //   }
 }
 const paymentOption = async (req, res) => {
   try {
@@ -312,7 +314,7 @@ const placeOrder = async (req, res) => {
     const orderDetails = await order.save();
     console.log("placeOrder(fn):Order Created and saved to db", orderDetails.orderId);
 
-    const coupon = await Couponsdb.findOne({name:couponApplied});
+    const coupon = await Couponsdb.findOne({ name: couponApplied });
     if (coupon) {
       if (!coupon.couponAppliedUsers.includes(userId)) {
         coupon.couponAppliedUsers.push(userId);
@@ -450,7 +452,7 @@ const loadOrderDetails = async (req, res) => {
     const orderId = req.query.id
     const orderDetails = await Ordersdb.findOne({ _id: orderId }).populate("orderProducts.product")
     const orderDate = orderDetails.orderDate
-    console.log("orderDetails:", orderDetails)
+    // console.log("orderDetails:", orderDetails)
 
     res.render("orderDetails", { token, userId, orderId, orderDetails, })
   } catch (error) {
@@ -532,6 +534,114 @@ const cancelOrder = async (req, res) => {
     res.status(500).send({ message: "Error cancelling order." });
   }
 };
+
+
+const cancelOneOrder = async (req, res) => {
+  try {
+    const orderId = req.body.orderId;
+    const productId = req.body.productId;
+    // console.log("orderId In controller:", orderId)
+    console.log("productId In controller:", productId)
+    if (!orderId) {
+      throw new Error("Missing orderId parameter.");
+    }
+    if (!productId) {
+      throw new Error("Missing productId parameter.");
+    }
+
+    const orderCancelReason = req.body.reason;
+    if (!orderCancelReason) {
+      throw new Error("Missing order cancellation reason.");
+    }
+
+    // console.log("orderCancelReason:", orderCancelReason)
+    const additionalReason = req.body.additionalReason || null;
+
+    // console.log("additionalReason:", additionalReason)
+    
+    // console.log("orderDetails:", orderDetails)
+
+    const orderProductDetails = await Ordersdb.findOneAndUpdate(
+      {
+        '_id': orderId,
+        'orderProducts.product': productId
+      }, {
+      '$set': {
+        'orderProducts.$.orderStatus': 'cancelled',
+        'orderProducts.$.orderCancelReason': orderCancelReason,
+        'orderProducts.$.additionalReason': additionalReason
+      }
+    },
+    )
+
+    // console.log("orderProductDetails Set:", orderProductDetails)
+    if (!orderProductDetails) {
+      throw new Error(`Product not found.`);
+    }
+
+    const orderDetails = await Ordersdb.findById(orderId)
+    if (!orderDetails) {
+      throw new Error(`Order not found.`);
+    }
+
+    const product = await Productsdb.findById(productId);
+    if (product) {
+      const stock = parseInt(product.stock);
+      const { quantity } = orderProductDetails.orderProducts[0];
+      // console.log(stock)
+      // console.log(quantity)
+
+      if (!isNaN(stock) && !isNaN(quantity)) {
+        product.stock = stock + quantity;
+        await product.save();
+      } else {
+        throw new Error(`Invalid stock quantity.`);
+      }
+    } else {
+      throw new Error(`Product with ID ${productId} not found.`);
+    }
+
+    
+    
+    const allProductsCancelled = orderDetails.orderProducts.every(product => product.orderStatus == 'cancelled');
+    if (allProductsCancelled) {
+      orderDetails.orderStatus = 'cancelled';
+    }
+
+    const userId = orderDetails.user._id;
+
+    const wallet = await Walletdb.findOne({ user: userId }).populate("transactions")
+    if (orderDetails.paymentMethod === "razorPay" && (orderProductDetails.orderStatus === "cancelled")) {
+      const refundAmount = orderProductDetails.totalPrice
+      console.log("Refunding amount to wallet")
+      if (isNaN(refundAmount)) {
+        throw new Error(`Invalid refund amount.`);
+      }
+      const orderType = orderDetails.paymentMethod + "(" + orderDetails.orderStatus + ")"
+      const orderID = orderDetails.orderId
+      wallet.balance += refundAmount;
+      // console.log("refundAmount:", refundAmount)
+      wallet.transactions.push({
+        amount: refundAmount,
+        description: "Payment Refund for Product  " + product.productName + orderID,
+        type: orderType,
+      });
+
+
+    }
+    await wallet.save()
+    await orderDetails.save()
+
+    res.status(200).send({ message: "Product cancelled successfully.", order: orderDetails });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send({ message: "Error cancelling order." });
+  }
+};
+
+
+
+
 const returnOrder = async (req, res) => {
   try {
     const orderId = req.query.orderId;
@@ -856,6 +966,7 @@ module.exports = {
   orderSuccess,
   loadOrderDetails,
   cancelOrder,
+  cancelOneOrder,
   returnOrder,
   loadOrders,
   loadOrdersDetails,
