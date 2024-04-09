@@ -120,6 +120,7 @@ userRoute.get("/order-success",auth.isLogin,ordersController.orderSuccess)
 userRoute.post("/cancel-order",auth.isLogin,ordersController.cancelOrder)
 userRoute.post("/cancel-one-order",auth.isLogin,ordersController.cancelOneOrder)
 userRoute.post("/return-order",auth.isLogin,ordersController.returnOrder)
+userRoute.post("/return-one-order",auth.isLogin,ordersController.returnOneOrder)
 
 
 userRoute.get("/profile",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)

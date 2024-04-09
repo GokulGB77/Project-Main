@@ -104,6 +104,7 @@ const paymentOptionOld = async (req, res) => {
   //     res.status(500).json({ message: 'Internal Server Error' });
   //   }
 }
+
 const paymentOption = async (req, res) => {
   try {
     // const deliveryCharge = 500
@@ -606,6 +607,7 @@ const cancelOneOrder = async (req, res) => {
     const allProductsCancelled = orderDetails.orderProducts.every(product => product.orderStatus == 'cancelled');
     if (allProductsCancelled) {
       orderDetails.orderStatus = 'cancelled';
+      orderDetails.orderCancelReason = 'Indivually Cancelled all products';
     }
 
     const userId = orderDetails.user._id;
@@ -638,6 +640,8 @@ const cancelOneOrder = async (req, res) => {
     res.status(500).send({ message: "Error cancelling order." });
   }
 };
+
+
 
 
 
@@ -714,6 +718,104 @@ const returnOrder = async (req, res) => {
   }
 };
 
+const returnOneOrder = async (req, res) => {
+  try {
+    const orderId = req.body.orderId;
+    const productId = req.body.productId;
+    // console.log("orderId In controller:", orderId)
+    console.log("productId In controller:", productId)
+    if (!orderId) {
+      throw new Error("Missing orderId parameter.");
+    }
+    if (!productId) {
+      throw new Error("Missing productId parameter.");
+    }
+
+    const orderReturnOneReason = req.body.reason;
+    if (!orderReturnOneReason) {
+      throw new Error("Missing order cancellation reason.");
+    }
+
+    const additionalReason = req.body.additionalReason || null;
+
+    const orderProductDetails = await Ordersdb.findOneAndUpdate(
+      {
+        '_id': orderId,
+        'orderProducts.product': productId
+      }, {
+      '$set': {
+        'orderProducts.$.orderStatus': 'return-requested',
+        'orderProducts.$.orderCancelReason': orderReturnOneReason,
+        'orderProducts.$.additionalReason': additionalReason
+      }
+    },
+    )
+
+    // console.log("orderProductDetails Set:", orderProductDetails)
+    if (!orderProductDetails) {
+      throw new Error(`Product not found.`);
+    }
+
+    const orderDetails = await Ordersdb.findById(orderId)
+    if (!orderDetails) {
+      throw new Error(`Order not found.`);
+    }
+
+    const product = await Productsdb.findById(productId);
+    if (product) {
+      const stock = parseInt(product.stock);
+      const { quantity } = orderProductDetails.orderProducts[0];
+      // console.log(stock)
+      // console.log(quantity)
+
+      if (!isNaN(stock) && !isNaN(quantity)) {
+        product.stock = stock + quantity;
+        await product.save();
+      } else {
+        throw new Error(`Invalid stock quantity.`);
+      }
+    } else {
+      throw new Error(`Product with ID ${productId} not found.`);
+    }
+
+    
+    
+    const allProductsCancelled = orderDetails.orderProducts.every(product => product.orderStatus == 'return-requested');
+    if (allProductsCancelled) {
+      orderDetails.orderStatus = 'returned';
+      orderDetails.orderCancelReason = 'Indivually Returned all products';
+    }
+
+    const userId = orderDetails.user._id;
+
+    const wallet = await Walletdb.findOne({ user: userId }).populate("transactions")
+    if (orderDetails.paymentMethod === "razorPay" && (orderProductDetails.orderStatus === "cancelled")) {
+      const refundAmount = orderProductDetails.totalPrice
+      console.log("Refunding amount to wallet")
+      if (isNaN(refundAmount)) {
+        throw new Error(`Invalid refund amount.`);
+      }
+      const orderType = orderDetails.paymentMethod + "(" + orderDetails.orderStatus + ")"
+      const orderID = orderDetails.orderId
+      wallet.balance += refundAmount;
+      // console.log("refundAmount:", refundAmount)
+      wallet.transactions.push({
+        amount: refundAmount,
+        description: "Payment Refund for Product  " + product.productName + orderID,
+        type: orderType,
+      });
+
+
+    }
+    await wallet.save()
+    await orderDetails.save()
+
+    res.status(200).send({ message: "Product Return initiated successfully.", order: orderDetails });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send({ message: "Error returning order." });
+  }
+};
 
 //-----------------------------Admin Side---------------------------------------------
 
@@ -968,6 +1070,7 @@ module.exports = {
   cancelOrder,
   cancelOneOrder,
   returnOrder,
+  returnOneOrder,
   loadOrders,
   loadOrdersDetails,
   adminCancel,
