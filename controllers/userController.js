@@ -481,40 +481,51 @@ const loadContactUs = async (req, res) => {
 
 
 const loadProfile = async (req, res) => {
-
   try {
     // console.log("User entered User profile");
     const token = req.cookies.jwt;
     const currentUser = res.locals.currentUser;
-    const userId = currentUser._id
+    const userId = currentUser._id;
 
     // Check if the user has a wallet, if not, create one
     let wallet = await Walletdb.findOne({ user: userId });
-
     if (!wallet) {
       // Create a wallet for the user
-      wallet = await Walletdb.create({
-        user: userId,
-        balance: 0,
-        transactions: []
-      });
+      wallet = await Walletdb.create({ user: userId, balance: 0, transactions: [] });
     }
-    //Order related
-    const orderDetails = await Ordersdb.find({ user: userId }).sort({ orderDate: -1 })
-    console.log("orderDetails", orderDetails);
 
-    // Use findOne to retrieve a single user document
+    // Order related
+    const ordersPerPage = 5; // Number of orders to display per page
+    const currentPage = parseInt(req.query.page) || 1; // Get the current page from the query parameters, or use 1 as the default
+    const totalOrders = await Ordersdb.countDocuments({ user: userId });
+    const totalPages = Math.ceil(totalOrders / ordersPerPage);
+    const startIndex = (currentPage - 1) * ordersPerPage;
+    const endIndex = startIndex + ordersPerPage;
+    const orderDetails = await Ordersdb.find({ user: userId })
+      .sort({ orderDate: -1 })
+      .skip(startIndex)
+      .limit(ordersPerPage);
+
+    // User details
     const user = await Userdb.findOne({ _id: currentUser._id }).populate('addresses');
     const addressDocument = await Addressdb.findOne({ user: currentUser._id }).sort({ _id: 1 });
     let addresses = addressDocument ? addressDocument.addresses : [];
-    // Reorder addresses to show the last added address as the first one
     addresses = addresses.reverse();
-
-    const referralCode = user.referralCode
-
+    const referralCode = user.referralCode;
 
     if (token) {
-      res.render("profile", { token, currentUser, addresslist: addresses, user, userId, orderDetails, wallet, referralCode });
+      res.render("profile", {
+        token,
+        currentUser,
+        addresslist: addresses,
+        user,
+        userId,
+        orderDetails,
+        wallet,
+        referralCode,
+        currentPage,
+        totalPages,
+      });
     } else {
       res.redirect("/login");
     }
@@ -523,7 +534,60 @@ const loadProfile = async (req, res) => {
     res.status(500).send("LoadProfile failed");
   }
 };
+const loadProfile1 = async (req, res) => {
+  try {
+    // console.log("User entered User profile");
+    const token = req.cookies.jwt;
+    const currentUser = res.locals.currentUser;
+    const userId = currentUser._id;
 
+    // Check if the user has a wallet, if not, create one
+    let wallet = await Walletdb.findOne({ user: userId });
+    if (!wallet) {
+      // Create a wallet for the user
+      wallet = await Walletdb.create({ user: userId, balance: 0, transactions: [] });
+    }
+
+    // Order related
+    const ordersPerPage = 5; // Number of orders to display per page
+    const currentPage = parseInt(req.query.page) || 1; // Get the current page from the query parameters, or use 1 as the default
+    const totalOrders = await Ordersdb.countDocuments({ user: userId });
+    const totalPages = Math.ceil(totalOrders / ordersPerPage);
+    const startIndex = (currentPage - 1) * ordersPerPage;
+    const endIndex = startIndex + ordersPerPage;
+    const orderDetails = await Ordersdb.find({ user: userId })
+      .sort({ orderDate: -1 })
+      .skip(startIndex)
+      .limit(ordersPerPage);
+
+    // User details
+    const user = await Userdb.findOne({ _id: currentUser._id }).populate('addresses');
+    const addressDocument = await Addressdb.findOne({ user: currentUser._id }).sort({ _id: 1 });
+    let addresses = addressDocument ? addressDocument.addresses : [];
+    addresses = addresses.reverse();
+    const referralCode = user.referralCode;
+
+    if (token) {
+      res.status(200).json({
+        token,
+        currentUser,
+        addresslist: addresses,
+        user,
+        userId,
+        orderDetails,
+        wallet,
+        referralCode,
+        currentPage,
+        totalPages,
+      });
+    } else {
+      res.status(404);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("LoadProfile failed");
+  }
+};
 
 const loadOrders = async (req, res) => {
 
@@ -655,6 +719,7 @@ module.exports = {
   registerUser,
   loginUser,
   loadProfile,
+  loadProfile1,
   loadOrders,
   resendOtp,
   logoutUser,
@@ -662,6 +727,7 @@ module.exports = {
   changePassword,
   loadAboutUs,
   loadContactUs,
+
 }
 
 

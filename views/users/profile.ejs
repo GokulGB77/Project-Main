@@ -49,7 +49,7 @@
                                     <!-- My Profile Tab Content End -->
                                     <!-- Orders Tab Content Start -->
                                     <div class="tab-pane fade" id="orders" role="tabpanel">
-                                        <div class="myaccount-content">
+                                        <div class="myaccount-content" style="height: 440px;">
                                             <h3>Orders</h3>
                                             <div class="myaccount-table table-responsive text-center">
                                                 <% if(orderDetails.length!==0) { %>
@@ -89,12 +89,108 @@
                                                                 <% }); %>
                                                         </tbody>
                                                     </table>
+                                                    <br>
+                                                    <div class="mt-10">
+                                                        <form action="/profile#orders" method="GET" class="pagination-form" onsubmit="handlePagination(event)">
+                                                            <div class="pagination-controls d-flex justify-content-between align-items-center mb-4">
+                                                              <label for="page-select" class="mb-0" style="padding-left: 580px;">Page:</label>
+                                                              <select name="page" id="page-select" class="form-select" style=" width: 10%;">
+                                                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                                                <option value="<%= i %>" <%= currentPage === i ? 'selected' : '' %>><%= i %></option>
+                                                                <% } %>
+                                                              </select>
+                                                              <button type="submit" class="btn" style=" margin-right: 10px;  background-color: #e97730; color: #ffffff;">Go</button>
+                                                            </div>
+                                                          </form>
+                                                    </div>
+                                                    
                                                     <% } else {%>
                                                         <h4>No Orders Found</h4>
                                                         <% } %>
                                             </div>
+                                            
                                         </div>
                                     </div>
+                                    <script>
+                                        function handlePagination(event) {
+                                            event.preventDefault(); // Prevent the default form submission
+
+                                            const pageSelect = document.getElementById('page-select');
+                                            const selectedPage = pageSelect.value;
+
+                                            // Make the AJAX request to fetch the order data for the selected page
+                                            fetch(`/profile1?page=${selectedPage}`, {
+                                                method: 'GET',
+                                            })
+                                                .then((response) => response.json())
+                                                .then((data) => {
+                                                    // Update the order details table with the new data
+                                                    updateOrdersTable(data.orderDetails);
+                                                    updatePaginationControls(data.currentPage, data.totalPages);
+                                                })
+                                                .catch((error) => {
+                                                    console.error('Error fetching order data:', error);
+                                                });
+                                        }
+
+                                        function updateOrdersTable(orderDetails) {
+                                            const tableBody = document.querySelector('#orders tbody');
+                                            tableBody.innerHTML = '';
+
+                                            orderDetails.forEach((order, index) => {
+                                                const row = document.createElement('tr');
+                                                row.classList.add('text-center');
+
+                                                const slNo = document.createElement('td');
+                                                slNo.textContent = index + 1;
+
+                                                const orderId = document.createElement('td');
+                                                const orderIdLink = document.createElement('a');
+                                                orderIdLink.href = `/order-details?id=${order._id}`;
+                                                orderIdLink.classList.add('check-btn', 'sqr-btn');
+                                                orderIdLink.textContent = order.orderId;
+                                                orderId.appendChild(orderIdLink);
+
+                                                const orderDate = document.createElement('td');
+                                                orderDate.textContent = order.orderDate;
+
+                                                const orderStatus = document.createElement('td');
+                                                orderStatus.textContent = order.orderStatus;
+
+                                                const orderTotal = document.createElement('td');
+                                                orderTotal.textContent = `₹ ${order.orderTotal.toLocaleString()}`;
+
+                                                const action = document.createElement('td');
+                                                const actionLink = document.createElement('a');
+                                                actionLink.href = `/order-details?id=${order._id}`;
+                                                actionLink.classList.add('check-btn', 'sqr-btn');
+                                                actionLink.textContent = 'View';
+                                                action.appendChild(actionLink);
+
+                                                row.appendChild(slNo);
+                                                row.appendChild(orderId);
+                                                row.appendChild(orderDate);
+                                                row.appendChild(orderStatus);
+                                                row.appendChild(orderTotal);
+                                                row.appendChild(action);
+
+                                                tableBody.appendChild(row);
+                                            });
+                                        }
+
+                                        function updatePaginationControls(currentPage, totalPages) {
+                                            const paginationSelect = document.getElementById('page-select');
+                                            paginationSelect.innerHTML = '';
+
+                                            for (let i = 1; i <= totalPages; i++) {
+                                                const option = document.createElement('option');
+                                                option.value = i;
+                                                option.textContent = i;
+                                                option.selected = i === currentPage;
+                                                paginationSelect.appendChild(option);
+                                            }
+                                        }
+                                    </script>
 
                                     <!-- Orders Tab Content End -->
 
