@@ -463,6 +463,24 @@ const loadOrderDetails = async (req, res) => {
   }
 }
 
+const loadOrderInvoice = async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    const currentUser = res.locals.currentUser
+    const userId = currentUser._id
+    const orderId = req.query.id
+    const orderDetails = await Ordersdb.findOne({ _id: orderId }).populate("orderProducts.product").populate("user")
+    const orderDate = orderDetails.orderDate
+    // console.log("orderDetails:", orderDetails)
+
+    res.render("orderInvoice", { token, userId, orderId, orderDetails, })
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+
+  }
+}
+
 
 const cancelOrder = async (req, res) => {
   try {
@@ -1123,6 +1141,7 @@ module.exports = {
   placeOrder,
   orderSuccess,
   loadOrderDetails,
+  loadOrderInvoice,
   cancelOrder,
   cancelOneOrder,
   returnOrder,

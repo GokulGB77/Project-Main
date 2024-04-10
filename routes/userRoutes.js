@@ -128,6 +128,7 @@ userRoute.get("/profile1",auth.attachTokenToLocals,auth.isLogin,userController.l
 userRoute.get("/profile/orders",auth.attachTokenToLocals,auth.isLogin,userController.loadProfile)
 userRoute.get("/profile/orders",auth.attachTokenToLocals,auth.isLogin,userController.loadOrders)
 userRoute.get("/order-details",auth.attachTokenToLocals,auth.isLogin,ordersController.loadOrderDetails)
+userRoute.get("/order/invoice",auth.attachTokenToLocals,auth.isLogin,ordersController.loadOrderInvoice)
 userRoute.post("/update-user-details",auth.attachTokenToLocals,auth.isLogin,userController.updateDetails)
 userRoute.post("/profile/add-address",auth.attachTokenToLocals,auth.isLogin,addressController.addNewAddress)
 userRoute.get("/profile/edit-address",auth.attachTokenToLocals,auth.isLogin,addressController.editAddress)
