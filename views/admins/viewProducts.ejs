@@ -171,7 +171,7 @@
                     <a href="/admin/products/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
                 </div>
             </div> -->
-            <div class="card mb-4">
+            <div class="card mb-4" style="height: 750px;">
                 <header class="card-header">
                     <div class="row align-items-center">
                         <!-- <div class="col col-check flex-grow-0">
@@ -192,10 +192,10 @@
                                 <h2 class="content-title card-title">Products List</h2>
                             </div>
                             <div>
-                                <a href="#" class="btn btn-light rounded font-md">Export</a>
-                                <a href="#" class="btn btn-light rounded  font-md">Import</a>
+                                <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
+                                <a href="#" class="btn btn-light rounded  font-md">Import</a> -->
                                 <a href="/admin/products/add-product" class="btn btn-primary btn-sm rounded">Create
-                                    new</a>
+                                    New</a>
                             </div>
                         </div>
                         <div class="col-md-2 col-6">
@@ -280,10 +280,10 @@
 
                                             <% if (products[i].status===1) { %>
                                                 <a class="dropdown-item text-danger"
-                                                    href="/admin/products/unarchive-product?id=<%= products[i]._id %>">Archive</a>
+                                                    href="/admin/products/unarchive-product?id=<%= products[i]._id %>&page=<%= currentPage  %>">Archive</a>
                                                 <% } else { %>
                                                     <a class="dropdown-item text-success"
-                                                        href="/admin/products/archive-product?id=<%= products[i]._id %>">Unarchive</a>
+                                                        href="/admin/products/archive-product?id=<%= products[i]._id %>&page=<%= currentPage %>">Unarchive</a>
                                                     <% } %>
                                                         <div class="dropdown-divider"></div>
                                                        
@@ -299,19 +299,132 @@
             </div> <!-- card end// -->
             <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i
-                                    class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
+                  <ul class="pagination justify-content-start">
+                    <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                      <a class="page-link" href="#" data-page="<%= currentPage - 1 %>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <% } %>
+              
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                      <a class="page-link" href="#" data-page="<%= i %>"><%= i %></a>
+                    </li>
+                    <% } %>
+              
+                    <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                      <a class="page-link" href="#" data-page="<%= currentPage + 1 %>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                    <% } %>
+                  </ul>
                 </nav>
-            </div>
+              </div>
         </section> <!-- content-main end// -->
+       
+        <script>
+            const paginationLinks = document.querySelectorAll('.pagination .page-link');
+            paginationLinks.forEach((link) => {
+                link.addEventListener('click', async (event) => {
+                    event.preventDefault();
+                    const page = event.target.dataset.page;
+                    await fetchProducts(page);
+                    updatePaginationActive(page);
+                });
+            });
 
+            // Function to update the active class on the pagination links
+            function updatePaginationActive(currentPage) {
+                const paginationLinks = document.querySelectorAll('.pagination .page-link');
+                paginationLinks.forEach((link) => {
+                    const pageNum = parseInt(link.dataset.page);
+                    link.classList.toggle('active', pageNum === currentPage);
+                });
+            }
+
+            // Function to fetch products and update the UI
+            async function fetchProducts(page = 1) {
+                try {
+                    const response = await fetch(`/admin/products1?page=${page}`);
+                    const data = await response.json();
+
+                    // Update the product list
+                    const productList = document.querySelector('.card-body');
+                    productList.innerHTML = '';
+
+                    data.products.forEach((product) => {
+                        // Render the product list items
+                        const productItem = document.createElement('article');
+                        productItem.classList.add('itemlist');
+
+                        productItem.innerHTML = `
+                <div class="row align-items-center">
+                  <div class="col col-check flex-grow-0">
+                  </div>
+                  <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                    <a class="itemside" href="#">
+                      <div class="left">
+                        <img src="/productAssets/${product.images[0]}" class="img-sm img-thumbnail" alt="Item">
+                      </div>
+                      <div class="info">
+                        <h6 class="mb-0">${product.productName}</h6>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="col-lg-2 col-sm-2 col-4 col-price">
+                    <span>
+                      &#8377 ${product.productPrice}
+                    </span>
+                  </div>
+                  <div class="col-lg-1 col-sm-1 col-1 col-status text-center">
+                    <span class="badge rounded-pill alert-${product.stock === 0 ? 'danger' : 'success'}">
+                      ${product.stock > 0 ? 'In Stock' : 'Out Of Stock'}
+                    </span>
+                  </div>
+                  <div class="col-lg-1 col-sm-1 col-1 col-status">
+                    <span class="badge rounded-pill alert-${product.status === 1 ? 'success' : 'danger'}">
+                      ${product.status === 1 ? 'Active' : 'Disabled'}
+                    </span>
+                  </div>
+                  <div class="col-lg-2 col-sm-2 col-4 col-action text-left">
+                    <a href="/admin/products/edit-product?id=${product._id}" class="btn btn-sm font-sm rounded btn-brand">
+                      <i class="material-icons md-edit"></i> Edit
+                    </a>
+                    <div class="dropdown">
+                      <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
+                        <i class="material-icons md-more_horiz"></i>
+                      </a>
+                      <div class="dropdown-menu">
+                        ${product.status === 1 ? `
+                          <a class="dropdown-item text-danger" href="/admin/products/unarchive-product?id=${product._id}">Archive</a>
+                        ` : `
+                          <a class="dropdown-item text-success" href="/admin/products/archive-product?id=${product._id}">Unarchive</a>
+                        `}
+                        <div class="dropdown-divider"></div>
+                      </div> 
+                    </div>
+                  </div>
+                </div>
+              `;
+
+                        productList.appendChild(productItem);
+                    });
+
+                    // Update the pagination buttons
+                    const paginationLinks = document.querySelectorAll('.pagination .page-link');
+                    paginationLinks.forEach((link) => {
+                        const pageNum = parseInt(link.dataset.page);
+                        link.classList.toggle('active', data.currentPage === pageNum);
+                    });
+                } catch (error) {
+                    console.error('Error fetching products:', error);
+                }
+            }
+        </script>
 
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
@@ -328,6 +441,8 @@
             </div>
         </footer>
     </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>

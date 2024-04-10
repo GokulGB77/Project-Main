@@ -58,6 +58,7 @@ adminRoute.get("/user-details/unblock",adminController.unblockUser)
 
 
 adminRoute.get("/products",productsController.loadAdminProducts);
+adminRoute.get("/products1",productsController.loadAdminProducts1);
 adminRoute.get("/products/add-product",productsController.loadAddProduct)
 adminRoute.post("/products/add-product",upload.array("productImage", 4),productsController.addProduct)
 

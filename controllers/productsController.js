@@ -8,23 +8,82 @@ const sharp = require('sharp'); // Import sharp for image cropping
 
 const loadAdminProducts = async (req, res) => {
   try {
-    const products = await Productsdb.find({}).sort({ _id: -1 })
-    // .populate({
-    //   path: 'categories',
-    //   select: 'name',
-    //   match: { categoryStatus: 0 }, // Only populate categories with categoryStatus: 0
-    // });;
-    if (!products) {
-      return res.status(404).send("Product Not Found")
-    }
-    res.render("viewProducts", { products: products });
-  } catch (error) {
-    console.log(error.message);
-    console.log("Error loading Product List page: ", error.message);
+    // Get the current page from the query parameter
+    const currentPage = parseInt(req.query.page) || 1;
+    const limit = 10; // Number of products to display per page
 
-    res.status(500).send("Error loading Product List page");
+    // Calculate the start and end index for the current page
+    const startIndex = (currentPage - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    // Fetch the products for the current page
+    const products = await Productsdb.find({})
+      .sort({ productName: 1 })
+      .skip(startIndex)
+      .limit(limit);
+
+    // Get the total number of products
+    const totalProducts = await Productsdb.countDocuments();
+
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    // Check if any products were found
+    if (!products || products.length === 0) {
+      throw new Error('Product Not Found');
+    }
+
+    // Render the viewProducts template with the necessary data
+    res.render('viewProducts', {
+      products: products,
+      currentPage: currentPage,
+      totalPages: totalPages,
+    });
+  } catch (error) {
+    console.error('Error loading Product List page:', error.message);
+    res.status(500).send('Error loading Product List page');
   }
 };
+
+const loadAdminProducts1 = async (req, res) => {
+  try {
+    // Get the current page from the query parameter
+    const currentPage = parseInt(req.query.page) || 1;
+    const limit = 10; // Number of products to display per page
+
+    // Calculate the start and end index for the current page
+    const startIndex = (currentPage - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    // Fetch the products for the current page
+    const products = await Productsdb.find({})
+      .sort({ productName: 1 })
+      .skip(startIndex)
+      .limit(limit);
+
+    // Get the total number of products
+    const totalProducts = await Productsdb.countDocuments();
+
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    // Check if any products were found
+    if (!products || products.length === 0) {
+      throw new Error('Product Not Found');
+    }
+
+    // Render the viewProducts template with the necessary data
+    res.json( {
+      products: products,
+      currentPage: currentPage,
+      totalPages: totalPages,
+    });
+  } catch (error) {
+    console.error('Error loading Product List page:', error.message);
+    res.status(500).send('Error loading Product List page');
+  }
+};
+
 
 const getCategories = async (req, res) => {
   try {
@@ -385,6 +444,7 @@ module.exports = { getSearchSuggestions };
 
 module.exports = {
   loadAdminProducts,
+  loadAdminProducts1,
   loadAddProduct,
   addProduct,
   editProduct,

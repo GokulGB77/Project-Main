@@ -312,48 +312,50 @@
             </div> <!-- card end// -->
             <div class="pagination-area mt-15 mb-50">
                 <nav aria-label="Page navigation example">
-                  <ul class="pagination justify-content-start">
-                    <% if (currentPage > 1) { %>
-                    <li class="page-item">
-                      <a class="page-link prev-page" href="#" data-page="<%= currentPage - 1 %>">
-                        <i class="material-icons md-chevron_left"></i>
-                      </a>
-                    </li>
-                    <% } %>
-              
-                    <% for (let i = 1; i <= totalPages; i++) { %>
-                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                      <a class="page-link page-number" href="#" data-page="<%= i %>"><%= i %></a>
-                    </li>
-                    <% } %>
-              
-                    <% if (currentPage < totalPages) { %>
-                    <li class="page-item">
-                      <a class="page-link next-page" href="#" data-page="<%= currentPage + 1 %>">
-                        <i class="material-icons md-chevron_right"></i>
-                      </a>
-                    </li>
-                    <% } %>
-                  </ul>
+                    <ul class="pagination justify-content-start">
+                        <% if (currentPage> 1) { %>
+                            <li class="page-item">
+                                <a class="page-link prev-page" href="#" data-page="<%= currentPage - 1 %>">
+                                    <i class="material-icons md-chevron_left"></i>
+                                </a>
+                            </li>
+                            <% } %>
+            
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                        <a class="page-link page-number" href="#" data-page="<%= i %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                    <% } %>
+            
+                                        <% if (currentPage < totalPages) { %>
+                                            <li class="page-item">
+                                                <a class="page-link next-page" href="#" data-page="<%= currentPage + 1 %>">
+                                                    <i class="material-icons md-chevron_right"></i>
+                                                </a>
+                                            </li>
+                                            <% } %>
+                    </ul>
                 </nav>
-              </div>
+            </div>
 
             <script>
-                document.addEventListener('DOMContentLoaded', () => {
-    const ordersTableBody = document.querySelector('#orders-table tbody');
-    const paginationArea = document.querySelector('.pagination-area');
+                    document.addEventListener('DOMContentLoaded', () => {
+        const ordersTableBody = document.querySelector('#orders-table tbody');
+        const paginationArea = document.querySelector('.pagination-area');
 
-    const loadOrders = async (page = 1) => {
-        try {
-            const response = await fetch(`/admin/orders1?page=${page}`);
-            const { orders, pagination } = await response.json();
+        const loadOrders = async (page = 1) => {
+            try {
+                const response = await fetch(`/admin/orders1?page=${page}`);
+                const { orders, pagination } = await response.json();
 
-            updateOrdersTable(orders);
-            updatePaginationArea(pagination.currentPage, pagination.totalPages);
-        } catch (error) {
-            console.error('Error loading orders:', error);
-        }
-    };
+                updateOrdersTable(orders);
+                updatePaginationArea(pagination.currentPage, pagination.totalPages);
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        };
 
     const updateOrdersTable = (orders) => {
         ordersTableBody.innerHTML = '';
