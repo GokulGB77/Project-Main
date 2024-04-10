@@ -33,15 +33,16 @@
     <link rel="stylesheet" href="/user/css/filter.css" crossorigin="anonymous" />
 
     <!-- google auth -->
-    <meta name="google-signin-client_id" content="627684990975-7c0hn0bn8oiedeiogl5crfe54j5fhuc8.apps.googleusercontent.com">
+    <meta name="google-signin-client_id"
+        content="627684990975-7c0hn0bn8oiedeiogl5crfe54j5fhuc8.apps.googleusercontent.com">
 
     <!-- Include toast plugin after jQuery -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" rel="stylesheet">
-    
-    
+
+
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
- 
+
 
     <style>
         a {
@@ -126,9 +127,11 @@
                                 <div class="header-action-style header-search-1">
                                     <!-- Search Icon -->
                                     <a class="search-toggle" href="#">
-                                        <lord-icon class="s-close" src="https://cdn.lordicon.com/nqtddedc.json" trigger="hover" style="width:27px;height:27px">
+                                        <lord-icon class="s-close" src="https://cdn.lordicon.com/nqtddedc.json"
+                                            trigger="hover" style="width:27px;height:27px">
                                         </lord-icon>
-                                        <lord-icon class="s-open" src="https://cdn.lordicon.com/kkvxgpti.json" trigger="hover" style="width:27px;height:27px">
+                                        <lord-icon class="s-open" src="https://cdn.lordicon.com/kkvxgpti.json"
+                                            trigger="hover" style="width:27px;height:27px">
                                         </lord-icon>
 
 
@@ -139,11 +142,31 @@
                                         <form id="searchForm">
                                             <input id="searchInput" placeholder="Search products…" type="text">
                                             <ul id="suggestionList"></ul>
-                                            <button class="button-search" type="submit"><i
+                                            <button class="button-search searchButton" style="position: absolute;
+                                            right: 0;
+                                            top: 37%;
+                                            -webkit-transform: translateY(-50%);
+                                            -ms-transform: translateY(-50%);
+                                            transform: translateY(-50%);
+                                            padding: 0;
+                                            border: none;
+                                            background-color: rgb(255, 255, 255);
+                                            height: 71%;
+                                            font-size: 22px;
+                                            border: 1px solid #E2DCDC;
+                                            border-radius: 50px;
+                                            padding: 0 15px;
+                                            color: #000000;
+                                            line-height: 43px;" type="submit"><i
                                                     class="pe-7s-search"></i></button>
                                         </form>
                                     </div>
                                 </div>
+                                <style>
+                                    .searchButton {
+                                        
+                                    }
+                                </style>
 
                                 <% if (token) { %>
                                     <script>console.log("Button pressed")</script>
@@ -156,22 +179,24 @@
                                             </lord-icon>
                                         </a>
                                         <!-- Dropdown Menu -->
-                                        <ul class="dropdown-menu"  aria-labelledby="loginDropdown">
+                                        <ul class="dropdown-menu" aria-labelledby="loginDropdown">
                                             <li><a class="dropdown-item" href="/profile">Account Settings</a>
                                             </li>
-                                            <li><a class="dropdown-item" href="/profile#change-password">Change Password</a>
+                                            <li><a class="dropdown-item" href="/profile#change-password">Change
+                                                    Password</a>
                                             </li>
-                                            <li><a class="dropdown-item" href="/profile#orders" >Orders</a></li>
+                                            <li><a class="dropdown-item" href="/profile#orders">Orders</a></li>
                                             <li>
-                                            <li><a class="dropdown-item" href="/profile#wallet" >Wallet</a></li>
-                                            <li><a class="dropdown-item" href="/profile#address" >Add / Edit Address</a></li>
+                                            <li><a class="dropdown-item" href="/profile#wallet">Wallet</a></li>
+                                            <li><a class="dropdown-item" href="/profile#address">Add / Edit Address</a>
+                                            </li>
                                             <hr class="dropdown-divider">
-                                            <li><a class="dropdown-item"  href="/logout">Logout</a></li>
+                                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
                                         </ul>
                                     </div>
-                                  
+
                                     <style>
-                                        .dropdown-item{
+                                        .dropdown-item {
                                             line-height: 20px;
                                         }
                                     </style>
@@ -189,18 +214,18 @@
                                     </div> -->
                                     <div class="header-action-style header-action-cart">
                                         <!-- Cart Icon -->
-                                        <a href="/cart?#"><lord-icon
-                                                src="https://cdn.lordicon.com/evyuuwna.json" trigger="hover"
-                                                style="width:27px;height:27px">
+                                        <a href="/cart?#"><lord-icon src="https://cdn.lordicon.com/evyuuwna.json"
+                                                trigger="hover" style="width:27px;height:27px">
                                             </lord-icon>
                                             <span id="cartItemCount" class="product-count bg-black"></span></a>
                                     </div>
 
                                     <% } else { %>
                                         <div class="header-action-style ">
-                                            <a title="Login" href="/login"><lord-icon src="https://cdn.lordicon.com/kthelypq.json" trigger="hover"
-                                                style="width:24px;height:24px">
-                                            </lord-icon></a>
+                                            <a title="Login" href="/login"><lord-icon
+                                                    src="https://cdn.lordicon.com/kthelypq.json" trigger="hover"
+                                                    style="width:24px;height:24px">
+                                                </lord-icon></a>
                                         </div>
                                         <% } %>
 
