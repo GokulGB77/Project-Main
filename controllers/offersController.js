@@ -64,6 +64,7 @@ const addCategoryOffer = async (req, res) => {
       product.categoryOffer = discountPercentage;
       await product.save();
     }));
+    await applyOffers()
 
     // Send a response
     res.json({ message: `${newOffer} offer created successfully` });
@@ -79,6 +80,7 @@ const deleteCategoryOffer = async (req, res) => {
     const categoryOfferId = req.query.id; // Assuming 'id' is the parameter name
     console.log(categoryOfferId);
     let offerDoc = await Offersdb.findByIdAndDelete(categoryOfferId);
+    await applyOffers()
 
     res.json({ message: `Category Deelted` });
     } catch (error) {
@@ -104,6 +106,7 @@ const toggleCategoryOffer = async (req, res) => {
 
       const message = offerDoc.isActive ? 'Category Blocked' : 'Category Unblocked';
 
+      applyOffers()
 
       // Send a response
       res.json({ message: `Category ${offerDoc.isActive ? 'Blocked' : 'Unblocked'} successfully`, isActive: offerDoc.isActive , });
@@ -155,6 +158,7 @@ const addProductOffer = async (req, res) => {
     }));
 
     // Send a response
+    await applyOffers()
 
     res.json({ message: `${newOffer} offer created successfully` });
 
@@ -192,7 +196,7 @@ const applyForAProduct = async (req, res) => {
       productOffer: productOffer,
       categoryOffer: {} // Assuming you have categoryOffer data, adjust as needed
     });
-
+    await applyOffers()
     res.status(200).send({ message: "Product offer applied", product: product, offer: newOffer });
   } catch (error) {
     console.error('Error applying offer:', error);
@@ -287,7 +291,8 @@ const validateReferralCode = async (req, res) => {
 
 
 const applyOffers = async (req, res) => {
-  try {
+  
+    console.log("Applying Offers")
     // const productsWithProductOffer = await Productsdb.find({ productOffer: { $gt: 0 } });
     const productsWithOffer = await Productsdb.find({ productOffer: { $gt: 0 } });
     // const productsWithCategoryOffer = await Categoriesdb.find({ categoryOffer: { $gt: 0 } });
@@ -298,69 +303,37 @@ const applyOffers = async (req, res) => {
 
       if (product.productOffer > product.categoryOffer) {
         console.log("productOffer is higher than category Offer")
-        const productPrice = product.productPrice; // Access productPrice from each product
-        const offerPercentage = product.productOffer; // Access productOffer from each product
-        const offerPrice = (productPrice * (1 - (offerPercentage / 100))); // Calculate offer price
-        const roundedOfferPrice = Math.round(offerPrice / 100) * 100; // Round off to the nearest whole number
+        const productPrice = product.productPrice;
+        const offerPercentage = product.productOffer;
+        const offerPrice = (productPrice * (1 - (offerPercentage / 100))); 
+        const roundedOfferPrice = Math.round(offerPrice / 100) * 100; 
         product.offerPrice = roundedOfferPrice
         console.log("Offer price for product:", roundedOfferPrice);
       } else {
         console.log("categoryOffer is higher than productOffer")
-        const productPrice = product.productPrice; // Access productPrice from each product
-        const offerPercentage = product.categoryOffer; // Access productOffer from each product
-        const offerPrice = (productPrice * (1 - (offerPercentage / 100))); // Calculate offer price
-        const roundedOfferPrice = Math.round(offerPrice / 100) * 100; // Round off to the nearest whole number
+        const productPrice = product.productPrice; 
+        const offerPercentage = product.categoryOffer; 
+        const offerPrice = (productPrice * (1 - (offerPercentage / 100))); 
+        const roundedOfferPrice = Math.round(offerPrice / 100) * 100; 
         product.offerPrice = roundedOfferPrice
         console.log("Offer price for product:", roundedOfferPrice);
       }
       product.save()
     });
-    res.status(200).send({ message: "Offers Applied Successfully", products: productsWithOffer });
-  } catch (error) {
-    console.error('Error applying offers:', error);
-    return res.status(500).send("Error applying offers");
-  }
+    console.log("Offers Applied")
+
+  
 }
 
 
 
-const loadAddCategoryOffer = async (req, res) => {
-  try {
-    const categories = await Categoriesdb.find()
-
-    res.render("addCategoryOffer", { categories })
-  } catch (error) {
-    console.error('Error adding category:', error);
-    return res.status(500).send("Category adding failed");
-  }
-}
-const loadAddProductOffer = async (req, res) => {
-  try {
-    const products = await Productsdb.find().sort({ productName: 1 })
-    res.render("addProductOffer", { products })
-  } catch (error) {
-    console.error('Error adding category:', error);
-    return res.status(500).send("Category adding failed");
-  }
-}
-const loadAddReferralOffer = async (req, res) => {
-  try {
-    res.render("addReferralOffer")
-  } catch (error) {
-    console.error('Error adding category:', error);
-    return res.status(500).send("Category adding failed");
-  }
-}
 
 
 module.exports = {
   loadOffers,
   addCategoryOffer,
   addProductOffer,
-  loadAddCategoryOffer,
-  loadAddProductOffer,
   applyForAProduct,
-  loadAddReferralOffer,
   toggleCategoryOffer,
   deleteCategoryOffer,
   getReferralOffer,
