@@ -401,19 +401,16 @@ const applyCoupon = async (req, res) => {
         console.log("Session saved successfully");
       }
     });
-
-
-    // Respond with success message if coupon applied successfully
-    res.status(200).json({ responseData });
+    res.status(200).json({ responseData,cart });
   } catch (error) {
-    console.error('Error Applying Coupon:', error.message); // Log error message only
-    res.status(500).json({ message: 'Internal server error' }); // Respond with generic error message
+    console.error('Error Applying Coupon:', error.message);
+    res.status(500).json({ message: 'Internal server error' }); 
   }
 };
 
 const removeCoupon = async (req, res) => {
   try {
-    const { cartId, couponCode } = req.body; // Destructuring assignment to extract properties
+    const { cartId, couponCode } = req.body; 
     // const deliveryCharge = 500
     console.log("cartId:", cartId);
     console.log("couponCode:", couponCode);
@@ -429,7 +426,7 @@ const removeCoupon = async (req, res) => {
     cart.couponDiscount = 0;
     responseData = {
       message: "Coupon removed",
-      totalAmount: cart.cartTotal - cart.couponDiscount //delivery charge replaced
+      totalAmount: cart.cartTotal - cart.couponDiscount 
       // totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
     };
     await cart.save();
