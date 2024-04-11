@@ -331,6 +331,70 @@ const generateSalesReportPDF = async (req, res) => {
     const data = await generateData(startDate, endDate);
 
    
+    const pdfDocument = new pdfkit();
+    const pdfBuffer = await new Promise((resolve, reject) => {
+  pdfDocument.pipe(
+    fs.createWriteStream(`sales-report_${startDate}_${endDate}.pdf`)
+  );
+  
+  pdfDocument.font('Helvetica-Bold').fontSize(18);
+  pdfDocument.text(`Sales Report`, 50, 50);
+
+  // Subheading
+  pdfDocument.font('Helvetica').fontSize(12);
+  pdfDocument.text(`Report Duration ${startDate} - ${endDate}`, 50, 75);
+
+  pdfDocument.font('Helvetica-Bold').fontSize(12);
+
+  // Table header
+  pdfDocument.text('Sl No.', 50, 200);
+  pdfDocument.text('Order ID', 100, 200);
+  pdfDocument.text('Product', 200, 200);
+  pdfDocument.text('Order Date', 250, 200);
+  pdfDocument.text('Qty', 320, 200);
+  pdfDocument.text('Total Amount', 370, 200);
+  pdfDocument.text('Discounts P/C', 440, 200);
+  pdfDocument.text('Amount After Discount', 510, 200);
+  pdfDocument.text('Payment Method', 590, 200);
+
+  pdfDocument.font('Helvetica').fontSize(10);
+  let y = 230; // Y-coordinate for the first row
+
+  // Table data
+  data.allOrdersUnwinded.forEach((order, index) => {
+    pdfDocument.text(index + 1, 50, y);
+    pdfDocument.text(order.orderId, 100, y);
+    let productNameWords = order.orderProducts.prodDetails[0].productName.split(" ");
+    pdfDocument.text(productNameWords.slice(0, 3).join(" "), 200, y, { width: 50, align: 'left' });
+    pdfDocument.text(order.orderDate, 250, y);
+    pdfDocument.text(order.orderProducts.quantity, 320, y, { width: 50, align: 'right' });
+    pdfDocument.text("₹ " + (order.orderProducts.totalPriceWithoutOffer).toLocaleString(), 370, y, { width: 70, align: 'right' });
+    pdfDocument.text("-₹ " + (order.discountAmount).toLocaleString(), 440, y, { width: 70, align: 'right' });
+    pdfDocument.text("₹ " + (order.orderProducts.totalPrice).toLocaleString(), 510, y, { width: 80, align: 'right' });
+    pdfDocument.text(order.paymentMethod, 590, y);
+    y += 20; // Increment Y-coordinate for the next row
+  });
+
+ 
+
+      // pdfDocument.text(`Total Delivered Orders: ${}`, pdfDocument.page.width - 50 - pdfDocument.widthOfString(row.paymentMethod), y);
+      pdfDocument.text(`Total Delivered Orders: ${data.totalOrdersCount}`, pdfDocument.page.width - 50, y);
+      pdfDocument.text(`Total Amount Before Discounts: ₹ ${(data.totalPriceWithoutOfferSum).toLocaleString()}`, pdfDocument.page.width - 50, y);
+      pdfDocument.text(`Discounts: ₹ ${(data.offerDiscountSum).toLocaleString()}`, pdfDocument.page.width - 50, y);
+      pdfDocument.text(`Coupons: ₹ ${(data.couponDiscountSum).toLocaleString()}`, pdfDocument.page.width - 50, y);
+      pdfDocument.text(`Total Revenue After Discounts: ₹ ${((data.totalPriceSum) - (data.couponDiscountSum)).toLocaleString()}`, pdfDocument.page.width - 50, y);
+
+
+      pdfDocument.end();
+
+      pdfDocument.on("error", (err) => {
+        reject(err);
+      });
+
+      pdfDocument.on("finish", () => {
+        resolve(pdfDocument.stream.read());
+      });
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
