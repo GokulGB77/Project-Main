@@ -202,10 +202,8 @@
                                                                         <%=(item.totalPrice).toLocaleString() %>
                                                                     </p>
                                                                     <div class="product-details " >
-                                                                        <% if ( item.orderStatus==="pending" ) { %>
-                                                                            <span class="badge badge-pill badge-primary badge-sm" >
-                                                                                Soon To Be Delivered</span>
-                                                                            <% } else if (item.orderStatus==="cancelled" ) { %>
+                                                                        
+                                                                            <%   if (item.orderStatus==="cancelled" ) { %>
                                                                                 <span class="badge badge-pill badge-danger badge-sm">
                                                                                     Cancelled</span>
                                                                                 <% } else if (item.orderStatus==="delivered" ) { %>
@@ -224,19 +222,18 @@
                                                             </div>
                                                             <div class="actions ">
                                                                 <div class="button-container">
-                                                                    <% if( orderDetails.orderStatus=="pending" ||orderDetails.orderStatus=="order-shipped" ) {%>
-                                                                        <% if(!item.orderStatus || item.orderStatus=="pending" || item.orderStatus=="order-shipped" ){ %>
-                                                                        <button onclick="showPopupForCancelOne()"
-                                                                            data-value1="<%= item.product._id %>"
-                                                                            data-value2="<%= orderDetails._id %>"
-                                                                            class="cancel-button-button cancelOneBtn"
-                                                                            >Cancel this
-                                                                            product</button>
-                                                                            <% }%>
-                                                                        <% } %>
+                                                                    <% if ((orderDetails.orderStatus == "pending" || orderDetails.orderStatus == "order-shipped") &&
+                                                                    (!item.orderStatus || item.orderStatus != "return-requested" || item.orderStatus == "pending" || item.orderStatus == "order-shipped")) { %>
+                                                                <button onclick="showPopupForCancelOne()"
+                                                                        data-value1="<%= item.product._id %>"
+                                                                        data-value2="<%= orderDetails._id %>"
+                                                                        class="cancel-button-button cancelOneBtn">
+                                                                    Cancel this product
+                                                                </button>
+                                                            <% } %>
+                                                            
     
-                                                                            <% if( orderDetails.orderStatus=="delivered" ) {%>
-                                                                                <% if(item.orderStatus=="delivered" ){ %>
+                                                                            <% if( orderDetails.orderStatus=="cancelled"|| orderDetails.orderStatus!=="return-requested" && item.orderStatus!=="cancelled" && item.orderStatus != "return-requested" ) {%>
     
                                                                                 <button onclick="showPopupForReturnOne()" 
                                                                                     data-value1="<%= item.product._id %>"
@@ -246,7 +243,6 @@
                                                                                     this product</button>
     
                                                                                 <button>Leave product Review</button>
-                                                                                <% }%>
     
                                                                                 <% } %>
                                                                                     <!-- <% if(

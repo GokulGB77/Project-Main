@@ -13,7 +13,7 @@ const ordersSchema = new mongoose.Schema({
     priceWithoutOffer:{type:Number,required:true},
     totalPrice:{type:Number,required:true},
     totalPriceWithoutOffer:{type:Number,required:true},
-    orderStatus:{type:String,enum: ["pending","shipped","delivered", "cancelled",,"return-requested","returned", ],default:"pending",},
+    orderStatus:{type:String,enum: ["pending","payment-pending","shipped","delivered", "cancelled",,"return-requested","returned", ],default:"pending",},
     orderCancelReason: {type:String,},
     additionalReason:{type:String,},
 
@@ -22,7 +22,7 @@ const ordersSchema = new mongoose.Schema({
   orderTotal:{type:Number,required:true,default:0},
   orderDate:{type:String,required:true},
   orderTime:{type:String,required:true},
-  orderStatus:{type:String,enum: ["pending","shipped","delivered", "cancelled",,"return-requested","returned", ],default:"pending",required:true},
+  orderStatus:{type:String,enum: ["payment-pending","pending","shipped","delivered", "cancelled",,"return-requested","returned", ],default:"pending",},
   paymentMethod:{type:String,required:true},
   deliveryNotes:{type:String,required:false},
   orderCancelReason: {type:String,required:false},

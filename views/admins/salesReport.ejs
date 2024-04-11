@@ -186,7 +186,7 @@
                             </span>
                             <div class="text">
                                 <h6 class="mb-1 card-title">Total Revenue</h6>
-                                <span>&#8377 <%= revenue.toLocaleString() %></span>
+                                <span>&#8377 <%= (totalPriceSum-couponDiscountSum).toLocaleString() %></span>
                                 <span class="text-sm">
                                     Shipping fees are not included
                                 </span>
@@ -252,51 +252,51 @@
                             <h3 class="content-title card-title">Sales Report </h3>
                         </div>
                         <div>
-                            <a id="generate-pdf" class="btn btn-primary"><i
-                                    class="text-muted material-icons md-post_add"></i>Generate PDF</a>
+                            <a id="generate-pdf" class="btn btn-primary" onclick="generatePDF()"><i
+                                    class="text-muted material-icons md-post_add"
+                                    ></i>Generate PDF</a>
                             <a id="generate-excel" class="btn btn-primary"><i
                                     class="text-muted material-icons md-post_add"></i>Generate Excel</a>
-                            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#salesReportModal" id="generateReportBtn">
-                                        Generate
-                                    </button> -->
+                            
                         </div>
-                        <!-- <script>
-                            document.getElementById('generateReportBtn').addEventListener('click', function() {
-                                const tbody = document.querySelector('#salesReportModal tbody');
-                                tbody.innerHTML = "";
-                        
-                                if (filteredOrders.length > 0) {
-                                    let slNo = 1;
-                                    filteredOrders.forEach(order => {
-                                        const tr = document.createElement('tr');
-                                        tr.innerHTML = `
-                                            <td>${new Date(order.orderDate).toLocaleDateString()}</td>
-                                            <td>${order.orderNumber}</td>
-                                            <td>${order.userId}</td>
-                                          
-                                            <td>${order.status}</td>
-                                            <td>${order.payment}</td>
-                                            <td>${order.coupondiscount > 0 ? 'Yes' : 'No' }</td> 
-                                            <td>${order.coupondiscount > 0 ? '₹' + order.coupondiscount : '0'}</td>
-                                            <td>₹${order.totalAmount}</td>
-                                        `;
-                                        tbody.appendChild(tr);
-                                        slNo++;
-                                    });
-                                } else {
-                                    const tr = document.createElement('tr');
-                                    tr.innerHTML = `<td colspan="9">No sales data available</td>`;
-                                    tbody.appendChild(tr);
-                                }
-                            });
-                        </script> -->
 
+                        <script>
+                            const generatePdfButton = document.getElementById('generate-pdf');
+generatePdfButton.addEventListener('click', async (event) => {
+  event.preventDefault();
+  const startDate = document.getElementById('start_date').value;
+  const endDate = document.getElementById('end_date').value;
 
+  if (!startDate || !endDate) {
+    $.toast({
+      heading: 'Error',
+      text: 'Please select both start and end dates.',
+      icon: 'error',
+      position: "top-center",
+      hideAfter: 5000
+    });
+    return;
+  }
 
+  try {
+    const response = await fetch(`/admin/generate-sales-report-pdf`, {
+      method: 'POST',
+      body: JSON.stringify({ startDate, endDate }),
+      headers: { 'Content-Type': 'application/json' },
+    });
 
-
-
-
+    if (response.ok) {
+      const pdfBlob = await response.blob();
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, '_blank');
+    } else {
+      console.error('Error fetching sales report:', response.status);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+});
+                        </script>
                     </div>
                     <div class="row align-items-center">
                         <!-- <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
@@ -360,51 +360,55 @@
                                         <tr>
                                             <th scope="col" class="text-center">Sl No.</th>
                                             <th scope="col">Order ID</th>
-                                            <th scope="col">Billing Name</th>
+                                            <th scope="col">Product</th>
                                             <th scope="col">Order Date</th>
+                                            <th scope="col">Qty</th>
                                             <th scope="col">Total Amount</th>
                                             <th scope="col">Discounts P/C</th>
-                                            <th scope="col">Coupons Discount</th>
+                                            <th scope="col">Amount After Discount</th>
                                             <th scope="col">Payment Method</th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
-                                        <% ordersObj.forEach((order,index)=> { %>
+                                        <% allOrdersUnwinded.forEach((order,index)=> { %>
                                             <tr>
                                                 <td class="text-center">
                                                     <%= index+1 %>
                                                 </td>
                                                 <td><a href="#" class="fw-bold">#<%= order.orderId %></a> </td>
                                                 <td>
-                                                    <%= order.address.name%>
+                                                    <% var
+                                                        productNameWords=order.orderProducts.prodDetails[0].productName.split(" "); %>
+
+                                                    <%= productNameWords.slice(0, 3).join(" ") %>
                                                 </td>
                                                 <td>
                                                     <%= order.orderDate %>
                                                 </td>
-                                                <td>&#8377 <%= order.orderTotal.toLocaleString() %>
+                                                <td>
+                                                    <%= order.orderProducts.quantity %>
                                                 </td>
+                                               
+                                                <td>&#8377 <%= order.orderProducts.totalPriceWithoutOffer %>
+                                                </td>
+                                                
                                                 <!-- <td >
                                                     &#8377 <%= order.orderPriceWODiscount - order.orderTotal%>
                                                 </td> -->
                                                 <td>
-                                                    <% if ((order.orderPriceWODiscount - order.orderTotal)===0) { %>
+                                                    <% if ((order.orderProducts.totalPriceWithoutOffer - order.orderProducts.totalPrice)===0) { %>
                                                         nil
                                                         <% } else { %>
-                                                            ₹ <%= order.orderPriceWODiscount - order.orderTotal %>
+                                                            - ₹ <%= order.orderProducts.totalPriceWithoutOffer - order.orderProducts.totalPrice %>
                                                                 <% } %>
                                                 </td>
-
-                                                <td>
-                                                    <% if (order.couponDiscount===0) { %>
-                                                        nil
-                                                        <% } else { %>
-                                                            ₹ <%= order.couponDiscount %>
-                                                                <% } %>
+                                                <td>&#8377 <%= order.orderProducts.totalPrice %>
                                                 </td>
+                                                
 
                                                 <td>
-                                                    <% if(order.paymentMethod==="razorPay" ) {%>
+                                                    <% if(order.paymentMethod===" razorPay" ) {%>
 
                                                         Razorpay
                                                         <% } else { %>
@@ -421,45 +425,36 @@
                             </div>
                         </div> <!-- table-responsive end// -->
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-7">
 
                             </div>
-                            <div class="col-md-4" style="text-align: right; padding-right: 8%; padding-top: 3%;">
+                            <div class="col-md-5" style="text-align: right; padding-right: 8%; padding-top: 3%;">
                                 <div style="text-align: left;">
-                                    <p>Total Amount: &#8377 <span id="totalOrdersAmount">
-                                            <%= totalOrdersAmount.toLocaleString() %>
+                                    <p>Total Delivered Orders: <span id="totalOrdersCount">
+                                            <%= totalOrdersCount %>
                                         </span></p>
-                                    <hr>
-                                    <p>Average Order Amount:&#8377 <span id="averageOrderTotal">
-                                            <%= averageOrderTotal %>
-                                        </span></p>
-                                    <p>Coupons: &#8377 <span id="couponDiscountSum">
-                                            <%= couponDiscountSum.toLocaleString() %>
+                                    <p>Total Amount Before Discounts: &#8377 <span id="totalPriceWithoutOfferSum">
+                                            <%= totalPriceWithoutOfferSum.toLocaleString() %>
                                         </span></p>
                                     <p>Discounts: &#8377 <span id="offerDiscountSum">
                                             <%= offerDiscountSum.toLocaleString() %>
                                         </span></p>
+                                    <p>Coupons: &#8377 <span id="couponDiscountSum">
+                                            <%= couponDiscountSum.toLocaleString() %>
+                                        </span></p>
                                     <hr>
-                                    <p>Total Orders: <span id="totalOrdersCount">
-                                            <%= totalOrdersCount %>
+                                    <p>Total Revenue After Discounts: &#8377 <span id="totalPriceSum">
+                                            <%= (totalPriceSum-couponDiscountSum).toLocaleString() %>
                                         </span></p>
-                                    <p>Delivered Orders: <span id="numberOfDeliveredOrders">
-                                            <%= numberOfDeliveredOrders %>
-                                        </span></p>
-                                    <p>Pending Orders: <span id="numberOfpendingOrders">
-                                            <%= numberOfpendingOrders %>
-                                        </span></p>
-                                    <p>Cancelled Orders: <span id="numberOfcancelledOrders">
-                                            <%= numberOfcancelledOrders %>
-                                        </span></p>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- pdf/excel download -->
-                <script>
-                    document.getElementById('generate-pdf').addEventListener('click', function () {
+                <!-- <script>
+                    document.getElementById('generate-pdf1').addEventListener('click', function () {
                         // Get the content of the sales-data-report div
                         var content = document.getElementById('sales-data-report').innerHTML;
 
@@ -504,7 +499,7 @@
                     }
 
                     document.getElementById('generate-excel').addEventListener('click', excel);
-                </script>
+                </script> -->
 
                 <script>
                     function updateReportDuration() {
@@ -543,67 +538,102 @@
                         }
 
                         if (startDateInput.value && endDateInput.value) {
-                            reportDurationDiv.innerHTML = "Report Duration: " + startDateInput.value + " to " + endDateInput.value;
+                            reportDurationDiv.innerHTML = `Report Duration:${startDateInput.value} to ${endDateInput.value}`
                         } else {
-                            reportDurationDiv.innerHTML = "Report Duration:";
+                            reportDurationDiv.innerHTML = "";
                         }
                     }
                 </script>
-                <!-- <script>
-                    const startDateInputVal = document.getElementById('start_date');
-                    const endDateInputVal = document.getElementById('end_date');
-                    const generatePDFButton = document.getElementById('generate-pdf');
 
-                    generatePDFButton.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        if (startDateInputVal.value && endDateInputVal.value) {
-                            generatePDF();
-                        } else {
-                            $.toast({
-                                heading: 'Error',
-                                text: 'Please select both start and end dates.',
-                                icon: 'error',
-                                position: "top-center",
-                                hideAfter: 5000
+                <script>
+                    document.getElementById('generate-report').addEventListener('click', generateReport);
+
+                     generatePdfButton.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                if (startDateInput.value && endDateInput.value) {
+                                    generatePDF()
+                                } else {
+                                    $.toast({
+                                        heading: 'Error',
+                                        text: 'Please select both start and end dates.',
+                                        icon: 'error',
+                                        position: "top-center",
+                                        hideAfter: 5000
+                                    });
+                                }
+
                             });
-                        }
-                    });
 
-                    async function generatePDF() {
-                        const startDate = startDateInputVal.value;
-                        const endDate = endDateInputVal.value;
-                        const startDateObj = new Date(startDate);
-                        const endDateObj = new Date(endDate);
-
+                    async function generateReport() {
+                        const startDate = document.getElementById('start_date').value;
+                        const endDate = document.getElementById('end_date').value;
 
                         try {
-                            const response = await fetch('/admin/generate-pdf', {
+                            if(!startDate || !endDate){
+                                $.toast({
+                                        heading: 'Error',
+                                        text: 'Please select both start and end dates.',
+                                        icon: 'error',
+                                        position: "top-center",
+                                        hideAfter: 5000
+                                    });
+                            }
+                            const response = await fetch(`/admin/generate-sales-report`, {
                                 method: 'POST',
                                 body: JSON.stringify({ startDate, endDate }),
+
                                 headers: {
-                                    'Content-Type': 'application/json',
+                                    'Content-Type': 'application/json'
                                 },
                             });
-                            // if (response.ok) {
-                            //     const responseData = await response.json();
-                            //     window.location.href=(`/admin/generate-pdf?data=${responseData}`);
-                            // } else {
-                            //     console.error('Error generating sales report:', response.statusText);
-                            // }
 
+                            if (response.ok) {
+                                const data = await response.json();
+                                updateSalesReportTable(data);
+                                updateSummaryData(data);
+
+                            } else {
+                                console.error('Error fetching sales report:', response.status);
+                            }
                         } catch (error) {
-                            console.error('Error fetching sales report:', error);
+                            console.error('Error:', error);
                         }
                     }
 
-                    // function showModal(salesReportPDF, data) {
-                    //     const modal = document.getElementById(salesReportPDF);
-                    //     const reportDataElement = modal.querySelector('#reportData');
-                    //     reportDataElement.textContent = JSON.stringify(data);
-                    //     modal.style.display = 'block';
-                    // }
-                </script> -->
-                <script>
+
+
+
+                    function updateSalesReportTable(data) {
+                        const tbody = document.querySelector('#pdfTable tbody');
+                        tbody.innerHTML = '';
+
+                        data.allOrdersUnwinded.forEach((order, index) => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                      <td class="text-center">${index + 1}</td>
+                                      <td><a href="#" class="fw-bold">#${order.orderId}</a></td>
+                                      <td>${order.orderProducts.prodDetails[0].productName.split(' ').slice(0, 3).join(' ')}</td>
+                                      <td>${order.orderDate}</td>
+                                      <td>${order.orderProducts.quantity}</td>
+                                      <td>₹${order.orderProducts.totalPriceWithoutOffer}</td>
+                                      <td>${(order.orderProducts.totalPriceWithoutOffer - order.orderProducts.totalPrice) === 0 ? 'nil' : '- ₹' + (order.orderProducts.totalPriceWithoutOffer - order.orderProducts.totalPrice)}</td>
+                                      <td>₹${order.orderProducts.totalPrice}</td>
+                                      <td>${order.paymentMethod === 'razorPay' ? 'Razorpay' : 'COD'}</td>
+                                    `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+
+                    function updateSummaryData(data) {
+                        document.getElementById('totalOrdersCount').textContent = data.totalOrdersCount;
+                        document.getElementById('totalPriceWithoutOfferSum').textContent = data.totalPriceWithoutOfferSum.toLocaleString();
+                        document.getElementById('offerDiscountSum').textContent = data.offerDiscountSum.toLocaleString();
+                        document.getElementById('couponDiscountSum').textContent = data.couponDiscountSum.toLocaleString();
+                        document.getElementById('totalPriceSum').textContent = (data.totalPriceSum - data.couponDiscountSum).toLocaleString();
+                    }
+                </script>
+
+                <!-- <script>
                     const startDateInput = document.getElementById('start_date');
                     const endDateInput = document.getElementById('end_date');
                     // const sortBySelect = document.getElementById('sort');
@@ -629,9 +659,6 @@
                     async function updateTable() {
                         const startDate = startDateInput.value;
                         const endDate = endDateInput.value;
-                        const startDateObj = new Date(startDate);
-                        const endDateObj = new Date(endDate);
-
 
                         try {
                             const response = await fetch('/admin/generate-sales-report', {
@@ -644,26 +671,42 @@
 
                             if (response.ok) {
                                 const {
-                                    orders,
-                                    averageOrderTotal,
-                                    couponDiscountSum,
-                                    numberOfDeliveredOrders,
-                                    numberOfcancelledOrders,
-                                    numberOfpendingOrders,
-                                    offerDiscountSum,
+                                    allOrders,
+                                    allOrdersUnwinded,
+                                    allProducts,
+                                    totalPriceSum,
+                                    totalPriceWithoutOfferSum,
+                                    allCategories,
+                                    allUsers,
+                                    statuses,
+                                    ordersObj,
                                     totalOrdersAmount,
-                                    totalOrdersCount
+                                    offerDiscountSum,
+                                    totalOrdersCount,
+                                    numberOfDeliveredOrders,
+                                    couponDiscountSum,
+                                    startDate,
+                                    endDate,
                                 } = await response.json();
-                                updateTableBody(orders,
-                                    averageOrderTotal,
-                                    couponDiscountSum,
-                                    numberOfDeliveredOrders,
-                                    numberOfcancelledOrders,
-                                    numberOfpendingOrders,
-                                    offerDiscountSum,
+
+                                updateTableBody(
+                                    allOrders,
+                                    allOrdersUnwinded,
+                                    allProducts,
+                                    totalPriceSum,
+                                    totalPriceWithoutOfferSum,
+                                    allCategories,
+                                    allUsers,
+                                    statuses,
+                                    ordersObj,
                                     totalOrdersAmount,
-                                    totalOrdersCount);
-                                console.log(response)
+                                    offerDiscountSum,
+                                    totalOrdersCount,
+                                    numberOfDeliveredOrders,
+                                    couponDiscountSum,
+                                    startDate,
+                                    endDate
+                                );
                             } else {
                                 // Handle error response
                                 console.error('Error generating sales report:', response.status);
@@ -673,72 +716,60 @@
                         }
                     }
 
-                    function updateTableBody(orders,
-                                    averageOrderTotal,
-                                    couponDiscountSum,
-                                    numberOfDeliveredOrders,
-                                    numberOfcancelledOrders,
-                                    numberOfpendingOrders,
-                                    offerDiscountSum,
-                                    totalOrdersAmount,
-                                    totalOrdersCount) {
+                    function updateTableBody(
+                        allOrders,
+                        allOrdersUnwinded,
+                        allProducts,
+                        totalPriceSum,
+                        totalPriceWithoutOfferSum,
+                        allCategories,
+                        allUsers,
+                        statuses,
+                        ordersObj,
+                        totalOrdersAmount,
+                        offerDiscountSum,
+                        totalOrdersCount,
+                        numberOfDeliveredOrders,
+                        couponDiscountSum,
+                        startDate,
+                        endDate
+                    ) {
                         // Clear the existing table body
-                        // Select the span elements where the values need to be updated
-                        const totalOrdersAmountSpan = document.querySelector('#totalOrdersAmount');
-                        const averageOrderTotalSpan = document.querySelector('#averageOrderTotal');
-                        const couponDiscountSumSpan = document.querySelector('#couponDiscountSum');
-                        const offerDiscountSumSpan = document.querySelector('#offerDiscountSum');
-                        const totalOrdersCountSpan = document.querySelector('#totalOrdersCount');
-                        const numberOfDeliveredOrdersSpan = document.querySelector('#numberOfDeliveredOrders');
-                        const numberOfpendingOrdersSpan = document.querySelector('#numberOfpendingOrders');
-                        const numberOfcancelledOrdersSpan = document.querySelector('#numberOfcancelledOrders');
-
-                        // Update the text content of each span element with the updated values
-                        totalOrdersAmountSpan.textContent = totalOrdersAmount.toLocaleString();
-                        averageOrderTotalSpan.textContent = averageOrderTotal;
-                        couponDiscountSumSpan.textContent = couponDiscountSum.toLocaleString();
-                        offerDiscountSumSpan.textContent = offerDiscountSum.toLocaleString();
-                        totalOrdersCountSpan.textContent = totalOrdersCount;
-                        numberOfDeliveredOrdersSpan.textContent = numberOfDeliveredOrders;
-                        numberOfpendingOrdersSpan.textContent = numberOfpendingOrders;
-                        numberOfcancelledOrdersSpan.textContent = numberOfcancelledOrders;
                         tableBody.innerHTML = '';
 
                         // Iterate over the orders and add them to the table body
-                        orders.forEach((order, index) => {
+                        allOrdersUnwinded.forEach((order, index) => {
                             const row = document.createElement('tr');
-                            let couponDiscountHTML = '';
-                            if (order.couponDiscount === 0) {
-                                couponDiscountHTML = 'nil';
-                            } else {
-                                couponDiscountHTML = `₹ ${order.couponDiscount}`;
-                            }
 
                             let orderPriceWODiscountHTML = '';
-                            if ((order.orderPriceWODiscount - order.orderTotal) === 0) {
+                            if (order.orderProducts.totalPriceWithoutOffer - order.orderProducts.totalPrice === 0) {
                                 orderPriceWODiscountHTML = 'nil';
                             } else {
-                                orderPriceWODiscountHTML = `₹ ${order.orderPriceWODiscount - order.orderTotal}`;
+                                orderPriceWODiscountHTML = `₹ ${order.orderProducts.totalPriceWithoutOffer - order.orderProducts.totalPrice}`;
                             }
 
                             row.innerHTML = `
-                            <td class="text-center">${index + 1}</td>
-                            <td><a href="#" class="fw-bold">#${order.orderId}</a></td>
-                            <td>${order.address.name}</td>
-                            <td>${order.orderDate}</td>
-                            <td>₹ ${order.orderTotal.toLocaleString()}</td>
-                            <td> ${orderPriceWODiscountHTML}</td>
-                            <td >${couponDiscountHTML} </td>
-                            <td>
-                                ${order.paymentMethod === 'razorPay'
-                                    ? 'Razorpay'
-                                    : 'COD'
-                                }
-                            </td>
-                        `;
+                      <td class="text-center">${index + 1}</td>
+                      <td><a href="#" class="fw-bold">#${order.orderId}</a></td>
+                      <td>${order.orderProducts.prodDetails[0].productName}</td>
+                      <td>${order.orderDate}</td>
+                      <td>₹ ${order.orderProducts.totalPriceWithoutOffer.toLocaleString()}</td>
+                      <td>${orderPriceWODiscountHTML}</td>
+                      <td>₹ ${order.orderProducts.totalPrice.toLocaleString()}</td>
+                      <td>
+                        ${order.paymentMethod === 'razorPay' ? 'Razorpay' : 'COD'}
+                      </td>
+                    `;
 
                             tableBody.appendChild(row);
                         });
+
+                        // Update the text content of each span element with the updated values
+                        totalOrdersAmountSpan.textContent = (totalPriceSum - couponDiscountSum).toLocaleString();
+                        totalPriceWithoutOfferSumSpan.textContent = totalPriceWithoutOfferSum.toLocaleString();
+                        couponDiscountSumSpan.textContent = couponDiscountSum.toLocaleString();
+                        offerDiscountSumSpan.textContent = offerDiscountSum.toLocaleString();
+                        totalOrdersCountSpan.textContent = totalOrdersCount;
                     }
 
                     document.addEventListener('DOMContentLoaded', function () {
@@ -812,7 +843,7 @@
                     });
 
 
-                </script>
+                </script> -->
 
             </div>
 

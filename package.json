@@ -29,6 +29,7 @@
     "parser": "^0.1.4",
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
+    "pdfkit": "^0.15.0",
     "razorpay": "^2.9.2",
     "sharp": "^0.33.2",
     "simple-toast-messages": "^2.0.1",
