@@ -549,37 +549,34 @@
                                     </div>
                                 </div>
                                 <div class="payment-method">
-                                    <div class="pay-top sin-payment">
-                                        <input id="payment-method-3" class="input-radio" type="radio" value="cod"
+                                    <% if ((cart.cartTotal - cart.couponDiscount) < 5000){%>
+                                        <div class="pay-top sin-payment">
+                                            <input id="payment-method-3" class="input-radio" type="radio" value="cod"
+                                                 name="payment_method">
+                                            <label id="payment-method-3-label" for="payment-method-3">Cash on delivery </label>
+                                        </div>
+                                        <div class="pay-top sin-payment">
+                                            <input id="razorPay" class="input-radio" type="radio" value="razorPay"
                                             checked name="payment_method">
-                                        <label id="payment-method-3-label" for="payment-method-3">Cash on delivery </label>
-
-                                    </div>
-                                    <div class="pay-top sin-payment">
-                                        <input id="razorPay" class="input-radio" type="radio" value="razorPay"
-                                            name="payment_method">
-                                        <label for="razorPay"> Razor Pay </label>
-
-                                    </div>
-                                    <!-- <div class="pay-top sin-payment">
-                                        <input id="payment-method-2" class="input-radio" type="radio" value="cheque" name="payment_method">
-                                        <label for="payment-method-2">Check payments</label>
-                                        <div class="payment-box payment_method_bacs">
-                                            <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
+                                            <label for="razorPay"> Razor Pay </label>
+    
                                         </div>
-                                    </div> -->
+                                        <% } else { %>
+                                            <div class="pay-top sin-payment">
+                                                <input id="payment-method-3" class="input-radio" type="radio" value="cod" disabled
+                                                     name="payment_method">
+                                                <label id="payment-method-3-label" for="payment-method-3" aria-disabled="true" style="pointer-events:none">Cash on delivery </label>
+                                                <span class="text-danger small">COD is not available for orders above Rs 1000. </span>
 
-                                    <div class="pay-top sin-payment sin-payment-3">
-                                        <input id="payment-method-4" class="input-radio" type="radio" value="paypal"
-                                            name="payment_method">
-                                        <label for="payment-method-4">PayPal <img alt=""
-                                                src="/user/images/icon-img/payment.png"><a href="#">What is
-                                                PayPal?</a></label>
-                                        <div class="payment-box payment_method_bacs">
-                                            <p>Make your payment directly into our bank account. Please use your Order
-                                                ID as the payment reference.</p>
-                                        </div>
-                                    </div>
+                                            </div>
+                                            <div class="pay-top sin-payment">
+                                                <input id="razorPay" class="input-radio" type="radio" value="razorPay" checked
+                                                    name="payment_method">
+                                                <label for="razorPay"> Razor Pay </label>
+        
+                                            </div>
+                                          
+                                            <% } %>
                                 </div>
                             </div>
                             <div class="Place-order btn-hover">

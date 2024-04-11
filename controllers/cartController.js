@@ -316,6 +316,12 @@ const loadCheckout = async (req, res) => {
 
     const couponCode = cart.couponApplied
     const coupon = await Couponsdb.findOne({name:couponCode})
+
+    if (cart.cartTotal > 5000) {
+      req.session.disableCOD = true;
+  } else {
+      req.session.disableCOD = false;
+  }
     return res.render("checkout", { cart, userId, addresslist, cardId, coupon, coupons }); //delivery charge replaced
     // return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon, coupons });
   } catch (error) {
