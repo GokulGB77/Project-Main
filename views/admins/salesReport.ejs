@@ -252,20 +252,17 @@
                             <h3 class="content-title card-title">Sales Report </h3>
                         </div>
                         <div>
-                            <a id="generate-pdf" class="btn btn-primary" onclick="generatePDF()"><i
+                            <a id="generate-pdf" class="btn btn-primary" ><i
                                     class="text-muted material-icons md-post_add"
                                     ></i>Generate PDF</a>
                             <a id="generate-excel" class="btn btn-primary"><i
                                     class="text-muted material-icons md-post_add"></i>Generate Excel</a>
                             
                         </div>
-
                         <script>
                             const generatePdfButton = document.getElementById('generate-pdf');
-
                             generatePdfButton.addEventListener('click', async (event) => {
                                 event.preventDefault();
-
                                 const startDate = document.getElementById('start_date').value;
                                 const endDate = document.getElementById('end_date').value;
 
@@ -280,23 +277,23 @@
                                     return;
                                 }
 
-                                const controller = new AbortController();
-                                const timeout = setTimeout(() => controller.abort(), 10000); // 10 seconds
+                                //   const controller = new AbortController();
+                                //   const timeout = setTimeout(() => controller.abort(), 10000); // 10 seconds
 
                                 try {
                                     const response = await fetch(`/admin/generate-sales-report-pdf`, {
                                         method: 'POST',
                                         body: JSON.stringify({ startDate, endDate }),
-                                        headers: { 'Content-Type': 'application/json' },
-                                        signal: controller.signal,
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
                                     });
 
-                                    clearTimeout(timeout);
 
                                     if (response.ok) {
-                                        const pdfBlob = await response.blob();
-                                        const pdfUrl = URL.createObjectURL(pdfBlob);
-                                        window.open(pdfUrl, '_blank');
+                                        const blob = await response.blob();
+                                        const url = window.URL.createObjectURL(blob);
+                                        window.open(url, '_blank'); 
                                     } else {
                                         console.error('Error fetching sales report:', response.status);
                                     }
@@ -305,6 +302,53 @@
                                 }
                             });
                         </script>
+                        <!-- <script>
+                            const generatePdfButton = document.getElementById('generate-pdf');
+                            generatePdfButton.addEventListener('click', async (event) => {
+                                event.preventDefault();
+                                const startDate = document.getElementById('start_date').value;
+                                const endDate = document.getElementById('end_date').value;
+
+                                if (!startDate || !endDate) {
+                                    $.toast({
+                                        heading: 'Error',
+                                        text: 'Please select both start and end dates.',
+                                        icon: 'error',
+                                        position: "top-center",
+                                        hideAfter: 5000
+                                    });
+                                    return;
+                                }
+
+                                //   const controller = new AbortController();
+                                //   const timeout = setTimeout(() => controller.abort(), 10000); // 10 seconds
+
+                                try {
+                                    const response = await fetch(`/admin/generate-sales-report-pdf`, {
+                                        method: 'POST',
+                                        body: JSON.stringify({ startDate, endDate }),
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        signal: controller.signal,
+                                    });
+
+                                    clearTimeout(timeout);
+
+                                    if (response.ok) {
+                                        const { pdfFilePath } = await response.json();
+                                        // Construct the download URL
+                                        const downloadUrl = `/download?file=${pdfFilePath.replace(__dirname, '')}`;
+                                        // Open the download URL in a new tab
+                                        window.open(downloadUrl, '_blank');
+                                    } else {
+                                        console.error('Error fetching sales report:', response.status);
+                                    }
+                                } catch (error) {
+                                    console.error('Error:', error);
+                                }
+                            });
+                        </script> -->
                     </div>
                     <div class="row align-items-center">
                         <!-- <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
@@ -461,14 +505,8 @@
                     </div>
                 </div>
                 <!-- pdf/excel download -->
-                <!-- <script>
-                    document.getElementById('generate-pdf1').addEventListener('click', function () {
-                        // Get the content of the sales-data-report div
-                        var content = document.getElementById('sales-data-report').innerHTML;
-
-                        // Generate PDF
-                        html2pdf().from(content).save('sales_report.pdf');
-                    });
+                 <script>
+                   
 
                     function excel() {
                         /* Retrieve table data */
@@ -507,7 +545,7 @@
                     }
 
                     document.getElementById('generate-excel').addEventListener('click', excel);
-                </script> -->
+                </script> 
 
                 <script>
                     function updateReportDuration() {
@@ -557,9 +595,11 @@
                     document.getElementById('generate-report').addEventListener('click', generateReport);
 
                      generatePdfButton.addEventListener('click', (event) => {
+                        let startDateInput = document.getElementById("start_date");
+                        let endDateInput = document.getElementById("end_date");
                                 event.preventDefault();
                                 if (startDateInput.value && endDateInput.value) {
-                                    generatePDF()
+                                    // generatePDF()
                                 } else {
                                     $.toast({
                                         heading: 'Error',
