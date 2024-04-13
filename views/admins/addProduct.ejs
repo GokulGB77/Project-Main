@@ -5,10 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Products | Add Product</title>
-  <!-- Favicon -->
+    <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/admin/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/admin/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="/admin/cropperjs/cropper.css" rel="stylesheet" type="text/css" />
+
+
+    <!-- Cropper js -->
+    <!-- <link href="https://unpkg.com/cropperjs/dist/cropper.css" rel="stylesheet" /> -->
 
     <style>
         .preview-image {
@@ -16,7 +21,7 @@
             height: auto;
             margin-right: 10px;
         }
-    
+
         .close-button {
             position: absolute;
             top: 5px;
@@ -27,13 +32,13 @@
             font-size: 20px;
             cursor: pointer;
         }
-    
+
         .image-container {
             position: relative;
             display: inline-block;
             margin-bottom: 10px;
         }
-    
+
         .close-button {
             border: 1px solid black;
             /* padding: 3px; */
@@ -53,7 +58,8 @@
                 <img src="/admin/imgs/theme/logo.png" class="logo" alt="Admin Dashboard">
             </a>
             <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
             </div>
         </div>
         <nav>
@@ -73,40 +79,43 @@
                         <span class="text">User Details</span>
                     </a>
                 </li>
-                
+
                 <li class="menu-item ">
-                    <a class="menu-link active" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
+                    <a class="menu-link active" href="/admin/products"> <i
+                            class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-category"></i>
                         <span class="text">Categories</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
-                  
+
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/coupons?page=1"> <i class="icon material-icons material-icons md-card_giftcard"></i>
+                    <a class="menu-link" href="/admin/coupons?page=1"> <i
+                            class="icon material-icons material-icons md-card_giftcard"></i>
                         <span class="text">Coupons</span>
                     </a>
-                  
+
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/offers?page=1"> <i class="icon material-icons material-icons md-local_offer"></i>
+                    <a class="menu-link" href="/admin/offers?page=1"> <i
+                            class="icon material-icons material-icons md-local_offer"></i>
                         <span class="text">Offers</span>
                     </a>
-                  
+
                 </li>
-<!--                 
+                <!--                 
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
                         <span class="text">Sales</span>
@@ -132,7 +141,7 @@
                   -->
             </ul>
             <hr>
-            <ul class="menu-aside">     
+            <ul class="menu-aside">
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/logout"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Logout</span>
@@ -149,7 +158,8 @@
                 <form class="searchform">
                     <div class="input-group">
                         <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                        <button class="btn btn-light bg" type="button"> <i
+                                class="material-icons md-search"></i></button>
                     </div>
                     <datalist id="search_terms">
                         <option value="Products">
@@ -160,7 +170,8 @@
                 </form>
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
+                        class="material-icons md-apps"></i> </button>
                 <ul class="nav">
                     <li class="nav-item">
                         <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
@@ -193,10 +204,11 @@
                         <div class="content-header">
                             <h2 class="content-title">Add New Product</h2>
                             <div>
-                                <button class="btn btn-md rounded font-sm hover-up"  onclick="submitForm()" id="addProduct" >Add Product</button>
+                                <button class="btn btn-md rounded font-sm hover-up" onclick="submitForm()"
+                                    id="addProduct">Add Product</button>
 
                             </div>
-                            
+
                         </div>
                         <p id="main-error" class="errorMessage" style="color: red;"></p>
                     </div>
@@ -205,28 +217,31 @@
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="productName" class="form-label">Product Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="productName" name="productName"
-                                        maxlength="100" 
-                                        oninput="validateName()" onblur="trim()" required>
+                                    <input type="text" placeholder="Type here" class="form-control" id="productName"
+                                        name="productName" maxlength="100" oninput="validateName()" onblur="trim()"
+                                        required>
                                     <p id="productNameError" class="error-message" style="color: red;"></p>
-                            
+
                                 </div>
                                 <div class="row gx-3">
                                     <div class="col-md-6 mb-3">
                                         <label for="stock" class="form-label">Stock Quantity</label>
-                                        <input type="text" placeholder="Type here" class="form-control" maxlength="4" id="stock" name="stock"
-                                            pattern="[0-9]+" title="Enter a valid Quantity (non-negative integer)" required>
+                                        <input type="text" placeholder="Type here" class="form-control" maxlength="4"
+                                            id="stock" name="stock" pattern="[0-9]+"
+                                            title="Enter a valid Quantity (non-negative integer)" required>
                                         <p id="productQuantityError" class="error-message" style="color: red;"></p>
                                     </div>
-                                    
+
                                     <div class="col-md-6  mb-3">
                                         <label class="form-label">Tags</label>
-                                        <input type="text" placeholder="Enter tags separated by commas" name="productTags" id="productTags"
-                                            class="form-control" pattern="^[a-zA-Z,]+$" title="Only alphabets and commas are allowed" required>
+                                        <input type="text" placeholder="Enter tags separated by commas"
+                                            name="productTags" id="productTags" class="form-control"
+                                            pattern="^[a-zA-Z,]+$" title="Only alphabets and commas are allowed"
+                                            required>
                                         <p id="productTagsError" class="error-message" style="color: red;"></p>
-                            
+
                                     </div>
-                            
+
                                 </div>
                             </div>
                         </div> <!-- card end// -->
@@ -234,17 +249,19 @@
                             <div class="card-body">
                                 <div>
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" id="productDetails"  name="productDetails" required rows="4" 
-                                    pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$"
-                                    title="Description should not start or end with spaces, contain only one space between words, and consist of alphabets, numbers, and special characters (-,.:/+&%\(){}). It cannot be composed solely of special characters or numbers."></textarea>
+                                    <textarea placeholder="Type here" class="form-control" id="productDetails"
+                                        name="productDetails" required rows="4"
+                                        pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$"
+                                        title="Description should not start or end with spaces, contain only one space between words, and consist of alphabets, numbers, and special characters (-,.:/+&%\(){}). It cannot be composed solely of special characters or numbers."></textarea>
                                 </div>
                             </div>
                             <div class="card-body">
                                 <div>
                                     <label class="form-label">Info</label>
-                                    <textarea placeholder="Type here" class="form-control" id="productInfo"  name="productInfo" required rows="4" 
-                                    pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$"
-                                    title="Enter Valid Info"></textarea>
+                                    <textarea placeholder="Type here" class="form-control" id="productInfo"
+                                        name="productInfo" required rows="4"
+                                        pattern="^(?!^[^\w\s]+$)[A-Za-z0-9\s\-.:/+&%\(\)]+$"
+                                        title="Enter Valid Info"></textarea>
                                 </div>
                             </div>
                         </div> <!-- card end// -->
@@ -252,42 +269,85 @@
                             <div class="card-body">
                                 <div>
                                     <label class="form-label">Images</label>
-                                    <input class="form-control" type="file" id="imageUpload" name="productImage" multiple required>
+                                    <input class="form-control" type="file" id="imageUpload" name="productImage"
+                                        multiple required>
                                 </div>
 
                                 <div id="imagePreview"></div>
+
+                                <div id="cropper" style="display: none;">
+                                    <img id="cropperImage" src="" alt="Cropper Image">
+                                    <button class="btn btn-primary" id="cropButton">Crop</button>
+                                </div>
                             </div>
                         </div> <!-- card end// -->
-                        
-                        
+                        <script>
+                            import Cropper from 'cropperjs';
+                            import 'cropperjs/dist/cropper.css';
+                            const imageInput = document.getElementById('imageUpload');
+                            const imagePreviewContainer = document.getElementById('imagePreview');
+                            const cropperContainer = document.getElementById('cropper');
+                            const cropperImage = document.getElementById('cropperImage');
+                            const cropButton = document.getElementById('cropButton');
+
+                            let cropper;
+
+                            imageInput.addEventListener('change', (event) => {
+                                const file = event.target.files[0];
+                                const imageUrl = URL.createObjectURL(file);
+
+                                cropperImage.src = imageUrl;
+                                cropperContainer.style.display = 'block';
+
+                                cropper = new Cropper(cropperImage, {
+                                    aspectRatio: 16 / 9,
+                                    guides: true,
+                                    viewMode: 2,
+                                });
+                            });
+
+                            cropButton.addEventListener('click', () => {
+                                const croppedCanvas = cropper.getCroppedCanvas();
+                                const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+
+                                // Now, you can upload the cropped image to the server
+                                // or do whatever you need to do with the cropped image
+                                console.log(croppedImage);
+
+                                // Reset the cropper
+                                cropper.destroy();
+                                cropperContainer.style.display = 'none';
+                            });
+                        </script>
                     </div>
                     <div class="col-lg-3">
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice" name="productPrice" 
-                                    pattern="^(?!0+(\.0+)?$)\d+(\.\d{1,2})?$" 
-                                    title="Please enter a valid price (e.g., 10 or 10.99)" 
-                                    required>
+                                    <input type="text" placeholder="Type here" class="form-control" id="productPrice"
+                                        name="productPrice" pattern="^(?!0+(\.0+)?$)\d+(\.\d{1,2})?$"
+                                        title="Please enter a valid price (e.g., 10 or 10.99)" required>
                                     <p id="productPriceError" class="error-message" style="color: red;"></p>
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label" >Status</label>
+                                    <label class="form-label">Status</label>
                                     <select class="form-select" name="status" id="status" required>
                                         <option value="1">Published</option>
                                         <option value="0">Draft</option>
                                     </select>
                                 </div>
-                                
+
                                 <hr>
                                 <h5 class="mb-3">Categories</h5>
                                 <div class="mb-4">
                                     <select class="form-select" name="productCategory" id="productCategory" required>
-                                        <% categories.forEach(category => { %>
-                                            <option value="<%=category._id %>"><%=category.categoryName %></option>
-                                          <% }); %>
-                                        
+                                        <% categories.forEach(category=> { %>
+                                            <option value="<%=category._id %>">
+                                                <%=category.categoryName %>
+                                            </option>
+                                            <% }); %>
+
                                     </select>
                                 </div>
                             </div>
@@ -320,7 +380,10 @@
                             closeButton.textContent = "X";
                             closeButton.classList.add("close-button");
                             closeButton.addEventListener("click", function () {
+                                // Remove both the image preview and the uploaded image
                                 imagePreview.removeChild(imageContainer);
+                                // Remove the uploaded image
+                                URL.revokeObjectURL(e.target.result);
                             });
 
                             const imageContainer = document.createElement("div");
@@ -331,16 +394,17 @@
                             imagePreview.appendChild(imageContainer);
                         };
 
+
                         reader.readAsDataURL(file);
                     }
                 });
             });
         </script>
-        
-        
+
+
 
         <script>
-            function trim(){
+            function trim() {
                 let name = document.getElementById('productName').value;
                 const productNameError = document.getElementById('productNameError');
                 name = name.trim();
@@ -388,23 +452,23 @@
                 }
                 return value
             }
-            // function validateQty() {
-            //     console.log("validating qty");
-            //     let quantity = document.getElementById('stock').value.trim(); // Remove leading and trailing spaces
-            //     const productQuantityError = document.getElementById('productQuantityError');
-            //     let value = false;
+            function validateQty() {
+                console.log("validating qty");
+                let quantity = document.getElementById('stock').value.trim(); // Remove leading and trailing spaces
+                const productQuantityError = document.getElementById('productQuantityError');
+                let value = false;
 
-            //     // Condition: Should be a non-negative number, contain only digits, and not contain "-"
-            //     if (!/^\d+$/.test(quantity) || quantity.includes("-")) {
-            //         productQuantityError.textContent = 'Enter a valid Quantity';
-            //         console.log("Validd qtyyyyyyyyyyyyyy");
-            //     } else {
-            //         productQuantityError.textContent = ''; // Remove the error message
-            //         console.log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
-            //         value = true;
-            //     }
-            //     return value;
-            // }
+                // Condition: Should be a non-negative number, contain only digits, and not contain "-"
+                if (!/^\d+$/.test(quantity) || quantity.includes("-")) {
+                    productQuantityError.textContent = 'Enter a valid Quantity';
+                    console.log("Validd qtyyyyyyyyyyyyyy");
+                } else {
+                    productQuantityError.textContent = ''; // Remove the error message
+                    console.log("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
+                    value = true;
+                }
+                return value;
+            }
 
 
 
@@ -414,10 +478,10 @@
         <script>
             //Add the same to the edit product page also
             function submitForm() {
-               
-                if (validateName() ){
+
+                if (validateName()) {
                     console.log("Hellddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddo");
-                    
+
 
                     document.getElementById('addProduct').submit();
 
@@ -428,25 +492,27 @@
                 }
             }
         </script>
-        
-       <footer >
-     
-      </footer>
-      </main>
-      
-      <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
-      <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
-      <script src="/admin/js/vendors/select2.min.js"></script>
-      <script src="/admin/js/vendors/perfect-scrollbar.js"></script>
-      <script src="/admin/js/vendors/jquery.fullscreen.min.js"></script>
-      <script src="/admin/js/vendors/chart.js"></script>
-      <!-- Main Script -->
-      <script src="/admin/js/main.js" type="text/javascript"></script>
-      <script src="/admin/js/custom-chart.js" type="text/javascript"></script>
-      
-     
-      
-      
-      </body>
-      
-      </html>
+
+        <footer>
+
+        </footer>
+    </main>
+
+    <script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/admin/js/vendors/select2.min.js"></script>
+    <script src="/admin/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/admin/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/admin/js/vendors/chart.js"></script>
+    <!-- Main Script -->
+    <script src="/admin/js/main.js" type="text/javascript"></script>
+    <script src="/admin/js/custom-chart.js" type="text/javascript"></script>
+
+    <script src="/admin/cropperjs/cropper.js"></script>
+
+
+
+
+</body>
+
+</html>

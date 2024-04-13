@@ -50,6 +50,7 @@ userRoute.use(session({
 userRoute.set('view engine','ejs');
 userRoute.set('views','./views/users')
 
+
 userRoute.get("*",auth.isUser)
 
 userRoute.get('/',userController.loadHomePage);

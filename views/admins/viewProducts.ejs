@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE HTML>
 <html lang="en">
 
@@ -7,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard</title>
-  <!-- Favicon -->
+    <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/admin/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/admin/css/main.css" rel="stylesheet" type="text/css" />
@@ -23,7 +21,8 @@
                 <img src="/admin/imgs/theme/logo.png" class="logo" alt="Admin Dashboard">
             </a>
             <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
             </div>
         </div>
         <nav>
@@ -47,35 +46,37 @@
                     <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-category"></i>
                         <span class="text">Categories</span>
                     </a>
-                   
+
                 </li>
-                
+
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
-                  
+
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/coupons?page=1"> <i class="icon material-icons material-icons md-card_giftcard"></i>
+                    <a class="menu-link" href="/admin/coupons?page=1"> <i
+                            class="icon material-icons material-icons md-card_giftcard"></i>
                         <span class="text">Coupons</span>
                     </a>
-                  
+
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="/admin/offers?page=1"> <i class="icon material-icons material-icons md-local_offer"></i>
+                    <a class="menu-link" href="/admin/offers?page=1"> <i
+                            class="icon material-icons material-icons md-local_offer"></i>
                         <span class="text">Offers</span>
                     </a>
-                  
+
                 </li>
-<!--                 
+                <!--                 
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
                         <span class="text">Sales</span>
@@ -101,7 +102,7 @@
                   -->
             </ul>
             <hr>
-            <ul class="menu-aside">     
+            <ul class="menu-aside">
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/logout"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Logout</span>
@@ -279,53 +280,82 @@
                                             <!--Edit button in drop down-->
 
                                             <% if (products[i].status===1) { %>
-                                                <a class="dropdown-item text-danger"
+                                                <a class="dropdown-item text-danger" id="archiveBtn<%=i%>"
                                                     href="/admin/products/unarchive-product?id=<%= products[i]._id %>&page=<%= currentPage  %>">Archive</a>
                                                 <% } else { %>
                                                     <a class="dropdown-item text-success"
                                                         href="/admin/products/archive-product?id=<%= products[i]._id %>&page=<%= currentPage %>">Unarchive</a>
                                                     <% } %>
                                                         <div class="dropdown-divider"></div>
-                                                       
+
 
                                         </div>
                                     </div> <!-- dropdown //end -->
                                 </div>
                             </div> <!-- row .// -->
                         </article> <!-- itemlist .// -->
+                        <!-- <script>
+                            // Assuming you have the product ID and currentPage available
+                            const productIds = document.querySelectorAll('[id^="archiveBtn"]');
+                            productIds.forEach((btn, index) => {
+                                const productId = btn.getAttribute('data-product-id');
+                                const currentPage = '<%= currentPage %>';
+                        
+                                // Constructing the URL for the fetch request
+                                const url = `/admin/products/unarchive-product?id=${productId}&page=${currentPage}`;
+                                btn.addEventListener("click", async function (event) {
+                                    event.preventDefault();
+                        
+                                    try {
+                                        const response = await fetch(url); // Removed unnecessary options
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        // Handle successful response here
+                                        location.reload(); // Reload the page after a successful archive/unarchive
+                                    } catch (error) {
+                                        // Handle errors here
+                                        console.error('There was a problem with the fetch operation:', error);
+                                    }
+                                });
+                            });
+                        </script> -->
                         <% } %>
                 </div> <!-- card-body end// -->
 
             </div> <!-- card end// -->
             <div class="pagination-area mt-30 mb-50">
                 <nav aria-label="Page navigation example">
-                  <ul class="pagination justify-content-start">
-                    <% if (currentPage > 1) { %>
-                    <li class="page-item">
-                      <a class="page-link" href="#" data-page="<%= currentPage - 1 %>" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                      </a>
-                    </li>
-                    <% } %>
-              
-                    <% for (let i = 1; i <= totalPages; i++) { %>
-                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-                      <a class="page-link" href="#" data-page="<%= i %>"><%= i %></a>
-                    </li>
-                    <% } %>
-              
-                    <% if (currentPage < totalPages) { %>
-                    <li class="page-item">
-                      <a class="page-link" href="#" data-page="<%= currentPage + 1 %>" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                      </a>
-                    </li>
-                    <% } %>
-                  </ul>
+                    <ul class="pagination justify-content-start">
+                        <% if (currentPage> 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="#" data-page="<%= currentPage - 1 %>" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <% } %>
+
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                        <a class="page-link" href="#" data-page="<%= i %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                    <% } %>
+
+                                        <% if (currentPage < totalPages) { %>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#" data-page="<%= currentPage + 1 %>"
+                                                    aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+                    </ul>
                 </nav>
-              </div>
+            </div>
         </section> <!-- content-main end// -->
-       
+
         <script>
             const paginationLinks = document.querySelectorAll('.pagination .page-link');
             paginationLinks.forEach((link) => {
