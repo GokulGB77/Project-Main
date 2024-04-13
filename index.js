@@ -4,12 +4,10 @@ const bodyParser = require("body-parser");
 // const { v4:uuidv4 } = require('uuid');  
 const nocache = require("nocache")
 const flash = require('connect-flash');
-
-
-
 const app = express();
-
 const cookieParser = require('cookie-parser');
+
+
 
 // Middleware
 app.use(cookieParser());

@@ -15,19 +15,18 @@ const bodyParser = require('body-parser');
 
 
 
-// Parse cookies before other middleware
 userRoute.use(cookieParser());
-// userRoute.use(auth.attachTokenToLocals); // Use the middleware
 userRoute.use(bodyParser.json());
 
 const passport = require('passport'); 
-// const cookieSession = require('cookie-session'); 
-// require("../services/passport"); 
-// userRoute.use(cookieSession({ 
-//   name: 'google-auth-session', 
-//   keys: ['key1', 'key2'] 
-// })); 
+const cookieSession = require('cookie-session'); 
+require("../services/passport"); 
+userRoute.use(cookieSession({ 
+  name: 'google-auth-session', 
+  keys: ['key1', 'key2'] 
+})); 
 userRoute.use(passport.initialize());
+
 
 
 
@@ -55,24 +54,24 @@ userRoute.get("*",auth.isUser)
 
 userRoute.get('/',userController.loadHomePage);
 
-userRoute.get('/auth' , passport.authenticate('google', { scope: 
-  [ 'email', 'profile' ] 
-}));
-// Auth Callback 
-userRoute.get( '/auth/callback', 
-  passport.authenticate( 'google', { 
-      successRedirect: '/auth/callback/success', 
-      failureRedirect: '/auth/callback/failure'
-})); 
-// Success  
-userRoute.get('/auth/callback/success' , (req , res) => { 
-  if(!req.user) 
-      res.redirect('/auth/callback/failure'); 
-  res.send("Welcome " + req.user.email); 
-}); 
+// userRoute.get('/auth' , passport.authenticate('google', { scope: 
+//   [ 'email', 'profile' ] 
+// }));
+// // Auth Callback 
+// userRoute.get( '/auth/callback', 
+//   passport.authenticate( 'google', { 
+//       successRedirect: '/auth/callback/success', 
+//       failureRedirect: '/auth/callback/failure'
+// })); 
+// // Success  
+// userRoute.get('/auth/callback/success' , (req , res) => { 
+//   if(!req.user) 
+//       res.redirect('/auth/callback/failure'); 
+//   res.send("Welcome " + req.user.email); 
+// }); 
 
-// failure 
-userRoute.get('/auth/callback/failure' ,userController.registerUserGoogle) 
+// // failure 
+// userRoute.get('/auth/callback/failure' ,userController.registerUserGoogle) 
 
 userRoute.get('/register', userController.loadRegister);
 userRoute.post('/register' ,userController.intialRegisterUser);
