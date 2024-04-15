@@ -153,7 +153,7 @@ const paymentOption = async (req, res) => {
     req.session.cart = cart;
     req.session.orderAddress = orderAddress;
     req.session.orderProducts = orderProducts;
-    req.session.save()
+    // req.session.save()
 
     for (const cartProduct of cart.cartProducts) {
       const product = cartProduct.product;

@@ -25,6 +25,7 @@ const ordersSchema = new mongoose.Schema({
   orderStatus:{type:String,enum: ["payment-pending","pending","shipped","delivered", "cancelled",,"return-requested","returned", ],default:"pending",},
   paymentMethod:{type:String,required:true},
   deliveryNotes:{type:String,required:false},
+  deliveryCharge:{type:String,required:false},
   orderCancelReason: {type:String,required:false},
   additionalReason:{type:String,required:false},
   adminNotes:{type:String,required:false,},
