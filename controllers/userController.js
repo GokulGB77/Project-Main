@@ -325,6 +325,8 @@ const loginUser = async (req, res) => {
   }
 }
 
+
+
 const loadResetPass = async (req, res) => {
   try {
     const userId = res.locals.currentUserId ? res.locals.currentUserId._id : null;
@@ -335,6 +337,22 @@ const loadResetPass = async (req, res) => {
   }
 }
 
+const findUser = async (req,res) => {
+  try {
+    const email = req.body.email;
+    console.log("Email:", email)
+    const user = await Userdb.findOne({ email: email });
+    if (!user) {
+      throw new Error("User Not Found")
+      // return res.status(404).json({errorMessage:"User Not Found"})
+    }
+    return res.status(200)
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ errorMessage: error.message });
+
+  }
+}
 const verifyEmailAndSendOtp = async (req, res) => {
   try {
     const email = req.body.email;
@@ -355,7 +373,7 @@ const verifyEmailAndSendOtp = async (req, res) => {
       otp: OTP,
       otpExpiration: otpExpirationTime,
     }
-    req.session.save()
+    // req.session.save()
     console.log("tempDetails:", req.session.tempDetails)
     if (!req.session.tempDetails) {
       throw new Error("Saving to session failed")
@@ -484,7 +502,8 @@ const loadProfile = async (req, res) => {
   try {
     // console.log("User entered User profile");
     const token = req.cookies.jwt;
-    const currentUser = res.locals.currentUser;
+    // const currentUser = res.locals.currentUser;
+    const currentUser = req.session.currentUser;
     const userId = currentUser._id;
 
     // Check if the user has a wallet, if not, create one
@@ -657,7 +676,7 @@ const changePassword = async (req, res) => {
     }
     const samePassword = await argon2.verify(isUser.password, newPwd)
     if (samePassword) {
-      return res.redirect("/profile?selected=change-password&samepass=true")
+      return res.redirect("/profile?samepass=true#change-password")
 
     }
     // Verify if the current password matches the user's password
@@ -665,7 +684,7 @@ const changePassword = async (req, res) => {
     console.log("Passwrod matched with existing password:");
 
     if (!isPasswordMatch) {
-      return res.redirect("/profile?selected=change-password&currentpwd=false")
+      return res.redirect("//profile?currentpwd=false#change-password")
     }
 
     // Hash the new password
@@ -710,6 +729,7 @@ module.exports = {
   loadRegister,
   loadLogin,
   loadResetPass,
+  findUser,
   verifyEmailAndSendOtp,
   verifyOtpAndLoadPassInput,
   submitNewPass,

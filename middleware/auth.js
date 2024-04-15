@@ -62,6 +62,8 @@ const isUser = async (req, res, next) => {
             if (user.status === 1) {
               res.locals.currentUser = user;
               res.locals.currentUserId = user._id;
+              req.session.currentUser = user;
+              req.session.currentUserId = user._id;
               req.session.save();
               next(); // Proceed to the next middleware
             } else {

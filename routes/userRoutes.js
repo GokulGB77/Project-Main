@@ -82,6 +82,7 @@ userRoute.get('/resend-otp' ,userController.resendOtp);
 
 userRoute.get('/login',userController.loadLogin);
 userRoute.post('/login',userController.loginUser)
+userRoute.post('/find-user',userController.findUser)
 userRoute.get('/reset-password-email',userController.loadResetPass);
 userRoute.post('/reset-password-email',userController.verifyEmailAndSendOtp);
 userRoute.post('/verify-reset-password-otp',userController.verifyOtpAndLoadPassInput);
