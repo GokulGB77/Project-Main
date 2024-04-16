@@ -2,7 +2,7 @@ const Userdb = require("../models/userModel")
 const Productsdb = require("../models/productsModel")
 const Categoriesdb = require("../models/categoriesModel");
 const sharp = require('sharp'); // Import sharp for image cropping
-
+const path=require('path')
 
 
 
@@ -110,12 +110,27 @@ const loadAddProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const uploadedImages = req.files.map((file) => file.filename);
+    // const uploadedImages = req.files.map((file) => file.filename);
 
-    const removedImages = req.body.removeImage || [];
+    // const removedImages = req.body.removeImage || [];
+    // const imagesToKeep = uploadedImages.filter((image) => !removedImages.includes(image));
+    const fileNames = req.files.map(file=>file.filename)
 
-    const imagesToKeep = uploadedImages.filter((image) => !removedImages.includes(image));
-
+    let image = []
+         
+      for(let file of req.files){
+        const randomInteger = Math.floor(Math.random() * 20000001)
+    
+        const outputPath1=path.join(__dirname,"../public/productAssets/","crop"+file.filename)
+        const outputPath2 = "crop"+file.filename
+        console.log("imgPath",outputPath1);
+        const croppedImage = await sharp(file.path)
+        .resize(1000,1000,{
+            fit:"fill",
+        })  
+        .toFile(outputPath1)
+         image.push(outputPath2)
+      }
     let productTags;
     if (req.body.productTags) {
       productTags = req.body.productTags.split(",").map((tag) => tag.trim());
@@ -126,7 +141,7 @@ const addProduct = async (req, res) => {
     const newProduct = new Productsdb({
       productName: req.body.productName,
       stock: req.body.stock,
-      images: imagesToKeep, // Only save the images that are not removed
+      images: image , // Only save the images that are not removed
       productDetails: req.body.productDetails,
       productInfo: req.body.productInfo,
       productPrice: req.body.productPrice,
