@@ -117,14 +117,14 @@ const paymentOption = async (req, res) => {
     const userDetails = await Userdb.findById(userId);
 
     const userName = userDetails.name;
-    console.log("userName:", userName)
+    // console.log("userName:", userName)
     const userEmail = userDetails.email;
     const userMobile = userDetails.mobile;
     const { selectedAddress, selectedPaymentMethod, deliveryNotes, cartId } = req.body;
 
 
 
-    console.log("paymentOption(fn):session selectedPaymentMethod in payment:", selectedPaymentMethod);
+    // console.log("paymentOption(fn):session selectedPaymentMethod in payment:", selectedPaymentMethod);
     console.log("paymentOption(fn):session address in payment:", selectedAddress);
     const cart = await Cartdb.findOne({ _id: cartId, user: userId }).populate("cartProducts.product");
     if (!cart) {
@@ -153,23 +153,23 @@ const paymentOption = async (req, res) => {
     req.session.cart = cart;
     req.session.orderAddress = orderAddress;
     req.session.orderProducts = orderProducts;
-    // req.session.save()
+    req.session.save()
 
     for (const cartProduct of cart.cartProducts) {
       const product = cartProduct.product;
-      console.log("paymentOption(fn):Checking availability of stock");
+      // console.log("paymentOption(fn):Checking availability of stock");
       // Check if the quantity in the cart exceeds the available stock
       if (cartProduct.quantity > product.stock) {
         console.log("paymentOption(fn):------------------Checked false for availability of stock");
         return res.status(405).json({ error: `The requested quantity (${cartProduct.quantity}) for ${product.productName} exceeds the available stock (${product.stock}).` });
       }
     }
-    console.log("paymentOption(fn):Checked true for availability of stock");
+    // console.log("paymentOption(fn):Checked true for availability of stock");
 
 
 
     if (selectedPaymentMethod === "razorPay") {
-      console.log("paymentOption(fn):entered razorpay");
+      // console.log("paymentOption(fn):entered razorpay");
       const total = cart.cartTotal - cart.couponDiscount //delivery charge replaced
       // const total = cart.cartTotal - cart.couponDiscount + deliveryCharge
       let options = {
@@ -183,10 +183,10 @@ const paymentOption = async (req, res) => {
 
       instance.orders.create(options, (err, order) => {
         if (err) {
-          console.log("paymentOption(fn):Error creating order.", err);
+          // console.log("paymentOption(fn):Error creating order.", err);
           return res.status(500).json({ success: false, message: 'Error creating order.' });
         }
-        console.log("paymentOption(fn):Status 200 sent to Client side");
+        // console.log("paymentOption(fn):Status 200 sent to Client side");
         return res.status(200).json({
           success: true,
           msg: 'Order created',
@@ -224,14 +224,14 @@ const paymentOption = async (req, res) => {
       //   });
       // });
     } else {
-      console.log("paymentOption(fn):entering cod method");
+      // console.log("paymentOption(fn):entering cod method");
       // } else if (selectedPaymentMethod === "cod") {
       //   console.log("paymentOption(fn):entering cod method");
 
       try {
         const redirectURL = "/place-order"
-        console.log("paymentOption(fn):redirectURL:", redirectURL);
-        console.log("paymentOption(fn):Payment type other than RazorPay. Redirecting...");
+        // console.log("paymentOption(fn):redirectURL:", redirectURL);
+        // console.log("paymentOption(fn):Payment type other than RazorPay. Redirecting...");
         return res.status(303).json({
           success: false,
           message: "Payment type other than RazorPay. Redirecting...",
@@ -239,7 +239,7 @@ const paymentOption = async (req, res) => {
         });
 
       } catch (saveError) {
-        console.error("Error saving order to the database:", saveError);
+        // console.error("Error saving order to the database:", saveError);
         return res.status(500).json({
           success: false,
           message: "Error saving order to the database.",
@@ -309,7 +309,7 @@ const placeOrder = async (req, res) => {
       paymentMethod: selectedPaymentMethod,
       deliveryNotes: deliveryNotes,
       couponApplied: couponApplied,
-      couponDiscount: couponDiscount
+      couponDiscount: couponDiscount,
     });
 
     const orderDetails = await order.save();

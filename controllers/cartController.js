@@ -334,8 +334,8 @@ const applyCoupon = async (req, res) => {
   try {
     const { cartId, couponCode } = req.body; // Destructuring assignment to extract properties
     // const deliveryCharge = 500
-    console.log("cartId:", cartId);
-    console.log("couponCode:", couponCode);
+    // console.log("cartId:", cartId);
+    // console.log("couponCode:", couponCode);
 
     // Fetch cart details from the database
     const cart = await Cartdb.findById(cartId).populate("cartProducts.product");
@@ -348,7 +348,7 @@ const applyCoupon = async (req, res) => {
     const coupon = await Couponsdb.findOne({ code: couponCode });
     if (!coupon) {
       let responseData = { message: "Invalid Coupon Code" }
-      console.log("Invalid Coupon Code");
+      // console.log("Invalid Coupon Code");
       return res.status(200).json({ responseData });
     }
     // if (coupon.couponAppliedUsers) {
@@ -396,17 +396,17 @@ const applyCoupon = async (req, res) => {
     cart.couponApplied = couponCode
 
     await cart.save();
-    console.log("Coupon code:", coupon.code);
+    // console.log("Coupon code:", coupon.code);
     req.session.couponApplied = coupon.code;
-    console.log("Coupon applied to session:", req.session.couponApplied);
+    // console.log("Coupon applied to session:", req.session.couponApplied);
     // Save the session
-    req.session.save((err) => {
-      if (err) {
-        console.error("Error saving session:", err);
-      } else {
-        console.log("Session saved successfully");
-      }
-    });
+    // req.session.save((err) => {
+    //   if (err) {
+    //     console.error("Error saving session:", err);
+    //   } else {
+    //     console.log("Session saved successfully");
+    //   }
+    // });
     res.status(200).json({ responseData,cart });
   } catch (error) {
     console.error('Error Applying Coupon:', error.message);
@@ -418,8 +418,8 @@ const removeCoupon = async (req, res) => {
   try {
     const { cartId, couponCode } = req.body; 
     // const deliveryCharge = 500
-    console.log("cartId:", cartId);
-    console.log("couponCode:", couponCode);
+    // console.log("cartId:", cartId);
+    // console.log("couponCode:", couponCode);
 
     // Fetch cart details from the database
     const cart = await Cartdb.findById(cartId).populate("cartProducts.product");

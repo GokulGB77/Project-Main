@@ -18,18 +18,8 @@ const bodyParser = require('body-parser');
 userRoute.use(cookieParser());
 userRoute.use(bodyParser.json());
 
-const passport = require('passport'); 
-const cookieSession = require('cookie-session'); 
-require("../services/passport"); 
-userRoute.use(cookieSession({ 
-  name: 'google-auth-session', 
-  keys: ['key1', 'key2'] 
-})); 
-userRoute.use(passport.initialize());
-
-
-
-
+// const passport = require('passport'); 
+// require("../services/passport");
 
 userRoute.use(session({
   secret: uuidv4(),
@@ -38,6 +28,8 @@ userRoute.use(session({
   cookie: { secure: false }, // Set secure to true if using HTTPS
 }));  
 
+// userRoute.use(passport.initialize());
+// userRoute.use(passport.session());
 
   userRoute.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');

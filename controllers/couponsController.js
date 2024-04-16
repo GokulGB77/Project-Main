@@ -58,7 +58,7 @@ const addCoupon = async (req, res) => {
     });
     console.log("coupon added succesfullyy...")
     req.session.toastMessage = "Coupon added successfully"; 
-    req.session.save()
+    // req.session.save()
     // res.status(200).json({ success: true, coupon });
     res.redirect("/admin/coupons")
   } catch (error) {
@@ -94,7 +94,7 @@ const updateCoupon = async (req, res) => {
     })
     console.log("coupon updated succesfullyy...")
     req.session.toastMessage = "Coupon details updated successfully"; 
-    req.session.save()
+    // req.session.save()
     res.redirect("/admin/coupons")
   } catch (error) {
     res.status(500).send("Internal Server Error")
@@ -157,7 +157,7 @@ const deleteCoupon = async (req, res) => {
 
     console.log("Coupon deleted");
     req.session.toastMessageDelete = "Coupon Deleted..."
-    req.session.save()
+    // req.session.save()
     return res.status(200)
   } catch (error) {
     console.error("Error deleting coupon:", error);
