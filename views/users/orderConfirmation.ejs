@@ -11,7 +11,7 @@
 
                 <ul>
                     <li><strong>Order ID: <%= orderDetails.orderId %></strong></li>
-                    <li><strong>Total Amount:₹ <%= orderDetails.orderTotal %></strong></li>
+                    <li><strong>Total Amount: ₹ <%= orderDetails.orderTotal %></strong></li>
                     <li><strong>Date: <%= orderDetails.orderDate %></strong> </li>
                     <hr>
                     <li> <strong>Shipping to <%= orderDetails.address.name %></strong>,<%= orderDetails.address.house %>
@@ -41,7 +41,7 @@
                                 <h6 class="product-title">
                                     <%= item.product.productName %>
                                 </h6>
-                                <span class="product-price">Rs:<%= item.price.toFixed(2).toLocaleString() %> </span>- /
+                                <span class="product-price">₹ <%= item.price.toFixed(2).toLocaleString() %> </span>- /
                                 <span class="Quantity">
                                     <%= item.quantity %> units
                                 </span>
