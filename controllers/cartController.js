@@ -303,6 +303,7 @@ const loadCheckout = async (req, res) => {
   try {
     const userId = req.session.userId;
     const addresses = await Addressdb.findOne({ user: userId });
+    
     let addresslist = addresses.addresses.reverse();
     const cardId = req.query.id;
     const cart = await Cartdb.findById(cardId).populate("cartProducts.product");

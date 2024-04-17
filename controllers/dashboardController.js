@@ -6,14 +6,68 @@ const Productsdb = require("../models/productsModel")
 const Categoriesdb = require("../models/categoriesModel")
 const Walletdb = require("../models/walletModel")
 const Couponsdb = require("../models/couponsModel")
-
+const mongoose = require("mongoose")
 
 const loadAdminDashoard = async (req, res) => {
   try {
     const allProducts = await Productsdb.find()
     const allCategories = await Categoriesdb.find()
     const allOrders = await Ordersdb.find({ orderStatus: "delivered" });
-    const allUsers = await Userdb.find()
+    const allUsers = await Userdb.find({ status: 1, }).sort({ createdAt: 1 })
+
+    const topUsers = await Ordersdb.aggregate([
+      {
+        $group: {
+          _id: "$user",
+          totalOrders: { $count: {} }
+        }
+      },
+      {
+        $sort: {
+          totalOrders: -1
+        }
+      }
+    ]);
+    const userIds = topUsers.map(user => user._id);
+
+    const users = await Userdb.find({ _id: { $in: userIds } });
+    topUsers.forEach(user => {
+      const userData = users.find(u => u._id.toString() === user._id.toString());
+      user.name = userData.name; // Assuming the name field in Userdb is 'name'
+    });
+
+    const topProducts = await Productsdb.find().sort({ popularity: -1 }).limit(10)
+
+    const topCategories = await Productsdb.aggregate([
+      { $sort: { popularity: -1 } },
+      { $limit: 10 },
+      {
+        $group: {
+          _id: "$category",
+          products: {
+            $push: {
+              _id: "$_id",
+              productName: "$productName",
+              popularity: "$popularity"
+            }
+          },
+          totalPopularity: { $sum: "$popularity" }
+        }
+      }
+    ])
+
+    const categoryIds = topCategories.map(category => new mongoose.Types.ObjectId(category._id)); // Convert _id strings to ObjectId
+
+    const categories = await Categoriesdb.find({ _id: { $in: categoryIds } });
+
+    topCategories.forEach(categoryObj => {
+      const category = categories.find(cat => cat._id.toString() === categoryObj._id.toString());
+      if (category) {
+        categoryObj.categoryName = category.categoryName;
+      }
+    });
+
+    console.log("topCategories:", topCategories);
 
     const totalOrderPriceSum = allOrders.reduce((accumulator, currentOrder) => {
       const orderTotalPriceSum = currentOrder.orderProducts.reduce((productAccumulator, currentProduct) => {
@@ -24,7 +78,7 @@ const loadAdminDashoard = async (req, res) => {
 
     console.log("Total sum of all order products' totalPrice:", totalOrderPriceSum);
 
-    res.render("dashboard", { title: 'Admin Dashboard', allOrders, revenue: totalOrderPriceSum, allProducts, allCategories, allUsers, });
+    res.render("dashboard", { title: 'Admin Dashboard', allOrders, revenue: totalOrderPriceSum, allProducts, allCategories, allUsers, topUsers, topProducts,topCategories });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
@@ -476,7 +530,7 @@ const generateSalesReportPDF = async (req, res) => {
             </table>
         `;
 
-    const renderedHtml = template({ tableContent,totalOrdersCount,totalPriceWithoutOfferSum,offerDiscountSum,couponDiscountSum,totalRevenue });
+    const renderedHtml = template({ tableContent, totalOrdersCount, totalPriceWithoutOfferSum, offerDiscountSum, couponDiscountSum, totalRevenue });
     const browser = await puppeteer.launch();
     const paged = await browser.newPage();
     const marginOptions = {

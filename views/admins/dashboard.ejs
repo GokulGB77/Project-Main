@@ -230,53 +230,248 @@
                             <canvas id="myChart" height="120px"></canvas>
                         </article>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-5">
+                    <!-- <div class="row">
+                        <div class="col-lg-8">
                             <div class="card mb-4">
                                 <article class="card-body">
-                                    <h5 class="card-title">New Members</h5>
+                                    <h5 class="card-title">Top Selling Products</h5>
                                     <div class="new-member-list">
+                                       <% topProducts.forEach(product => { %>
+                                        <div class="d-flex align-items-center justify-content-between mb-4">
+                                            <div class="d-flex align-items-center">
+                                                <img src="/productAssets/<%=product.images[0] %>" alt="" class="avatar">
+                                                <div>
+                                                    <%
+                                                    const words = product.productName.split(' ');
+                                                    const truncatedName = words.slice(0, 3).join(' ');
+                                                  %>
+                                                  <h6><%= truncatedName %></h6>
+                                                                                                      <p class="text-muted font-xs">
+                                                        Price: <%= product.productPrice %>
+                                                        Stocks left: <%= product.stock %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> See Details</a>
+                                        </div>
+                                       <% }) %>
+                                        
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <article class="card-body">
+                                    <h5 class="card-title">Recent activities</h5>
+                                    <ul class="verti-timeline list-unstyled font-sm">
+                                        <li class="event-list">
+                                            <div class="event-timeline-dot">
+                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
+                                            </div>
+                                            <div class="media">
+                                                <div class="me-3">
+                                                    <h6><span>Today</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
+                                                </div>
+                                                <div class="media-body">
+                                                    <div>
+                                                        Lorem ipsum dolor sit amet consectetur
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="event-list active">
+                                            <div class="event-timeline-dot">
+                                                <i class="material-icons md-play_circle_outline font-xxl animation-fade-right"></i>
+                                            </div>
+                                            <div class="media">
+                                                <div class="me-3">
+                                                    <h6><span>17 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
+                                                </div>
+                                                <div class="media-body">
+                                                    <div>
+                                                        Debitis nesciunt voluptatum dicta reprehenderit
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="event-list">
+                                            <div class="event-timeline-dot">
+                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
+                                            </div>
+                                            <div class="media">
+                                                <div class="me-3">
+                                                    <h6><span>13 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
+                                                </div>
+                                                <div class="media-body">
+                                                    <div>
+                                                        Accusamus voluptatibus voluptas.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="event-list">
+                                            <div class="event-timeline-dot">
+                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
+                                            </div>
+                                            <div class="media">
+                                                <div class="me-3">
+                                                    <h6><span>05 April</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
+                                                </div>
+                                                <div class="media-body">
+                                                    <div>
+                                                        At vero eos et accusamus et iusto odio dignissi
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="event-list">
+                                            <div class="event-timeline-dot">
+                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
+                                            </div>
+                                            <div class="media">
+                                                <div class="me-3">
+                                                    <h6><span>26 Mar</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
+                                                </div>
+                                                <div class="media-body">
+                                                    <div>
+                                                        Responded to need “Volunteer Activities
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </article>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+                <div class="col-xl-4 col-lg-8">
+                    <div>
+                        <div class="card mb-4">
+                            <article class="card-body">
+                                <h5 class="card-title">Top Users based on Total Orders</h5>
+                                <div class="new-member-list">
+                                    <% topUsers.forEach(user => { %>
                                         <div class="d-flex align-items-center justify-content-between mb-4">
                                             <div class="d-flex align-items-center">
                                                 <img src="/admin/imgs/people/avatar4.jpg" alt="" class="avatar">
                                                 <div>
-                                                    <h6>Patric Adams</h6>
+                                                    <h6><%= user.name %></h6>
                                                     <p class="text-muted font-xs">
-                                                        Sanfrancisco
+                                                        <%= user.email %>
                                                     </p>
                                                 </div>
                                             </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
+                                            <h4 class="badge bg-primary rounded-pill" style="margin-right:35px ; padding-top: 8px;"> <%= user.totalOrders %></h4>
+                                            <!-- <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a> -->
                                         </div>
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="/admin/imgs/people/avatar2.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Dilan Specter</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
+                                    <% }) %>
+                                    
+                                    
+                                    
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    
+                    <!-- <div class="card mb-4">
+                        <article class="card-body">
+                            <h5 class="card-title">Revenue Base on Area</h5>
+                            <canvas id="myChart2" height="217"></canvas>
+                        </article>
+                    </div> -->
+                    <!-- <div class="card mb-4">
+                        <article class="card-body">
+                            <h5 class="card-title">Marketing Chanel</h5>
+                            <span class="text-muted font-xs">Facebook</span>
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 15%">15%</div>
+                            </div>
+                            <span class="text-muted font-xs">Instagram</span>
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 65%">65% </div>
+                            </div>
+                            <span class="text-muted font-xs">Google</span>
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 51%"> 51% </div>
+                            </div>
+                            <span class="text-muted font-xs">Twitter</span>
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 80%"> 80%</div>
+                            </div>
+                            <span class="text-muted font-xs">Other</span>
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 80%"> 80%</div>
+                            </div>
+                        </article>
+                    </div> -->
+                </div>
+                <div class="col-xl-12 col-lg-12">
+                   
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card mb-4">
+                                <article class="card-body">
+                                    <h5 class="card-title">Top Selling Products</h5>
+                                    <div class="scrollable-div"> <!-- New parent div for scroll effect -->
+                                        <div class="new-member-list">
+                                            <% topProducts.forEach(product => { %>
+                                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="/productAssets/<%=product.images[0] %>" alt="" class="avatar">
+                                                    <div>
+                                                        <% const words = product.productName.split(' ');
+                                                        const truncatedName = words.slice(0, 3).join(' '); %>
+                                                        <h6><%= truncatedName %></h6>
+                                                        <p class="text-muted font-xs">
+                                                            Price: <%= product.productPrice %> <br>
+                                                            Stocks left: <%= product.stock %>
+                                                        </p>
+                                                    </div>
                                                 </div>
+                                                <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> See Details</a>
                                             </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="/admin/imgs/people/avatar3.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Tomas Baker</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
+                                            <% }) %>
                                         </div>
                                     </div>
                                 </article>
                             </div>
                         </div>
-                        <div class="col-lg-7">
+                        <style>
+                            .scrollable-div {
+                                max-height: 300px; /* Set maximum height for the scrollable area */
+                                overflow-y: auto; /* Enable vertical scrolling */
+                            }
+
+                        </style>
+                        <div class="col-lg-6">
+                            <div class="card mb-4">
+                                <article class="card-body">
+                                    <h5 class="card-title">Top Selling Products</h5>
+                                    <div class="new-member-list">
+                                       <% topCategories.forEach(category => { %>
+                                        <div class="d-flex align-items-center justify-content-between mb-4">
+                                            <div class="d-flex align-items-center">
+                                                <img src="/admin/imgs/people/category-12.png" alt="" class="avatar">
+                                                <div>
+                                                   
+                                                  <h6><%= category.categoryName %></h6>
+                                                    <p class="text-muted font-xs">
+                                                        Popularity: <%= category.totalPopularity %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> See Details</a>
+                                        </div>
+                                       <% }) %>
+                                        
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
                             <div class="card mb-4">
                                 <article class="card-body">
                                     <h5 class="card-title">Recent activities</h5>
@@ -362,41 +557,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-12">
-                    <div class="card mb-4">
-                        <article class="card-body">
-                            <h5 class="card-title">Revenue Base on Area</h5>
-                            <canvas id="myChart2" height="217"></canvas>
-                        </article>
-                    </div>
-                    <div class="card mb-4">
-                        <article class="card-body">
-                            <h5 class="card-title">Marketing Chanel</h5>
-                            <span class="text-muted font-xs">Facebook</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 15%">15%</div>
-                            </div>
-                            <span class="text-muted font-xs">Instagram</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 65%">65% </div>
-                            </div>
-                            <span class="text-muted font-xs">Google</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 51%"> 51% </div>
-                            </div>
-                            <span class="text-muted font-xs">Twitter</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 80%"> 80%</div>
-                            </div>
-                            <span class="text-muted font-xs">Other</span>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: 80%"> 80%</div>
-                            </div>
-                        </article>
-                    </div>
-                </div>
             </div>
-            <div class="card mb-4">
+            <!-- <div class="card mb-4">
                 <header class="card-header">
                     <h4 class="card-title">Latest orders</h4>
                     <div class="row align-items-center">
@@ -608,7 +770,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div> <!-- table-responsive end// -->
+                    </div> 
                 </div>
             </div>
             <div class="pagination-area mt-30 mb-50">
@@ -622,7 +784,7 @@
                         <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
                     </ul>
                 </nav>
-            </div>
+            </div> -->
         </section> <!-- content-main end// -->
         
         <footer class="main-footer font-xs">
