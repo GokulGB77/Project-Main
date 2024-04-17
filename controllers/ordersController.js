@@ -107,25 +107,14 @@ const paymentOptionOld = async (req, res) => {
 
 const paymentOption = async (req, res) => {
   try {
-    // const deliveryCharge = 500
-    console.log("in paymentOption(fn)");
     const userId = req.session.userId;
     if (!userId) {
       return res.status(409).json({ error: 'User not authenticated' });
     }
 
     const userDetails = await Userdb.findById(userId);
-
-    const userName = userDetails.name;
-    // console.log("userName:", userName)
-    const userEmail = userDetails.email;
-    const userMobile = userDetails.mobile;
     const { selectedAddress, selectedPaymentMethod, deliveryNotes, cartId } = req.body;
 
-
-
-    // console.log("paymentOption(fn):session selectedPaymentMethod in payment:", selectedPaymentMethod);
-    console.log("paymentOption(fn):session address in payment:", selectedAddress);
     const cart = await Cartdb.findOne({ _id: cartId, user: userId }).populate("cartProducts.product");
     if (!cart) {
       return res.status(408).json({ error: 'Cart not found for the user' });
@@ -137,165 +126,16 @@ const paymentOption = async (req, res) => {
 
     const address = await Addressdb.findOne({ "addresses._id": selectedAddress });
     if (!address) {
-      res.status(406).json({ error: 'Selected address not found' });
-      throw new Error("Selected address not found");
+      return res.status(406).json({ error: 'Selected address not found' });
     }
     const orderAddress = address.addresses.find(addr => addr._id == selectedAddress);
 
-    if (orderAddress) {
-      orderProducts = cart.cartProducts;
-    }
-    console.log("paymentOption(fn):orderProducts._id:", orderProducts);
-
-    req.session.selectedAddress = selectedAddress;
-    req.session.selectedPaymentMethod = selectedPaymentMethod;
-    req.session.deliveryNotes = deliveryNotes;
-    req.session.cart = cart;
-    req.session.orderAddress = orderAddress;
-    req.session.orderProducts = orderProducts;
-    req.session.save()
-
-    for (const cartProduct of cart.cartProducts) {
-      const product = cartProduct.product;
-      // console.log("paymentOption(fn):Checking availability of stock");
-      // Check if the quantity in the cart exceeds the available stock
-      if (cartProduct.quantity > product.stock) {
-        console.log("paymentOption(fn):------------------Checked false for availability of stock");
-        return res.status(405).json({ error: `The requested quantity (${cartProduct.quantity}) for ${product.productName} exceeds the available stock (${product.stock}).` });
-      }
-    }
-    // console.log("paymentOption(fn):Checked true for availability of stock");
-
-
-
-    if (selectedPaymentMethod === "razorPay") {
-      // console.log("paymentOption(fn):entered razorpay");
-      const total = cart.cartTotal - cart.couponDiscount //delivery charge replaced
-      // const total = cart.cartTotal - cart.couponDiscount + deliveryCharge
-      let options = {
-        amount: total * 100,
-        currency: "INR",
-        receipt: "razorPayUser@gmail.com"
-      };
-
-      console.log("paymentOption(fn):Options:", options);
-
-
-      instance.orders.create(options, (err, order) => {
-        if (err) {
-          // console.log("paymentOption(fn):Error creating order.", err);
-          return res.status(500).json({ success: false, message: 'Error creating order.' });
-        }
-        // console.log("paymentOption(fn):Status 200 sent to Client side");
-        return res.status(200).json({
-          success: true,
-          msg: 'Order created',
-          order_id: order.id,
-          key_id: RAZORPAY_KEY_ID,
-          cartDetails: cart,
-          selectedAddress: selectedAddress,
-          name: userName,
-          email: userEmail,
-          mobile: userMobile,
-        });
-
-      }
-      );
-
-
-      // instance.orders.create(options, (err, order) => {
-      //   if (err) {
-      //     console.error(err);
-      //     return res
-      //       .status(500)
-      //       .json({ success: false, message: "Error creating order." });
-      //   } 
-
-      //   console.log("paymentOption(fn):Status 200 sent to Client side");
-      //   return res.status(200).json({
-      //     success: true,
-      //     razpayorderId: order.id,
-      //     key_id: process.env.RAZORPAY_KEY_ID,
-      //     cartDetails: cart,
-      //     selectedAddress: selectedAddress,
-      //     name: userName,
-      //     email: userEmail,
-      //     mobile: userMobile,
-      //   });
-      // });
-    } else {
-      // console.log("paymentOption(fn):entering cod method");
-      // } else if (selectedPaymentMethod === "cod") {
-      //   console.log("paymentOption(fn):entering cod method");
-
-      try {
-        const redirectURL = "/place-order"
-        // console.log("paymentOption(fn):redirectURL:", redirectURL);
-        // console.log("paymentOption(fn):Payment type other than RazorPay. Redirecting...");
-        return res.status(303).json({
-          success: false,
-          message: "Payment type other than RazorPay. Redirecting...",
-          redirectURL: redirectURL,
-        });
-
-      } catch (saveError) {
-        // console.error("Error saving order to the database:", saveError);
-        return res.status(500).json({
-          success: false,
-          message: "Error saving order to the database.",
-        });
-      }
-
-      // res.redirect(`/order-confirmation/${newOrder._id}`);
-    }
-    //  else {
-    //   throw new Error("Invalid Payment Method");
-    // }
-  } catch (error) {
-    console.error('Error in paymentOption:', error);
-    res.status(500).json({ success: false, error: 'Internal Server Error', message: error.message });
-  }
-}
-
-const placeOrder = async (req, res) => {
-  try {
-    console.log("In placeOrder");
-    const userId = req.session.userId;
-    if (!userId) {
-      throw new Error("User not authenticated");
-    }
-
+    const orderProducts = cart.cartProducts;
+    const orderTotal = cart.cartTotal - cart.couponDiscount;
     const orderId = generateOrderId();
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
-    let orderStatus = "pending";
-    const selectedAddress = req.session.selectedAddress;
-    const selectedPaymentMethod = req.session.selectedPaymentMethod;
-    const deliveryNotes = req.session.deliveryNotes;
-    const cart = await Cartdb.findOne({ user: userId }).populate("cartProducts.product");
-    const orderAddress = req.session.orderAddress;
-    const orderTotal = (cart.cartTotal - cart.couponDiscount) //delivery charge replaced
-    // const orderTotal = (cart.cartTotal - cart.couponDiscount + 500)
-    const orderProducts = cart.cartProducts
-    const couponApplied = cart.couponApplied
-    const couponDiscount = cart.couponDiscount
-    // const priceWithoutOffer = cart.priceWithoutOffer
-    // const totalPriceWithoutOffer = cart.totalPriceWithoutOffer
-
-    // const couponApplied = req.session.couponApplied;
-
-    for (const cartProduct of cart.cartProducts) {
-      const product = cartProduct.product;
-      console.log("placeOrder(fn)::Checking availability of stock");
-      // Check if the quantity in the cart exceeds the available stock
-      if (cartProduct.quantity > product.stock) {
-        console.log("placeOrder(fn)::------------------Checked false for availability of stock");
-        return res.status(405).json({ error: `The requested quantity (${cartProduct.quantity}) for ${product.productName} exceeds the available stock (${product.stock}).` });
-      }
-    }
-    // console.log("placeOrder(fn):Checked true for availability of stock");
-    // console.log("placeOrder(fn):selectedPaymentMethod", selectedPaymentMethod);
-
+    let orderStatus = "payment-pending";
 
     const order = new Ordersdb({
       user: userId,
@@ -308,50 +148,197 @@ const placeOrder = async (req, res) => {
       orderStatus: orderStatus,
       paymentMethod: selectedPaymentMethod,
       deliveryNotes: deliveryNotes,
-      couponApplied: couponApplied,
-      couponDiscount: couponDiscount,
+      couponApplied: cart.couponApplied,
+      couponDiscount: cart.couponDiscount,
     });
 
-    const orderDetails = await order.save();
-    console.log("placeOrder(fn):Order Created and saved to db", orderDetails.orderId);
+    await order.save();
 
-    const coupon = await Couponsdb.findOne({ name: couponApplied });
-    if (coupon) {
-      if (!coupon.couponAppliedUsers.includes(userId)) {
-        coupon.couponAppliedUsers.push(userId);
-        await coupon.save(); // Save changes back to the database
-        console.log('User added to couponAppliedUsers array.');
-      } else {
-        console.log('User already exists in couponAppliedUsers array.');
-      }
+    req.session.selectedAddress = selectedAddress;
+    req.session.selectedPaymentMethod = selectedPaymentMethod;
+    req.session.deliveryNotes = deliveryNotes;
+    req.session.cart = cart;
+    req.session.orderAddress = orderAddress;
+    req.session.orderProducts = orderProducts;
+    req.session.orderId = orderId;
+    req.session.save();
+
+    if (selectedPaymentMethod === "razorPay") {
+      const total = orderTotal * 100;
+      let options = {
+        amount: total,
+        currency: "INR",
+        receipt: `order_${orderId}`,
+      };
+
+      instance.orders.create(options, (err, order) => {
+        if (err) {
+          return res.status(500).json({ success: false, message: 'Error creating order.' });
+        }
+
+        return res.status(200).json({
+          success: true,
+          msg: 'Order created',
+          order_id: order.id,
+          orderDetails: order,
+          orderId: orderId,
+          key_id: RAZORPAY_KEY_ID,
+          cartDetails: cart,
+          selectedAddress: selectedAddress,
+          name: userDetails.name,
+          email: userDetails.email,
+          mobile: userDetails.mobile,
+        });
+      });
     } else {
-      console.log('Coupon not found.');
+      const redirectURL = "/place-order";
+      return res.status(303).json({
+        success: false,
+        message: "Payment type other than RazorPay. Redirecting...",
+        redirectURL: redirectURL,
+      });
+    }
+  } catch (error) {
+    console.error('Error in paymentOption:', error);
+    res.status(500).json({ success: false, error: 'Internal Server Error', message: error.message });
+  }
+};
+
+const continuePayment = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(409).json({ error: 'User not authenticated' });
     }
 
+    const userDetails = await Userdb.findById(userId);
+    const { orderId } = req.body;
+    const order = await Ordersdb.findOne({ orderId: orderId, user: userId }).populate("orderProducts.product");
 
-    const orderDetailsId = orderDetails.orderId;
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found for the user' });
+    }
+
+    let outOfStockItems = [];
+    for (let item of order.orderProducts) {
+      if (item.product.stock < item.quantity) {
+        outOfStockItems.push(item.product.name);
+      }
+    }
+
+    if (outOfStockItems.length > 0) {
+      return res.status(400).json({ error: `The following items are currently out of stock: ${outOfStockItems.join(', ')}` });
+    }
+
+    if (order.paymentMethod === 'razorPay') {
+      const total = order.orderTotal * 100;
+      let options = {
+        amount: total,
+        currency: "INR",
+        receipt: `order_${orderId}`,
+      };
+
+      const razorPayOrder = await instance.orders.create(options);
+
+      return res.status(200).json({
+        success: true,
+        msg: 'Order created',
+        order_id: razorPayOrder.id,
+        orderDetails: razorPayOrder,
+        orderId: orderId,
+        key_id: RAZORPAY_KEY_ID,
+        selectedAddress: order.shippingAddress,
+        name: userDetails.name,
+        email: userDetails.email,
+        mobile: userDetails.mobile,
+        cartDetails: order.orderProducts,
+      });
+    } else {
+      return res.status(400).json({ error: 'Invalid payment method' });
+    }
+  } catch (error) {
+    console.error('Error in paymentOption:', error);
+    res.status(500).json({ success: false, error: 'Internal Server Error', message: error.message });
+  }
+};
+
+const placeOrder = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    const orderId = req.session.orderId || req.query.id;
+    const order = await Ordersdb.findOne({ orderId: orderId }).populate("orderProducts.product");
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    if (order.orderStatus === "payment-failed") {
+      order.orderStatus = "pending";
+      await order.save();
+    }
+
+    const cart = await Cartdb.findOne({ user: userId });
     cart.cartProducts = [];
     cart.cartTotal = 0;
-    cart.couponApplied = null
-    cart.couponDiscount = 0
+    cart.couponApplied = null;
+    cart.couponDiscount = 0;
     await cart.save();
-    console.log("placeOrder(fn):Cart data emptied",);
+
     console.log("placeOrder(fn):Rendering order confirmation");
-
     return res.render("orderConfirmation", {
-      orderAddress,
-      orderProducts,
-      orderDetails,
-      orderTotal, userId
+      orderAddress: order.address,
+      orderProducts: order.orderProducts,
+      orderDetails: order,
+      orderTotal: order.orderTotal,
+      userId: userId,
     });
-
-
-
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
   }
 };
+const paymentFailed = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    const orderId = req.session.orderId;
+    const order = await Ordersdb.findOne({ orderId: orderId }).populate("orderProducts.product");
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    if (order.orderStatus === "payment-pending") {
+      order.orderStatus = "payment-failed";
+      await order.save();
+    }
+
+    const cart = await Cartdb.findOne({ user: userId });
+    cart.cartProducts = [];
+    cart.cartTotal = 0;
+    cart.couponApplied = null;
+    cart.couponDiscount = 0;
+    await cart.save();
+
+    console.log("placeOrder(fn):Rendering order confirmation");
+    return res.render("orderFailed", {
+      orderProducts: order.orderProducts,
+      orderDetails: order,
+      orderTotal: order.orderTotal,
+      userId: userId,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
 
 const orderSuccess = async (req, res) => {
   try {
@@ -361,14 +348,14 @@ const orderSuccess = async (req, res) => {
     const { orderId, cartId } = req.query;
 
     const orderDetails = await Ordersdb.findOne({ orderId: orderId }).populate("orderProducts.product")
-    console.log("orderId:", orderId);
+    console.log("orderDetails:", orderDetails);
 
     const orderedProducts = orderDetails.orderProducts
-    console.log("orderedProducts:", orderedProducts);
+    // console.log("orderedProducts:", orderedProducts);
 
     // Function to update product quantities
     const updateProductQuantities = async () => {
-      console.log("Updating Stock Quantities....................");
+      // console.log("Updating Stock Quantities....................");
       for (const orderedProduct of orderedProducts) {
         const { product, quantity } = orderedProduct;
         // Find the product in the Productsdb
@@ -379,7 +366,7 @@ const orderSuccess = async (req, res) => {
           eachProduct.popularity += quantity
           // Save the updated product
           await eachProduct.save();
-          console.log("Stock Quantities Updated....................");
+          // console.log("Stock Quantities Updated....................");
 
         }
       }
@@ -577,7 +564,7 @@ const cancelOneOrder = async (req, res) => {
     const additionalReason = req.body.additionalReason || null;
 
     // console.log("additionalReason:", additionalReason)
-    
+
     // console.log("orderDetails:", orderDetails)
 
     const orderProductDetails = await Ordersdb.findOneAndUpdate(
@@ -620,8 +607,8 @@ const cancelOneOrder = async (req, res) => {
       throw new Error(`Product with ID ${productId} not found.`);
     }
 
-    
-    
+
+
     const allProductsCancelled = orderDetails.orderProducts.every(product => product.orderStatus == 'cancelled');
     if (allProductsCancelled) {
       orderDetails.orderStatus = 'cancelled';
@@ -658,9 +645,6 @@ const cancelOneOrder = async (req, res) => {
     res.status(500).send({ message: "Error cancelling order." });
   }
 };
-
-
-
 
 
 
@@ -796,8 +780,8 @@ const returnOneOrder = async (req, res) => {
       throw new Error(`Product with ID ${productId} not found.`);
     }
 
-    
-    
+
+
     const allProductsCancelled = orderDetails.orderProducts.every(product => product.orderStatus == 'return-requested');
     if (allProductsCancelled) {
       orderDetails.orderStatus = 'returned';
@@ -1138,8 +1122,10 @@ const approveRefund = async (req, res) => {
 
 module.exports = {
   paymentOption,
+  continuePayment,
   placeOrder,
   orderSuccess,
+  paymentFailed,
   loadOrderDetails,
   loadOrderInvoice,
   cancelOrder,

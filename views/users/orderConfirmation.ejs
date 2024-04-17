@@ -28,21 +28,21 @@
 
                 <!-- Display ordered products -->
                 <h5>Ordered Products :</h5>
-                <% orderProducts.forEach(product=> { %>
+                <% orderDetails.orderProducts.forEach(item=> { %>
                     <div class="col-md-4 " >
                         <div class="product row"  >
                             <div class="col-md-4">
-                                <img src="/productAssets/<%= product.product.images[0] %>" alt="Product Image"
-                                class="img-fluid" style="max-height: 100px;">
+                                    <img src="/productAssets/<%= item.product.images[0] %>" alt="Product Image" class="img-fluid" style="max-height: 100px;">
+                                                                
 
                             </div>
                             <div class="col-md-8">
                                 <h6 class="product-title">
-                                    <%= product.product.productName %>
+                                    <%= item.product.productName %>
                                 </h6>
-                                <span class="product-price">Rs:<%= product.price.toFixed(2).toLocaleString() %> </span>- /
+                                <span class="product-price">Rs:<%= item.price.toFixed(2).toLocaleString() %> </span>- /
                                 <span class="Quantity">
-                                    <%= product.quantity %> units
+                                    <%= item.quantity %> units
                                 </span>
                             </div>
 

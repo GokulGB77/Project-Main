@@ -514,7 +514,7 @@ const loadProfile = async (req, res) => {
     }
 
     // Order related
-    const ordersPerPage = 5; // Number of orders to display per page
+    const ordersPerPage = 10; // Number of orders to display per page
     const currentPage = parseInt(req.query.page) || 1; // Get the current page from the query parameters, or use 1 as the default
     const totalOrders = await Ordersdb.countDocuments({ user: userId });
     const totalPages = Math.ceil(totalOrders / ordersPerPage);
@@ -568,7 +568,7 @@ const loadProfile1 = async (req, res) => {
     }
 
     // Order related
-    const ordersPerPage = 5; // Number of orders to display per page
+    const ordersPerPage = 10; // Number of orders to display per page
     const currentPage = parseInt(req.query.page) || 1; // Get the current page from the query parameters, or use 1 as the default
     const totalOrders = await Ordersdb.countDocuments({ user: userId });
     const totalPages = Math.ceil(totalOrders / ordersPerPage);

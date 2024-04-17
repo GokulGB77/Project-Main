@@ -109,6 +109,8 @@ userRoute.post("/checkout/remove-coupon",auth.isLogin,cartController.removeCoupo
 
 userRoute.post("/payment",auth.isLogin,ordersController.paymentOption)
 userRoute.get("/place-order",auth.isLogin,ordersController.placeOrder)
+userRoute.get("/payment-failed",auth.isLogin,ordersController.paymentFailed)
+userRoute.post("/continue-payment",auth.isLogin,ordersController.continuePayment)
 userRoute.get("/order-success",auth.isLogin,ordersController.orderSuccess)
 userRoute.post("/cancel-order",auth.isLogin,ordersController.cancelOrder)
 userRoute.post("/cancel-one-order",auth.isLogin,ordersController.cancelOneOrder)

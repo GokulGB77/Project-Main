@@ -5,7 +5,7 @@
         <div class="cart-area pt-100 pb-100" >
             <div class="container" >
                 <div class="row justify-content-center" style="margin-bottom:50px ;" >
-                    <div class="col-md-10" >
+                    <div class="col-md-10" style="border: 1px solid #c2c2c2; padding: 45px; border-radius: 10px; box-shadow: 0 0 10px rgba(92, 91, 91, 0.5);">
                         <h2  style="font-weight: 400; font-size: 28px; line-height: 36px;">Order Details</h2>
                         <span>Ordered on <%= orderDetails.orderDate %> |&nbsp; Order #<%= orderDetails.orderId %></span>
     
@@ -129,7 +129,7 @@
     
     
                         </div>
-                        <div class="order-details-box" style="margin-top: 20px;">
+                        <div class="order-details-box" style="margin-top: 20px; ">
                             <div>
                                 <div>
                                     <h2
@@ -149,8 +149,74 @@
                                                 id="returnBtn">Return
                                                 this delivery</button>
     
+                                        <% } else if(orderDetails.orderStatus==="payment-failed" ) { %>
+                                            <button onclick="continuePayment('<%= orderDetails.orderId%>')" class="cancel-button-button "
+                                                id="retryPaymentBtn">Continue Payment</button>
+    
                                             <% } %>
                                 </div>
+                                <script>
+                                   const continuePayment = async (orderId) => {
+                                try {
+                                    const response = await fetch('/continue-payment', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ orderId })
+                                    });
+
+                                    const data = await response.json();
+
+                                    console.log("Server Response:", data);
+
+                                    if (data.error) {
+                                    swal({
+                                        title: "Error",
+                                        text: data.error,
+                                        icon: "error",
+                                        button: "OK"
+                                    });
+                                    } else {
+                                    const { key_id, order_id, cartDetails, selectedAddress, name, email, mobile } = data;
+
+                                    const options = {
+                                        "key": key_id,
+                                        "amount": cartDetails.cartTotal * 100,
+                                        "currency": "INR",
+                                        "name": "CouchCart",
+                                        "image": "https://dummyimage.com/600x400/000/fff",
+                                        "order_id": order_id,
+                                        "handler": function (response) {
+                                        // alert("Payment Successful")
+                                        window.location.href = `/place-order?id=${orderId}`
+                                        },
+                                        "prefill": {
+                                        "contact": mobile,
+                                        "name": name,
+                                        "email": email,
+                                        },
+                                        "notes": {
+                                        "description": cartDetails,
+                                        },
+                                        "theme": {
+                                        "color": "#2300a3"
+                                        }
+                                    };
+
+                                    const razorpayObject = new Razorpay(options);
+                                    razorpayObject.open();
+                                    }
+                                } catch (error) {
+                                    console.error('There was an error!', error);
+                                    if (error.message === 'Network response was not ok') {
+                                    alert('An error occurred while processing the request. Please try again.');
+                                    } else {
+                                    alert('An unexpected error occurred. Please check the console for more details.');
+                                    }
+                                }
+                                };
+                                </script>
                                 <% if(orderDetails.orderStatus=="delivered") {%>
                                     <a href="/order/invoice?id=<%= orderDetails._id%>" class="download-button" style="float: right; margin-left: 10px;"  target="_blank">
                                         <i class="fas fa-download"></i> Download Invoice
@@ -172,11 +238,16 @@
                                                 <h5
                                                     style="margin-bottom: 0;color: #007600;font-size:18px;font-weight: 700; margin-bottom: 10px;">
                                                     Arriving Soon...</h5>
+                                                    
                                                 <% } else if (item.orderStatus==="delivered" ) { %>
                                                     <h5
                                                         style="margin-bottom: 0;color: #007600;font-size:18px;font-weight: 700; margin-bottom: 10px;">
                                                         Product Delivered</h5>
-                                                    <% } %>
+                                                    <% } else if(item.orderStatus==="payment-failed" ) { %>
+                                                        <h5
+                                                        style="margin-bottom: 0;color: #cc0000;font-size:18px;font-weight: 700; margin-bottom: 10px;">
+                                                        Payment Pending</h5>        
+                                                        <% } %>
                                                     <% } %>
     
                                                         <div class="product-info-actions-container">
@@ -209,6 +280,12 @@
                                                                                 <% } else if (item.orderStatus==="delivered" ) { %>
                                                                                     <span class="badge badge-pill badge-sm badge-success">                                                                               
                                                                                         Delivered</span>
+                                                                                <% } else if (item.orderStatus==="payment-failed"  ) { %>
+                                                                                    <span class="badge badge-pill badge-sm badge-danger">                                                                               
+                                                                                        Payment Failed</span>
+                                                                                <% } else if (item.orderStatus==="payment-pending"  ) { %>
+                                                                                    <span class="badge badge-pill badge-sm badge-danger">                                                                               
+                                                                                        Payment Pending</span>
                                                                                     <% } else if (item.orderStatus==="return-requested" ) { %>
                                                                                         <span class="badge badge-pill badge-info badge-sm">
                                                                                             Return Intitated</span>
@@ -223,7 +300,7 @@
                                                             <div class="actions ">
                                                                 <div class="button-container">
                                                                     <% if ((orderDetails.orderStatus == "pending" || orderDetails.orderStatus == "order-shipped") &&
-                                                                    (!item.orderStatus || item.orderStatus != "return-requested" || item.orderStatus == "pending" || item.orderStatus == "order-shipped")) { %>
+                                                                    (!item.orderStatus || item.orderStatus != "return-requested" || item.orderStatus == "pending" || item.orderStatus == "order-shipped" || item.orderStatus == "payment-failed" ||  item.orderStatus == "payment-pending")) { %>
                                                                 <button onclick="showPopupForCancelOne()"
                                                                         data-value1="<%= item.product._id %>"
                                                                         data-value2="<%= orderDetails._id %>"
@@ -233,7 +310,7 @@
                                                             <% } %>
                                                             
     
-                                                                            <% if( orderDetails.orderStatus=="cancelled"|| orderDetails.orderStatus!=="return-requested" && item.orderStatus!=="cancelled" && item.orderStatus != "return-requested" ) {%>
+                                                                            <% if( (orderDetails.orderStatus=="delivered") && (item.orderStatus=="delivered "  )) {%>
     
                                                                                 <button onclick="showPopupForReturnOne()" 
                                                                                     data-value1="<%= item.product._id %>"
@@ -242,7 +319,7 @@
                                                                                     id="returnOneBtn">Return
                                                                                     this product</button>
     
-                                                                                <button>Leave product Review</button>
+                                                                                <!-- <button>Leave product Review</button> -->
     
                                                                                 <% } %>
                                                                                     <!-- <% if(

@@ -49,7 +49,7 @@
                                     <!-- My Profile Tab Content End -->
                                     <!-- Orders Tab Content Start -->
                                     <div class="tab-pane fade" id="orders" role="tabpanel">
-                                        <div class="myaccount-content" style="height: 440px;">
+                                        <div class="myaccount-content" style="height: 660px;">
                                             <h3>Orders</h3>
                                             <div class="myaccount-table table-responsive text-center">
                                                 <% if(orderDetails.length!==0) { %>
@@ -77,9 +77,16 @@
                                                                     <td>
                                                                         <%= order.orderDate %>
                                                                     </td>
-                                                                    <td>
+                                                                    <td class="<%= (order.orderStatus === 'payment-pending' || order.orderStatus === 'payment-failed') ? 'red-text' : '' %>">
                                                                         <%= order.orderStatus %>
                                                                     </td>
+                                                                    <style>
+                                                                        .red-text {
+                                                                            color: red;
+                                                                        }
+
+                                                                    </style>
+                                                                    
                                                                     <td>&#8377 <%= (order.orderTotal).toLocaleString()
                                                                             %>
                                                                     </td>
