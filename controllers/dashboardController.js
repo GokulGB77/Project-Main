@@ -86,92 +86,177 @@ const loadAdminDashoard = async (req, res) => {
 };
 
 
+const salesStatistics = async (req, res) => {
+  try {
+    const filterType = req.query.filterType;
+    let labels, orderCount, revenue;
+
+    console.log("filterType:",filterType)
+    switch (filterType) {
+      case 'yearly':
+        labels = [ '2022','2023','2024'];
+        orderCount = await getYearlyCounts(2022, 2024);
+        revenue = await getYearlyRevenue(2022, 2024);
+        break;
+      case 'monthly':
+        labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        orderCount = await getMonthlyCounts();
+        revenue = await getMonthlyRevenue();
+        break;
+      case 'weekly':
+        labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'];
+        orderCount = await getWeeklyCounts();
+        revenue = await getWeeklyRevenue();
+        break;
+      default:
+        labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        orderCount = await getMonthlyCounts();
+        revenue = await getMonthlyRevenue();
+    }
+
+    res.json({ labels, orderCount, revenue });
+    
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+async function getYearlyCounts(startYear, endYear) {
+  const counts = [];
+  for (let year = startYear; year <= endYear; year++) {
+    const count = await Ordersdb.countDocuments({
+      createdAt: {
+        $gte: formatDateToDatabase(`${year}-01-01`),
+        $lte: formatDateToDatabase(`${year}-12-31`)
+      }
+    });
+    counts.push(count);
+  }
+  return counts;
+}
+
+async function getYearlyRevenue(startYear, endYear) {
+  const revenue = [];
+  for (let year = startYear; year <= endYear; year++) {
+    const totalRevenue = await Ordersdb.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: formatDateToDatabase(`${year}-01-01`),
+            $lte: formatDateToDatabase(`${year}-12-31`)
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$orderTotal" }
+        }
+      }
+    ]);
+    revenue.push(totalRevenue[0]?.totalRevenue || 0);
+  }
+  return revenue;
+}
+
+
+async function getMonthlyCounts() {
+  const counts = [];
+  for (let month = 1; month <= 12; month++) {
+    const count = await Ordersdb.countDocuments({
+      createdAt: {
+        $gte: formatDateToDatabase(`${new Date().getFullYear()}-${month.toString().padStart(2, '0')}-01`),
+        $lte: formatDateToDatabase(`${new Date().getFullYear()}-${month.toString().padStart(2, '0')}-31`)
+      }
+    });
+    counts.push(count);
+  }
+  return counts;
+}
+
+async function getMonthlyRevenue() {
+  const revenue = [];
+  for (let month = 1; month <= 12; month++) {
+    const totalRevenue = await Ordersdb.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: formatDateToDatabase(`${new Date().getFullYear()}-${month.toString().padStart(2, '0')}-01`),
+            $lte: formatDateToDatabase(`${new Date().getFullYear()}-${month.toString().padStart(2, '0')}-31`)
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$orderTotal" }
+        }
+      }
+    ]);
+    revenue.push(totalRevenue[0]?.totalRevenue || 0);
+  }
+  return revenue;
+}
+
+
+async function getWeeklyCounts() {
+  const counts = [];
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - (startDate.getDay() || 7));
+  for (let week = 0; week < 5; week++) {
+    const endDate = new Date(startDate.getTime() + (6 * 24 * 60 * 60 * 1000));
+    const count = await Ordersdb.countDocuments({
+      createdAt: {
+        $gte: formatDateToDatabase(startDate.toISOString().slice(0, 10)),
+        $lte: formatDateToDatabase(endDate.toISOString().slice(0, 10))
+      }
+    });
+    counts.push(count);
+    startDate.setDate(startDate.getDate() + 7);
+  }
+  return counts;
+}
+
+async function getWeeklyRevenue() {
+  const revenue = [];
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - (startDate.getDay() || 7));
+  for (let week = 0; week < 5; week++) {
+    const endDate = new Date(startDate.getTime() + (6 * 24 * 60 * 60 * 1000));
+    const totalRevenue = await Ordersdb.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: formatDateToDatabase(startDate.toISOString().slice(0, 10)),
+            $lte: formatDateToDatabase(endDate.toISOString().slice(0, 10))
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$orderTotal" }
+        }
+      }
+    ]);
+    revenue.push(totalRevenue[0]?.totalRevenue || 0);
+    startDate.setDate(startDate.getDate() + 7);
+  }
+  return revenue;
+}
+
+function formatDateToDatabase(dateString) {
+  const date = new Date(dateString);
+  return date.toISOString();
+}
+
+
+
 
 console.log("nothing")
 
-// const loadSalesReport = async (req, res) => {
-//   try {
-//     const allProducts = await Productsdb.find()
-//     const allCategories = await Categoriesdb.find()
-//     const allOrdersCount = await Ordersdb.find({ orderStatus: "delivered" });
-//     const allOrders = await Ordersdb.find({}).sort({ orderDate: -1 });
-//     const allUsers = await Userdb.find()
 
-//     const totalOrderPriceSum = allOrders.reduce((accumulator, currentOrder) => {
-//       const orderTotalPriceSum = currentOrder.orderProducts.reduce((productAccumulator, currentProduct) => {
-//         return productAccumulator + currentProduct.totalPrice;
-//       }, 0);
-//       return accumulator + orderTotalPriceSum;
-//     }, 0);
-
-//     const statuses = await Ordersdb.distinct('orderStatus');
-
-//     // Calculate orderPriceWODiscount for each order
-//     const ordersObj = allOrders.map(order => {
-//       let orderPriceWODiscount = 0;
-//       order.orderProducts.forEach(prod => {
-//         orderPriceWODiscount += prod.quantity * prod.priceWithoutOffer;
-//       });
-//       return {
-//         ...order.toObject(), // Convert Mongoose document to plain JavaScript object
-//         orderPriceWODiscount: orderPriceWODiscount
-//       };
-//     });
-
-//     const orders = allOrders.map(order => {
-//       let orderPriceWODiscount = 0;
-//       order.orderProducts.forEach(prod => {
-//         orderPriceWODiscount += prod.quantity * prod.priceWithoutOffer;
-//       });
-//       return {
-//         ...order.toObject(), // Convert Mongoose document to plain JavaScript object
-//         orderPriceWODiscount: orderPriceWODiscount
-//       };
-//     });
-
-//     const totalOrdersAmount = orders.reduce((total, order) => {
-//       return total + order.orderTotal;
-//     }, 0);
-//     const totalOrdersCount = orders.length
-//     const averageOrderTotal = totalOrdersAmount / totalOrdersCount;
-
-//     const deliveredOrders = orders.filter(order => order.orderStatus === 'delivered');
-//     const numberOfDeliveredOrders = deliveredOrders.length;
-//     const pendingOrders = orders.filter(order => order.orderStatus === 'pending');
-//     const numberOfpendingOrders = pendingOrders.length;
-//     const cancelledOrders = orders.filter(order => order.orderStatus === 'cancelled');
-//     const numberOfcancelledOrders = cancelledOrders.length;
-
-
-//     // console.log('Number of Delivered Orders:', numberOfDeliveredOrders);
-//     // console.log('Number of Pending Orders:', numberOfpendingOrders);
-//     // console.log('Number of Cancelled Orders:', numberOfcancelledOrders);
-
-//     const couponDiscountSum = orders.reduce((total, order) => {
-//       return total + order.couponDiscount;
-//     }, 0);
-
-//     console.log('Coupon Discount Sum:', couponDiscountSum);
-
-//     const offerDiscountSum = orders.reduce((total, order) => {
-//       const orderPriceWODiscount = order.orderPriceWODiscount || 0;
-//       return total + (orderPriceWODiscount - order.orderTotal);
-//     }, 0);
-
-//     console.log('Offer Discount Sum:', offerDiscountSum);
-
-
-//     res.render("salesReport", { allOrders, revenue: totalOrderPriceSum, allProducts, allCategories, allUsers, statuses, ordersObj,
-//       orders,totalOrdersAmount,offerDiscountSum,totalOrdersCount,averageOrderTotal,numberOfDeliveredOrders,numberOfpendingOrders,numberOfcancelledOrders,couponDiscountSum,
-//       offerDiscountSum
-
-//      });
-
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).send("Internal Server Error");
-//   }
-// }
 const loadSalesReport = async (req, res) => {
   try {
     const allProducts = await Productsdb.find()
@@ -378,100 +463,6 @@ const generateSalesReport = async (req, res) => {
 const fs = require('fs');
 const ejs = require('ejs');
 const pdfkit = require('pdfkit');
-
-// const generateSalesReportPDF = async (req, res) => {
-//   try {
-//     const { startDate, endDate } = req.body;
-//     const data = await generateData(startDate, endDate);
-
-
-//     const pdfDocument = new pdfkit();
-//     const pdfBuffer = await new Promise((resolve, reject) => {
-//       pdfDocument.pipe(
-//         fs.createWriteStream(`demo/sales-report_${startDate}_${endDate}.pdf`)
-//       );
-
-//       pdfDocument.font('Helvetica-Bold').fontSize(18);
-//      `Sales Report`, 50, 45);
-
-//       // Subheading
-//       pdfDocument.font('Helvetica').fontSize(12);
-//      `Report Duration ${startDate} - ${endDate}`, 50, 70);
-
-//       pdfDocument.font('Helvetica-Bold').fontSize(12);
-
-//       // Table header
-//      'Sl.No.', 10, 100, { valign: 'center' });
-//      'Order ID', 50, 100, { valign: 'center' });
-//      'Product', 168, 100, { valign: 'center' });
-//      'Order Date', 255, 100, { valign: 'center' });
-//      'Qty', 325, 100, { valign: 'center' });
-//      'Total Amt', 345, 100, { width: 50, align: 'center', valign: 'center' });
-//      'Discount', 390, 100, { valign: 'center' });
-//      'Amt After Discount', 450, 100, { valign: 'center' });
-//      'Payment', 520, 100, { width: 50, valign: 'center' });
-
-//       pdfDocument.font('Helvetica').fontSize(10);
-//       let y = 140; // Y-coordinate for the first row
-
-//       // Table data
-//       data.allOrdersUnwinded.forEach((order, index) => {
-//        index + 1, 20, y);
-//        "#" + order.orderId, 40, y);
-//         let productNameWords = order.orderProducts.prodDetails[0].productName.split(" ");
-//        productNameWords.slice(0, 2).join(" "), 168, y, { align: 'left' });
-//        order.orderDate, 260, y);
-//        order.orderProducts.quantity, 330, y);
-//        (order.orderProducts.totalPriceWithoutOffer).toLocaleString(), 355, y,);
-//        "- " + ((order.orderProducts.totalPriceWithoutOffer) - (order.orderProducts.totalPrice)), 400, y,);
-//        "Rs. " + (order.orderProducts.totalPrice).toLocaleString(), 455, y,);
-//        order.paymentMethod, 525, y, { width: 50, align: 'left' });
-//         y += 22; // Increment Y-coordinate for the next row
-//       });
-
-
-
-//       //`Total Delivered Orders: ${}`, pdfDocument.page.width - 50 - pdfDocument.widthOfString(row.paymentMethod), y);
-//       y += 10
-
-//      `Total Amount Before Discounts:`, pdfDocument.page.width - 310, y,);
-//      "Rs." + (data.totalPriceWithoutOfferSum).toLocaleString(), pdfDocument.page.width - 150, y,{ align: 'right' });
-//       y += 20
-//      `Discounts: `, pdfDocument.page.width - 217, y,);
-//      `- Rs. ${(data.offerDiscountSum).toLocaleString()}`,pdfDocument.page.width - 150,  y,{ align: 'right' });
-//       y += 20
-
-//      `Coupons:`, pdfDocument.page.width - 214, y,);
-//      `- Rs. ${(data.couponDiscountSum).toLocaleString()}`, pdfDocument.page.width - 185, y,{ align: 'right' });
-//       y += 18
-//       pdfDocument.moveTo(pdfDocument.page.width - 280, y)
-//         .lineTo(pdfDocument.page.width - 70, y)
-//         .stroke('black');
-
-//       y += 15
-//      `Total Delivered Orders:`, pdfDocument.page.width - 275, y,);
-//       data.totalOrdersCount, pdfDocument.page.width - 230, y,{ align: 'right' });
-//       y += 20
-//      `Total Revenue After Discounts: `, pdfDocument.page.width - 310, y);
-//      ` Rs. ${((data.totalPriceSum) - (data.couponDiscountSum)).toLocaleString()}`, pdfDocument.page.width - 280, y,{ align: 'right' });
-
-
-//       pdfDocument.end();
-
-//       pdfDocument.on("error", (err) => {
-//         reject(err);
-//       });
-
-//       pdfDocument.on("finish", () => {
-//         resolve(pdfDocument.stream.read());
-//       });
-//     });
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).send("Internal Server Error");
-//   }
-// };
-
 const handlebars = require('handlebars');
 const puppeteer = require('puppeteer');
 
@@ -558,318 +549,6 @@ const generateSalesReportPDF = async (req, res) => {
 };
 
 
-// const generateSalesReport = async (req, res) => {
-//   try {
-//     const { startDate, endDate } = req.body;
-
-//     const allProducts = await Productsdb.find();
-//     const allCategories = await Categoriesdb.find();
-//     const allOrdersCount = await Ordersdb.find({ orderStatus: "delivered" });
-//     const allOrders = await Ordersdb.find({ orderStatus: "delivered" }).sort({ orderDate: -1 });
-//     const allOrdersUnwinded = await Ordersdb.aggregate([
-//       { $unwind: "$orderProducts" },
-//       { $match: { orderStatus: "delivered" } },
-//       {
-//         $match: {
-//           createdAt: {
-//             $gte: startDate,
-//             $lte: endDate
-//           }
-//         }
-//       },
-//       { $sort: { createdAt: -1 } },
-//       {
-//         $lookup: {
-//           from: "productsdbs",
-//           localField: "orderProducts.product",
-//           foreignField: "_id",
-//           as: "orderProducts.prodDetails"
-//         }
-//       }
-
-//     ]);
-//     console.log("Fetched sales report data:", allOrdersUnwinded);
-
-
-//     console.log("allOrdersUnwinded:", allOrdersUnwinded);
-
-//     const allUsers = await Userdb.find({ status: 1 });
-
-//     const statuses = await Ordersdb.distinct('orderStatus');
-
-//     const ordersObj = allOrders.map(order => {
-//       let orderPriceWODiscount = 0;
-//       order.orderProducts.forEach(prod => {
-//         orderPriceWODiscount += prod.quantity * prod.priceWithoutOffer;
-//       });
-//       return {
-//         ...order.toObject(),
-//         orderPriceWODiscount: orderPriceWODiscount
-//       };
-//     });
-
-//     let totalPriceSum = 0;
-//     let totalPriceWithoutOfferSum = 0;
-
-//     allOrdersUnwinded.forEach(order => {
-//       totalPriceSum += order.orderProducts.totalPrice;
-//       totalPriceWithoutOfferSum += order.orderProducts.totalPriceWithoutOffer;
-//     });
-
-//     console.log("Total Price Sum:", totalPriceSum);
-//     console.log("Total Price Without Offer Sum:", totalPriceWithoutOfferSum);
-
-//     const totalOrdersAmount = allOrdersUnwinded.reduce((total, order) => {
-//       return total + order.orderProducts.totalPrice;
-//     }, 0);
-
-//     const totalOrdersCount = allOrdersUnwinded.length;
-
-//     const deliveredOrders = allOrdersUnwinded.length;
-//     const numberOfDeliveredOrders = deliveredOrders.length;
-
-//     const couponDiscountSum = allOrders.reduce((total, order) => {
-//       return total + order.couponDiscount;
-//     }, 0);
-
-//     const offerDiscountSum = allOrdersUnwinded.reduce((total, order) => {
-//       const totalPriceWithoutOffer = order.orderProducts.totalPriceWithoutOffer || 0;
-//       return total + (totalPriceWithoutOffer - order.orderProducts.totalPrice);
-//     }, 0);
-
-//     res.setHeader('Content-Type', 'application/json');
-
-//     res.json({
-//       allOrders,
-//       allOrdersUnwinded,
-//       allProducts,
-//       totalPriceSum,
-//       totalPriceWithoutOfferSum,
-//       allCategories,
-//       allUsers,
-//       statuses,
-//       ordersObj,
-//       totalOrdersAmount,
-//       offerDiscountSum,
-//       totalOrdersCount,
-//       numberOfDeliveredOrders,
-//       couponDiscountSum,
-//       startDate,
-//       endDate,
-//     });
-
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).send("Internal Server Error");
-//   }
-// }
-
-
-
-
-
-
-
-
-// const generateSalesReportPDF = async (req, res) => {
-//   try {
-//     const { startDate, endDate } = req.body;
-
-
-//     console.log(startDate)
-//     console.log(endDate)
-
-
-//     const allOrders = await Ordersdb.find({
-//       createdAt: {
-//         $gte: startDate,
-//         $lte: endDate
-//       }
-//     }).sort({ orderDate: -1 })
-//     const orders = allOrders.map(order => {
-//       let orderPriceWODiscount = 0;
-//       order.orderProducts.forEach(prod => {
-//         orderPriceWODiscount += prod.quantity * prod.priceWithoutOffer;
-//       });
-//       return {
-//         ...order.toObject(), // Convert Mongoose document to plain JavaScript object
-//         orderPriceWODiscount: orderPriceWODiscount
-//       };
-//     });
-
-//     const totalOrdersAmount = orders.reduce((total, order) => {
-//       return total + order.orderTotal;
-//     }, 0);
-//     const totalOrdersCount = orders.length
-//     const averageOrderTotal = totalOrdersAmount / totalOrdersCount;
-
-//     const deliveredOrders = orders.filter(order => order.orderStatus === 'delivered');
-//     const numberOfDeliveredOrders = deliveredOrders.length;
-//     const pendingOrders = orders.filter(order => order.orderStatus === 'pending');
-//     const numberOfpendingOrders = pendingOrders.length;
-//     const cancelledOrders = orders.filter(order => order.orderStatus === 'cancelled');
-//     const numberOfcancelledOrders = cancelledOrders.length;
-
-
-//     // console.log('Number of Delivered Orders:', numberOfDeliveredOrders);
-//     // console.log('Number of Pending Orders:', numberOfpendingOrders);
-//     // console.log('Number of Cancelled Orders:', numberOfcancelledOrders);
-
-//     const couponDiscountSum = orders.reduce((total, order) => {
-//       return total + order.couponDiscount;
-//     }, 0);
-
-//     console.log('Coupon Discount Sum:', couponDiscountSum);
-
-//     const offerDiscountSum = orders.reduce((total, order) => {
-//       const orderPriceWODiscount = order.orderPriceWODiscount || 0;
-//       return total + (orderPriceWODiscount - order.orderTotal);
-//     }, 0);
-
-//     console.log('Offer Discount Sum:', offerDiscountSum);
-
-
-
-//     res.render("salesReportPDF", {
-//       orders,
-//       totalOrdersAmount,
-//       totalOrdersCount,
-//       averageOrderTotal,
-//       numberOfDeliveredOrders,
-//       numberOfpendingOrders,
-//       numberOfcancelledOrders,
-//       couponDiscountSum,
-//       offerDiscountSum,
-//       startDate, endDate
-
-//     });
-
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).send("Internal Server Error");
-//   }
-// };
-
-
-// const generateSalesReport = async (req, res) => {
-//   try {
-//     const { startDate, endDate, sortBy } = req.body;
-
-//     let sortByValue;
-//     if (sortBy == "Quantity Sold") {
-//       sortByValue = "totalQuantity";
-//     } else {
-//       sortByValue = "totalPrice";
-
-//     }
-//     const result = await Ordersdb.aggregate([
-//       {
-//         $unwind: "$orderProducts" 
-//       },
-//       {
-//         $group: {
-//           _id: "$orderProducts.product",
-//           totalQuantity: { $sum: "$orderProducts.quantity" }, // Sum of quantity
-//           totalPrice: { $sum: "$orderProducts.totalPrice" }, // Sum of totalPrice
-//           totalOrderPriceWithoutOffer: { $sum: "$orderProducts.totalPriceWithoutOffer" } // Sum of totalPriceWithoutOffer
-//         }
-//       },
-//       {
-//         $sort: { sortByValue: -1 } 
-//       }
-//     ]);
-
-//     if (result.length > 0) {
-//       const { totalQuantity, totalPrice, totalOrderPriceWithoutOffer } = result[0];
-//       console.log("Total Quantity:", result);
-//     } else {
-//       console.log("No orders found.");
-//     }
-//   } catch (error) {
-//     console.error("Error:", error);
-//   }
-
-// };
-
-
-// const generateSalesReportPdf = async (req, res) => {
-//   try {
-//     const { startDate, endDate } = req.query;
-
-
-//     console.log(startDate)
-//     console.log(endDate)
-
-
-//     const allOrders = await Ordersdb.find({
-//       createdAt: {
-//         $gte: startDate,
-//         $lte: endDate
-//       }
-//     }).sort({ orderDate: -1 })
-//     const orders = allOrders.map(order => {
-//       let orderPriceWODiscount = 0;
-//       order.orderProducts.forEach(prod => {
-//         orderPriceWODiscount += prod.quantity * prod.priceWithoutOffer;
-//       });
-//       return {
-//         ...order.toObject(), // Convert Mongoose document to plain JavaScript object
-//         orderPriceWODiscount: orderPriceWODiscount
-//       };
-//     });
-
-//     const totalOrdersAmount = orders.reduce((total, order) => {
-//       return total + order.orderTotal;
-//     }, 0);
-//     const totalOrdersCount = orders.length
-//     const averageOrderTotal = totalOrdersAmount / totalOrdersCount;
-
-//     const deliveredOrders = orders.filter(order => order.orderStatus === 'delivered');
-//     const numberOfDeliveredOrders = deliveredOrders.length;
-//     const pendingOrders = orders.filter(order => order.orderStatus === 'pending');
-//     const numberOfpendingOrders = pendingOrders.length;
-//     const cancelledOrders = orders.filter(order => order.orderStatus === 'cancelled');
-//     const numberOfcancelledOrders = cancelledOrders.length;
-
-
-//     // console.log('Number of Delivered Orders:', numberOfDeliveredOrders);
-//     // console.log('Number of Pending Orders:', numberOfpendingOrders);
-//     // console.log('Number of Cancelled Orders:', numberOfcancelledOrders);
-
-//     const couponDiscountSum = orders.reduce((total, order) => {
-//       return total + order.couponDiscount;
-//     }, 0);
-
-//     console.log('Coupon Discount Sum:', couponDiscountSum);
-
-//     const offerDiscountSum = orders.reduce((total, order) => {
-//       const orderPriceWODiscount = order.orderPriceWODiscount || 0;
-//       return total + (orderPriceWODiscount - order.orderTotal);
-//     }, 0);
-
-//     console.log('Offer Discount Sum:', offerDiscountSum);
-
-
-
-//     res.render("salesReportPDF", {
-//       orders,
-//       totalOrdersAmount,
-//       totalOrdersCount,
-//       averageOrderTotal,
-//       numberOfDeliveredOrders,
-//       numberOfpendingOrders,
-//       numberOfcancelledOrders,
-//       couponDiscountSum,
-//       offerDiscountSum,
-//       startDate, endDate
-
-//     });
-//   } catch (error) {
-//     console.error("Error:", error);
-//   }
-
-// };
-
 
 
 
@@ -878,4 +557,5 @@ module.exports = {
   loadSalesReport,
   generateSalesReport,
   generateSalesReportPDF,
+  salesStatistics
 }
