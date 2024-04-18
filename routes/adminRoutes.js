@@ -45,6 +45,7 @@ adminRoute.set('views','./views/admins')
 
 adminRoute.get('/',adminController.loadAdminLogin);
 adminRoute.post('/dashboard',adminController.verifyAdminLogin);
+adminRoute.get('/sales-statistics',dashboardController.salesStatistics);
 adminRoute.get('/dashboard',dashboardController.loadAdminDashoard);
 adminRoute.get('/sales-report',dashboardController.loadSalesReport);
 adminRoute.post('/generate-sales-report',dashboardController.generateSalesReport);
