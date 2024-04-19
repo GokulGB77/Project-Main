@@ -37,8 +37,8 @@
                         <span class="text">Sales Report</span>
                     </a>
                 </li>
-                <li class="menu-item ">
-                    <a class="menu-link" href="/admin/user-details"> <i class="icon material-icons md-person"></i>
+                <li class="menu-item  ">
+                    <a class="menu-link" href="/admin/user-details?page=1"> <i class="icon material-icons md-person"></i>
                         <span class="text">User Details</span>
                     </a>
                 </li>
@@ -258,18 +258,7 @@
                                         class="btn btn-sm font-sm rounded btn-brand">
                                         <i class="material-icons md-edit"></i> Edit
                                     </a>
-                                    <!-- <% if (products[i].status===1) { %>
-                                        <a href="/admin/products/unarchive-product?id=<%= products[i]._id %>"
-                                            class="btn btn-sm font-sm btn-light rounded">
-                                            <i class="material-icons md-archive"></i> Archive                         
-                                        </a>
-                                        <% } else { %>
-                                            <a href="/admin/products/archive-product?id=<%= products[i]._id %>"
-                                                class="btn btn-sm font-sm btn-light rounded">
-                                                <i class="material-icons md-delete_forever"></i> Unarchive
-                                            </a>
-                                            <% } %> --> <!--Archive/Unarchive button -->
-
+                                   
                                     <div class="dropdown">
                                         <a href="#" data-bs-toggle="dropdown"
                                             class="btn btn-light rounded btn-sm font-sm">
@@ -292,8 +281,8 @@
                                         </div>
                                     </div> <!-- dropdown //end -->
                                 </div>
-                            </div> <!-- row .// -->
-                        </article> <!-- itemlist .// -->
+                            </div> 
+                        </article> 
                         <!-- <script>
                             // Assuming you have the product ID and currentPage available
                             const productIds = document.querySelectorAll('[id^="archiveBtn"]');

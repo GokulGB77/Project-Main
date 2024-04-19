@@ -140,19 +140,20 @@ async function getYearlyCounts(startYear, endYear) {
 async function getYearlyRevenue(startYear, endYear) {
   const revenue = [];
   for (let year = startYear; year <= endYear; year++) {
+    console.log(year)
     const totalRevenue = await Ordersdb.aggregate([
       {
         $match: {
           createdAt: {
-            $gte: formatDateToDatabase(`${year}-01-01`),
-            $lte: formatDateToDatabase(`${year}-12-31`)
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`)
           }
         }
       },
       {
         $group: {
           _id: null,
-          totalRevenue: { $sum: "$orderTotal" }
+          "totalRevenue": { $sum: "$orderTotal" }
         }
       }
     ]);
@@ -179,6 +180,7 @@ async function getMonthlyCounts() {
 async function getMonthlyRevenue() {
   const revenue = [];
   for (let month = 1; month <= 12; month++) {
+
     const totalRevenue = await Ordersdb.aggregate([
       {
         $match: {
@@ -195,6 +197,8 @@ async function getMonthlyRevenue() {
         }
       }
     ]);
+    console.log("totalRevenue:",totalRevenue)
+
     revenue.push(totalRevenue[0]?.totalRevenue || 0);
   }
   return revenue;

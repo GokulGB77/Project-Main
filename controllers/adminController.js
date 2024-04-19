@@ -82,9 +82,44 @@ const adminLogout = async (req, res) => {
 
 const userDetails = async (req,res) => {
   try {
-    const users = await Admindb.find({}).sort({_id:-1})
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
 
-    res.render("userDetails",{users})
+    
+    const users = await Admindb.find({})
+    .sort({_id:-1})
+    .skip(startIndex)
+    .limit(limit);
+
+
+    const totalUsers = await Admindb.countDocuments();
+    const totalPages = Math.ceil(totalUsers / limit);
+    res.render("userDetails",{users,currentPage:page,totalPages})
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("User Details failed to fetch");
+  }
+}
+const userDetailsFetch = async (req,res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    
+    const users = await Admindb.find({})
+    .sort({_id:-1})
+    .skip(startIndex)
+    .limit(limit);
+
+
+    const totalUsers = await Admindb.countDocuments();
+    const totalPages = Math.ceil(totalUsers / limit);
+    res.status(200).json({users,currentPage:page,totalPages});
 
   } catch (error) {
     console.log(error);
@@ -129,6 +164,7 @@ const unblockUser = async (req,res) => {
 module.exports = {
   loadAdminLogin,
   userDetails,
+  userDetailsFetch,
   verifyAdminLogin,
   adminLogout,
   blockUser,
