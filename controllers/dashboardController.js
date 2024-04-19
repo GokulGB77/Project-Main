@@ -113,6 +113,7 @@ const salesStatistics = async (req, res) => {
         orderCount = await getMonthlyCounts();
         revenue = await getMonthlyRevenue();
     }
+    console.log("revenue:",revenue)
 
     res.json({ labels, orderCount, revenue });
     

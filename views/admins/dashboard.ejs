@@ -251,69 +251,69 @@
                             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                             <script>
                                 const filterTypeSelect = document.getElementById('filter-type');
-const ctx = document.getElementById('myChartMain').getContext('2d');
-let myChart;
+                                const ctx = document.getElementById('myChartMain').getContext('2d');
+                                let myChart;
 
-async function fetchChartData(filterType = 'monthly') {
-  try {
-    const response = await fetch(`/admin/sales-statistics?filterType=${filterType}`);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching chart data:', error);
-    return null;
-  }
-}
+                                async function fetchChartData(filterType = 'monthly') {
+                                    try {
+                                        const response = await fetch(`/admin/sales-statistics?filterType=${filterType}`);
+                                        const data = await response.json();
+                                        return data;
+                                    } catch (error) {
+                                        console.error('Error fetching chart data:', error);
+                                        return null;
+                                    }
+                                }
 
-async function updateChart() {
-  const filterType = filterTypeSelect.value;
-  const chartData = await fetchChartData(filterType);
+                                async function updateChart() {
+                                    const filterType = filterTypeSelect.value;
+                                    const chartData = await fetchChartData(filterType);
 
-  if (chartData) {
-    const { labels, orderCount, revenue } = chartData;
+                                    if (chartData) {
+                                        const { labels, orderCount, revenue } = chartData;
 
-    if (myChart) {
-      myChart.destroy();
-    }
+                                        if (myChart) {
+                                            myChart.destroy();
+                                        }
 
-    myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: 'Order Count',
-            data: orderCount,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1
-          },
-          {
-            label: 'Revenue',
-            data: revenue,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  }
-}
+                                        myChart = new Chart(ctx, {
+                                            type: 'line',
+                                            data: {
+                                                labels: labels,
+                                                datasets: [
+                                                    {
+                                                        label: 'Order Count',
+                                                        data: orderCount,
+                                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                                        borderWidth: 1
+                                                    },
+                                                    {
+                                                        label: 'Revenue',
+                                                        data: revenue,
+                                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                                        borderWidth: 1
+                                                    }
+                                                ]
+                                            },
+                                            options: {
+                                                scales: {
+                                                    y: {
+                                                        beginAtZero: true
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
 
-filterTypeSelect.addEventListener('change', async () => {
-  await updateChart();
-});
+                                filterTypeSelect.addEventListener('change', async () => {
+                                    await updateChart();
+                                });
 
-// Fetch and display the default data when the page loads
-updateChart();
+                                // Fetch and display the default data when the page loads
+                                updateChart();
                             </script>
                         </article>
                     </div>
@@ -506,7 +506,7 @@ updateChart();
                         <div class="col-lg-6">
                             <div class="card mb-4">
                                 <article class="card-body">
-                                    <h5 class="card-title">Top Selling Products</h5>
+                                    <h5 class="card-title">Top 10 Selling Products</h5>
                                     <div class="scrollable-div"> <!-- New parent div for scroll effect -->
                                         <div class="new-member-list">
                                             <% topProducts.forEach(product=> { %>
@@ -542,7 +542,7 @@ updateChart();
                         <div class="col-lg-6">
                             <div class="card mb-4">
                                 <article class="card-body">
-                                    <h5 class="card-title">Top Selling Products</h5>
+                                    <h5 class="card-title">Top 10 Selling Products</h5>
                                     <div class="new-member-list">
                                        <% topCategories.forEach(category => { %>
                                         <div class="d-flex align-items-center justify-content-between mb-4">
@@ -564,7 +564,7 @@ updateChart();
                                 </article>
                             </div>
                         </div>
-                        <div class="col-lg-4">
+                        <!-- <div class="col-lg-4">
                             <div class="card mb-4">
                                 <article class="card-body">
                                     <h5 class="card-title">Recent activities</h5>
@@ -647,7 +647,7 @@ updateChart();
                                     </ul>
                                 </article>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
