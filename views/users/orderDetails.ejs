@@ -137,23 +137,26 @@
                                         <%= (orderDetails.orderProducts.length ) %> Shipments
                                     </h2>
                                 </div>
-                                <div class="cancel-button">
-                                    <% if( orderDetails.orderStatus==="pending" ) { %>
-                                        <!-- <button>Track package</button> -->
-                                        <button onclick="showPopup()" class="cancel-button-button">Cancel this
-                                            delivery</button>
-    
-    
-                                        <% } else if(orderDetails.orderStatus==="delivered" ) { %>
-                                            <button onclick="showPopupForReturn()" class="cancel-button-button "
-                                                id="returnBtn">Return
-                                                this delivery</button>
-    
-                                        <% } else if(orderDetails.orderStatus==="payment-failed" ) { %>
-                                            <button onclick="continuePayment('<%= orderDetails.orderId%>')" class="cancel-button-button "
-                                                id="retryPaymentBtn">Continue Payment</button>
-    
-                                            <% } %>
+                                <div class="cancel-button" style="height: 50px;">
+                                    <% let showCancelButton = true; %>
+                                    <% let showReturnButton = true; %>
+                                    
+                                    <% for (const orderProduct of orderDetails.orderProducts) { %>
+                                      <% if (orderProduct.orderStatus !== 'cancelled') { %>
+                                        <% showCancelButton = false; %>
+                                      <% } %>
+                                      <% if (orderProduct.orderStatus !== 'delivered') { %>
+                                        <% showReturnButton = false; %>
+                                      <% } %>
+                                    <% } %>
+                                    
+                                    <% if (orderDetails.orderStatus === 'pending' && showCancelButton) { %>
+                                      <button onclick="showPopup()" class="cancel-button-button">Cancel this delivery</button>
+                                    <% } else if (orderDetails.orderStatus === 'delivered' && showReturnButton) { %>
+                                      <button onclick="showPopupForReturn()" class="cancel-button-button" id="returnBtn">Return this delivery</button>
+                                    <% } else if (orderDetails.orderStatus === 'payment-failed') { %>
+                                      <button onclick="continuePayment('<%= orderDetails.orderId%>')" class="cancel-button-button" id="retryPaymentBtn">Continue Payment</button>
+                                    <% } %>
                                 </div>
                                 <script>
                                    const continuePayment = async (orderId) => {
@@ -300,7 +303,7 @@
                                                             <div class="actions ">
                                                                 <div class="button-container">
                                                                     <% if ((orderDetails.orderStatus == "pending" || orderDetails.orderStatus == "order-shipped") &&
-                                                                    ( item.orderStatus != "return-requested" || item.orderStatus == "pending" || item.orderStatus == "order-shipped" || item.orderStatus == "payment-failed" ||  item.orderStatus == "payment-pending")) { %>
+                                                                    ( (item.orderStatus !== "cancelled" && item.orderStatus != "return-requested" )|| item.orderStatus == "pending" || item.orderStatus == "order-shipped" || item.orderStatus == "payment-failed" ||  item.orderStatus == "payment-pending")) { %>
                                                                 <button onclick="showPopupForCancelOne()"
                                                                         data-value1="<%= item.product._id %>"
                                                                         data-value2="<%= orderDetails._id %>"
@@ -310,7 +313,7 @@
                                                             <% } %>
                                                             
     
-                                                                            <% if( (orderDetails.orderStatus=="delivered") && (item.orderStatus=="delivered "  )) {%>
+                                                                            <% if( (orderDetails.orderStatus=="delivered") && (item.orderStatus!=="cancelled" && item.orderStatus!=="return-requested" && item.orderStatus!=="returned"    )) {%>
     
                                                                                 <button onclick="showPopupForReturnOne()" 
                                                                                     data-value1="<%= item.product._id %>"
