@@ -77,12 +77,47 @@
                                                                     <td>
                                                                         <%= order.orderDate %>
                                                                     </td>
-                                                                    <td class="<%= (order.orderStatus === 'payment-pending' || order.orderStatus === 'payment-failed') ? 'red-text' : '' %>">
-                                                                        <%= order.orderStatus %>
-                                                                    </td>
+                                                                    <% if(order.orderStatus === 'payment-failed') { %>
+                                                                        <td class="red-text" >
+                                                                            <%= order.orderStatus %>
+                                                                        </td>
+                                                                    <% } %>
+                                                                    <% if(order.orderStatus === 'pending') { %>
+                                                                        <td class="orange-text" >
+                                                                            <%= order.orderStatus %>
+                                                                        </td>
+                                                                    <% } %>
+                                                                    <% if(order.orderStatus === 'delivered') { %>
+                                                                        <td class="green-text" >
+                                                                            <%= order.orderStatus %>
+                                                                        </td>
+                                                                    <% } %>
+                                                                    <% if(order.orderStatus === 'return-requested' || order.orderStatus === 'returned' ) { %>
+                                                                        <td class="green-text" >
+                                                                            <%= order.orderStatus %>
+                                                                        </td>
+                                                                    <% } %>
+                                                                    <% if(order.orderStatus === 'cancelled' ) { %>
+                                                                        <td class="brown-text" >
+                                                                            <%= order.orderStatus %>
+                                                                        </td>
+                                                                    <% } %>
+                                                                    
                                                                     <style>
                                                                         .red-text {
-                                                                            color: red;
+                                                                            color: rgb(221, 0, 0);
+                                                                        }
+                                                                        .orange-text {
+                                                                            color: orange;
+                                                                        }
+                                                                        .green-text {
+                                                                            color: green;
+                                                                        }
+                                                                        .blue-text {
+                                                                            color: rgb(0, 0, 172);
+                                                                        }
+                                                                        .brown-text {
+                                                                            color: brown;
                                                                         }
 
                                                                     </style>
@@ -162,7 +197,25 @@
                                                 orderDate.textContent = order.orderDate;
 
                                                 const orderStatus = document.createElement('td');
+
+                                                if (order.orderStatus === 'payment-failed') {
                                                 orderStatus.textContent = order.orderStatus;
+                                                orderStatus.classList.add('red-text');
+                                                } else if (order.orderStatus === 'pending') {
+                                                orderStatus.textContent = order.orderStatus;
+                                                orderStatus.classList.add('orange-text');
+                                                } else if (order.orderStatus === 'delivered') {
+                                                orderStatus.textContent = order.orderStatus;
+                                                orderStatus.classList.add('green-text');
+                                                } else if (order.orderStatus === 'return-requested' || order.orderStatus === 'returned') {
+                                                orderStatus.textContent = order.orderStatus;
+                                                orderStatus.classList.add('green-text');
+                                                } else if (order.orderStatus === 'cancelled') {
+                                                orderStatus.textContent = order.orderStatus;
+                                                orderStatus.classList.add('brown-text');
+                                                } else {
+                                                orderStatus.textContent = order.orderStatus;
+                                                }
 
                                                 const orderTotal = document.createElement('td');
                                                 orderTotal.textContent = `₹ ${order.orderTotal.toLocaleString()}`;

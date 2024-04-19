@@ -300,7 +300,7 @@
                                                             <div class="actions ">
                                                                 <div class="button-container">
                                                                     <% if ((orderDetails.orderStatus == "pending" || orderDetails.orderStatus == "order-shipped") &&
-                                                                    (!item.orderStatus || item.orderStatus != "return-requested" || item.orderStatus == "pending" || item.orderStatus == "order-shipped" || item.orderStatus == "payment-failed" ||  item.orderStatus == "payment-pending")) { %>
+                                                                    ( item.orderStatus != "return-requested" || item.orderStatus == "pending" || item.orderStatus == "order-shipped" || item.orderStatus == "payment-failed" ||  item.orderStatus == "payment-pending")) { %>
                                                                 <button onclick="showPopupForCancelOne()"
                                                                         data-value1="<%= item.product._id %>"
                                                                         data-value2="<%= orderDetails._id %>"
