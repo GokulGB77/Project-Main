@@ -5,7 +5,8 @@ const Userdb = require("../models/userModel")
 const Cartdb = require("../models/cartModel")
 const Addressdb = require("../models/addressModel")
 const MAX_CART_QUANTITY = 10;
-
+const taxRate =18/100;
+const deliveryCharge = 500;
 
 const addToCart = async (req, res) => {
   try {
@@ -307,7 +308,6 @@ const loadCheckout = async (req, res) => {
     let addresslist = addresses.addresses.reverse();
     const cardId = req.query.id;
     const cart = await Cartdb.findById(cardId).populate("cartProducts.product");
-    // const deliveryCharge = 500
     //  console.log("Cart with populated products:", cart); // Log the cart to see if products are populated correctly
 
     if (!cart) {
@@ -318,13 +318,12 @@ const loadCheckout = async (req, res) => {
     const couponCode = cart.couponApplied
     const coupon = await Couponsdb.findOne({name:couponCode})
 
-    if (cart.cartTotal > 5000) {
+    if (cart.cartTotal + (cart.cartTotal*taxRate) + deliveryCharge > 5000) {
       req.session.disableCOD = true;
   } else {
       req.session.disableCOD = false;
   }
-    return res.render("checkout", { cart, userId, addresslist, cardId, coupon, coupons }); //delivery charge replaced
-    // return res.render("checkout", { cart, userId, addresslist, deliveryCharge, cardId, coupon, coupons });
+    return res.render("checkout", { cart, userId, addresslist, cardId, coupon, coupons,taxRate,deliveryCharge }); 
   } catch (error) {
     console.error('Error Loading CheckoutPage', error);
     return res.status(500).json({ message: 'Internal server error' });
@@ -386,28 +385,21 @@ const applyCoupon = async (req, res) => {
         cart.couponDiscount = couponMaxAmt;
       }
     }
+    const taxAmount = (cart.cartTotal - cart.couponDiscount) * taxRate
+
     responseData = {
       message: "Coupon applied successfully",
       couponCode: couponCode,
       couponId: couponId,
       discountAmount: cart.couponDiscount,
-      totalAmount: cart.cartTotal - cart.couponDiscount //delivery charge replaced
-      // totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
+      totalAmount: cart.cartTotal + taxAmount + deliveryCharge - cart.couponDiscount ,
+      taxAmount:taxAmount
     };
     cart.couponApplied = couponCode
 
     await cart.save();
-    // console.log("Coupon code:", coupon.code);
     req.session.couponApplied = coupon.code;
-    // console.log("Coupon applied to session:", req.session.couponApplied);
-    // Save the session
-    // req.session.save((err) => {
-    //   if (err) {
-    //     console.error("Error saving session:", err);
-    //   } else {
-    //     console.log("Session saved successfully");
-    //   }
-    // });
+   
     res.status(200).json({ responseData,cart });
   } catch (error) {
     console.error('Error Applying Coupon:', error.message);
@@ -431,10 +423,11 @@ const removeCoupon = async (req, res) => {
     }
     cart.couponApplied = null;
     cart.couponDiscount = 0;
+    const taxAmount = (cart.cartTotal - cart.couponDiscount) * taxRate
     responseData = {
       message: "Coupon removed",
-      totalAmount: cart.cartTotal - cart.couponDiscount 
-      // totalAmount: cart.cartTotal - cart.couponDiscount + deliveryCharge
+      totalAmount: cart.cartTotal + taxAmount + deliveryCharge - cart.couponDiscount ,
+      taxAmount:taxAmount
     };
     await cart.save();
 

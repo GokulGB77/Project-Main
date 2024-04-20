@@ -247,24 +247,37 @@
                         </table>
                         <div class="mt-5">
                             <div class="d-flex justify-content-end">
-                                <p class="text-muted me-3">Subtotal:</p>
-                                <span>₹ <%=(orderDetails.totalOrderPriceWithoutOffer).toLocaleString()%></span>
+                                <p class="text-muted me-3">Product Discount:</p>
+                                <span class="red-text">- ₹ <%= (orderDetails.totalOrderPriceWithoutOffer  - orderDetails.orderTotal ).toLocaleString()%></span>
                             </div>
                             <div class="d-flex justify-content-end">
-                                <p class="text-muted me-3">Product Discount:</p>
-                                <span>- ₹ <%= (orderDetails.totalOrderPriceWithoutOffer + orderDetails.couponDiscount - orderDetails.orderTotal ).toLocaleString()%></span>
+                                <p class="text-muted me-3">Subtotal:</p>
+                                <span>₹ <%=(orderDetails.orderTotal).toLocaleString()%></span>
                             </div>
+                            
                             <div class="d-flex justify-content-end">
                                 <p class="text-muted me-3">Coupon Discount:</p>
-                                <span>- ₹ <%= (orderDetails.couponDiscount).toLocaleString()%></span>
+                                <span class="red-text">- ₹ <%= (orderDetails.couponDiscount).toLocaleString()%></span>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <p class="text-muted me-3">Delivery Charge:</p>
+                                <span> ₹ <%= (deliveryCharge).toLocaleString()%></span>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <p class="text-muted me-3">GST (18%):</p>
+                                <span> ₹ <%= (taxAmount).toLocaleString()%></span>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <h5 class="me-3">Total:</h5>
-                                <h5 class="text-success">₹ <%= (orderDetails.orderTotal).toLocaleString()%> (Rupees)</h5>
+                                <h5 class="text-success">₹ <%= (orderDetails.orderTotal  ).toLocaleString()%> (Rupees)</h5>
                             </div>
                         </div>
                     </div>
-
+                    <style>
+                        .red-text{
+                            color: red;
+                        }
+                    </style>
                 </div>
             </div>
         </div>

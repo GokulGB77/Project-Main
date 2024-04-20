@@ -254,15 +254,19 @@
                                         </ul> -->
 
                                     </div>
-                                    <!-- <div class="your-order-info order-shipping">
+                                    <div class="your-order-info order-shipping">
                                         <ul>
-                                            <li>Shipping: <span>₹  deliveryCharge  </span></li>
+                                            <li>delivery Charge: <span>₹  <%=deliveryCharge%>  </span></li>
                                         </ul>
-                                    </div> -->
+                                        <ul>
+                                            <li>GST (18%): <span id="orderGst">₹  <%= (cart.cartTotal * taxRate).toLocaleString() %>  </span></li>
+                                        </ul>
+                                    </div>
+                                  
                                     <div class="your-order-info order-total">
                                         <ul id="orderTotalUl">
                                             <li style="font-size: 20px; font-weight: bold;">Order Total: <span
-                                                    id="orderTotal">₹ <%= (cart.cartTotal - cart.couponDiscount
+                                                    id="orderTotal">₹ <%= (cart.cartTotal - cart.couponDiscount +((cart.cartTotal - cart.couponDiscount) * taxRate) + deliveryCharge
                                                         ).toLocaleString() %> </span>
                                             </li>
                                         </ul>
@@ -728,6 +732,7 @@
             const removeCouponBtn = document.getElementById("removeCouponBtn");
             const couponInputField = document.getElementById("coupon");
             const orderTotalSpan = document.getElementById("orderTotal");
+            const orderGstSpan = document.getElementById("orderGst");
 
             const codOption = document.getElementById("payment-method-3");
             const codSpan = document.getElementById("codSpan");
@@ -750,7 +755,7 @@
             })
                 .then((response) => response.json())
                 .then((responseData) => {
-                    const { message, errMessage, totalAmount, couponCode, discountAmount } =
+                    const { message, errMessage, totalAmount, couponCode, discountAmount,taxAmount } =
                         responseData.responseData;
 
                     if (errMessage) {
@@ -771,7 +776,7 @@
 
                             // Update the order total span
                             orderTotalSpan.textContent = `₹ ${totalAmount.toLocaleString()}`;
-
+                            orderGstSpan.textContent = `₹ ${taxAmount.toLocaleString()}`;
                             // Update the coupon and discount information
                             const couponHtml = `<ul class="coupon-ul">
                                                     <li>Coupon Applied: <span>${couponCode}</span></li>
@@ -822,6 +827,7 @@
             const removeCouponBtn = document.getElementById("removeCouponBtn");
             const couponInputField = document.getElementById("coupon");
             const orderTotalSpan = document.getElementById("orderTotal");
+            const orderGstSpan = document.getElementById("orderGst");
 
             const codOption = document.getElementById("payment-method-3");
             const codSpan = document.getElementById("codSpan");
@@ -843,7 +849,7 @@
             })
                 .then((response) => response.json())
                 .then((responseData) => {
-                    const { message, totalAmount } = responseData.responseData;
+                    const { message, totalAmount,taxAmount } = responseData.responseData;
                     if (message === "Coupon removed") {
                         // Enable the coupon input field
                         couponInputField.disabled = false;
@@ -860,6 +866,7 @@
 
                         // Update the order total span
                         orderTotalSpan.textContent = `₹ ${totalAmount.toLocaleString()}`;
+                        orderGstSpan.textContent = `₹ ${taxAmount.toLocaleString()}`;
 
                         // Hide the "Remove Coupon" button and show the "Apply Coupon" button
                         removeCouponBtn.style.display = "none";

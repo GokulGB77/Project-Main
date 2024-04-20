@@ -20,7 +20,8 @@ const instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_SECRET,
 });
-
+const taxRate = 18/100;
+const deliveryCharge = 500
 
 //-----------------------------User Side---------------------------------------------
 
@@ -104,9 +105,9 @@ const paymentOptionOld = async (req, res) => {
   //     res.status(500).json({ message: 'Internal Server Error' });
   //   }
 }
-
 const paymentOption = async (req, res) => {
   try {
+
     const userId = req.session.userId;
     if (!userId) {
       return res.status(409).json({ error: 'User not authenticated' });
@@ -131,7 +132,7 @@ const paymentOption = async (req, res) => {
     const orderAddress = address.addresses.find(addr => addr._id == selectedAddress);
 
     const orderProducts = cart.cartProducts;
-    const orderTotal = cart.cartTotal - cart.couponDiscount;
+    const orderTotal = cart.cartTotal  + ((cart.cartTotal - cart.couponDiscount) * taxRate) + deliveryCharge - cart.couponDiscount ;
     const orderId = generateOrderId();
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
@@ -151,9 +152,10 @@ const paymentOption = async (req, res) => {
       couponApplied: cart.couponApplied,
       couponDiscount: cart.couponDiscount,
     });
-
+     
+    console.log("before saving orde details order.orderStatus:",order.orderStatus)
     await order.save();
-
+    console.log("after saving orde details order.orderStatus:",order.orderStatus)
     req.session.selectedAddress = selectedAddress;
     req.session.selectedPaymentMethod = selectedPaymentMethod;
     req.session.deliveryNotes = deliveryNotes;
@@ -276,6 +278,10 @@ const placeOrder = async (req, res) => {
     }
 
     if (order.orderStatus === "payment-failed") {
+      order.orderStatus = "pending";
+      await order.save();
+    }
+    if (order.orderStatus === "payment-pending") {
       order.orderStatus = "pending";
       await order.save();
     }
@@ -457,10 +463,11 @@ const loadOrderInvoice = async (req, res) => {
     const userId = currentUser._id
     const orderId = req.query.id
     const orderDetails = await Ordersdb.findOne({ _id: orderId }).populate("orderProducts.product").populate("user")
-    const orderDate = orderDetails.orderDate
-    // console.log("orderDetails:", orderDetails)
-
-    res.render("orderInvoice", { token, userId, orderId, orderDetails, })
+    
+    const totalPriceSum = orderDetails.orderProducts.reduce((sum, product) => sum + product.totalPrice, 0);
+    const taxAmount = totalPriceSum * taxRate;
+ 
+    res.render("orderInvoice", { token, userId, orderId, orderDetails,taxAmount,deliveryCharge })
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");

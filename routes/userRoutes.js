@@ -47,24 +47,7 @@ userRoute.get("*",auth.isUser)
 
 userRoute.get('/',userController.loadHomePage);
 
-// userRoute.get('/auth' , passport.authenticate('google', { scope: 
-//   [ 'email', 'profile' ] 
-// }));
-// // Auth Callback 
-// userRoute.get( '/auth/callback', 
-//   passport.authenticate( 'google', { 
-//       successRedirect: '/auth/callback/success', 
-//       failureRedirect: '/auth/callback/failure'
-// })); 
-// // Success  
-// userRoute.get('/auth/callback/success' , (req , res) => { 
-//   if(!req.user) 
-//       res.redirect('/auth/callback/failure'); 
-//   res.send("Welcome " + req.user.email); 
-// }); 
 
-// // failure 
-// userRoute.get('/auth/callback/failure' ,userController.registerUserGoogle) 
 
 userRoute.get('/register', userController.loadRegister);
 userRoute.post('/register' ,userController.intialRegisterUser);
