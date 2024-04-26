@@ -44,6 +44,72 @@
             margin: 0;
             /* Remove default margin */
         }
+    
+        #searchForm {
+            position: relative;
+            display: inline-block;
+            width: 300px;
+            /* Adjust width as needed */
+        }
+    
+        #searchInput {
+            width: calc(100% - 40px);
+            /* Adjust width for search button */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+    
+        .button-search {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            height: 100%;
+        }
+    
+        .button-search i {
+            vertical-align: middle;
+        }
+    
+        #suggestionList {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            top: calc(100% + 5px);
+            /* Position below input */
+            left: 0;
+            width: calc(100% - 2px);
+            /* Adjust the width to match the input box */
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            /* Ensure the suggestion list appears above other elements */
+        }
+    
+        #suggestionList li {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ccc;
+        }
+    
+        #suggestionList li:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 
@@ -124,116 +190,6 @@
                                                     class="pe-7s-search"></i></button>
                                         </form>
                                     </div>
-
-
-                                    <script>
-                                        const searchInput = document.getElementById('searchInput');
-                                        const suggestionList = document.getElementById('suggestionList');
-
-                                        searchInput.addEventListener('input', async function () {
-                                            const query = searchInput.value;
-                                            if (query.trim() === '') {
-                                                suggestionList.innerHTML = ''; // Clear suggestion list if query is empty
-                                                return;
-                                            }
-
-                                            try {
-                                                const response = await fetch(`/search/suggestions?query=${encodeURIComponent(query)}`);
-                                                const suggestions = await response.json();
-
-                                                // Update suggestion list with retrieved suggestions
-                                                suggestionList.innerHTML = suggestions.map(suggestion => `<li>${suggestion}</li>`).join('');
-                                            } catch (error) {
-                                                console.error('Error fetching suggestions:', error);
-                                            }
-                                        });
-                                    </script>
-
-                                    <style>
-                                        #searchForm {
-                                            position: relative;
-                                            display: inline-block;
-                                            width: 300px;
-                                            /* Adjust width as needed */
-                                        }
-
-                                        #searchInput {
-                                            width: calc(100% - 40px);
-                                            /* Adjust width for search button */
-                                            padding: 10px;
-                                            border: 1px solid #ccc;
-                                            border-radius: 5px;
-                                            box-sizing: border-box;
-                                            font-size: 16px;
-                                        }
-
-                                        .button-search {
-                                            position: absolute;
-                                            top: 0;
-                                            right: 0;
-                                            padding: 0 10px;
-                                            background-color: #007bff;
-                                            border: none;
-                                            border-radius: 0 5px 5px 0;
-                                            color: #fff;
-                                            cursor: pointer;
-                                            transition: background-color 0.3s ease;
-                                            height: 100%;
-                                        }
-
-                                        .button-search i {
-                                            vertical-align: middle;
-                                        }
-
-                                        #suggestionList {
-                                            list-style-type: none;
-                                            margin: 0;
-                                            padding: 0;
-                                            position: absolute;
-                                            top: calc(100% + 5px);
-                                            /* Position below input */
-                                            left: 0;
-                                            width: calc(100% - 2px);
-                                            /* Adjust the width to match the input box */
-                                            background-color: #fff;
-                                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                                            border: 1px solid #ccc;
-                                            border-top: none;
-                                            border-radius: 0 0 5px 5px;
-                                            max-height: 200px;
-                                            overflow-y: auto;
-                                            z-index: 1000;
-                                            /* Ensure the suggestion list appears above other elements */
-                                        }
-
-                                        #suggestionList li {
-                                            padding: 10px;
-                                            cursor: pointer;
-                                            border-bottom: 1px solid #ccc;
-                                        }
-
-                                        #suggestionList li:last-child {
-                                            border-bottom: none;
-                                        }
-                                    </style>
-
-                                    <script>
-                                        document.getElementById('searchForm').addEventListener('submit', function (event) {
-                                            event.preventDefault(); // Prevent default form submission
-
-                                            const searchInput = document.getElementById('searchInput').value.trim();
-
-                                            // Send a fetch request to your server with the search query
-                                            fetch(`/search?query=${encodeURIComponent(searchInput)}`)
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    // Process the search results and update the DOM
-                                                    console.log(data); // Replace with your logic to update the DOM with search results
-                                                })
-                                                .catch(error => console.error('Error fetching search results:', error));
-                                        });
-                                    </script>
-
                                 </div>
 
                                 <% if (token) { %>
@@ -408,6 +364,7 @@
             </div>
         </div>
 
+        <!-- Toast session var -->
         <script>
             $(document).ready(function () {
                 // Check if success parameter exists in URL and if the message has not been shown yet
@@ -431,6 +388,48 @@
                 }
             });
         </script>
+
+        <!-- Search Form -->
+        <script>
+            document.getElementById('searchForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const searchInput = document.getElementById('searchInput').value.trim();
+
+                // Send a fetch request to your server with the search query
+                fetch(`/search?query=${encodeURIComponent(searchInput)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Process the search results and update the DOM
+                        console.log(data); // Replace with your logic to update the DOM with search results
+                    })
+                    .catch(error => console.error('Error fetching search results:', error));
+            });
+        </script>
+        <!-- Show suggestion for search -->
+        <script>
+            const searchInput = document.getElementById('searchInput');
+            const suggestionList = document.getElementById('suggestionList');
+        
+            searchInput.addEventListener('input', async function () {
+                const query = searchInput.value;
+                if (query.trim() === '') {
+                    suggestionList.innerHTML = ''; // Clear suggestion list if query is empty
+                    return;
+                }
+        
+                try {
+                    const response = await fetch(`/search/suggestions?query=${encodeURIComponent(query)}`);
+                    const suggestions = await response.json();
+        
+                    // Update suggestion list with retrieved suggestions
+                    suggestionList.innerHTML = suggestions.map(suggestion => `<li>${suggestion}</li>`).join('');
+                } catch (error) {
+                    console.error('Error fetching suggestions:', error);
+                }
+            });
+        </script>
+        
 
 
         <%- include('../layouts/footer.ejs') %>

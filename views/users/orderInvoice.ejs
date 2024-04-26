@@ -140,23 +140,7 @@
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
-    <script>
-       const downloadInvoice = function () {
-            // Get the content of the sales-data-report div
-            var content = document.getElementById('invoice').innerHTML;
-
-            // Generate PDF
-            html2pdf()
-            .set({
-            margin: 0.5,
-            filename: 'order-invoice.pdf',
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        })
-        .from(content)
-        .save();
-        };
-    </script>
+   
     <div style="padding-left:386px ;">
         <a class="btn btn-light btn-lg card-footer-btn  justify-content-center text-uppercase-bold-sm hover-lift-light"
             style="width:747px;" id="download" onclick="downloadInvoice()">
@@ -286,6 +270,21 @@
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript"></script>
+    <script>
+        const downloadInvoice = function () {
+             var content = document.getElementById('invoice').innerHTML;
+ 
+             html2pdf()
+             .set({
+             margin: 0.5,
+             filename: 'order-invoice.pdf',
+             html2canvas: { scale: 2, useCORS: true },
+             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+         })
+         .from(content)
+         .save();
+         };
+     </script>
 </body>
 </body>
 

@@ -6,6 +6,7 @@ const nocache = require("nocache")
 const flash = require('connect-flash');
 const app = express();
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
 
 
 
@@ -19,10 +20,7 @@ const path = require("path")
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/CouchCartDB", { 
-  useNewUrlParser: true, 
-  useUnifiedTopology: true 
-})
+mongoose.connect(process.env.dbURI)
 .then(()=>{
   console.log("MongoDB Connected Successfully");
 }).catch ((err)=>{

@@ -830,8 +830,8 @@ const returnOneOrder = async (req, res) => {
 
 const loadOrders = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Get the current page from the query parameter, default to 1 if not provided
-    const limit = 5; // Number of orders to display per page
+    const page = parseInt(req.query.page) || 1; 
+    const limit = 5; 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
@@ -858,14 +858,15 @@ const loadOrders = async (req, res) => {
       allOrders,
       allCategories,
       statuses,
-      currentPage: page, // Pass the current page to the view
-      totalPages: totalPages, // Pass the total number of pages to the view
+      currentPage: page,
+      totalPages: totalPages,
     });
   } catch (error) {
     console.error("Error loading orders:", error);
     res.status(500).send({ message: "Internal Server Error" });
   }
 };
+
 const loadOrders1 = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -926,7 +927,6 @@ const loadOrdersDetails = async (req, res) => {
     res.status(500).send({ message: "Internal Server Error" });
   }
 };
-
 
 const formatDate = (orderDate) => {
   const [dayStr, monthStr, yearStr] = orderDate.split('-');
@@ -1079,7 +1079,7 @@ const changeOrderStatus = async (req, res) => {
     console.log("Error in Updating Status:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 const approveRefund = async (req, res) => {
   try {

@@ -44,6 +44,73 @@
             margin: 0;
             /* Remove default margin */
         }
+
+        #searchForm {
+            position: relative;
+            display: inline-block;
+            width: 300px;
+            /* Adjust width as needed */
+        }
+
+        #searchInput {
+            width: calc(100% - 40px);
+            /* Adjust width for search button */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .button-search {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            height: 100%;
+        }
+
+        .button-search i {
+            vertical-align: middle;
+        }
+
+        #suggestionList {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            top: calc(100% + 5px);
+            /* Position below input */
+            left: 0;
+            width: calc(100% - 2px);
+            /* Adjust the width to match the input box */
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            /* Ensure the suggestion list appears above other elements */
+        }
+
+        #suggestionList li {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ccc;
+        }
+
+        #suggestionList li:last-child {
+            border-bottom: none;
+        }
+    
     </style>
 </head>
 
@@ -124,116 +191,6 @@
                                                     class="pe-7s-search"></i></button>
                                         </form>
                                     </div>
-
-
-                                    <script>
-                                        const searchInput = document.getElementById('searchInput');
-                                        const suggestionList = document.getElementById('suggestionList');
-
-                                        searchInput.addEventListener('input', async function () {
-                                            const query = searchInput.value;
-                                            if (query.trim() === '') {
-                                                suggestionList.innerHTML = ''; // Clear suggestion list if query is empty
-                                                return;
-                                            }
-
-                                            try {
-                                                const response = await fetch(`/search/suggestions?query=${encodeURIComponent(query)}`);
-                                                const suggestions = await response.json();
-
-                                                // Update suggestion list with retrieved suggestions
-                                                suggestionList.innerHTML = suggestions.map(suggestion => `<li>${suggestion}</li>`).join('');
-                                            } catch (error) {
-                                                console.error('Error fetching suggestions:', error);
-                                            }
-                                        });
-                                    </script>
-
-                                    <style>
-                                        #searchForm {
-                                            position: relative;
-                                            display: inline-block;
-                                            width: 300px;
-                                            /* Adjust width as needed */
-                                        }
-
-                                        #searchInput {
-                                            width: calc(100% - 40px);
-                                            /* Adjust width for search button */
-                                            padding: 10px;
-                                            border: 1px solid #ccc;
-                                            border-radius: 5px;
-                                            box-sizing: border-box;
-                                            font-size: 16px;
-                                        }
-
-                                        .button-search {
-                                            position: absolute;
-                                            top: 0;
-                                            right: 0;
-                                            padding: 0 10px;
-                                            background-color: #007bff;
-                                            border: none;
-                                            border-radius: 0 5px 5px 0;
-                                            color: #fff;
-                                            cursor: pointer;
-                                            transition: background-color 0.3s ease;
-                                            height: 100%;
-                                        }
-
-                                        .button-search i {
-                                            vertical-align: middle;
-                                        }
-
-                                        #suggestionList {
-                                            list-style-type: none;
-                                            margin: 0;
-                                            padding: 0;
-                                            position: absolute;
-                                            top: calc(100% + 5px);
-                                            /* Position below input */
-                                            left: 0;
-                                            width: calc(100% - 2px);
-                                            /* Adjust the width to match the input box */
-                                            background-color: #fff;
-                                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                                            border: 1px solid #ccc;
-                                            border-top: none;
-                                            border-radius: 0 0 5px 5px;
-                                            max-height: 200px;
-                                            overflow-y: auto;
-                                            z-index: 1000;
-                                            /* Ensure the suggestion list appears above other elements */
-                                        }
-
-                                        #suggestionList li {
-                                            padding: 10px;
-                                            cursor: pointer;
-                                            border-bottom: 1px solid #ccc;
-                                        }
-
-                                        #suggestionList li:last-child {
-                                            border-bottom: none;
-                                        }
-                                    </style>
-
-                                    <script>
-                                        document.getElementById('searchForm').addEventListener('submit', function (event) {
-                                            event.preventDefault(); // Prevent default form submission
-
-                                            const searchInput = document.getElementById('searchInput').value.trim();
-
-                                            // Send a fetch request to your server with the search query
-                                            fetch(`/search?query=${encodeURIComponent(searchInput)}`)
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    // Process the search results and update the DOM
-                                                    console.log(data); // Replace with your logic to update the DOM with search results
-                                                })
-                                                .catch(error => console.error('Error fetching search results:', error));
-                                        });
-                                    </script>
-
                                 </div>
 
                                 <% if (token) { %>
@@ -255,7 +212,6 @@
                                         </ul>
                                     </div>
 
-
                                     <% } else { %>
                                         <div class="header-action-style ">
                                             <a title="Login" href="/login"><i class="pe-7s-user"></i></a>
@@ -269,62 +225,11 @@
                                             </div>
                             </div>
                         </div>
-
-                    </div>
-                </div>
-            </div>
-            <!-- mini cart start -->
-            <div class="sidebar-cart-active">
-                <div class="sidebar-cart-all">
-                    <a class="cart-close" href="#"><i class="pe-7s-close"></i></a>
-                    <div class="cart-content">
-                        <h3>Shopping Cart</h3>
-                        <ul>
-                            <li>
-                                <div class="cart-img">
-                                    <a href="#"><img src="/user/images/cart/cart-1.jpg" alt=""></a>
-                                </div>
-                                <div class="cart-title">
-                                    <h4><a href="#">Stylish Swing Chair</a></h4>
-                                    <span> 1 × $49.00 </span>
-                                </div>
-                                <div class="cart-delete">
-                                    <a href="#">×</a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="cart-img">
-                                    <a href="#"><img src="/user/images/cart/cart-2.jpg" alt=""></a>
-                                </div>
-                                <div class="cart-title">
-                                    <h4><a href="#">Modern Chairs</a></h4>
-                                    <span> 1 × $49.00 </span>
-                                </div>
-                                <div class="cart-delete">
-                                    <a href="#">×</a>
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="cart-total">
-                            <h4>Subtotal: <span>$170.00</span></h4>
-                        </div>
-                        <div class="cart-btn btn-hover">
-                            <a class="theme-color" href="cart">view cart</a>
-                        </div>
-                        <div class="checkout-btn btn-hover">
-                            <a class="theme-color" href="checkout">checkout</a>
-                        </div>
                     </div>
                 </div>
             </div>
             <hr class="separator-line">
         </header>
-
-
-
-        <!-- editAddress.ejs -->
-
-        <!-- Add any necessary HTML structure if needed -->
 
         <div class="container">
             <div class="row justify-content-center">
@@ -340,39 +245,11 @@
                                 <label class="form-check-label" for="setDefaultTrue">Set as Default</label>
                             </div>
 
-                            <div class="form-check form-check-inline" hidden >
+                            <div class="form-check form-check-inline" hidden>
                                 <input class="form-check-input" type="checkbox" id="setDefaultFalse" name="setDefault"
                                     value=false <%=addressObject.setDefault===false ? 'checked' : '' %>>
                                 <label class="form-check-label" for="setDefaultFalse">Do not set as Default</label>
                             </div>
-
-                            <script>
-                                const setDefaultTrue = document.getElementById('setDefaultTrue');
-                                const setDefaultFalse = document.getElementById('setDefaultFalse');
-
-                                setDefaultTrue.addEventListener('change', function () {
-                                    if (setDefaultTrue.checked) {
-                                        // If 'Set as Default' checkbox is checked, uncheck 'Do not set as Default'
-                                        setDefaultFalse.checked = false;
-                                    } else {
-                                        // If 'Set as Default' checkbox is unchecked, check 'Do not set as Default'
-                                        setDefaultFalse.checked = true;
-                                    }
-                                });
-
-                                // Add event listener to 'Do not set as Default' checkbox
-                                setDefaultFalse.addEventListener('change', function () {
-                                    if (setDefaultFalse.checked) {
-                                        // If 'Do not set as Default' checkbox is checked, uncheck 'Set as Default'
-                                        setDefaultTrue.checked = false;
-                                    } else {
-                                        // If 'Do not set as Default' checkbox is unchecked, check 'Set as Default'
-                                        setDefaultTrue.checked = true;
-                                    }
-                                });
-                            </script>
-
-
                             <div>
                                 <label for="type">Address Type:</label>
                                 <div class="form-check form-check-inline">
@@ -450,6 +327,23 @@
         </div>
 
         <script>
+            document.getElementById('searchForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const searchInput = document.getElementById('searchInput').value.trim();
+
+                // Send a fetch request to your server with the search query
+                fetch(`/search?query=${encodeURIComponent(searchInput)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Process the search results and update the DOM
+                        console.log(data); // Replace with your logic to update the DOM with search results
+                    })
+                    .catch(error => console.error('Error fetching search results:', error));
+            });
+        </script>
+
+        <script>
             $(document).ready(function () {
                 // Check if success parameter exists in URL and if the message has not been shown yet
                 const urlParams = new URLSearchParams(window.location.search);
@@ -472,6 +366,59 @@
                 }
             });
         </script>
+
+        <script>
+            const searchInput = document.getElementById('searchInput');
+            const suggestionList = document.getElementById('suggestionList');
+
+            searchInput.addEventListener('input', async function () {
+                const query = searchInput.value;
+                if (query.trim() === '') {
+                    suggestionList.innerHTML = ''; // Clear suggestion list if query is empty
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/search/suggestions?query=${encodeURIComponent(query)}`);
+                    const suggestions = await response.json();
+
+                    // Update suggestion list with retrieved suggestions
+                    suggestionList.innerHTML = suggestions.map(suggestion => `<li>${suggestion}</li>`).join('');
+                } catch (error) {
+                    console.error('Error fetching suggestions:', error);
+                }
+            });
+        </script>
+
+        <script>
+            const setDefaultTrue = document.getElementById('setDefaultTrue');
+            const setDefaultFalse = document.getElementById('setDefaultFalse');
+
+            setDefaultTrue.addEventListener('change', function () {
+                if (setDefaultTrue.checked) {
+                    // If 'Set as Default' checkbox is checked, uncheck 'Do not set as Default'
+                    setDefaultFalse.checked = false;
+                } else {
+                    // If 'Set as Default' checkbox is unchecked, check 'Do not set as Default'
+                    setDefaultFalse.checked = true;
+                }
+            });
+
+            // Add event listener to 'Do not set as Default' checkbox
+            setDefaultFalse.addEventListener('change', function () {
+                if (setDefaultFalse.checked) {
+                    // If 'Do not set as Default' checkbox is checked, uncheck 'Set as Default'
+                    setDefaultTrue.checked = false;
+                } else {
+                    // If 'Do not set as Default' checkbox is unchecked, check 'Set as Default'
+                    setDefaultTrue.checked = true;
+                }
+            });
+        </script>
+
+
+        
+
 
 
         <%- include('../layouts/footer.ejs') %>

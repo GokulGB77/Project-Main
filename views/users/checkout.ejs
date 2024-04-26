@@ -1,37 +1,177 @@
 <%- include('../layouts/header.ejs',{userId:userId}) %>
 
-    <!-- <div class="breadcrumb-area bg-gray-4 breadcrumb-padding-1">
-        <div class="container">
-            <div class="breadcrumb-content text-center">
-                <h2>Checkout </h2>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><i class="ti-angle-right"></i></li>
-                    <li>Checkout </li>
-                </ul>
-            </div>
-        </div>
-        <div class="breadcrumb-img-1">
-            <img src="/user/images/banner/breadcrumb-1.png" alt="">
-        </div>
-        <div class="breadcrumb-img-2">
-            <img src="/user/images/banner/breadcrumb-2.png" alt="">
-        </div>
-    </div> -->
+    <style>
+        .coupons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .coupon-card {
+            margin: 10px;
+        }
+
+        .discount {
+            font-weight: 700;
+        }
+
+        .modal-header {
+            background-color: #ffffff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .card {
+            margin-top: 30px;
+        }
+
+        .card {
+            width: 180px;
+            height: 230px;
+            padding: 10px;
+            border-radius: 20px;
+            background: orange;
+            border: none;
+            color: #fff;
+            display: flex;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image {
+            position: absolute;
+            opacity: .1;
+            left: 15px;
+            top: 55px;
+        }
+
+        .image2 {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            opacity: .1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 9% auto;
+            padding: 33px;
+            border: 1px solid #888;
+            width: 80%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .address-modal-content {
+            background-color: #fefefe;
+            margin: 9% auto;
+            padding: 33px;
+            border: 1px solid #888;
+            width: 80%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .close {
+            color: #aaa;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .product-info {
+            flex: 1;
+            padding-right: 15px;
+            /* Add some space between product info and price */
+        }
+
+        .product-price {
+            white-space: nowrap;
+            /* Prevent price from wrapping */
+        }
+
+        .alert-z-index {
+            z-index: 10000;
+
+        }
+
+        #selectedAddress option {
+            width: 100px;
+            padding-right: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .coupon-button {
+            width: 170px;
+            /* Adjust the width as needed */
+        }
+
+        .coupon-code-section {
+            margin-top: 20px;
+        }
+
+        .coupon-code-input {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .coupon-code-input input {
+            flex: 1;
+            padding: 5px;
+        }
+
+        .coupon-code-input button {
+            margin-left: 10px;
+            background-color: #e97730;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .coupon-code-input button:hover {
+            background-color: black;
+        }
+
+        .coupon-code-message {
+            color: green;
+            font-weight: bold;
+            font-size: 13px;
+        }
+    </style>
+
+
     <div class="checkout-main-area pb-100 pt-100">
         <div class="container">
-
-            <!-- <div class="customer-zone mb-20">
-                <p class="cart-page-title">Have a coupon? <a class="checkout-click3" href="#">Click here to enter your
-                        code</a></p>
-                <div class="checkout-login-info3">
-                    <form id="couponForm" action="checkout/apply-coupon" method="post">
-                        <input type="text" name="coupon" id="coupon" placeholder="Coupon code">
-                        <input type="submit" id="applyButton" value="Apply Coupon">
-                    </form>
-                </div>
-
-            </div> -->
             <div class="checkout-wrap pt-30">
                 <div class="row">
                     <div class="col-lg-7">
@@ -43,7 +183,7 @@
                             <div class="tab-pane fade show active" id="address-content">
                                 <select id="selectedAddress" name="selectedAddress" class="form-control">
                                     </option>
-                                    
+
                                     <% addresslist.forEach(function(address, index) { %>
 
                                         <option class="option" value="" disabled></option>
@@ -60,15 +200,6 @@
 
 
                             </div>
-                            <style>
-                                #selectedAddress option {
-                                    width: 100px;
-                                    padding-right: 20px;
-                                    white-space: nowrap;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                }
-                            </style>
                             <br>
                             <% if (addresslist.length < 4) { %>
                                 <div class="row">
@@ -77,12 +208,7 @@
                                             class="fa fa-plus"></i> Add Address</button>
                                 </div>
                                 <% } %>
-                                    <script>
-                                        document.getElementById('addAddressButton').addEventListener('click', function () {
-                                            // Show the modal popup
-                                            $('#addAddressModal').modal('show');
-                                        });
-                                    </script>
+
                                     <div id="addAddressModal" class="modal" style="z-index: 2000;">
                                         <div class="modal-dialog">
 
@@ -190,15 +316,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- <div class="checkout-account mb-25">
-                                <input class="checkout-toggle2" type="checkbox">
-                                <span>Create an account?</span>
-                            </div> -->
-
-                                    <!-- <div class="checkout-account mt-25">
-                                <input class="checkout-toggle" type="checkbox">
-                                <span>Ship to a different address?</span>
-                            </div> -->
 
                                     <div class="additional-info-wrap">
                                         <label>Order notes</label>
@@ -233,41 +350,30 @@
                                                 <% }); %>
                                         </ul>
                                     </div>
-                                    <style>
-                                        .product-info {
-                                            flex: 1;
-                                            padding-right: 15px;
-                                            /* Add some space between product info and price */
-                                        }
 
-                                        .product-price {
-                                            white-space: nowrap;
-                                            /* Prevent price from wrapping */
-                                        }
-                                    </style>
                                     <div class="your-order-info order-subtotal">
                                         <ul>
                                             <li>Subtotal:<span>₹ <%= (cart.cartTotal).toLocaleString() %> </span></li>
                                         </ul>
-                                        <!-- <ul id="shipping">
-                                            <li>Shipping: <span>₹  deliveryCharge  </span></li>
-                                        </ul> -->
+
 
                                     </div>
                                     <div class="your-order-info order-shipping">
                                         <ul>
-                                            <li>delivery Charge: <span>₹  <%=deliveryCharge%>  </span></li>
+                                            <li>delivery Charge: <span>₹ <%=deliveryCharge%> </span></li>
                                         </ul>
                                         <ul>
-                                            <li>GST (18%): <span id="orderGst">₹  <%= (cart.cartTotal * taxRate).toLocaleString() %>  </span></li>
+                                            <li>GST (18%): <span id="orderGst">₹ <%= (cart.cartTotal *
+                                                        taxRate).toLocaleString() %> </span></li>
                                         </ul>
                                     </div>
-                                  
+
                                     <div class="your-order-info order-total">
                                         <ul id="orderTotalUl">
                                             <li style="font-size: 20px; font-weight: bold;">Order Total: <span
-                                                    id="orderTotal">₹ <%= (cart.cartTotal - cart.couponDiscount +((cart.cartTotal - cart.couponDiscount) * taxRate) + deliveryCharge
-                                                        ).toLocaleString() %> </span>
+                                                    id="orderTotal">₹ <%= (cart.cartTotal - cart.couponDiscount
+                                                        +((cart.cartTotal - cart.couponDiscount) * taxRate) +
+                                                        deliveryCharge ).toLocaleString() %> </span>
                                             </li>
                                         </ul>
                                     </div>
@@ -313,193 +419,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <script>
-                                            document.querySelectorAll('.copy-code-btn').forEach(button => {
-                                                var modal = document.getElementById("myModal");
-
-                                                button.addEventListener('click', () => {
-                                                    const couponCode = button.closest('.coupon-card').dataset.couponCode;
-                                                    navigator.clipboard.writeText(couponCode)
-                                                        .then(() => {
-                                                            modal.style.display = "none";
-                                                        })
-                                                        .catch(err => {
-                                                            console.error('Failed to copy: ', err);
-                                                        });
-                                                });
-                                            });
-                                            document.querySelectorAll('.card').forEach(card => {
-                                                var modal = document.getElementById("myModal");
-                                                card.addEventListener('click', () => {
-                                                    const couponCard = card.closest('.coupon-card');
-                                                    const couponCode = couponCard.dataset.couponCode;
-                                                    const couponUsed = couponCard.dataset.couponUsed === 'true';
-
-                                                    if (!couponUsed) {
-                                                        navigator.clipboard.writeText(couponCode)
-                                                            .then(() => {
-                                                                $.toast({
-                                                                    heading: 'Coupon Copied',
-                                                                    showHideTransition: 'slide',
-                                                                    position: 'top-center',
-                                                                    icon: 'success',
-                                                                    stack: 0
-                                                                });
-                                                                modal.style.display = "none";
-                                                            })
-                                                            .catch(err => {
-                                                                console.error('Failed to copy: ', err);
-                                                            });
-                                                    } else {
-                                                        // Coupon already used, show an error message or perform any other desired action
-                                                        $.toast({
-                                                            heading: 'Coupon Already Used',
-                                                            showHideTransition: 'slide',
-                                                            position: 'top-center',
-                                                            icon: 'error',
-                                                            stack: 0
-                                                        });
-                                                    }
-                                                });
-                                            });
-
-                                        </script>
-                                        <script>
 
 
-                                            document.addEventListener("DOMContentLoaded", function () {
-                                                var modal = document.getElementById("myModal");
-                                                var viewCouponsLink = document.getElementById("viewCoupons");
-
-                                                viewCouponsLink.addEventListener("click", function () {
-                                                    modal.style.display = "block";
-                                                });
-
-
-
-                                                window.addEventListener("click", function (event) {
-                                                    if (event.target == modal) {
-                                                        modal.style.display = "none";
-                                                    }
-                                                });
-                                            });
-                                            document.addEventListener("DOMContentLoaded", function () {
-                                                var modal = document.getElementById("myModal");
-                                                var closeBtn = document.getElementById("cls-btn");
-                                                closeBtn.addEventListener("click", function () {
-                                                    modal.style.display = "none";
-                                                });
-
-
-                                            });
-
-                                        </script>
-                                        <style>
-                                            .coupons-container {
-                                                display: flex;
-                                                flex-wrap: wrap;
-                                                justify-content: center;
-                                            }
-
-                                            .coupon-card {
-                                                margin: 10px;
-                                            }
-
-                                            .discount {
-                                                font-weight: 700;
-                                            }
-
-                                            .modal-header {
-                                                background-color: #ffffff;
-                                                padding: 10px;
-                                                display: flex;
-                                                justify-content: space-between;
-                                                align-items: center;
-                                                width: 100%;
-                                            }
-
-                                            .card {
-                                                margin-top: 30px;
-                                            }
-
-                                            .card {
-                                                width: 180px;
-                                                height: 230px;
-                                                padding: 10px;
-                                                border-radius: 20px;
-                                                background: orange;
-                                                border: none;
-                                                color: #fff;
-                                                display: flex;
-                                                position: relative;
-                                                align-items: center;
-                                                justify-content: center;
-                                            }
-
-                                            .image {
-                                                position: absolute;
-                                                opacity: .1;
-                                                left: 15px;
-                                                top: 55px;
-                                            }
-
-                                            .image2 {
-                                                position: absolute;
-                                                bottom: 0;
-                                                right: 0;
-                                                opacity: .1;
-                                            }
-
-                                            .modal {
-                                                display: none;
-                                                position: fixed;
-                                                z-index: 100;
-                                                left: 0;
-                                                top: 0;
-                                                width: 100%;
-                                                height: 100%;
-                                                overflow: auto;
-                                                background-color: rgba(0, 0, 0, 0.4);
-                                            }
-
-                                            .modal-content {
-                                                background-color: #fefefe;
-                                                margin: 9% auto;
-                                                padding: 33px;
-                                                border: 1px solid #888;
-                                                width: 80%;
-                                                display: flex;
-                                                flex-wrap: wrap;
-                                                justify-content: center;
-                                                align-items: flex-start;
-                                            }
-
-                                            .address-modal-content {
-                                                background-color: #fefefe;
-                                                margin: 9% auto;
-                                                padding: 33px;
-                                                border: 1px solid #888;
-                                                width: 80%;
-                                                display: flex;
-                                                flex-wrap: wrap;
-                                                justify-content: center;
-                                                align-items: flex-start;
-                                            }
-
-                                            .close {
-                                                color: #aaa;
-                                                float: left;
-                                                font-size: 28px;
-                                                font-weight: bold;
-                                            }
-
-                                            .close:hover,
-                                            .close:focus {
-                                                color: black;
-                                                text-decoration: none;
-                                                cursor: pointer;
-                                            }
-                                        </style>
 
 
                                         <form class="coupon-code-input" id="couponForm" action="checkout/apply-coupon"
@@ -514,45 +435,7 @@
                                         </form>
                                         <div id="couponCodeMessage" class="coupon-code-message" style="height: 15px;">
                                         </div>
-                                        <style>
-                                            .coupon-button {
-                                                width: 170px;
-                                                /* Adjust the width as needed */
-                                            }
 
-                                            .coupon-code-section {
-                                                margin-top: 20px;
-                                            }
-
-                                            .coupon-code-input {
-                                                display: flex;
-                                                margin-bottom: 10px;
-                                            }
-
-                                            .coupon-code-input input {
-                                                flex: 1;
-                                                padding: 5px;
-                                            }
-
-                                            .coupon-code-input button {
-                                                margin-left: 10px;
-                                                background-color: #e97730;
-                                                color: white;
-                                                padding: 5px 10px;
-                                                border: none;
-                                                cursor: pointer;
-                                            }
-
-                                            .coupon-code-input button:hover {
-                                                background-color: black;
-                                            }
-
-                                            .coupon-code-message {
-                                                color: green;
-                                                font-weight: bold;
-                                                font-size: 13px;
-                                            }
-                                        </style>
                                     </div>
                                 </div>
                                 <div class="payment-method">
@@ -574,9 +457,10 @@
                                                 <input id="payment-method-3" class="input-radio" type="radio"
                                                     value="cod" disabled name="payment_method">
                                                 <label id="payment-method-3-label" for="payment-method-3"
-                                                     style="pointer-events:none">Cash on delivery
+                                                    style="pointer-events:none">Cash on delivery
                                                 </label>
-                                                <span id="codSpan" class="text-danger small">COD is not available for orders above Rs
+                                                <span id="codSpan" class="text-danger small">COD is not available for
+                                                    orders above Rs
                                                     1000. </span>
 
                                             </div>
@@ -674,7 +558,7 @@
 
                                 if (!paymentAttempted) {
                                     paymentAttempted = true;
-                                    
+
                                     // Payment failed
 
                                     swal({
@@ -683,8 +567,8 @@
                                         icon: "error",
                                         button: "OK",
                                         customClass: {
-                                        container: 'alert-z-index'
-                                    }
+                                            container: 'alert-z-index'
+                                        }
                                     }).then(() => {
                                         window.location.href = `/payment-failed`
                                         console.error('Payment failed:', response.error);
@@ -715,14 +599,8 @@
 
         })
     </script>
-    <style>
-        .alert-z-index{
-            z-index: 10000; 
 
-        }
-    </style>
     <!-- Apply Coupon Fetch -->
-
     <script>
         document.getElementById("applyButton").addEventListener("click", function (event) {
             event.preventDefault();
@@ -755,7 +633,7 @@
             })
                 .then((response) => response.json())
                 .then((responseData) => {
-                    const { message, errMessage, totalAmount, couponCode, discountAmount,taxAmount } =
+                    const { message, errMessage, totalAmount, couponCode, discountAmount, taxAmount } =
                         responseData.responseData;
 
                     if (errMessage) {
@@ -849,7 +727,7 @@
             })
                 .then((response) => response.json())
                 .then((responseData) => {
-                    const { message, totalAmount,taxAmount } = responseData.responseData;
+                    const { message, totalAmount, taxAmount } = responseData.responseData;
                     if (message === "Coupon removed") {
                         // Enable the coupon input field
                         couponInputField.disabled = false;
@@ -873,14 +751,14 @@
                         applyButton.style.display = "block";
                     }
                     if (totalAmount <= 5000) {
-                            codOption.disabled = false;
-                            codSpan.style.display = 'none';
-                            codLabel.style.pointerEvents = 'auto';
-                        } else {
-                            codOption.disabled = true;
-                            codSpan.style.display = 'inline';
-                            codLabel.style.pointerEvents = 'none';
-                        }
+                        codOption.disabled = false;
+                        codSpan.style.display = 'none';
+                        codLabel.style.pointerEvents = 'auto';
+                    } else {
+                        codOption.disabled = true;
+                        codSpan.style.display = 'inline';
+                        codLabel.style.pointerEvents = 'none';
+                    }
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -892,6 +770,99 @@
         window.onload = removeCoupon();
     </script>
 
+    <!-- Add address modal -->
+    <script>
+        document.getElementById('addAddressButton').addEventListener('click', function () {
+            // Show the modal popup
+            $('#addAddressModal').modal('show');
+        });
+    </script>
+
+
+    <!-- copying code from modal -->
+    <script>
+        document.querySelectorAll('.copy-code-btn').forEach(button => {
+            var modal = document.getElementById("myModal");
+
+            button.addEventListener('click', () => {
+                const couponCode = button.closest('.coupon-card').dataset.couponCode;
+                navigator.clipboard.writeText(couponCode)
+                    .then(() => {
+                        modal.style.display = "none";
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+            });
+        });
+        document.querySelectorAll('.card').forEach(card => {
+            var modal = document.getElementById("myModal");
+            card.addEventListener('click', () => {
+                const couponCard = card.closest('.coupon-card');
+                const couponCode = couponCard.dataset.couponCode;
+                const couponUsed = couponCard.dataset.couponUsed === 'true';
+
+                if (!couponUsed) {
+                    navigator.clipboard.writeText(couponCode)
+                        .then(() => {
+                            $.toast({
+                                heading: 'Coupon Copied',
+                                showHideTransition: 'slide',
+                                position: 'top-center',
+                                icon: 'success',
+                                stack: 0
+                            });
+                            modal.style.display = "none";
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy: ', err);
+                        });
+                } else {
+                    // Coupon already used, show an error message or perform any other desired action
+                    $.toast({
+                        heading: 'Coupon Already Used',
+                        showHideTransition: 'slide',
+                        position: 'top-center',
+                        icon: 'error',
+                        stack: 0
+                    });
+                }
+            });
+        });
+
+    </script>
+
+    <!-- View Coupon modal -->
+    <script>
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var modal = document.getElementById("myModal");
+            var viewCouponsLink = document.getElementById("viewCoupons");
+
+            viewCouponsLink.addEventListener("click", function () {
+                modal.style.display = "block";
+            });
+
+
+
+            window.addEventListener("click", function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            var modal = document.getElementById("myModal");
+            var closeBtn = document.getElementById("cls-btn");
+            closeBtn.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+
+
+        });
+
+    </script>
 
 
     <%- include('../layouts/footer.ejs',) %>

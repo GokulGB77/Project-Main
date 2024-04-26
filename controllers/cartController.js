@@ -5,8 +5,8 @@ const Userdb = require("../models/userModel")
 const Cartdb = require("../models/cartModel")
 const Addressdb = require("../models/addressModel")
 const MAX_CART_QUANTITY = 10;
-const taxRate =18/100;
-const deliveryCharge = 500;
+const taxRate =18/100; //Current Gst rate for Furnitures in India
+const deliveryCharge = 500; // default delivery charge value
 
 const addToCart = async (req, res) => {
   try {
@@ -332,35 +332,20 @@ const loadCheckout = async (req, res) => {
 
 const applyCoupon = async (req, res) => {
   try {
-    const { cartId, couponCode } = req.body; // Destructuring assignment to extract properties
-    // const deliveryCharge = 500
-    // console.log("cartId:", cartId);
-    // console.log("couponCode:", couponCode);
+    const { cartId, couponCode } = req.body; 
 
-    // Fetch cart details from the database
+
     const cart = await Cartdb.findById(cartId).populate("cartProducts.product");
 
-    // Check if cart exists
     if (!cart) {
       throw new Error("Cart Not Found");
     }
-    // Fetch coupon details from the database
     const coupon = await Couponsdb.findOne({ code: couponCode });
     if (!coupon) {
       let responseData = { message: "Invalid Coupon Code" }
-      // console.log("Invalid Coupon Code");
       return res.status(200).json({ responseData });
     }
-    // if (coupon.couponAppliedUsers) {
-    //   if (coupon.couponAppliedUsers.includes(cart.user)) {
-    //     let responseData = { errMessage: "Already used. Enter a Valid Coupon." };
-    //     console.log("Coupon already used");
-    //     return res.status(400).json({ responseData });
-    //   }
-    // }
-    // cart.couponApplied = coupon._id;
-
-    // Handle coupon application logic here...
+   
     const couponType = coupon.discountType;
     const couponId = coupon._id;
     const couponValue = coupon.discountValue;
@@ -410,14 +395,9 @@ const applyCoupon = async (req, res) => {
 const removeCoupon = async (req, res) => {
   try {
     const { cartId, couponCode } = req.body; 
-    // const deliveryCharge = 500
-    // console.log("cartId:", cartId);
-    // console.log("couponCode:", couponCode);
-
-    // Fetch cart details from the database
+   
     const cart = await Cartdb.findById(cartId).populate("cartProducts.product");
 
-    // Check if cart exists
     if (!cart) {
       throw new Error("Cart Not Found");
     }
@@ -430,15 +410,10 @@ const removeCoupon = async (req, res) => {
       taxAmount:taxAmount
     };
     await cart.save();
-
-    // delete req.session.couponApplied;
-
-
-    // Respond with success message if coupon applied successfully
     res.status(200).json({ responseData });
   } catch (error) {
-    console.error('Error Applying Coupon:', error.message); // Log error message only
-    res.status(500).json({ message: 'Internal server error' }); // Respond with generic error message
+    console.error('Error Applying Coupon:', error.message); 
+    res.status(500).json({ message: 'Internal server error' }); 
   }
 };
 
