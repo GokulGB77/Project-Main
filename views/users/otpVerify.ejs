@@ -446,7 +446,7 @@
   
       // Start the countdown timer
       const startResendTimer = () => {
-          resendTimeout = Date.now() + 25000; // 10 seconds
+          resendTimeout = Date.now() + 2 * 60 * 1000; // 10 seconds
           updateResendTimer();
           // Update the timer every second
           setInterval(updateResendTimer, 1000);
