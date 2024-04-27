@@ -21,30 +21,52 @@
             <div class="card mx-auto card-login">
                 <div class="card-body">
                     <h4 class="card-title mb-4 text-center">Admin Log In</h4>
-                    <form action="/admin/dashboard" method="post">
+                    <form id="loginForm" method="post">
                         <div class="mb-3">
                             <input class="form-control" placeholder="Email" type="text" name="email" id="email" required>
-                        </div> <!-- form-group// -->
+                        </div>
                         <div class="mb-3">
                             <input class="form-control" placeholder="Password" type="password" name="password" id="password" required>
-                        </div> <!-- form-group// -->
-                        <!-- <div class="mb-3">
-                            <a href="#" class="float-end font-sm text-muted">Forgot password?</a>
-                            <label class="form-check">
-                                <input type="checkbox" class="form-check-input" checked="">
-                                <span class="form-check-label">Remember</span>
-                            </label>
-                        </div> form-group form-check .// -->
+                        </div>
                         <% if (typeof message !== 'undefined') { %>
                             <p style="text-align: center; color: red;">
                                 <%= message %>
                             </p>
                         <% }; %>
-                        
                         <div class="mb-4">
-                            <button type="submit" class="btn btn-primary w-100"> Login </button>
-                        </div> <!-- form-group// -->
+                            <button type="button" id="loginButton" class="btn btn-primary w-100"> Login </button>
+                        </div>
                     </form>
+                    
+                    <script>
+                        document.getElementById('loginButton').addEventListener('click', async () => {
+                            const email = document.getElementById('email').value;
+                            const password = document.getElementById('password').value;
+                    
+                            try {
+                                const response = await fetch('/admin/dashboard', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ email, password })
+                                });
+                    
+                                if (response.ok) {
+                                    // Redirect to dashboard or handle success response
+                                    window.location.href = '/admin/dashboard';
+                                } else {
+                                    // Handle error response
+                                    const responseData = await response.json();
+                                    alert(responseData.error); // or display error message in the UI
+                                }
+                            } catch (error) {
+                                console.error('Login error:', error.message);
+                                // Handle network errors or other exceptions
+                            }
+                        });
+                    </script>
+                    
                   
 
                  

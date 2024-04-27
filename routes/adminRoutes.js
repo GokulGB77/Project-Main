@@ -43,6 +43,8 @@ const upload = multer({ storage: storage });
 adminRoute.set('view engine','ejs');
 adminRoute.set('views','./views/admins')
 
+
+
 adminRoute.get('/',adminController.loadAdminLogin);
 adminRoute.post('/dashboard',adminController.verifyAdminLogin);
 adminRoute.get('/sales-statistics',dashboardController.salesStatistics);
@@ -53,12 +55,9 @@ adminRoute.post('/generate-sales-report-pdf',dashboardController.generateSalesRe
 // adminRoute.post('/generate-pdf',dashboardController.generateSalesReportPDF);
 // adminRoute.get('/generate-pdf',dashboardController.generateSalesReportPdf);
 
-
 adminRoute.get('/user-details',adminController.userDetails)
 adminRoute.get('/user-details-fetch',adminController.userDetailsFetch)
 adminRoute.get("/user-details/change-status",adminController.changeStatus)
-
-
 
 adminRoute.get("/products",productsController.loadAdminProducts);
 adminRoute.get("/products1",productsController.loadAdminProducts1);
@@ -83,7 +82,6 @@ adminRoute.get("/orders/order-details",ordersController.loadOrdersDetails)
 adminRoute.post("/change-order-status",ordersController.changeOrderStatus)
 adminRoute.post("/orders/order-details/save-notes",ordersController.adminCancel)
 adminRoute.post("/approve-refund", ordersController.approveRefund);
-
 
 adminRoute.get("/coupons",couponsController.loadCoupons)
 // adminRoute.get("/admin/coupons/list",couponsController.getCouponList)
