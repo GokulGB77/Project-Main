@@ -46,6 +46,7 @@ adminRoute.set('views','./views/admins')
 
 
 adminRoute.get('/',adminController.loadAdminLogin);
+adminRoute.get('*',adminAuth.isAdmin);
 adminRoute.post('/dashboard',adminController.verifyAdminLogin);
 adminRoute.get('/sales-statistics',dashboardController.salesStatistics);
 adminRoute.get('/dashboard',dashboardController.loadAdminDashoard);

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Admindb = require("../models/userModel")
+require('dotenv').config();
 
 
 const isLogin = async (req, res, next) => {
@@ -25,6 +26,22 @@ const isLogout =  (req, res, next) => {
   }
 }
 
+// const isAdmin = (req, res, next) => {
+//   const token = req.cookies.adminjwt;
+//   if (token) {
+//     jwt.verify(token, "secret", (err, decodedToken) => {
+//       if (err) {
+//        res.redirect("/admin/login");
+//       } else {
+       
+//         next();
+//       }
+//     });
+//   } else {
+//     res.redirect("/admin/login");
+//   }
+// };
+
 const isAdmin = async (req, res, next) => {
   try {
       // Extract the token from the cookie
@@ -36,15 +53,16 @@ const isAdmin = async (req, res, next) => {
 
       // Verify the token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      
+      console.log("decoded:",decoded)
+
       // Check if the decoded token contains necessary data
       if (!decoded) {
           return res.status(401).json({ message: 'Unauthorized' });
       }
 
       // Retrieve user from the database
-      const user = await Admindb.findById(decoded.userId);
-
+      const user = await Admindb.findById(decoded.id);
+      console.log("user:",user)
       if (!user || user.is_admin !== 1) {
           return res.status(403).json({ message: 'Forbidden' });
       }
