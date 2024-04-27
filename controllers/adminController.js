@@ -142,37 +142,9 @@ const changeStatus = async (req, res) => {
   }
 };
 
-const blockUser = async (req,res) => {
-  try {
-    const id = req.query.id;
-    const user = await Admindb.findByIdAndUpdate(id,{
-      status:1
-    })
-    const users = await Admindb.find({});
-    console.log(`Blocked User:${user.name} `);
 
-    res.render("userDetails",{users});
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("User Blocking Failed");
-  }
-}
 
-const unblockUser = async (req,res) => {
-  try {
-    const id = req.query.id;
-    const user = await Admindb.findByIdAndUpdate(id,{
-      status:0
-    })
-    const users = await Admindb.find({});
-    console.log(`Unblocked User:${user.name} `);
 
-    res.render("userDetails",{users});
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("User Unblocking Failed");
-  }
-}
 
 
 
@@ -182,8 +154,6 @@ module.exports = {
   userDetailsFetch,
   verifyAdminLogin,
   adminLogout,
-  blockUser,
-  unblockUser,
   changeStatus,
   
 }
