@@ -54,7 +54,7 @@ const intialRegisterUser = async (req, res) => {
     }
 
     const OTP = generateOTP()
-    const otpExpirationTime = 20000; // 5 * 60 * 1000 = 5 minutes in milliseconds
+    const otpExpirationTime = 2 * 60 * 1000; // 5 * 60 * 1000 = 5 minutes in milliseconds
 
     req.session.tempUserDetails = {
       name: req.body.name,
@@ -99,7 +99,7 @@ const intialRegisterUser = async (req, res) => {
 const resendOtp = async (req, res) => {
   try {
     const OTP = generateOTP();
-    const newOtpExpiration = 20000; // 5 * 60 * 1000 = 5 minutes in milliseconds
+    const newOtpExpiration =  2 * 60 * 1000; // 5 * 60 * 1000 = 5 minutes in milliseconds
 
 
     // Update the OTP in the session data
@@ -353,6 +353,7 @@ const findUser = async (req,res) => {
 
   }
 }
+
 const verifyEmailAndSendOtp = async (req, res) => {
   try {
     const email = req.body.email;
