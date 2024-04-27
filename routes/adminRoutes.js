@@ -69,6 +69,7 @@ adminRoute.post("/products/add-product",upload.array("productImage", 4),products
 adminRoute.get("/products/edit-product",productsController.editProduct)
 adminRoute.post("/products/edit-product",productsController.updateProduct)
 
+adminRoute.get("/products/change-status",productsController.changeStatus)
 adminRoute.get("/products/archive-product",productsController.archiveProduct)
 adminRoute.get("/products/unarchive-product",productsController.unarchiveProduct)
 

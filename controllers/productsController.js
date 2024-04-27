@@ -222,6 +222,33 @@ const updateProduct = async (req, res) => {
   }
 };
 
+const changeStatus = async (req, res) => {
+  try {
+      const id = req.query.id;
+      const currentPage = req.query.page;
+      const newStatus = req.query.status === '0' ? 1 : 0; // Toggle status
+      const limit = 10; // Number of products to display per page
+
+      // Calculate the start and end index for the current page
+      const startIndex = (currentPage - 1) * limit;
+      const endIndex = startIndex + limit;
+      const totalProducts = await Productsdb.countDocuments();
+
+      // Calculate the total number of pages
+      const totalPages = Math.ceil(totalProducts / limit);
+
+      const product = await Productsdb.findByIdAndUpdate(id, { status: newStatus });
+      const products = await Productsdb.find({}).sort({ productName: 1 });
+      
+      console.log(`Product ${newStatus === 0 ? 'Unarchived' : 'Archived'}: ${product.productName}`);
+      res.render("viewProducts", { products, currentPage, totalPages });
+  } catch (error) {
+      console.log(error);
+      res.status(500).send("Status change failed");
+  }
+};
+
+
 const archiveProduct = async (req, res) => {
   try {
     const id = req.query.id;
@@ -272,67 +299,6 @@ const unarchiveProduct = async (req, res) => {
   }
 }
 
-
-
-
-//--------------------------------------User Side---------------------------------
-
-// const loadShop = async (req, res) => {
-//   try {
-//     const userId = res.locals.currentUserId;
-//     console.log("userId in shoppage:---- ", userId);
-//     const perPage = 12; // Number of items per page
-//     const page = parseInt(req.query.page) || 1; // Extract page number from query parameters
-//     const skip = (page - 1) * perPage;
-//     const limit = perPage;
-
-//     // Retrieve total count of all items
-//     const totalCount = await Productsdb.countDocuments();
-
-//     // Retrieve total pages based on total count and per page limit
-//     const totalPages = Math.ceil(totalCount / perPage);
-
-//     // Retrieve sorting criteria from query parameters
-//     const sortBy = req.query.sortBy || 'default'; // Default sorting criteria
-
-//     // Retrieve filter criteria from query parameters
-//     const filterByCategory = req.query.category || null; // Filter by category, if provided
-
-//     // Construct filter object based on filter criteria
-//     const filter = filterByCategory ? { "category.categoryName": filterByCategory } : {};
-
-//     // Perform database query based on sorting criteria and filter
-//     let query;
-//     switch (sortBy) {
-//       case 'A-Z':
-//         query = Productsdb.find(filter).sort({ productName: 1 }).skip(skip).limit(limit).populate("category");
-//         break;
-//       case 'Z-A':
-//         query = Productsdb.find(filter).sort({ productName: -1 }).skip(skip).limit(limit).populate("category");
-//         break;
-//       case 'Price high to low':
-//         query = Productsdb.find(filter).sort({ productPrice: -1 }).skip(skip).limit(limit).populate("category");
-//         break;
-//       case 'Price low to high':
-//         query = Productsdb.find(filter).sort({ productPrice: 1 }).skip(skip).limit(limit).populate("category");
-//         break;
-//       case 'latest':
-//         query = Productsdb.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).populate("category");
-//         break;
-//       default:
-//         query = Productsdb.find(filter).skip(skip).limit(limit).populate("category");
-//     }
-
-//     // Execute the query to retrieve paginated items
-//     const allItems = await query;
-
-//     // Render view with paginated items, pagination metadata, and filter criteria
-//     res.render("shop", { allItems, totalPages, currentPage: page, totalCount, perPage, sortBy, filterByCategory, userId });
-//   } catch (error) {
-//     console.error("Failed to load shop page: ", error);
-//     res.status(500).json({ error: `Failed to load shop page: ${error.message}` });
-//   }
-// } just before editttaaaaaaaaaaaa
 
 
 const loadShop = async (req, res) => {
@@ -428,9 +394,6 @@ const loadShop = async (req, res) => {
 }
 
 
-
-
-
 const loadProductDetails = async (req, res) => {
   try {
     const userId = res.locals.currentUserId;
@@ -448,9 +411,7 @@ const loadProductDetails = async (req, res) => {
     res.status(500).send("Internal Server Error");
 
   }
-
 }
-
 
 
 const getSearchSuggestions = async (req, res) => {
@@ -485,6 +446,7 @@ module.exports = {
   addProduct,
   editProduct,
   updateProduct,
+  changeStatus,
   archiveProduct,
   unarchiveProduct,
   loadShop,

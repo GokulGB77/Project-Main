@@ -270,10 +270,10 @@
 
                                             <% if (products[i].status===1) { %>
                                                 <a class="dropdown-item text-danger" id="archiveBtn<%=i%>"
-                                                    href="/admin/products/unarchive-product?id=<%= products[i]._id %>&page=<%= currentPage  %>">Archive</a>
+                                                    href="/admin/products/change-status?id=<%= products[i]._id %>&page=<%= currentPage  %>">Archive</a>
                                                 <% } else { %>
                                                     <a class="dropdown-item text-success"
-                                                        href="/admin/products/archive-product?id=<%= products[i]._id %>&page=<%= currentPage %>">Unarchive</a>
+                                                        href="/admin/products/change-status?id=<%= products[i]._id %>&page=<%= currentPage %>">Unarchive</a>
                                                     <% } %>
                                                         <div class="dropdown-divider"></div>
 
@@ -283,32 +283,7 @@
                                 </div>
                             </div> 
                         </article> 
-                        <!-- <script>
-                            // Assuming you have the product ID and currentPage available
-                            const productIds = document.querySelectorAll('[id^="archiveBtn"]');
-                            productIds.forEach((btn, index) => {
-                                const productId = btn.getAttribute('data-product-id');
-                                const currentPage = '<%= currentPage %>';
-                        
-                                // Constructing the URL for the fetch request
-                                const url = `/admin/products/unarchive-product?id=${productId}&page=${currentPage}`;
-                                btn.addEventListener("click", async function (event) {
-                                    event.preventDefault();
-                        
-                                    try {
-                                        const response = await fetch(url); // Removed unnecessary options
-                                        if (!response.ok) {
-                                            throw new Error('Network response was not ok');
-                                        }
-                                        // Handle successful response here
-                                        location.reload(); // Reload the page after a successful archive/unarchive
-                                    } catch (error) {
-                                        // Handle errors here
-                                        console.error('There was a problem with the fetch operation:', error);
-                                    }
-                                });
-                            });
-                        </script> -->
+                       
                         <% } %>
                 </div> <!-- card-body end// -->
 
