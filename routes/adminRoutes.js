@@ -70,8 +70,6 @@ adminRoute.get("/products/edit-product",productsController.editProduct)
 adminRoute.post("/products/edit-product",productsController.updateProduct)
 
 adminRoute.get("/products/change-status",productsController.changeStatus)
-adminRoute.get("/products/archive-product",productsController.archiveProduct)
-adminRoute.get("/products/unarchive-product",productsController.unarchiveProduct)
 
 adminRoute.get("/categories",categoriesController.loadAdmincategories)
 adminRoute.post("/categories/add-category",categoriesController.addCategory)
@@ -79,9 +77,6 @@ adminRoute.get("/categories/edit-category",categoriesController.editCategory)
 adminRoute.post("/categories/edit-category/update",categoriesController.updateCategory)
 
 adminRoute.get("/categories/disable",categoriesController.disableCategory)
-adminRoute.get("/categories/disable",categoriesController.disableCategory)
-
-adminRoute.get("/categories/enable",categoriesController.enableCategory)
 adminRoute.get("/categories/enable",categoriesController.enableCategory)
 
 adminRoute.get("/orders",ordersController.loadOrders)

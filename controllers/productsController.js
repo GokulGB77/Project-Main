@@ -249,55 +249,6 @@ const changeStatus = async (req, res) => {
 };
 
 
-const archiveProduct = async (req, res) => {
-  try {
-    const id = req.query.id;
-    const currentPage = req.query.page
-    const limit = 10; // Number of products to display per page
-
-    // Calculate the start and end index for the current page
-    const startIndex = (currentPage - 1) * limit;
-    const endIndex = startIndex + limit;
-    const totalProducts = await Productsdb.countDocuments();
-
-    // Calculate the total number of pages
-    const totalPages = Math.ceil(totalProducts / limit);
-    const product = await Productsdb.findByIdAndUpdate(id, {
-      status: 1
-    })
-    const products = await Productsdb.find({}).sort({ productName: 1 });
-    console.log(`Product Archived: ${product.productName}`);
-    res.render("viewProducts", { products,currentPage,totalPages });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Archive Product Failed");
-  }
-}
-
-const unarchiveProduct = async (req, res) => {
-  try {
-    const id = req.query.id;
-    const currentPage = req.query.page
-    const limit = 10; // Number of products to display per page
-
-    // Calculate the start and end index for the current page
-    const startIndex = (currentPage - 1) * limit;
-    const endIndex = startIndex + limit;
-    const totalProducts = await Productsdb.countDocuments();
-
-    // Calculate the total number of pages
-    const totalPages = Math.ceil(totalProducts / limit);
-    const product = await Productsdb.findByIdAndUpdate(id, {
-      status: 0
-    })
-    const products = await Productsdb.find({}).sort({ productName: 1 });
-    console.log(`Product Unarchived: ${product.productName}`);
-    res.render("viewProducts", { products,currentPage,totalPages });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Unarchive Product Failed");
-  }
-}
 
 
 
@@ -447,8 +398,6 @@ module.exports = {
   editProduct,
   updateProduct,
   changeStatus,
-  archiveProduct,
-  unarchiveProduct,
   loadShop,
   getCategories,
   loadProductDetails,
