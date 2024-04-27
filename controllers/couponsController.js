@@ -119,9 +119,6 @@ const changeStatus = async (req, res) => {
 };
 
 
-
-
-
 const deleteCoupon = async (req, res) => {
   try {
     const couponId = req.query.id;
@@ -151,7 +148,5 @@ module.exports = {
   addCoupon,
   updateCoupon,
   changeStatus,
-  activateCoupon,
-  deactivateCoupon,
   deleteCoupon,
 }
