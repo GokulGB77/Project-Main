@@ -56,6 +56,7 @@ adminRoute.post('/generate-sales-report-pdf',dashboardController.generateSalesRe
 
 adminRoute.get('/user-details',adminController.userDetails)
 adminRoute.get('/user-details-fetch',adminController.userDetailsFetch)
+adminRoute.get("/user-details/change-status",adminController.changeStatus)
 adminRoute.get("/user-details/block",adminController.blockUser)
 adminRoute.get("/user-details/unblock",adminController.unblockUser)
 
