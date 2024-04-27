@@ -224,12 +224,12 @@
                                                             </div>
                                                             <div>
                                                                 <% if (item.status==="inactive" ) { %>
-                                                                    <a onclick="activateCoupon('<%= item._id %>')"
+                                                                    <a onclick="activateCoupon('<%= item._id %>','active')"
                                                                         class="btn btn-sm font-sm rounded btn-brand">
                                                                         Activate
                                                                     </a>
                                                                     <% } else { %>
-                                                                        <a onclick="deactivateCoupon('<%= item._id %>')"
+                                                                        <a onclick="deactivateCoupon('<%= item._id %>','inactive')"
                                                                             class="btn btn-sm font-sm rounded btn-brand">
                                                                             Deactivate
                                                                         </a>
@@ -476,131 +476,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
 
 
-    <!-- <script>
-        // Add event listener to the form's submit event
-        document.getElementById('couponForm').addEventListener('submit', handleCouponFormSubmit);
-
-        async function handleCouponFormSubmit(event) {
-            event.preventDefault();
-
-            const form = event.target;
-            const name = form.elements.name.value;
-            const code = form.elements.code.value;
-            const discountType = form.elements.discountType.value;
-            const discountValue = form.elements.discountValue.value;
-            const minimumOffer = form.elements.minimumOffer.value;
-            const maximumOffer = form.elements.maximumOffer.value;
-            const expiryDate = form.elements.expiryDate.value;
-
-            try {
-                const response = await fetch('/admin/coupons', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name, code, discountType, discountValue, minimumOffer, maximumOffer, expiryDate }),
-                });
-
-                if (response.ok) {
-                    const { success, coupon } = await response.json();
-
-                    if (success) {
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('createCouponModal'));
-                        modal.hide();
-
-                        form.reset();
-
-                        // Add the new coupon to the top of the list
-                        const couponList = document.querySelector('tbody');
-                        const { row, editButton, activateDeactivateButton } = createCouponElement(coupon);
-                        couponList.prepend(row);
-
-                        // Add event listeners for action buttons
-                        editButton.addEventListener('click', () => {
-                            // Handle edit button click
-                        });
-
-                        activateDeactivateButton.addEventListener('click', () => {
-                            const couponId = coupon._id;
-                            if (coupon.status === 'active') {
-                                deactivateCoupon(couponId);
-                            } else {
-                                activateCoupon(couponId);
-                            }
-                        });
-                    } else {
-                        console.error('Failed to create coupon');
-                    }
-                } else {
-                    const errorMessage = await response.text();
-                    console.error('Failed to create coupon:', errorMessage);
-                }
-            } catch (error) {
-                console.error('Error creating coupon:', error);
-            }
-        }
-        function createCouponElement(couponData) {
-            const row = document.createElement('tr');
-
-            // Create cells for each column
-            const serialNumberCell = document.createElement('td');
-            serialNumberCell.textContent = '1'; // You can calculate the serial number based on the existing list
-            serialNumberCell.classList.add('text-center');
-            row.appendChild(serialNumberCell);
-
-            const nameCell = document.createElement('td');
-            nameCell.innerHTML = `<b>${couponData.name}</b>`;
-            row.appendChild(nameCell);
-
-            const codeCell = document.createElement('td');
-            codeCell.textContent = couponData.code;
-            row.appendChild(codeCell);
-
-            const expiryDateCell = document.createElement('td');
-            expiryDateCell.textContent = couponData.expiryDate;
-            row.appendChild(expiryDateCell);
-
-            const statusCell = document.createElement('td');
-            statusCell.classList.add('text-center');
-            const statusBadge = document.createElement('span');
-            statusBadge.classList.add('badge', 'rounded-pill', couponData.status === 'active' ? 'alert-success' : 'alert-danger');
-            statusBadge.textContent = couponData.status === 'active' ? 'Active' : 'Inactive';
-            statusCell.appendChild(statusBadge);
-            row.appendChild(statusCell);
-
-            const actionCell = document.createElement('td');
-            actionCell.classList.add('text-center');
-            actionCell.setAttribute('data-coupon-id', couponData._id);
-
-            const editDiv = document.createElement('div');
-            editDiv.style.marginBottom = '10px';
-            const editButton = document.createElement('a');
-            editButton.href = '#';
-            editButton.classList.add('btn', 'btn-sm', 'font-sm', 'rounded', 'btn-brand');
-            editButton.setAttribute('data-bs-toggle', 'modal');
-            editButton.setAttribute('data-bs-target', '#editCouponModal');
-            editButton.setAttribute('data-coupon-id', couponData._id);
-            editButton.innerHTML = '<i class="material-icons md-edit"></i> Edit';
-            editDiv.appendChild(editButton);
-            actionCell.appendChild(editDiv);
-
-            const activateDeactivateDiv = document.createElement('div');
-            const activateDeactivateButton = document.createElement('a');
-            activateDeactivateButton.classList.add('btn', 'btn-sm', 'font-sm', 'rounded', 'btn-brand');
-            activateDeactivateButton.textContent = couponData.status === 'active' ? 'Deactivate' : 'Activate';
-            activateDeactivateDiv.appendChild(activateDeactivateButton);
-            actionCell.appendChild(activateDeactivateDiv);
-
-            row.appendChild(actionCell);
-
-            return {
-                row,
-                editButton,
-                activateDeactivateButton,
-            };
-        }
-    </script> -->
-
+ 
     <script>
         $(document).ready(function () {
             // Check if there's a toast message in session
@@ -619,9 +495,9 @@
         });
     </script>
     <script>
-        const activateCoupon = async (couponId) => {
+        const activateCoupon = async (couponId,status) => {
             try {
-                const response = await fetch(`/admin/coupons/activate-coupon?id=${couponId}`, {
+                const response = await fetch(`/admin/coupons/activate-coupon?id=${couponId}&status=${status}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -653,9 +529,9 @@
             }
         };
 
-        const deactivateCoupon = async (couponId) => {
+        const deactivateCoupon = async (couponId,status) => {
             try {
-                const response = await fetch(`/admin/coupons/deactivate-coupon?id=${couponId}`, {
+                const response = await fetch(`/admin/coupons/deactivate-coupon?id=${couponId}&status=${status}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -708,77 +584,7 @@
         };
 
     </script>
-    <!-- <script>
-        function validateCouponForm() {
-            const couponName = document.getElementById('couponName').value.trim();
-            const couponCode = document.getElementById('couponCode').value.trim();
-            const discountValue = document.getElementById('discountValue').value;
-            const discountType = document.getElementById('discountType').value;
-            const discountValueError = document.getElementById('discountValue-error');
-            const minimumOffer = document.getElementById('minimumOffer').value;
-            const minimumOfferError = document.getElementById('minimumOffer-error');
-            const expiryDate = document.getElementById('expiryDate').value;
-            const expiryDateError = document.getElementById('expiryDate-error');
-            const maximumOffer = document.getElementById('minimumOffer').value;
-            const maximumOfferError = document.getElementById('minimumOffer-error');
-
-            if (couponName === '') {
-                document.getElementById('couponName-error').textContent = 'Coupon Name cannot be empty.';
-                return false;
-            } else {
-                document.getElementById('couponName-error').textContent = '';
-            }
-
-            if (couponCode === '') {
-                document.getElementById('couponCode-error').textContent = 'Coupon Code cannot be empty.';
-                return false;
-            } else {
-                document.getElementById('couponCode-error').textContent = '';
-            }
-
-            if (parseFloat(discountValue) <= 0 || isNaN(parseFloat(discountValue))) {
-                discountValueError.textContent = 'Discount Value must be greater than zero.';
-                return false;
-            } else if (discountType === 'percentage' && parseFloat(discountValue) > 99) {
-                discountValueError.textContent = 'Percentage cannot exceed 99.';
-                return false;
-            } else {
-                discountValueError.textContent = '';
-            }
-
-            if (parseFloat(minimumOffer) <= 0 || isNaN(parseFloat(minimumOffer))) {
-                minimumOfferError.textContent = 'Minimum Offer must be greater than zero.';
-                return false;
-            } else {
-                minimumOfferError.textContent = '';
-            }
-            if (parseFloat(maximumOffer) <= 0 || isNaN(parseFloat(maximumOffer))) {
-                maximumOfferError.textContent = 'Maximum Offer must be greater than zero.';
-                return false;
-            } else {
-                maximumOfferError.textContent = '';
-            }
-
-            const today = new Date().toISOString().split('T')[0];
-
-            if (expiryDate < today) {
-                expiryDateError.textContent = 'Expiry Date must be greater than today.';
-                return false;
-            } else {
-                expiryDateError.textContent = '';
-            }
-
-            return true;
-        }
-    </script> -->
-
-
-
-
-
-
-
-
+    
 </body>
 
 </html>
