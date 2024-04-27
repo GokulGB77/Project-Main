@@ -20,7 +20,7 @@ const path = require("path")
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.dbURI)
+mongoose.connect(process.env.MONGODB_URL)
 .then(()=>{
   console.log("MongoDB Connected Successfully");
 }).catch ((err)=>{
