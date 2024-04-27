@@ -270,10 +270,10 @@
 
                                             <% if (products[i].status===1) { %>
                                                 <a class="dropdown-item text-danger" id="archiveBtn<%=i%>"
-                                                    href="/admin/products/change-status?id=<%= products[i]._id %>&page=<%= currentPage  %>">Archive</a>
+                                                    href="/admin/products/change-status?id=<%= products[i]._id %>&page=<%= currentPage  %>&status=1">Archive</a>
                                                 <% } else { %>
                                                     <a class="dropdown-item text-success"
-                                                        href="/admin/products/change-status?id=<%= products[i]._id %>&page=<%= currentPage %>">Unarchive</a>
+                                                        href="/admin/products/change-status?id=<%= products[i]._id %>&page=<%= currentPage %>&status=0">Unarchive</a>
                                                     <% } %>
                                                         <div class="dropdown-divider"></div>
 
