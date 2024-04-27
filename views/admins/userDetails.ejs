@@ -233,11 +233,12 @@
 
                                                 <td style="width: 10%" class="text-center">
                                                     <div>
-                                                        <button class="btn ${item.status === 0 ? 'btn-outline-success' : 'btn-outline-danger'}" type="button" onclick="location.href='/admin/user-details/change-status?id=${item._id}'", ${item.status})">
+                                                        <button class="btn ${item.status === 0 ? 'btn-outline-success' : 'btn-outline-danger'}" type="button" onclick="changeStatus('${item._id}', ${item.status})">
                                                             ${item.status === 0 ? 'Unblock' : 'Block'}
                                                         </button>
                                                     </div>
                                                 </td>
+
 
                                             `;
                                             tableBody.appendChild(row);
@@ -270,6 +271,12 @@
                                         console.error('Failed to fetch user details');
                                     }
                                 }
+                                function changeStatus(id, currentStatus) {
+                                    let newStatus = currentStatus === 1 ? 1 : 0; // Toggle the status
+                                    let route = `/admin/user-details/change-status?id=${id}&status=${newStatus}`;
+                                    location.href = route;
+                                }
+
 
                                 function attachPaginationClickListeners() {
                                     document.querySelectorAll('.pagination .page-link').forEach(link => {
