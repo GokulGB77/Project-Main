@@ -260,10 +260,10 @@
 
                                                             <% if (item.categoryStatus===1) { %>
                                                                 <a class="dropdown-item text-danger"
-                                                                    href="/admin/categories/disable?id=<%= item._id %>">Disable</a>
+                                                                    href="/admin/categories/change-status?id=<%= item._id %>&status=1">Disable</a>
                                                                 <% } else { %>
                                                                     <a class="dropdown-item text-success"
-                                                                        href="/admin/categories/enable?id=<%= item._id %>">Enable</a>
+                                                                        href="/admin/categories/change-status?id=<%= item._id %>&status=0">Enable</a>
                                                                     <% } %>
                                                                         
 

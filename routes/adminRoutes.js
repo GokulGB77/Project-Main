@@ -76,8 +76,7 @@ adminRoute.post("/categories/add-category",categoriesController.addCategory)
 adminRoute.get("/categories/edit-category",categoriesController.editCategory)
 adminRoute.post("/categories/edit-category/update",categoriesController.updateCategory)
 
-adminRoute.get("/categories/disable",categoriesController.disableCategory)
-adminRoute.get("/categories/enable",categoriesController.enableCategory)
+adminRoute.get("/categories/change-status",categoriesController.changeStatus)
 
 adminRoute.get("/orders",ordersController.loadOrders)
 adminRoute.get("/orders1",ordersController.loadOrders1)
