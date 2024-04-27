@@ -127,6 +127,21 @@ const userDetailsFetch = async (req,res) => {
   }
 }
 
+const changeStatus = async (req, res) => {
+  try {
+      const id = req.query.id;
+      const newStatus = req.query.status === '0' ? 1 : 0; // Toggle status
+      const user = await Admindb.findByIdAndUpdate(id, { status: newStatus });
+      const users = await Admindb.find({});
+      
+      console.log(`User ${user.name} status changed to ${newStatus === 0 ? 'unblocked' : 'blocked'}`);
+      res.render("userDetails", { users });
+  } catch (error) {
+      console.log(error);
+      res.status(500).send("Status change failed");
+  }
+};
+
 const blockUser = async (req,res) => {
   try {
     const id = req.query.id;
@@ -169,5 +184,6 @@ module.exports = {
   adminLogout,
   blockUser,
   unblockUser,
+  changeStatus,
   
 }

@@ -77,30 +77,7 @@
                     </a>
 
                 </li>
-                <!--                 
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
-                        <span class="text">Sales</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-sellers-cards.html">Sellers cards</a>
-                        <a href="page-sellers-list.html">Sellers list</a>
-                        <a href="page-seller-detail.html">Seller profile</a>
-                    </div>
-                </li>
-            
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Banners</span>
-                    </a>
-                    <div class="submenu">
-                        <a href="page-form-product-1.html">Add product 1</a>
-                        <a href="page-form-product-2.html">Add product 2</a>
-                        <a href="page-form-product-3.html">Add product 3</a>
-                        <a href="page-form-product-4.html">Add product 4</a>
-                    </div>
-                </li>
-                  -->
+              
             </ul>
             <hr>
             <ul class="menu-aside">
@@ -194,7 +171,7 @@
                                                 button.addEventListener('click', async () => {
                                                     const userId = button.dataset.id;
                                                     const action = button.dataset.action;
-                                                    const url = `/admin/user-details/${action}?id=${userId}`;
+                                                    const url = `/admin/user-details/change-status?id=${userId}`;
 
                                                     try {
                                                         const response = await fetch(url, {
@@ -252,15 +229,16 @@
                                                     </span>
                                                 </td>
                                                 
+                                               
+
                                                 <td style="width: 10%" class="text-center">
-                                                    <div class="">
-                                                    ${item.status === 0 ? `
-                                                        <button class="btn btn-outline-success" type="button" onclick="location.href='/admin/user-details/block?id=${item._id}'">Unblock</button>
-                                                    ` : `
-                                                        <button class="btn btn-outline-danger" type="button" onclick="location.href='/admin/user-details/unblock?id=${item._id}'">Block</button>
-                                                    `}
+                                                    <div>
+                                                        <button class="btn ${item.status === 0 ? 'btn-outline-success' : 'btn-outline-danger'}" type="button" onclick="location.href='/admin/user-details/change-status?id=${item._id}'", ${item.status})">
+                                                            ${item.status === 0 ? 'Unblock' : 'Block'}
+                                                        </button>
                                                     </div>
                                                 </td>
+
                                             `;
                                             tableBody.appendChild(row);
                                         });
